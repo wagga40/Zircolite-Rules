@@ -16,4 +16,5 @@ These rulesets have been generated with `sigmac` wich is available in the [offic
 - `rules_windows_sysmon_high.json` : Only level high and above SIGMA rules from the "**Windows**" directory of the official repository (SYSMON)
 - `rules_windows_sysmon_medium.json` : Only level medium and above SIGMA rules from the "**Windows**" directory of the official repository (SYSMON)
 - `rules_windows_sysmon.json` : Same file as `rules_windows_sysmon_high.json`
+- `rules_linux.json` : Linux rules converted "as is"
 
