@@ -2008,7 +2008,7 @@
             "attack.s0039"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4661' AND (ObjectType LIKE 'SAM\\_USER' ESCAPE '\\' OR ObjectType LIKE 'SAM\\_GROUP' ESCAPE '\\') AND ObjectName LIKE 'S-1-5-21-%' ESCAPE '\\' AND AccessMask = '0x2d' AND (ObjectName LIKE '%-500' ESCAPE '\\' OR ObjectName LIKE '%-512' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4661' AND AccessMask = '0x2d' AND (ObjectType LIKE 'SAM\\_USER' ESCAPE '\\' OR ObjectType LIKE 'SAM\\_GROUP' ESCAPE '\\') AND ObjectName LIKE 'S-1-5-21-%' ESCAPE '\\' AND (ObjectName LIKE '%-500' ESCAPE '\\' OR ObjectName LIKE '%-512' ESCAPE '\\'))"
         ],
         "filename": "win_susp_net_recon_activity.yml"
     },
@@ -5303,6 +5303,27 @@
         "filename": "proc_creation_win_susp_control_cve_2021_40444.yml"
     },
     {
+        "title": "Network Reconnaissance Activity",
+        "id": "e6313acd-208c-44fc-a0ff-db85d572e90e",
+        "status": "experimental",
+        "description": "Detects a set of suspicious network related commands often used in recon stages",
+        "author": "Florian Roth",
+        "falsepositives": [
+            "False positives depend on scripts and administrative tools used in the monitored environment"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.discovery",
+            "attack.t1087",
+            "attack.t1082",
+            "car.2016-03-001"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%nslookup%' ESCAPE '\\' AND CommandLine LIKE '%\\_ldap.\\_tcp.dc.\\_msdcs.%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_susp_recon_network_activity.yml"
+    },
+    {
         "title": "Curl Start Combination",
         "id": "21dd6d38-2b18-4453-9404-a0fe4a0cc288",
         "status": "test",
@@ -6201,6 +6222,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE 'C:\\\\Windows\\\\PSEXESVC.exe' ESCAPE '\\' AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_suspicious_psexesvc_as_system.yml"
+    },
+    {
+        "title": "Stop Or Remove Antivirus Service",
+        "id": "6783aa9e-0dc3-49d4-a94a-8b39c5fd700b",
+        "status": "experimental",
+        "author": "frack113",
+        "description": "Detects usage of 'Stop-Service' or 'Remove-Service' powershell cmdlet to disable AV services.\nAdversaries may disable security tools to avoid possible detection of their tools and activities by stopping antivirus service\n",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%Stop-Service %' ESCAPE '\\' OR CommandLine LIKE '%Remove-Service %' ESCAPE '\\') AND (CommandLine LIKE '% McAfeeDLPAgentService%' ESCAPE '\\' OR CommandLine LIKE '% Trend Micro Deep Security Manager%' ESCAPE '\\' OR CommandLine LIKE '% TMBMServer%' ESCAPE '\\' OR CommandLine LIKE '%Sophos%' ESCAPE '\\' OR CommandLine LIKE '%Symantec%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_service_modification.yml"
     },
     {
         "title": "Phishing Pattern ISO in Archive",
@@ -8263,6 +8303,24 @@
         "filename": "proc_creation_win_susp_target_location_shell32.yml"
     },
     {
+        "title": "DllRegisterServer Call From Non Rundll32",
+        "id": "2569ed8c-1147-498a-9b8c-2ad3656b10ed",
+        "status": "stable",
+        "description": "Detects when 'DllRegisterServer' is called in the commandline and the image is not rundll32. This could that the 'rundll32' utility has been renamed in order to avoid detection",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.execution"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND CommandLine LIKE '%DllRegisterServer%' ESCAPE '\\' AND NOT (Image LIKE '%\\\\rundll32.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_renamed_rundll32_dllregisterserver.yml"
+    },
+    {
         "title": "Serv-U Exploitation CVE-2021-35211 by DEV-0322",
         "id": "75578840-9526-4b2a-9462-af469a45e767",
         "status": "experimental",
@@ -8843,27 +8901,6 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%powershell%' ESCAPE '\\' AND CommandLine LIKE '%.DownloadFile%' ESCAPE '\\' AND CommandLine LIKE '%System.Net.WebClient%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_susp_ps_downloadfile.yml"
-    },
-    {
-        "title": "Network Reconnaissance Activity",
-        "id": "e6313acd-208c-44fc-a0ff-db85d572e90e",
-        "status": "experimental",
-        "description": "Detects a set of suspicious network related commands often used in recon stages",
-        "author": "Florian Roth",
-        "falsepositives": [
-            "False positives depend on scripts and administrative tools used in the monitored environment"
-        ],
-        "level": "high",
-        "tags": [
-            "attack.discovery",
-            "attack.t1087",
-            "attack.t1082",
-            "car.2016-03-001"
-        ],
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%nslookup%' ESCAPE '\\' AND CommandLine LIKE '%\\_ldap.\\_tcp.dc.\\_msdcs.%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_susp_recon_net_activity.yml"
     },
     {
         "title": "Suspicious HWP Sub Processes",
@@ -14758,7 +14795,7 @@
             "attack.t1564.004"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%~1\\\\%' ESCAPE '\\' OR Image LIKE '%~2\\\\%' ESCAPE '\\') AND NOT ((ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\Dism.exe' ESCAPE '\\' OR ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\cleanmgr.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\thor\\\\thor64.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%~1\\\\%' ESCAPE '\\' OR Image LIKE '%~2\\\\%' ESCAPE '\\') AND NOT ((ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\Dism.exe' ESCAPE '\\' OR ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\cleanmgr.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\thor\\\\thor64.exe' ESCAPE '\\') OR Product = 'InstallShield (R)' OR Description = 'InstallShield (R) Setup Engine' OR Company = 'InstallShield Software Corporation'))"
         ],
         "filename": "proc_creation_win_ntfs_short_name_path_use_image.yml"
     },
@@ -14845,6 +14882,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%System.Management.Automation.AmsiUtils%' ESCAPE '\\' AND CommandLine LIKE '%amsiInitFailed%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_powershell_amsi_bypass.yml"
+    },
+    {
+        "title": "Wmic Uninstall Security Product",
+        "id": "847d5ff3-8a31-4737-a970-aeae8fe21765",
+        "description": "Detects uninstallation or termination of security products using the WMIC utility",
+        "status": "experimental",
+        "author": "Florian Roth, Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Legitimate administration"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%wmic%' ESCAPE '\\' AND CommandLine LIKE '%product where %' ESCAPE '\\' AND CommandLine LIKE '%call uninstall%' ESCAPE '\\' AND CommandLine LIKE '%/nointeractive%' ESCAPE '\\') OR (CommandLine LIKE '%wmic%' ESCAPE '\\' AND CommandLine LIKE '%caption like %' ESCAPE '\\' AND (CommandLine LIKE '%call delete%' ESCAPE '\\' OR CommandLine LIKE '%call terminate%' ESCAPE '\\'))) AND (CommandLine LIKE '%Antivirus%' ESCAPE '\\' OR CommandLine LIKE '%AVG %' ESCAPE '\\' OR CommandLine LIKE '%Crowdstrike Sensor%' ESCAPE '\\' OR CommandLine LIKE '%DLP Endpoint%' ESCAPE '\\' OR CommandLine LIKE '%Endpoint Detection%' ESCAPE '\\' OR CommandLine LIKE '%Endpoint Protection%' ESCAPE '\\' OR CommandLine LIKE '%Endpoint Security%' ESCAPE '\\' OR CommandLine LIKE '%Endpoint Sensor%' ESCAPE '\\' OR CommandLine LIKE '%ESET File Security%' ESCAPE '\\' OR CommandLine LIKE '%Malwarebytes%' ESCAPE '\\' OR CommandLine LIKE '%McAfee Agent%' ESCAPE '\\' OR CommandLine LIKE '%Microsoft Security Client%' ESCAPE '\\' OR CommandLine LIKE '%Threat Protection%' ESCAPE '\\' OR CommandLine LIKE '%VirusScan%' ESCAPE '\\' OR CommandLine LIKE '%Webroot SecureAnywhere%' ESCAPE '\\' OR CommandLine LIKE '%Windows Defender%' ESCAPE '\\' OR CommandLine LIKE '%CarbonBlack%' ESCAPE '\\' OR CommandLine LIKE '%Carbon Black%' ESCAPE '\\' OR CommandLine LIKE '%Cb Defense Sensor 64-bit%' ESCAPE '\\' OR CommandLine LIKE '%Dell Threat Defense%' ESCAPE '\\' OR CommandLine LIKE '%Cylance %' ESCAPE '\\' OR CommandLine LIKE '%LogRhythm System Monitor Service%' ESCAPE '\\' OR CommandLine LIKE '%Sophos Anti-Virus%' ESCAPE '\\' OR CommandLine LIKE '%Sophos AutoUpdate%' ESCAPE '\\' OR CommandLine LIKE '%Sophos Management Console%' ESCAPE '\\' OR CommandLine LIKE '%Sophos Management Database%' ESCAPE '\\' OR CommandLine LIKE '%Sophos Credential Store%' ESCAPE '\\' OR CommandLine LIKE '%Sophos Update Manager%' ESCAPE '\\' OR CommandLine LIKE '%Sophos Management Server%' ESCAPE '\\' OR CommandLine LIKE '%Sophos Remote Management System%' ESCAPE '\\' OR CommandLine LIKE '%\\%Sophos\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%carbon\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%cylance\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%eset\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%symantec\\%%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_wmic_security_product_uninstall.yml"
     },
     {
         "title": "TrustedPath UAC Bypass Pattern",
@@ -15639,7 +15695,7 @@
         "description": "Detects the usage of tsclient share to place a backdoor on the RDP source machine's startup folder",
         "author": "Samir Bousseaden",
         "falsepositives": [
-            "Unknown"
+            "Unlikely"
         ],
         "level": "high",
         "tags": [
@@ -15948,6 +16004,25 @@
         "filename": "file_event_win_cred_dump_tools_dropped_files.yml"
     },
     {
+        "title": "Legitimate Application Dropped Script",
+        "id": "7d604714-e071-49ff-8726-edeb95a70679",
+        "description": "Detects programs on a Windows system that should not write scripts to disk",
+        "status": "experimental",
+        "author": "frack113, Florian Roth",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\msaccess.exe' ESCAPE '\\' OR Image LIKE '%\\\\mspub.exe' ESCAPE '\\' OR Image LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR Image LIKE '%\\\\visio.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordview.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR Image LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR Image LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR Image LIKE '%\\\\finger.exe' ESCAPE '\\' OR Image LIKE '%\\\\AcroRd32.exe' ESCAPE '\\' OR Image LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\hh.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.scf' ESCAPE '\\' OR TargetFilename LIKE '%.wsf' ESCAPE '\\' OR TargetFilename LIKE '%.wsh' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_legitimate_app_dropping_script.yml"
+    },
+    {
         "title": "RedMimicry Winnti Playbook Dropped File",
         "id": "130c9e58-28ac-4f83-8574-0a4cc913b97e",
         "status": "test",
@@ -16084,6 +16159,25 @@
             "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Image LIKE '%UMWorkerProcess.exe' ESCAPE '\\' AND NOT ((TargetFilename LIKE '%CacheCleanup.bin' ESCAPE '\\' OR TargetFilename LIKE '%.txt' ESCAPE '\\' OR TargetFilename LIKE '%.LOG' ESCAPE '\\' OR TargetFilename LIKE '%.cfg' ESCAPE '\\' OR TargetFilename LIKE '%cleanup.bin' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_cve_2021_26858_msexchange.yml"
+    },
+    {
+        "title": "Legitimate Application Dropped Archive",
+        "id": "654fcc6d-840d-4844-9b07-2c3300e54a26",
+        "description": "Detects programs on a Windows system that should not write an archive to disk",
+        "status": "experimental",
+        "author": "frack113, Florian Roth",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\msaccess.exe' ESCAPE '\\' OR Image LIKE '%\\\\mspub.exe' ESCAPE '\\' OR Image LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR Image LIKE '%\\\\visio.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordview.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR Image LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR Image LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR Image LIKE '%\\\\finger.exe' ESCAPE '\\' OR Image LIKE '%\\\\notepad.exe' ESCAPE '\\' OR Image LIKE '%\\\\AcroRd32.exe' ESCAPE '\\' OR Image LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\hh.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.zip' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.7z' ESCAPE '\\' OR TargetFilename LIKE '%.diagcab' ESCAPE '\\' OR TargetFilename LIKE '%.appx' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_legitimate_app_dropping_archive.yml"
     },
     {
         "title": "RipZip Attack on Startup Folder",
@@ -16598,6 +16692,25 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\SAM-%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp%' ESCAPE '\\')"
         ],
         "filename": "file_event_win_quarkspw_filedump.yml"
+    },
+    {
+        "title": "Legitimate Application Dropped Executable",
+        "id": "f0540f7e-2db3-4432-b9e0-3965486744bc",
+        "description": "Detects programs on a Windows system that should not write executables to disk",
+        "status": "experimental",
+        "author": "frack113, Florian Roth",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\msaccess.exe' ESCAPE '\\' OR Image LIKE '%\\\\mspub.exe' ESCAPE '\\' OR Image LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR Image LIKE '%\\\\visio.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordview.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR Image LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR Image LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR Image LIKE '%\\\\finger.exe' ESCAPE '\\' OR Image LIKE '%\\\\notepad.exe' ESCAPE '\\' OR Image LIKE '%\\\\AcroRd32.exe' ESCAPE '\\' OR Image LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\hh.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.ocx' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_legitimate_app_dropping_exe.yml"
     },
     {
         "title": "Outlook Form Installation",
@@ -18502,6 +18615,24 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\Fax\\\\ObjectName' ESCAPE '\\' AND NOT (details LIKE '%NetworkService%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_fax_change_service_user.yml"
+    },
+    {
+        "title": "Persistence Via TypedPaths",
+        "id": "086ae989-9ca6-4fe7-895a-759c5544f247",
+        "description": "Detects modification addition to the 'TypedPaths' key in the user or admin registry from a non standard application. Which might indicate persistence attempt",
+        "status": "experimental",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.persistence"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\TypedPaths\\\\%' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\explorer.exe' ESCAPE '\\')))"
+        ],
+        "filename": "registry_set_persistence_typed_paths.yml"
     },
     {
         "title": "Logon Scripts Creation in UserInitMprLogonScript Registry",
