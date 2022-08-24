@@ -13903,6 +13903,27 @@
         "filename": "proc_creation_win_mshta_http.yml"
     },
     {
+        "title": "CsExec Remote Execution Tool Usage",
+        "id": "d08a2711-ee8b-4323-bdec-b7d85e892b31",
+        "status": "experimental",
+        "description": "Detects the use of the lesser known remote execution tool named CsExec (a PsExec alternative)",
+        "author": "Florian Roth",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.develop_capabilities",
+            "attack.t1587.001",
+            "attack.execution",
+            "attack.t1569.002"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\csexec.exe' ESCAPE '\\' OR Description = 'csexec'))"
+        ],
+        "filename": "proc_creation_win_susp_csexec.yml"
+    },
+    {
         "title": "PowerShell Download from URL",
         "id": "3b6ab547-8ec2-4991-b9d2-2b06702a48d7",
         "status": "test",
@@ -15869,7 +15890,9 @@
             "attack.defense_evasion",
             "attack.t1036.003",
             "attack.g0046",
-            "car.2013-05-009"
+            "car.2013-05-009",
+            "attack.execution",
+            "attack.t1569.002"
         ],
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Product LIKE '%PAExec%' ESCAPE '\\' AND (Imphash IN ('11D40A7B7876288F919AB819CC2D9802', '6444f8a34e99b8f7d9647de66aabe516', 'dfd6aa3f7b2b1035b76b718f1ddc689f', '1a6cca4d5460b1710a12dea39e4a592c') OR (Hashes LIKE '%IMPHASH=11D40A7B7876288F919AB819CC2D9802%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=6444f8a34e99b8f7d9647de66aabe516%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=dfd6aa3f7b2b1035b76b718f1ddc689f%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=1a6cca4d5460b1710a12dea39e4a592c%' ESCAPE '\\'))) AND NOT (NewProcessName LIKE '%paexec%' ESCAPE '\\'))"
@@ -16480,7 +16503,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\update.exe' ESCAPE '\\' AND CommandLine LIKE '%.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--processStartAndWait%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Discord\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '% --processStart Discord.exe%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\GitHubDesktop\\\\Update.exe --createShortcut GitHubDesktop.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\update.exe' ESCAPE '\\' AND CommandLine LIKE '%.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--processStartAndWait%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Discord\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '% --processStart Discord.exe%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\GitHubDesktop\\\\Update.exe --createShortcut GitHubDesktop.exe%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe\" --processStart \"Teams.exe\"%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_squirrel_lolbin.yml"
     },
@@ -18462,6 +18485,24 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\EdgeTransport.exe' ESCAPE '\\' AND NOT (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wmi_backdoor_exchange_transport_agent.yml"
+    },
+    {
+        "title": "Process Creation Using Sysnative Folder",
+        "id": "3c1b5fb0-c72f-45ba-abd1-4d4c353144ab",
+        "status": "experimental",
+        "description": "Detects process creation events that use the Sysnative folder (common for CobaltStrike spawns)",
+        "author": "Max Altgelt",
+        "tags": [
+            "attack.t1055"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE 'C:\\\\Windows\\\\Sysnative\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_sysnative.yml"
     },
     {
         "title": "Possible Ransomware or Unauthorized MBR Modifications",
@@ -20475,6 +20516,28 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%powershell%' ESCAPE '\\' AND CommandLine LIKE '%.lnk%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_embed_exe_lnk.yml"
+    },
+    {
+        "title": "Renamed AdFind Detection",
+        "id": "df55196f-f105-44d3-a675-e9dfb6cc2f2b",
+        "status": "test",
+        "description": "Detects the use of a renamed Adfind.exe. AdFind continues to be seen across majority of breaches. It is used to domain trust discovery to plan out subsequent steps in the attack chain.",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.discovery",
+            "attack.t1018",
+            "attack.t1087.002",
+            "attack.t1482",
+            "attack.t1069.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Imphash IN ('bca5675746d13a1f246e2da3c2217492', '53e117a96057eaf19c41380d0e87f1c2') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\')) AND NOT (NewProcessName LIKE '%\\\\AdFind.exe' ESCAPE '\\' AND OriginalFileName = 'AdFind.exe'))"
+        ],
+        "filename": "proc_creation_win_susp_renamed_adfind.yml"
     },
     {
         "title": "Base64 Encoded Listing of Shadowcopy",
@@ -23945,7 +24008,9 @@
         "level": "medium",
         "tags": [
             "attack.lateral_movement",
-            "attack.t1021.002"
+            "attack.t1021.002",
+            "attack.execution",
+            "attack.t1569.002"
         ],
         "rule": [
             "SELECT * FROM logs WHERE (PipeName LIKE 'psexec%' ESCAPE '\\' OR PipeName LIKE 'paexec%' ESCAPE '\\' OR PipeName LIKE 'remcom%' ESCAPE '\\' OR PipeName LIKE 'csexec%' ESCAPE '\\')"
@@ -26897,7 +26962,7 @@
             "attack.t1547.001"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\ShellServiceObjectDelayLoad%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Run\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnceEx\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServices\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServicesOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Policies\\\\System\\\\Shell%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Policies\\\\Explorer\\\\Run%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Startup%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Shutdown%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Logon%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Logoff%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellServiceObjects%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellIconOverlayIdentifiers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellExecuteHooks%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\SharedTaskScheduler%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\PLAP Providers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Provider Filters%' ESCAPE '\\')) AND NOT ((NewValue = '(Empty)' OR TargetObject LIKE '%\\\\NgcFirst\\\\ConsecutiveSwitchCount' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\Update\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Roaming\\\\Spotify\\\\Spotify.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\devicecensus.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\winsat.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft OneDrive\\\\StandaloneUpdater\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft OneDrive\\\\Update\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft OneDrive\\\\Update\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\KeePass Password Safe 2\\\\ShInstUtil.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Everything\\\\Everything.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\integration\\\\integrator.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\LogonUI.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{D6886603-9D2F-4EB2-B667-1971041FA96B}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{BEC09223-B018-416D-A0AC-523971B639F5}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{8AF662BF-65A0-4D0A-A540-A338A999D36F}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{27FBDB57-B613-4AF2-9D7E-4FA7A66C21AD}\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\regsvr32.exe' ESCAPE '\\' AND TargetObject LIKE '%DropboxExt%' ESCAPE '\\' AND NewValue LIKE '%A251-47B7-93E1-CDD82E34AF8B}' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\Opera Browser Assistant' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Program Files\\\\Opera\\\\assistant\\\\browser\\_assistant.exe' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\iTunesHelper' ESCAPE '\\' AND NewValue LIKE '\"C:\\\\Program Files\\\\iTunes\\\\iTunesHelper.exe\"' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\zoommsirepair' ESCAPE '\\' AND NewValue LIKE '\"C:\\\\Program Files\\\\Zoom\\\\bin\\\\installer.exe\" /repair' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\Greenshot' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Program Files\\\\Greenshot\\\\Greenshot.exe' ESCAPE '\\') OR (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\GoogleDriveFS' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Program Files\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\GoogleDriveFS.exe%' ESCAPE '\\') OR (TargetObject LIKE '%GoogleDrive%' ESCAPE '\\' AND NewValue IN ('{CFE8B367-77A7-41D7-9C90-75D16D7DC6B6}', '{A8E52322-8734-481D-A7E2-27B309EF8D56}', '{C973DA94-CBDF-4E77-81D1-E5B794FBD146}', '{51EF1569-67EE-4AD6-9646-E726C3FFC8A2}')) OR (NewValue LIKE 'C:\\\\Windows\\\\system32\\\\cmd.exe /q /c rmdir /s /q \"C:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\%' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\{c60fd5ac-367d-4e3a-a975-f157502ac30a}' ESCAPE '\\' AND NewValue LIKE '%\\\\AppData\\\\Local\\\\Package Cache\\\\{c60fd5ac-367d-4e3a-a975-f157502ac30a}\\\\python%' ESCAPE '\\' AND NewValue LIKE '%.exe\" /burn.runonce' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\Updates\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\ShellServiceObjectDelayLoad%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Run\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnceEx\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServices\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServicesOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Policies\\\\System\\\\Shell%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Policies\\\\Explorer\\\\Run%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Startup%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Shutdown%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Logon%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Group Policy\\\\Scripts\\\\Logoff%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellServiceObjects%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellIconOverlayIdentifiers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellExecuteHooks%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\SharedTaskScheduler%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\PLAP Providers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Provider Filters%' ESCAPE '\\')) AND NOT ((NewValue = '(Empty)' OR TargetObject LIKE '%\\\\NgcFirst\\\\ConsecutiveSwitchCount' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\Update\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Roaming\\\\Spotify\\\\Spotify.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\devicecensus.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\winsat.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft OneDrive\\\\StandaloneUpdater\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft OneDrive\\\\Update\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft OneDrive\\\\Update\\\\OneDriveSetup.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\KeePass Password Safe 2\\\\ShInstUtil.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Everything\\\\Everything.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\integration\\\\integrator.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\LogonUI.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{D6886603-9D2F-4EB2-B667-1971041FA96B}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{BEC09223-B018-416D-A0AC-523971B639F5}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{8AF662BF-65A0-4D0A-A540-A338A999D36F}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Authentication\\\\Credential Providers\\\\{27FBDB57-B613-4AF2-9D7E-4FA7A66C21AD}\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\regsvr32.exe' ESCAPE '\\' AND TargetObject LIKE '%DropboxExt%' ESCAPE '\\' AND NewValue LIKE '%A251-47B7-93E1-CDD82E34AF8B}' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\Opera Browser Assistant' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Program Files\\\\Opera\\\\assistant\\\\browser\\_assistant.exe' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\iTunesHelper' ESCAPE '\\' AND NewValue LIKE '\"C:\\\\Program Files\\\\iTunes\\\\iTunesHelper.exe\"' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\zoommsirepair' ESCAPE '\\' AND NewValue LIKE '\"C:\\\\Program Files\\\\Zoom\\\\bin\\\\installer.exe\" /repair' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\Greenshot' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Program Files\\\\Greenshot\\\\Greenshot.exe' ESCAPE '\\') OR (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\GoogleDriveFS' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Program Files\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\GoogleDriveFS.exe%' ESCAPE '\\') OR (TargetObject LIKE '%GoogleDrive%' ESCAPE '\\' AND NewValue IN ('{CFE8B367-77A7-41D7-9C90-75D16D7DC6B6}', '{A8E52322-8734-481D-A7E2-27B309EF8D56}', '{C973DA94-CBDF-4E77-81D1-E5B794FBD146}', '{51EF1569-67EE-4AD6-9646-E726C3FFC8A2}')) OR (NewValue LIKE 'C:\\\\Windows\\\\system32\\\\cmd.exe /q /c rmdir /s /q \"C:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\%' ESCAPE '\\') OR (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\{c60fd5ac-367d-4e3a-a975-f157502ac30a}' ESCAPE '\\' AND NewValue LIKE '%\\\\AppData\\\\Local\\\\Package Cache\\\\{c60fd5ac-367d-4e3a-a975-f157502ac30a}\\\\python%' ESCAPE '\\' AND NewValue LIKE '%.exe\" /burn.runonce' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\Updates\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe' ESCAPE '\\' AND NewValue LIKE '%\\\\Microsoft\\\\Teams\\\\Update.exe --processStart %' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\userinit.exe' ESCAPE '\\' AND NewValue = 'ctfmon.exe /n') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\AVG\\\\Antivirus\\\\Setup\\\\%' ESCAPE '\\' AND (NewValue LIKE '\"C:\\\\Program Files\\\\AVG\\\\Antivirus\\\\AvLaunch.exe\" /gui' ESCAPE '\\' OR NewValue LIKE '\"C:\\\\Program Files (x86)\\\\AVG\\\\Antivirus\\\\AvLaunch.exe\" /gui' ESCAPE '\\' OR NewValue LIKE '{472083B0-C522-11CF-8763-00608CC02F24}' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_asep_reg_keys_modification_currentversion.yml"
     },

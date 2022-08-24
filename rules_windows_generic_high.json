@@ -8630,6 +8630,27 @@
         "filename": "proc_creation_win_mshta_http.yml"
     },
     {
+        "title": "CsExec Remote Execution Tool Usage",
+        "id": "d08a2711-ee8b-4323-bdec-b7d85e892b31",
+        "status": "experimental",
+        "description": "Detects the use of the lesser known remote execution tool named CsExec (a PsExec alternative)",
+        "author": "Florian Roth",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.develop_capabilities",
+            "attack.t1587.001",
+            "attack.execution",
+            "attack.t1569.002"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\csexec.exe' ESCAPE '\\' OR Description = 'csexec'))"
+        ],
+        "filename": "proc_creation_win_susp_csexec.yml"
+    },
+    {
         "title": "Msra.exe Process Injection",
         "id": "744a188b-0415-4792-896f-11ddb0588dbc",
         "status": "experimental",
@@ -12832,6 +12853,28 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%wuauclt%' ESCAPE '\\' OR OriginalFileName = 'wuauclt.exe') AND (CommandLine LIKE '%UpdateDeploymentProvider%' ESCAPE '\\' AND CommandLine LIKE '%.dll%' ESCAPE '\\' AND CommandLine LIKE '%RunHandlerComServer%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% /UpdateDeploymentProvider UpdateDeploymentProvider.dll %' ESCAPE '\\' OR CommandLine LIKE '% wuaueng.dll %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_proxy_execution_wuauclt.yml"
+    },
+    {
+        "title": "Renamed AdFind Detection",
+        "id": "df55196f-f105-44d3-a675-e9dfb6cc2f2b",
+        "status": "test",
+        "description": "Detects the use of a renamed Adfind.exe. AdFind continues to be seen across majority of breaches. It is used to domain trust discovery to plan out subsequent steps in the attack chain.",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.discovery",
+            "attack.t1018",
+            "attack.t1087.002",
+            "attack.t1482",
+            "attack.t1069.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Imphash IN ('bca5675746d13a1f246e2da3c2217492', '53e117a96057eaf19c41380d0e87f1c2') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\')) AND NOT (NewProcessName LIKE '%\\\\AdFind.exe' ESCAPE '\\' AND OriginalFileName = 'AdFind.exe'))"
+        ],
+        "filename": "proc_creation_win_susp_renamed_adfind.yml"
     },
     {
         "title": "Base64 Encoded Listing of Shadowcopy",
