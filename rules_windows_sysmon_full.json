@@ -354,6 +354,25 @@
         "filename": "net_connection_win_imewdbld.yml"
     },
     {
+        "title": "Script Initiated Connection to Non-Local Network",
+        "id": "992a6cae-db6a-43c8-9cec-76d7195c96fc",
+        "status": "experimental",
+        "description": "Detects a script interpreter wscript/cscript opening a network connection to a non-local network. Adversaries may use script to download malicious payloads.",
+        "author": "frack113, Florian Roth",
+        "falsepositives": [
+            "Legitimate scripts"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Initiated = 'true' AND (Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\')) AND NOT (((DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '172.%' ESCAPE '\\' OR DestinationIp LIKE '192.%' ESCAPE '\\' OR DestinationIp LIKE '169.254.%' ESCAPE '\\' OR DestinationIp LIKE '20.%' ESCAPE '\\')) OR ((DestinationIp LIKE '::1%' ESCAPE '\\' OR DestinationIp LIKE '0:0:0:0:0:0:0:1%' ESCAPE '\\' OR DestinationIp LIKE 'fe80:%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\'))))"
+        ],
+        "filename": "net_connection_win_script_wan.yml"
+    },
+    {
         "title": "Windows Crypto Mining Pool Connections",
         "id": "fa5b1358-b040-4403-9868-15f7d9ab6329",
         "status": "stable",
@@ -470,6 +489,25 @@
             "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Initiated = 'true' AND (Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\') AND (CommandLine LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR CommandLine LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR CommandLine LIKE '%\\\\dllhost.exe' ESCAPE '\\')) AND NOT ((CommandLine = '') OR (CommandLine = '')))"
         ],
         "filename": "net_connection_susp_win_binary_no_cmdline.yml"
+    },
+    {
+        "title": "Script Initiated Connection",
+        "id": "08249dc0-a28d-4555-8ba5-9255a198e08c",
+        "status": "experimental",
+        "description": "Detects a script interpreter wscript/cscript opening a network connection. Adversaries may use script to download malicious payloads.",
+        "author": "frack113",
+        "falsepositives": [
+            "Legitimate scripts"
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Initiated = 'true' AND (Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\'))"
+        ],
+        "filename": "net_connection_win_script.yml"
     },
     {
         "title": "Dllhost Internet Connection",
@@ -16913,6 +16951,25 @@
         "filename": "proc_creation_win_apt_bear_activity_gtr19.yml"
     },
     {
+        "title": "Nimgrab File Download",
+        "id": "74a12f18-505c-4114-8d0b-8448dd5485c6",
+        "status": "experimental",
+        "description": "Detects usage of nimgrab, a tool bundled with the Nim programming framework, downloading a file. This can be normal behaviour on developer systems.",
+        "author": "frack113",
+        "falsepositives": [
+            "Legitimate use of Nim on developer systems"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\nimgrab.exe' ESCAPE '\\' OR (Hashes LIKE '%MD5=2DD44C3C29D667F5C0EF5F9D7C7FFB8B%' ESCAPE '\\' OR Hashes LIKE '%SHA256=F266609E91985F0FE3E31C5E8FAEEEC4FFA5E0322D8B6F15FE69F4C5165B9559%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=C07FDDD21D123EA9B3A08EEF44AAAC45%' ESCAPE '\\') OR md5 = '2DD44C3C29D667F5C0EF5F9D7C7FFB8B' OR sha256 = 'F266609E91985F0FE3E31C5E8FAEEEC4FFA5E0322D8B6F15FE69F4C5165B9559' OR imphash = 'C07FDDD21D123EA9B3A08EEF44AAAC45'))"
+        ],
+        "filename": "proc_creation_win_nimgrab.yml"
+    },
+    {
         "title": "IIS Native-Code Module Command Line Installation",
         "id": "9465ddf4-f9e4-4ebd-8d98-702df3a93239",
         "status": "test",
@@ -23565,7 +23622,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%cmd.exe/c%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/k%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/k%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/k%' ESCAPE '\\') OR (CommandLine LIKE '%/cwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/cpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/cschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/cbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/ccertutil%' ESCAPE '\\' OR CommandLine LIKE '%/kwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/kpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/kschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/kbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/kcertutil%' ESCAPE '\\') OR (CommandLine LIKE '%cmd.exe /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd /k%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%cmd.exe /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd /k %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%cmd.exe/c%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/k%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/k%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/k%' ESCAPE '\\') OR (CommandLine LIKE '%/cwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/cpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/cschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/cbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/ccertutil%' ESCAPE '\\' OR CommandLine LIKE '%/kwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/kpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/kschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/kbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/kcertutil%' ESCAPE '\\') OR (CommandLine LIKE '%cmd.exe /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd /k%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%cmd.exe /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd /k %' ESCAPE '\\')) OR (CommandLine LIKE '%AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\resources\\\\app\\\\node\\_modules%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/c .' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_missing_spaces.yml"
     },
@@ -29838,6 +29895,25 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND TargetObject LIKE 'HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Enabled' ESCAPE '\\' AND Details = 'DWORD (0x00000000)') AND NOT ((Image LIKE '%\\\\Windows\\\\system32\\\\wevtutil.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\winsxs\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft-Windows-FileInfoMinifilter%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft-Windows-ASN1\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_disable_winevt_logging.yml"
+    },
+    {
+        "title": "COM Hijacking via TreatAs",
+        "id": "dc5c24af-6995-49b2-86eb-a9ff62199e82",
+        "description": "Detect modification of TreatAs key to enable \"rundll32.exe -sta\" command",
+        "author": "frack113",
+        "status": "experimental",
+        "falsepositives": [
+            "Legitimate use"
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546.015"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND TargetObject LIKE '%TreatAs\\\\(Default)' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\integration\\\\integrator.exe' ESCAPE '\\')))"
+        ],
+        "filename": "registry_set_treatas_persistence.yml"
     },
     {
         "title": "CobaltStrike Service Installations in Registry",
