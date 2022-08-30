@@ -385,7 +385,7 @@
         "falsepositives": [
             "You may have to tune certain domains out that Excel may call out to, such as microsoft or other business use case domains.",
             "Office documents commonly have templates that refer to external addresses, like sharepoint.ourcompany.com may have to be tuned.",
-            "It is highly recomended to baseline your activity and tune out common business use cases."
+            "It is highly recommended to baseline your activity and tune out common business use cases."
         ],
         "level": "medium",
         "rule": [
@@ -3612,7 +3612,7 @@
         "title": "Microsoft Defender Blocked from Loading Unsigned DLL",
         "id": "0b0ea3cc-99c8-4730-9c53-45deee2a4c86",
         "status": "experimental",
-        "description": "Detects Code Integrity (CI) engine blocking Microsoft Defender's processes (MpCmdRun and NisSrv) from loading unsigned DLLs which may be an attempt to sideload arbitary DLL",
+        "description": "Detects Code Integrity (CI) engine blocking Microsoft Defender's processes (MpCmdRun and NisSrv) from loading unsigned DLLs which may be an attempt to sideload arbitrary DLL",
         "author": "Bhabesh Raj",
         "tags": [
             "attack.defense_evasion",
@@ -3840,7 +3840,7 @@
         "description": "Detects when an attacker calls the \"ALTER SERVER AUDIT\" or \"DROP SERVER AUDIT\" transaction in order to delete or disable audit logs on the server",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
-            "This event should only fire when an administrator is modifying the audit policy. Which should be a rare occurence once it's set up"
+            "This event should only fire when an administrator is modifying the audit policy. Which should be a rare occurrence once it's set up"
         ],
         "level": "high",
         "tags": [
@@ -4226,7 +4226,7 @@
     {
         "title": "New PDQDeploy Service - Client Side",
         "id": "b98a10af-1e1e-44a7-bab2-4cc026917648",
-        "description": "Detects PDQDeploy service installation on the target system. When a pakcage is deployed via PDQDeploy it installs a remote service on the target machine with the name \"PDQDeployRunner-X\" where \"X\" is an integer starting from 1",
+        "description": "Detects PDQDeploy service installation on the target system. When a package is deployed via PDQDeploy it installs a remote service on the target machine with the name \"PDQDeployRunner-X\" where \"X\" is an integer starting from 1",
         "status": "experimental",
         "author": "Nasreddine Bencherchali",
         "tags": [
@@ -4327,7 +4327,7 @@
         "title": "Sysmon Crash",
         "id": "4d7f1827-1637-4def-8d8a-fd254f9454df",
         "status": "experimental",
-        "description": "Detectes application popup reporting a failure of the Sysmon service",
+        "description": "Detects application popup reporting a failure of the Sysmon service",
         "author": "Tim Shelton",
         "falsepositives": [
             "Unknown"
@@ -5393,7 +5393,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '8' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\notepad.exe' ESCAPE '\\') AND NOT (SourceImage LIKE '%\\\\csrss.exe' ESCAPE '\\' OR SourceImage LIKE '%unknown process%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '8' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\notepad.exe' ESCAPE '\\') AND NOT (SourceImage LIKE '%\\\\csrss.exe' ESCAPE '\\' OR SourceImage LIKE '%unknown process%' ESCAPE '\\' OR StartFunction = 'EtwpNotificationThread'))"
         ],
         "filename": "sysmon_susp_remote_thread_target.yml"
     },
@@ -6720,7 +6720,7 @@
         "title": "PowerShell Write-EventLog Usage",
         "id": "35f41cd7-c98e-469f-8a02-ec4ba0cc7a7e",
         "status": "experimental",
-        "description": "Detects usage of the \"Write-EventLog\" cmdlet with 'RawData' flag. The cmdlet can be levreage to write malicious payloads to the EventLog and then retrive them later for later use",
+        "description": "Detects usage of the \"Write-EventLog\" cmdlet with 'RawData' flag. The cmdlet can be levreage to write malicious payloads to the EventLog and then retrieve them later for later use",
         "tags": [
             "attack.defense_evasion"
         ],
@@ -6925,7 +6925,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel = 'Microsoft-Windows-PowerShell/Operational' AND (ScriptBlockText LIKE '%Add-ConstrainedDelegationBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-DCShadowPermissions%' ESCAPE '\\' OR ScriptBlockText LIKE '%DNS\\_TXT\\_Pwnage%' ESCAPE '\\' OR ScriptBlockText LIKE '%Execute-OnTime%' ESCAPE '\\' OR ScriptBlockText LIKE '%HTTP-Backdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-RemotePSRemoting%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-RemoteWMI%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AmsiBypass%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-CHM%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-HTA%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-SCF%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-SCT%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-Shortcut%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-WebQuery%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-Word%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enable-Duplication%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-Update%' ESCAPE '\\' OR ScriptBlockText LIKE '%Download-Execute-PS%' ESCAPE '\\' OR ScriptBlockText LIKE '%Download\\_Execute%' ESCAPE '\\' OR ScriptBlockText LIKE '%Execute-Command-MSSQL%' ESCAPE '\\' OR ScriptBlockText LIKE '%Execute-DNSTXT-Code%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-RundllCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Copy-VSS%' ESCAPE '\\' OR ScriptBlockText LIKE '%FireBuster%' ESCAPE '\\' OR ScriptBlockText LIKE '%FireListener%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Information%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-PassHints%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-WLAN-Keys%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Web-Credentials%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-CredentialsPhish%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-MimikatzWDigestDowngrade%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SSIDExfil%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SessionGopher%' ESCAPE '\\' OR ScriptBlockText LIKE '%Keylogger%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Interceptor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Create-MultipleSessions%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NetworkRelay%' ESCAPE '\\' OR ScriptBlockText LIKE '%Run-EXEonRemote%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Prasadhak%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BruteForce%' ESCAPE '\\' OR ScriptBlockText LIKE '%Password-List%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-JSRatRegsvr%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-JSRatRundll%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PoshRatHttps%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellIcmp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellUdp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PSGcat%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PsGcatAgent%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-PoshRat%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-Persistance%' ESCAPE '\\' OR ScriptBlockText LIKE '%ExetoText%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Decode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Encode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Parse\\_Keys%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-Persistence%' ESCAPE '\\' OR ScriptBlockText LIKE '%StringtoBase64%' ESCAPE '\\' OR ScriptBlockText LIKE '%TexttoExe%' ESCAPE '\\' OR ScriptBlockText LIKE '%Powerpreter%' ESCAPE '\\' OR ScriptBlockText LIKE '%Nishang%' ESCAPE '\\' OR ScriptBlockText LIKE '%DataToEncode%' ESCAPE '\\' OR ScriptBlockText LIKE '%LoggedKeys%' ESCAPE '\\' OR ScriptBlockText LIKE '%OUT-DNSTXT%' ESCAPE '\\' OR ScriptBlockText LIKE '%ExfilOption%' ESCAPE '\\' OR ScriptBlockText LIKE '%DumpCerts%' ESCAPE '\\' OR ScriptBlockText LIKE '%DumpCreds%' ESCAPE '\\' OR ScriptBlockText LIKE '%Shellcode32%' ESCAPE '\\' OR ScriptBlockText LIKE '%Shellcode64%' ESCAPE '\\' OR ScriptBlockText LIKE '%NotAllNameSpaces%' ESCAPE '\\' OR ScriptBlockText LIKE '%exfill%' ESCAPE '\\' OR ScriptBlockText LIKE '%FakeDC%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel = 'Microsoft-Windows-PowerShell/Operational' AND (ScriptBlockText LIKE '%Add-ConstrainedDelegationBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-DCShadowPermissions%' ESCAPE '\\' OR ScriptBlockText LIKE '%DNS\\_TXT\\_Pwnage%' ESCAPE '\\' OR ScriptBlockText LIKE '%Execute-OnTime%' ESCAPE '\\' OR ScriptBlockText LIKE '%HTTP-Backdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-RemotePSRemoting%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-RemoteWMI%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AmsiBypass%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-CHM%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-HTA%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-SCF%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-SCT%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-Shortcut%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-WebQuery%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-Word%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enable-Duplication%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-Update%' ESCAPE '\\' OR ScriptBlockText LIKE '%Download-Execute-PS%' ESCAPE '\\' OR ScriptBlockText LIKE '%Download\\_Execute%' ESCAPE '\\' OR ScriptBlockText LIKE '%Execute-Command-MSSQL%' ESCAPE '\\' OR ScriptBlockText LIKE '%Execute-DNSTXT-Code%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-RundllCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Copy-VSS%' ESCAPE '\\' OR ScriptBlockText LIKE '%FireBuster%' ESCAPE '\\' OR ScriptBlockText LIKE '%FireListener%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Information%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-PassHints%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-WLAN-Keys%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Web-Credentials%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-CredentialsPhish%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-MimikatzWDigestDowngrade%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SSIDExfil%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SessionGopher%' ESCAPE '\\' OR ScriptBlockText LIKE '%Keylogger%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Interceptor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Create-MultipleSessions%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NetworkRelay%' ESCAPE '\\' OR ScriptBlockText LIKE '%Run-EXEonRemote%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Prasadhak%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BruteForce%' ESCAPE '\\' OR ScriptBlockText LIKE '%Password-List%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-JSRatRegsvr%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-JSRatRundll%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PoshRatHttps%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellIcmp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellUdp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PSGcat%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PsGcatAgent%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-PoshRat%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-Persistence%' ESCAPE '\\' OR ScriptBlockText LIKE '%ExetoText%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Decode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Encode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Parse\\_Keys%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-Persistence%' ESCAPE '\\' OR ScriptBlockText LIKE '%StringtoBase64%' ESCAPE '\\' OR ScriptBlockText LIKE '%TexttoExe%' ESCAPE '\\' OR ScriptBlockText LIKE '%Powerpreter%' ESCAPE '\\' OR ScriptBlockText LIKE '%Nishang%' ESCAPE '\\' OR ScriptBlockText LIKE '%DataToEncode%' ESCAPE '\\' OR ScriptBlockText LIKE '%LoggedKeys%' ESCAPE '\\' OR ScriptBlockText LIKE '%OUT-DNSTXT%' ESCAPE '\\' OR ScriptBlockText LIKE '%ExfilOption%' ESCAPE '\\' OR ScriptBlockText LIKE '%DumpCerts%' ESCAPE '\\' OR ScriptBlockText LIKE '%DumpCreds%' ESCAPE '\\' OR ScriptBlockText LIKE '%Shellcode32%' ESCAPE '\\' OR ScriptBlockText LIKE '%Shellcode64%' ESCAPE '\\' OR ScriptBlockText LIKE '%NotAllNameSpaces%' ESCAPE '\\' OR ScriptBlockText LIKE '%exfill%' ESCAPE '\\' OR ScriptBlockText LIKE '%FakeDC%' ESCAPE '\\'))"
         ],
         "filename": "posh_ps_nishang_malicious_commandlets.yml"
     },
@@ -7339,9 +7339,9 @@
         "filename": "posh_ps_susp_invocation_specific.yml"
     },
     {
-        "title": "Change PowerShell Policies to an Unsecure Level",
+        "title": "Change PowerShell Policies to an Insecure Level",
         "id": "61d0475c-173f-4844-86f7-f3eebae1c66b",
-        "description": "Detects use of Set-ExecutionPolicy to set a unsecure policies",
+        "description": "Detects use of Set-ExecutionPolicy to set insecure policies",
         "status": "experimental",
         "tags": [
             "attack.execution",
@@ -7888,7 +7888,7 @@
         "title": "Powershell DNSExfiltration",
         "id": "d59d7842-9a21-4bc6-ba98-64bfe0091355",
         "status": "experimental",
-        "description": "DNSExfiltrator allows for transfering (exfiltrate) a file over a DNS request covert channel",
+        "description": "DNSExfiltrator allows for transferring (exfiltrate) a file over a DNS request covert channel",
         "author": "frack113",
         "falsepositives": [
             "Legitimate script"
@@ -8504,9 +8504,9 @@
         "filename": "proc_creation_win_dirlister.yml"
     },
     {
-        "title": "Change PowerShell Policies to an Unsecure Level",
+        "title": "Change PowerShell Policies to an Insecure Level",
         "id": "87e3c4e8-a6a8-4ad9-bb4f-46e7ff99a180",
-        "description": "Detects use of executionpolicy option to set a unsecure policies",
+        "description": "Detects use of executionpolicy option to set insecure policies",
         "status": "experimental",
         "tags": [
             "attack.execution",
@@ -10056,7 +10056,7 @@
         "title": "DLL Sideloading by Microsoft Defender",
         "id": "7002aa10-b8d4-47ae-b5ba-51ab07e228b9",
         "status": "experimental",
-        "description": "Detects execution of Microsoft Defender's CLI process (MpCmdRun.exe) from the non-default directory which may be an attempt to sideload arbitary DLL",
+        "description": "Detects execution of Microsoft Defender's CLI process (MpCmdRun.exe) from the non-default directory which may be an attempt to sideload arbitrary DLL",
         "author": "Bhabesh Raj",
         "tags": [
             "attack.defense_evasion",
@@ -10601,7 +10601,7 @@
         "title": "Suspicious WindowsTerminal Child Processes",
         "id": "8de89e52-f6e1-4b5b-afd1-41ecfa300d48",
         "status": "experimental",
-        "description": "Detects suspicious children spawned via the Windows Terminal application which could be a sign of persistence via WindowsTerminal (see referneces section)",
+        "description": "Detects suspicious children spawned via the Windows Terminal application which could be a sign of persistence via WindowsTerminal (see references section)",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
             "Other legitimate \"Windows Terminal\" profiles"
@@ -11270,7 +11270,7 @@
         "description": "Detects creation of local users via the net.exe command with the option \"never expire\"",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
-            "Unlikley"
+            "Unlikely"
         ],
         "level": "high",
         "tags": [
@@ -13673,7 +13673,7 @@
         "title": "Use of Squirrel.exe",
         "id": "45239e6a-b035-4aaf-b339-8ad379fcb67e",
         "status": "experimental",
-        "description": "The \"Squirrel.exe\" binary that is part of multiple softwares (Slack, Teams, Discord...etc) can be used as a LOLBIN",
+        "description": "The \"Squirrel.exe\" binary that is part of multiple software (Slack, Teams, Discord...etc) can be used as a LOLBIN",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
             "See rule (fa4b21c9-0057-4493-b289-2556416ae4d7) for possible FPs"
@@ -14015,7 +14015,7 @@
     {
         "title": "CL_LoadAssembly.ps1 Proxy Execution",
         "id": "c57872c7-614f-4d7f-a40d-b78c8df2d30d",
-        "description": "Detects the use of a Micorsoft signed script to execute commands and bypassing AppLocker.",
+        "description": "Detects the use of a Microsoft signed script to execute commands and bypassing AppLocker.",
         "status": "experimental",
         "author": "frack113",
         "falsepositives": [
@@ -15269,7 +15269,7 @@
         "title": "Set Suspicious Files as System Files Using Attrib",
         "id": "efec536f-72e8-4656-8960-5e85d091345b",
         "status": "experimental",
-        "description": "Detects usage of attrib with \"+s\" option to set suspcious script or executable as system files to hide them from users and make them unable to delete with simple rights. The rule limit the search to sepcific extensions and directories to avoid FP's",
+        "description": "Detects usage of attrib with \"+s\" option to set suspicious script or executable as system files to hide them from users and make them unable to delete with simple rights. The rule limit the search to specific extensions and directories to avoid FP's",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
             "Unknown"
@@ -16211,7 +16211,7 @@
         "description": "Adversaries may attempt to get a listing of services running on remote hosts, including those that may be vulnerable to remote software exploitation",
         "author": "frack113",
         "falsepositives": [
-            "Network administator computeur"
+            "Network administator computer"
         ],
         "level": "high",
         "tags": [
@@ -16363,7 +16363,7 @@
         "title": "Suspicious AdvancedRun Runas Priv User",
         "id": "fa00b701-44c6-4679-994d-5a18afa8a707",
         "status": "experimental",
-        "description": "Detects the execution of AdvancedRun utitlity in the context of the TrustedInstaller, SYSTEM, Local Service or Network Service accounts",
+        "description": "Detects the execution of AdvancedRun utility in the context of the TrustedInstaller, SYSTEM, Local Service or Network Service accounts",
         "author": "Florian Roth",
         "falsepositives": [
             "Unknown"
@@ -16516,7 +16516,7 @@
         "title": "Use Icacls to Hide File to Everyone",
         "id": "4ae81040-fc1c-4249-bfa3-938d260214d9",
         "status": "experimental",
-        "description": "Detect use of icacls to deny acces for everyone in Users folder sometimes used to hide malicious files",
+        "description": "Detect use of icacls to deny access for everyone in Users folder sometimes used to hide malicious files",
         "author": "frack113",
         "falsepositives": [
             "Legitimate use"
@@ -16535,7 +16535,7 @@
         "title": "Suspicious Diantz Alternate Data Stream Execution",
         "id": "6b369ced-4b1d-48f1-b427-fdc0de0790bd",
         "status": "experimental",
-        "description": "Compress taget file into a cab file stored in the Alternate Data Stream (ADS) of the target file.",
+        "description": "Compress target file into a cab file stored in the Alternate Data Stream (ADS) of the target file.",
         "tags": [
             "attack.defense_evasion",
             "attack.t1564.004"
@@ -17327,7 +17327,7 @@
         "title": "Suspicious AdvancedRun Execution",
         "id": "d2b749ee-4225-417e-b20e-a8d2193cbb84",
         "status": "experimental",
-        "description": "Detects the execution of AdvancedRun utitlity",
+        "description": "Detects the execution of AdvancedRun utility",
         "author": "Florian Roth",
         "falsepositives": [
             "Unknown"
@@ -18856,7 +18856,7 @@
         "status": "experimental",
         "author": "frack113",
         "falsepositives": [
-            "Scritps or links on the user desktop used to lock the workstation instead of Windows+L or the menu option"
+            "Scripts or links on the user desktop used to lock the workstation instead of Windows+L or the menu option"
         ],
         "level": "medium",
         "tags": [
@@ -19080,7 +19080,7 @@
         "filename": "proc_creation_win_protocolhandler_susp_file.yml"
     },
     {
-        "title": "Wlrmdr Lolbin Use as Laucher",
+        "title": "Wlrmdr Lolbin Use as Launcher",
         "id": "9cfc00b6-bfb7-49ce-9781-ef78503154bb",
         "status": "experimental",
         "description": "Detects use of Wlrmdr.exe in which the -u parameter is passed to ShellExecute",
@@ -19918,7 +19918,7 @@
         "title": "Net WebClient Casing Anomalies",
         "id": "c86133ad-4725-4bd0-8170-210788e0a7ba",
         "status": "experimental",
-        "description": "Detects PowerShell command line contents that include a suspicious anormal casing in the Net.Webclient (e.g. nEt.WEbCliEnT) string as used in obfuscation techniques",
+        "description": "Detects PowerShell command line contents that include a suspicious abnormal casing in the Net.Webclient (e.g. nEt.WEbCliEnT) string as used in obfuscation techniques",
         "author": "Florian Roth",
         "tags": [
             "attack.execution",
@@ -20383,7 +20383,7 @@
         ],
         "author": "behops, Bhabesh Raj",
         "falsepositives": [
-            "Legitimate use by adminstrator"
+            "Legitimate use by administrator"
         ],
         "level": "high",
         "rule": [
@@ -20712,7 +20712,7 @@
         "title": "Suspicious Dosfuscation Character in Commandline",
         "id": "a77c1610-fc73-4019-8e29-0f51efc04a51",
         "status": "experimental",
-        "description": "Posssible Payload Obfuscation",
+        "description": "Possible Payload Obfuscation",
         "author": "frack113",
         "falsepositives": [
             "Legitimate use"
@@ -20850,7 +20850,7 @@
         "title": "UEFI Persistence Via Wpbbin - ProcessCreation",
         "id": "4abc0ec4-db5a-412f-9632-26659cddf145",
         "status": "experimental",
-        "description": "Detects execution of the binary \"wpbbin\" which is used as part of the UEFI based persistence method described in the refernece section",
+        "description": "Detects execution of the binary \"wpbbin\" which is used as part of the UEFI based persistence method described in the reference section",
         "author": "Nasreddine Bencherchali",
         "tags": [
             "attack.persistence",
@@ -20911,7 +20911,7 @@
         "title": "Winword LOLBIN Usage",
         "id": "4ae3e30b-b03f-43aa-87e3-b622f4048eed",
         "status": "experimental",
-        "description": "Detects Winword process loading custmom dlls via the '/l' switch.\nWinword can be abused as a LOLBIN to download arbitary file or load arbitary DLLs.\n",
+        "description": "Detects Winword process loading custmom dlls via the '/l' switch.\nWinword can be abused as a LOLBIN to download arbitrary file or load arbitrary DLLs.\n",
         "author": "Nasreddine Bencherchali, Victor Sergeev, oscd.community",
         "falsepositives": [
             "Unknown"
@@ -21203,7 +21203,7 @@
     {
         "title": "CL_Mutexverifiers.ps1 Proxy Execution",
         "id": "1e0e1a81-e79b-44bc-935b-ddb9c8006b3d",
-        "description": "Detects the use of a Micorsoft signed script to execute commands",
+        "description": "Detects the use of a Microsoft signed script to execute commands",
         "status": "experimental",
         "author": "oscd.community, Natalia Shornikova, frack113",
         "falsepositives": [
@@ -22367,7 +22367,7 @@
         "title": "DLL Sideloading by VMware Xfer Utility",
         "id": "ebea773c-a8f1-42ad-a856-00cb221966e8",
         "status": "experimental",
-        "description": "Detects execution of VMware Xfer utility (VMwareXferlogs.exe) from the non-default directory which may be an attempt to sideload arbitary DLL",
+        "description": "Detects execution of VMware Xfer utility (VMwareXferlogs.exe) from the non-default directory which may be an attempt to sideload arbitrary DLL",
         "author": "Nasreddine Bencherchali",
         "tags": [
             "attack.defense_evasion",
@@ -22598,7 +22598,7 @@
         "title": "Suspicious CMD Shell Redirect",
         "id": "8e0bb260-d4b2-4fff-bb8d-3f82118e6892",
         "status": "experimental",
-        "description": "Detects inline windows shell commands redirecting output via the \">\" symbol to a suspicous location",
+        "description": "Detects inline windows shell commands redirecting output via the \">\" symbol to a suspicious location",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
             "Legitimate admin scripts"
@@ -22754,7 +22754,7 @@
         "title": "WMIC Unquoted Services Path Lookup",
         "id": "68bcd73b-37ef-49cb-95fc-edc809730be6",
         "status": "experimental",
-        "description": "Detects wmic known recon method to look for unquoted serivce paths, often used by pentest and attackers enum scripts",
+        "description": "Detects wmic known recon method to look for unquoted service paths, often used by pentest and attackers enum scripts",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
             "Unknown"
@@ -23112,7 +23112,7 @@
             "attack.t1218"
         ],
         "falsepositives": [
-            "Legitimate usage of the script. Always investigate what's being registred to confirm if it's benign"
+            "Legitimate usage of the script. Always investigate what's being registered to confirm if it's benign"
         ],
         "level": "medium",
         "rule": [
@@ -23362,7 +23362,7 @@
         "title": "WMI Reconnaissance List Remote Services",
         "id": "09af397b-c5eb-4811-b2bb-08b3de464ebf",
         "status": "experimental",
-        "description": "An adversary might use WMI to check if a certain Remote Service is running on a remote device.\nWhen the test completes, a service information will be displayed on the screen if it exists.\nA common feedback message is that \"No instance(s) Available\" if the service queried is not running.\nA common error message is \"Node - (provided IP or default) ERROR Description =The RPC server is unavailable\" if the provided remote host is unreacheable\n",
+        "description": "An adversary might use WMI to check if a certain Remote Service is running on a remote device.\nWhen the test completes, a service information will be displayed on the screen if it exists.\nA common feedback message is that \"No instance(s) Available\" if the service queried is not running.\nA common error message is \"Node - (provided IP or default) ERROR Description =The RPC server is unavailable\" if the provided remote host is unreachable\n",
         "author": "frack113",
         "falsepositives": [
             "Unknown"
@@ -23618,7 +23618,7 @@
         "description": "Detects encoded base64 MZ header in the commandline",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
-            "Unlikley"
+            "Unlikely"
         ],
         "level": "high",
         "tags": [
@@ -23868,7 +23868,7 @@
         "title": "Use Short Name Path in Image",
         "id": "a96970af-f126-420d-90e1-d37bf25e50e1",
         "status": "experimental",
-        "description": "Detect use of the Windows 8.3 short name. Which could be used as a method to avoid Iamge detection",
+        "description": "Detect use of the Windows 8.3 short name. Which could be used as a method to avoid Image detection",
         "author": "frack113, Nasreddine Bencherchali",
         "falsepositives": [
             "Applications could use this notation occasionally which might generate some false positives. In that case Investigate the parent and child process."
@@ -24770,7 +24770,7 @@
         "author": "Christopher Peacock '@securepeacock', SCYTHE",
         "falsepositives": [
             "Unknown",
-            "Depending on your environment accepted applications may leverage this at times. It is recomended to search for anomolies inidicative of malware."
+            "Depending on your environment accepted applications may leverage this at times. It is recommended to search for anomalies inidicative of malware."
         ],
         "level": "high",
         "rule": [
@@ -24934,7 +24934,7 @@
         "filename": "file_event_win_advanced_ip_scanner.yml"
     },
     {
-        "title": "Creation In User Word Statup Folder",
+        "title": "Creation In User Word Startup Folder",
         "id": "a10a2c40-2c4d-49f8-b557-1a946bc55d9d",
         "status": "experimental",
         "description": "Detects the creation of an file in user Word Startup",
@@ -27337,7 +27337,7 @@
         "status": "experimental",
         "author": "Nasreddine Bencherchali",
         "falsepositives": [
-            "Unlikley"
+            "Unlikely"
         ],
         "level": "high",
         "tags": [
@@ -27705,7 +27705,7 @@
     {
         "title": "Change the Fax Dll",
         "id": "9e3357ba-09d4-4fbd-a7c5-ad6386314513",
-        "description": "Detect possible persistance using Fax DLL load when service restart",
+        "description": "Detect possible persistence using Fax DLL load when service restart",
         "status": "experimental",
         "author": "frack113",
         "tags": [
@@ -28094,7 +28094,7 @@
         "author": "Nasreddine Bencherchali",
         "status": "experimental",
         "falsepositives": [
-            "Might trigger if a legitimate new SIP provider is registered. But this is not a common occurence in an environment and should be investigated either way"
+            "Might trigger if a legitimate new SIP provider is registered. But this is not a common occurrence in an environment and should be investigated either way"
         ],
         "level": "high",
         "tags": [
@@ -29295,7 +29295,7 @@
     {
         "title": "Disable UAC Using Registry",
         "id": "48437c39-9e5f-47fb-af95-3d663c3f2919",
-        "description": "Detects when an attacker tries to disable User Account Conrol (UAC) by changing its registry key HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA from 1 to 0",
+        "description": "Detects when an attacker tries to disable User Account Control (UAC) by changing its registry key HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA from 1 to 0",
         "author": "frack113",
         "status": "experimental",
         "falsepositives": [
@@ -31620,7 +31620,7 @@
         "title": "VMware Xfer Loading DLL from Nondefault Path",
         "id": "9313dc13-d04c-46d8-af4a-a930cc55d93b",
         "status": "experimental",
-        "description": "Detects loading of a DLL by the VMware Xfer utility from the non-default directory which may be an attempt to sideload arbitary DLL",
+        "description": "Detects loading of a DLL by the VMware Xfer utility from the non-default directory which may be an attempt to sideload arbitrary DLL",
         "author": "Nasreddine Bencherchali",
         "tags": [
             "attack.defense_evasion",
@@ -31742,7 +31742,7 @@
         "title": "Microsoft Defender Loading DLL from Nondefault Path",
         "id": "418dc89a-9808-4b87-b1d7-e5ae0cb6effc",
         "status": "experimental",
-        "description": "Detects loading of Microsoft Defender's DLLs by its processes (MpCmdRun and NisSrv) from the non-default directory which may be an attempt to sideload arbitary DLL",
+        "description": "Detects loading of Microsoft Defender's DLLs by its processes (MpCmdRun and NisSrv) from the non-default directory which may be an attempt to sideload arbitrary DLL",
         "author": "Bhabesh Raj",
         "tags": [
             "attack.defense_evasion",
