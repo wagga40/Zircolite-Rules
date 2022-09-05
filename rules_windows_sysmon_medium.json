@@ -12066,6 +12066,27 @@
         "filename": "proc_creation_win_susp_powershell_getprocess_lsass.yml"
     },
     {
+        "title": "Suspicious Ldifde Command Usage",
+        "id": "6f535e01-ca1f-40be-ab8d-45b19c0c8b7f",
+        "description": "Detects the use of Ldifde.exe with specific command line arguments to potentially load an LDIF file containing HTTP-based arguments.\nLdifde.exe is present, by default, on domain controllers and only requires user-level authentication to execute.\n",
+        "status": "experimental",
+        "author": "@gott_cyber",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105",
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\ldifde.exe' ESCAPE '\\' OR OriginalFileName = 'ldifde.exe.mui') AND (CommandLine LIKE '%-i%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_ldifde_file_load.yml"
+    },
+    {
         "title": "Suspicious ZipExec Execution",
         "id": "90dcf730-1b71-4ae7-9ffc-6fcf62bd0132",
         "status": "experimental",
