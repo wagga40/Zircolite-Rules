@@ -237,6 +237,25 @@
         "filename": "net_connection_win_mega_nz.yml"
     },
     {
+        "title": "Certutil Initiated Connection",
+        "id": "0dba975d-a193-4ed1-a067-424df57570d1",
+        "status": "experimental",
+        "description": "Detects a network connection intitiated by the certutil.exe tool. Attackers can abuse `certutil.exe` to download malware or offensive security tools.",
+        "author": "frack113, Florian Roth",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Legitimate certutil network connection"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFilename = 'CertUtil.exe') AND (Initiated = 'true' AND DestinationPort IN ('80', '443', '135', '445')))"
+        ],
+        "filename": "net_connection_win_certutil.yml"
+    },
+    {
         "title": "Download a File with IMEWDBLD.exe",
         "id": "8d7e392e-9b28-49e1-831d-5949c6281228",
         "status": "experimental",
@@ -15338,7 +15357,7 @@
             "attack.t1550.003"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%˚\\\\Rubeus.exe''' ESCAPE '\\' OR OriginalFileName = 'Rubeus.exe' OR (CommandLine LIKE '% asreproast %' ESCAPE '\\' OR CommandLine LIKE '% dump /service:krbtgt %' ESCAPE '\\' OR CommandLine LIKE '% kerberoast %' ESCAPE '\\' OR CommandLine LIKE '% createnetonly /program:%' ESCAPE '\\' OR CommandLine LIKE '% ptt /ticket:%' ESCAPE '\\' OR CommandLine LIKE '% /impersonateuser:%' ESCAPE '\\' OR CommandLine LIKE '% renew /ticket:%' ESCAPE '\\' OR CommandLine LIKE '% asktgt /user:%' ESCAPE '\\' OR CommandLine LIKE '% harvest /interval:%' ESCAPE '\\' OR CommandLine LIKE '% s4u /user:%' ESCAPE '\\' OR CommandLine LIKE '% s4u /ticket:%' ESCAPE '\\' OR CommandLine LIKE '% hash /password:%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\Rubeus.exe' ESCAPE '\\' OR OriginalFileName = 'Rubeus.exe' OR (CommandLine LIKE '% asreproast %' ESCAPE '\\' OR CommandLine LIKE '% dump /service:krbtgt %' ESCAPE '\\' OR CommandLine LIKE '% kerberoast %' ESCAPE '\\' OR CommandLine LIKE '% createnetonly /program:%' ESCAPE '\\' OR CommandLine LIKE '% ptt /ticket:%' ESCAPE '\\' OR CommandLine LIKE '% /impersonateuser:%' ESCAPE '\\' OR CommandLine LIKE '% renew /ticket:%' ESCAPE '\\' OR CommandLine LIKE '% asktgt /user:%' ESCAPE '\\' OR CommandLine LIKE '% harvest /interval:%' ESCAPE '\\' OR CommandLine LIKE '% s4u /user:%' ESCAPE '\\' OR CommandLine LIKE '% s4u /ticket:%' ESCAPE '\\' OR CommandLine LIKE '% hash /password:%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hack_rubeus.yml"
     },
