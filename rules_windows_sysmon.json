@@ -357,19 +357,19 @@
         "id": "ed74fe75-7594-4b4b-ae38-e38e3fd2eb23",
         "status": "test",
         "description": "Detects Non-Standard Tools Connecting to TCP port 3389 indicating possible lateral movement",
-        "author": "Markus Neis - Swisscom",
-        "falsepositives": [
-            "Other Remote Desktop RDP tools",
-            "Domain controller using dns.exe"
-        ],
-        "level": "high",
+        "author": "Markus Neis",
         "tags": [
             "attack.lateral_movement",
             "attack.t1021.001",
             "car.2013-07-002"
         ],
+        "falsepositives": [
+            "Other Remote Desktop RDP tools",
+            "Domain controller using dns.exe"
+        ],
+        "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationPort = '3389' AND Initiated = 'true') AND NOT ((Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR Image LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR Image LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR Image LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR Image LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR Image LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR Image LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationPort = '3389' AND Initiated = 'true') AND NOT ((Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR Image LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR Image LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR Image LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR Image LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR Image LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR Image LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe%' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_susp_rdp.yml"
     },
@@ -1328,7 +1328,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '5156' AND ((SourcePort = '3389' AND (DestAddress LIKE '127.%' ESCAPE '\\' OR DestAddress LIKE '::1' ESCAPE '\\')) OR (DestPort = '3389' AND (SourceAddress LIKE '127.%' ESCAPE '\\' OR SourceAddress LIKE '::1' ESCAPE '\\')))) AND NOT (((Application LIKE '%\\\\thor.exe' ESCAPE '\\' OR Application LIKE '%\\\\thor64.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '5156' AND ((SourcePort = '3389' AND (DestAddress LIKE '127.%' ESCAPE '\\' OR DestAddress LIKE '::1' ESCAPE '\\')) OR (DestPort = '3389' AND (SourceAddress LIKE '127.%' ESCAPE '\\' OR SourceAddress LIKE '::1' ESCAPE '\\')))) AND NOT ((FilterOrigin = 'AppContainer Loopback') OR ((Application LIKE '%\\\\thor.exe' ESCAPE '\\' OR Application LIKE '%\\\\thor64.exe' ESCAPE '\\'))))"
         ],
         "filename": "win_rdp_reverse_tunnel.yml"
     },
@@ -13246,16 +13246,17 @@
         "description": "Detects command line parameters or strings often used by crypto miners",
         "status": "stable",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Legitimate use of crypto miners"
-        ],
-        "level": "high",
         "tags": [
             "attack.impact",
             "attack.t1496"
         ],
+        "falsepositives": [
+            "Legitimate use of crypto miners",
+            "Some build frameworks"
+        ],
+        "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '% --cpu-priority=%' ESCAPE '\\' OR CommandLine LIKE '%--donate-level=0%' ESCAPE '\\' OR CommandLine LIKE '% -o pool.%' ESCAPE '\\' OR CommandLine LIKE '% --nicehash%' ESCAPE '\\' OR CommandLine LIKE '% --algo=rx/0 %' ESCAPE '\\' OR CommandLine LIKE '%stratum+tcp://%' ESCAPE '\\' OR CommandLine LIKE '%stratum+udp://%' ESCAPE '\\' OR CommandLine LIKE '%LS1kb25hdGUtbGV2ZWw9%' ESCAPE '\\' OR CommandLine LIKE '%0tZG9uYXRlLWxldmVsP%' ESCAPE '\\' OR CommandLine LIKE '%tLWRvbmF0ZS1sZXZlbD%' ESCAPE '\\' OR CommandLine LIKE '%c3RyYXR1bSt0Y3A6Ly%' ESCAPE '\\' OR CommandLine LIKE '%N0cmF0dW0rdGNwOi8v%' ESCAPE '\\' OR CommandLine LIKE '%zdHJhdHVtK3RjcDovL%' ESCAPE '\\' OR CommandLine LIKE '%c3RyYXR1bSt1ZHA6Ly%' ESCAPE '\\' OR CommandLine LIKE '%N0cmF0dW0rdWRwOi8v%' ESCAPE '\\' OR CommandLine LIKE '%zdHJhdHVtK3VkcDovL%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '% --cpu-priority=%' ESCAPE '\\' OR CommandLine LIKE '%--donate-level=0%' ESCAPE '\\' OR CommandLine LIKE '% -o pool.%' ESCAPE '\\' OR CommandLine LIKE '% --nicehash%' ESCAPE '\\' OR CommandLine LIKE '% --algo=rx/0 %' ESCAPE '\\' OR CommandLine LIKE '%stratum+tcp://%' ESCAPE '\\' OR CommandLine LIKE '%stratum+udp://%' ESCAPE '\\' OR CommandLine LIKE '%LS1kb25hdGUtbGV2ZWw9%' ESCAPE '\\' OR CommandLine LIKE '%0tZG9uYXRlLWxldmVsP%' ESCAPE '\\' OR CommandLine LIKE '%tLWRvbmF0ZS1sZXZlbD%' ESCAPE '\\' OR CommandLine LIKE '%c3RyYXR1bSt0Y3A6Ly%' ESCAPE '\\' OR CommandLine LIKE '%N0cmF0dW0rdGNwOi8v%' ESCAPE '\\' OR CommandLine LIKE '%zdHJhdHVtK3RjcDovL%' ESCAPE '\\' OR CommandLine LIKE '%c3RyYXR1bSt1ZHA6Ly%' ESCAPE '\\' OR CommandLine LIKE '%N0cmF0dW0rdWRwOi8v%' ESCAPE '\\' OR CommandLine LIKE '%zdHJhdHVtK3VkcDovL%' ESCAPE '\\') AND NOT ((CommandLine LIKE '% pool.c %' ESCAPE '\\' OR CommandLine LIKE '% pool.o %' ESCAPE '\\' OR CommandLine LIKE '%gcc -%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_crypto_mining_monero.yml"
     },
@@ -16204,6 +16205,25 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\physmem.sys%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\System32\\\\IME\\\\IMEJP\\\\imjpueact.dll%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\ime\\\\IMETC\\\\IMTCPROT.DLL%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\ime\\\\SHARED\\\\imecpmeid.dll%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\config\\\\spp\\\\ServiceState\\\\Recovery\\\\pac.dat%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\config\\\\cy-GB\\\\Setup\\\\SKB\\\\InputMethod\\\\TupTask.dat%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\config\\\\config\\\\startwus.dat%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\ime\\\\SHARED\\\\WimBootConfigurations.ini%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\ime\\\\IMEJP\\\\WimBootConfigurations.ini%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\system32\\\\ime\\\\IMETC\\\\WimBootConfigurations.ini%' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_cve_2021_31979_cve_2021_33771_exploits.yml"
+    },
+    {
+        "title": "Suspicious Executable File Creation",
+        "id": "74babdd6-a758-4549-9632-26535279e654",
+        "status": "experimental",
+        "description": "Detect creation of suspicious executable file name. Some strings look for suspicious file extensions, others look for filenames that exploit unquoted service paths.",
+        "author": "frack113",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1564"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%.bat.exe' ESCAPE '\\' OR TargetFilename LIKE '%.sys.exe' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\$Recycle.Bin.exe' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Documents and Settings.exe' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\MSOCache.exe' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Recovery.exe' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\PerfLogs.exe' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_susp_executable_creation.yml"
     },
     {
         "title": "Suspicious Word Cab File Write CVE-2021-40444",
@@ -20142,16 +20162,16 @@
         "status": "experimental",
         "description": "Attackers may change the file creation time of a backdoor to make it look like it was installed with the operating system.\nNote that many processes legitimately change the creation time of a file; it does not necessarily indicate malicious activity.\n",
         "author": "frack113, Florian Roth",
-        "falsepositives": [
-            "Changes made to or by the local NTP service"
-        ],
-        "level": "high",
         "tags": [
             "attack.t1070.006",
             "attack.defense_evasion"
         ],
+        "falsepositives": [
+            "Changes made to or by the local NTP service"
+        ],
+        "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '2' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((PreviousCreationUtcTime LIKE '2022%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '2022%' ESCAPE '\\')) OR (PreviousCreationUtcTime LIKE '202%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '202%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '2' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((PreviousCreationUtcTime LIKE '2022%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '2022%' ESCAPE '\\')) OR ((PreviousCreationUtcTime LIKE '202%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '202%' ESCAPE '\\')) AND NOT (((Image LIKE 'C:\\\\Windows\\\\system32\\\\ProvTool.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\usocoreworker.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR TargetFilename LIKE 'C:\\\\ProgramData\\\\USOPrivate\\\\UpdateStore\\\\%' ESCAPE '\\' OR (TargetFilename LIKE '%.tmp' ESCAPE '\\' OR TargetFilename LIKE '%.temp' ESCAPE '\\'))))))"
         ],
         "filename": "file_change_win_2022_timestomping.yml"
     },
@@ -20432,16 +20452,16 @@
         "status": "experimental",
         "description": "Detects when a system process (ie located in system32, syswow64...etc) loads a DLL from a suspicious location such as %temp%",
         "author": "Nasreddine Bencherchali",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.defense_evasion",
             "attack.t1070"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (ImageLoaded LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\PerfLogs\\\\%' ESCAPE '\\')) AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (ImageLoaded LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\PerfLogs\\\\%' ESCAPE '\\')) AND NOT (Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR (ImageLoaded LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')))"
         ],
         "filename": "image_load_susp_dll_load_system_process.yml"
     },
