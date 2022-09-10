@@ -578,7 +578,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/service' ESCAPE '\\' AND CommandLine LIKE ('%iptables%' AND '%stop%') ESCAPE '\\') OR (Image LIKE '%/service' ESCAPE '\\' AND CommandLine LIKE ('%ip6tables%' AND '%stop%') ESCAPE '\\') OR (Image LIKE '%/chkconfig' ESCAPE '\\' AND CommandLine LIKE ('%iptables%' AND '%stop%') ESCAPE '\\') OR (Image LIKE '%/chkconfig' ESCAPE '\\' AND CommandLine LIKE ('%ip6tables%' AND '%stop%') ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE ('%firewalld%' AND '%stop%') ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE ('%firewalld%' AND '%disable%') ESCAPE '\\') OR (Image LIKE '%/service' ESCAPE '\\' AND CommandLine LIKE ('%cbdaemon%' AND '%stop%') ESCAPE '\\') OR (Image LIKE '%/chkconfig' ESCAPE '\\' AND CommandLine LIKE ('%cbdaemon%' AND '%off%') ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE ('%cbdaemon%' AND '%stop%') ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE ('%cbdaemon%' AND '%disable%') ESCAPE '\\') OR (Image LIKE '%/setenforce' ESCAPE '\\' AND CommandLine LIKE '%0%' ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE ('%stop%' AND '%falcon-sensor%') ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE ('%disable%' AND '%falcon-sensor%') ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/service' ESCAPE '\\' AND CommandLine LIKE '%iptables%' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\') OR (Image LIKE '%/service' ESCAPE '\\' AND CommandLine LIKE '%ip6tables%' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\') OR (Image LIKE '%/chkconfig' ESCAPE '\\' AND CommandLine LIKE '%iptables%' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\') OR (Image LIKE '%/chkconfig' ESCAPE '\\' AND CommandLine LIKE '%ip6tables%' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE '%firewalld%' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE '%firewalld%' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\') OR (Image LIKE '%/service' ESCAPE '\\' AND CommandLine LIKE '%cbdaemon%' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\') OR (Image LIKE '%/chkconfig' ESCAPE '\\' AND CommandLine LIKE '%cbdaemon%' ESCAPE '\\' AND CommandLine LIKE '%off%' ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE '%cbdaemon%' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE '%cbdaemon%' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\') OR (Image LIKE '%/setenforce' ESCAPE '\\' AND CommandLine LIKE '%0%' ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE '%stop%' ESCAPE '\\' AND CommandLine LIKE '%falcon-sensor%' ESCAPE '\\') OR (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\' AND CommandLine LIKE '%falcon-sensor%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_security_tools_disabling.yml"
     },
@@ -646,7 +646,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/python2.%' ESCAPE '\\' OR Image LIKE '%/python3.%' ESCAPE '\\') AND (CommandLine LIKE ('%import pty%' AND '%.spawn(%') ESCAPE '\\' OR CommandLine LIKE '%from pty import spawn%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/python2.%' ESCAPE '\\' OR Image LIKE '%/python3.%' ESCAPE '\\') AND ((CommandLine LIKE '%import pty%' ESCAPE '\\' AND CommandLine LIKE '%.spawn(%' ESCAPE '\\') OR CommandLine LIKE '%from pty import spawn%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_python_pty_spawn.yml"
     },
@@ -664,7 +664,7 @@
             "attack.t1014"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/sudo' ESCAPE '\\' AND CommandLine LIKE ('% tc %' AND '% enp0s3 %') ESCAPE '\\' AND (CommandLine LIKE '% qdisc %' ESCAPE '\\' OR CommandLine LIKE '% filter %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Image LIKE '%/sudo' ESCAPE '\\' AND CommandLine LIKE '% tc %' ESCAPE '\\' AND CommandLine LIKE '% enp0s3 %' ESCAPE '\\' AND (CommandLine LIKE '% qdisc %' ESCAPE '\\' OR CommandLine LIKE '% filter %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_triple_cross_rootkit_install.yml"
     },
@@ -736,7 +736,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((ParentImage LIKE '%/httpd' ESCAPE '\\' OR ParentImage LIKE '%/lighttpd' ESCAPE '\\' OR ParentImage LIKE '%/nginx' ESCAPE '\\' OR ParentImage LIKE '%/apache2' ESCAPE '\\' OR ParentImage LIKE '%/node' ESCAPE '\\' OR ParentImage LIKE '%/caddy' ESCAPE '\\') OR ParentCommandLine LIKE ('%/bin/java%' AND '%tomcat%') ESCAPE '\\' OR ParentCommandLine LIKE ('%/bin/java%' AND '%websphere%') ESCAPE '\\') AND (Image LIKE '%/whoami' ESCAPE '\\' OR Image LIKE '%/ifconfig' ESCAPE '\\' OR Image LIKE '%/usr/bin/ip' ESCAPE '\\' OR Image LIKE '%/usr/sbin/ip' ESCAPE '\\' OR Image LIKE '%/bin/uname' ESCAPE '\\' OR Image LIKE '%/bin/cat' ESCAPE '\\' OR Image LIKE '%/bin/crontab' ESCAPE '\\' OR Image LIKE '%/hostname' ESCAPE '\\' OR Image LIKE '%/iptables' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\' OR Image LIKE '%/pwd' ESCAPE '\\' OR Image LIKE '%/route' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (((ParentImage LIKE '%/httpd' ESCAPE '\\' OR ParentImage LIKE '%/lighttpd' ESCAPE '\\' OR ParentImage LIKE '%/nginx' ESCAPE '\\' OR ParentImage LIKE '%/apache2' ESCAPE '\\' OR ParentImage LIKE '%/node' ESCAPE '\\' OR ParentImage LIKE '%/caddy' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%tomcat%' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%websphere%' ESCAPE '\\')) AND (Image LIKE '%/whoami' ESCAPE '\\' OR Image LIKE '%/ifconfig' ESCAPE '\\' OR Image LIKE '%/usr/bin/ip' ESCAPE '\\' OR Image LIKE '%/usr/sbin/ip' ESCAPE '\\' OR Image LIKE '%/bin/uname' ESCAPE '\\' OR Image LIKE '%/bin/cat' ESCAPE '\\' OR Image LIKE '%/bin/crontab' ESCAPE '\\' OR Image LIKE '%/hostname' ESCAPE '\\' OR Image LIKE '%/iptables' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\' OR Image LIKE '%/pwd' ESCAPE '\\' OR Image LIKE '%/route' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_webshell_detection.yml"
     },
