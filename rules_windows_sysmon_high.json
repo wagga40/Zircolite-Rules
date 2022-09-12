@@ -7001,6 +7001,25 @@
         "filename": "proc_creation_win_frp.yml"
     },
     {
+        "title": "Renamed or Portable Vmnat.exe",
+        "id": "7b4f794b-590a-4ad4-ba18-7964a2832205",
+        "status": "experimental",
+        "description": "Detects renamed vmnat.exe or portable version that can be used for DLL side-loading",
+        "author": "elhoim",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND OriginalFileName = 'vmnat.exe' AND NOT ((Image LIKE '%vmnat.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmnat.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\vmnat.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_renamed_vmnat.yml"
+    },
+    {
         "title": "Abusing IEExec To Download Payloads",
         "id": "9801abb8-e297-4dbf-9fbd-57dde0e830ad",
         "status": "experimental",
@@ -20342,7 +20361,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '2' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((PreviousCreationUtcTime LIKE '2022%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '2022%' ESCAPE '\\')) OR (PreviousCreationUtcTime LIKE '202%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '202%' ESCAPE '\\'))) AND NOT (((Image LIKE 'C:\\\\Windows\\\\system32\\\\ProvTool.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\usocoreworker.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR TargetFilename LIKE 'C:\\\\ProgramData\\\\USOPrivate\\\\UpdateStore\\\\%' ESCAPE '\\' OR (TargetFilename LIKE '%.tmp' ESCAPE '\\' OR TargetFilename LIKE '%.temp' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '2' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((PreviousCreationUtcTime LIKE '2022%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '2022%' ESCAPE '\\')) OR ((PreviousCreationUtcTime LIKE '202%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '202%' ESCAPE '\\')) AND NOT (((Image LIKE 'C:\\\\Windows\\\\system32\\\\ProvTool.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\usocoreworker.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR TargetFilename LIKE 'C:\\\\ProgramData\\\\USOPrivate\\\\UpdateStore\\\\%' ESCAPE '\\' OR (TargetFilename LIKE '%.tmp' ESCAPE '\\' OR TargetFilename LIKE '%.temp' ESCAPE '\\'))))))"
         ],
         "filename": "file_change_win_2022_timestomping.yml"
     },
