@@ -7415,7 +7415,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '% -decodehex %' ESCAPE '\\' OR CommandLine LIKE '% -urlcache %' ESCAPE '\\' OR CommandLine LIKE '% -verifyctl %' ESCAPE '\\' OR CommandLine LIKE '% -encode %' ESCAPE '\\' OR CommandLine LIKE '% /decode %' ESCAPE '\\' OR CommandLine LIKE '% /decodehex %' ESCAPE '\\' OR CommandLine LIKE '% /urlcache %' ESCAPE '\\' OR CommandLine LIKE '% /verifyctl %' ESCAPE '\\' OR CommandLine LIKE '% /encode %' ESCAPE '\\') OR (Image LIKE '%\\\\certutil.exe' ESCAPE '\\' AND (CommandLine LIKE '%URL%' ESCAPE '\\' OR CommandLine LIKE '%ping%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '% -decodehex %' ESCAPE '\\' OR CommandLine LIKE '% -urlcache %' ESCAPE '\\' OR CommandLine LIKE '% -verifyctl %' ESCAPE '\\' OR CommandLine LIKE '% -encode %' ESCAPE '\\' OR CommandLine LIKE '% /decode %' ESCAPE '\\' OR CommandLine LIKE '% /decodehex %' ESCAPE '\\' OR CommandLine LIKE '% /urlcache %' ESCAPE '\\' OR CommandLine LIKE '% /verifyctl %' ESCAPE '\\' OR CommandLine LIKE '% /encode %' ESCAPE '\\') OR (Image LIKE '%\\\\certutil.exe' ESCAPE '\\' AND CommandLine LIKE '%ping%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_certutil_command.yml"
     },
@@ -15492,6 +15492,26 @@
         "filename": "proc_creation_win_susp_adfind_usage.yml"
     },
     {
+        "title": "UAC Bypass via ICMLuaUtil",
+        "id": "49f2f17b-b4c8-4172-a68b-d5bf95d05130",
+        "description": "Detects the pattern of UAC Bypass using ICMLuaUtil Elevated COM interface",
+        "author": "Florian Roth",
+        "status": "experimental",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1548.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' AND ParentCommandLine IN ('/Processid:{3E5FC7F9-9A51-4367-9063-A120244FBEC7}', '/Processid:{D2E7041B-2927-42FB-8E9F-7CE93B6DC937}')) AND NOT (Image LIKE '%\\\\WerFault.exe' ESCAPE '\\' OR OriginalFileName = 'WerFault.exe'))"
+        ],
+        "filename": "proc_creation_win_uac_bypass_icmluautil.yml"
+    },
+    {
         "title": "Rubeus Hack Tool",
         "id": "7ec2c172-dceb-4c10-92c9-87c1881b7e18",
         "status": "stable",
@@ -20266,7 +20286,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '27' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '27' AND Channel = 'Microsoft-Windows-Sysmon/Operational')"
         ],
         "filename": "sysmon_file_block_exe.yml"
     },
@@ -20362,7 +20382,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '2' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((PreviousCreationUtcTime LIKE '2022%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '2022%' ESCAPE '\\')) OR ((PreviousCreationUtcTime LIKE '202%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '202%' ESCAPE '\\')) AND NOT (((Image LIKE 'C:\\\\Windows\\\\system32\\\\ProvTool.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\usocoreworker.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR TargetFilename LIKE 'C:\\\\ProgramData\\\\USOPrivate\\\\UpdateStore\\\\%' ESCAPE '\\' OR (TargetFilename LIKE '%.tmp' ESCAPE '\\' OR TargetFilename LIKE '%.temp' ESCAPE '\\'))))))"
+            "SELECT * FROM logs WHERE ((EventID = '2' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((PreviousCreationUtcTime LIKE '2022%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '2022%' ESCAPE '\\')) OR (PreviousCreationUtcTime LIKE '202%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '202%' ESCAPE '\\'))) AND NOT (((Image LIKE 'C:\\\\Windows\\\\system32\\\\ProvTool.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\usocoreworker.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR TargetFilename LIKE 'C:\\\\ProgramData\\\\USOPrivate\\\\UpdateStore\\\\%' ESCAPE '\\' OR (TargetFilename LIKE '%.tmp' ESCAPE '\\' OR TargetFilename LIKE '%.temp' ESCAPE '\\'))))"
         ],
         "filename": "file_change_win_2022_timestomping.yml"
     },
