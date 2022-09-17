@@ -228,6 +228,25 @@
         "filename": "proc_creation_lnx_base64_execution.yml"
     },
     {
+        "title": "Suspicious Curl Change User Agents - Linux",
+        "id": "b86d356d-6093-443d-971c-9b07db583c68",
+        "description": "Detects a suspicious curl process start on linux with set useragent options",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Scripts created by developers and admins",
+            "Administrative activity"
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1071.001"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/curl' ESCAPE '\\' AND (CommandLine LIKE '% -A %' ESCAPE '\\' OR CommandLine LIKE '% --user-agent %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_susp_curl_useragent.yml"
+    },
+    {
         "title": "Scheduled Cron Task/Job",
         "id": "6b14bac8-3e3a-4324-8109-42f0546a347f",
         "description": "Detects abuse of the cron utility to perform task scheduling for initial or recurring execution of malicious code. Detection will focus on crontab jobs uploaded from the tmp folder.",
@@ -261,7 +280,7 @@
             "attack.t1070.002"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/rm' ESCAPE '\\' OR Image LIKE '%/shred' ESCAPE '\\') AND (CommandLine LIKE '%/var/log%' ESCAPE '\\' OR CommandLine LIKE '%/var/spool/mail%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/rm' ESCAPE '\\' OR Image LIKE '%/shred' ESCAPE '\\' OR Image LIKE '%/unlink' ESCAPE '\\') AND (CommandLine LIKE '%/var/log%' ESCAPE '\\' OR CommandLine LIKE '%/var/spool/mail%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_clear_logs.yml"
     },
@@ -346,7 +365,7 @@
     {
         "title": "Linux Doas Tool Execution",
         "id": "067d8238-7127-451c-a9ec-fa78045b618b",
-        "description": "Detects the doas tool execution in linux host platform.",
+        "description": "Detects the doas tool execution in linux host platform. This utility tool allow standard users to perform tasks as root, the same way sudo does.",
         "author": "Sittikorn S, Teoderick Contreras",
         "tags": [
             "attack.privilege_escalation",
@@ -398,6 +417,25 @@
         "filename": "proc_creation_lnx_susp_chmod_directories.yml"
     },
     {
+        "title": "Curl Usage on Linux",
+        "id": "ea34fb97-e2c4-4afb-810f-785e4459b194",
+        "description": "Detects a curl process start on linux, which indicates a file download from a remote location or a simple web request to a remote server",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Scripts created by developers and admins",
+            "Administrative activity"
+        ],
+        "level": "low",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE Image LIKE '%/curl' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_lnx_curl_usage.yml"
+    },
+    {
         "title": "File and Directory Discovery",
         "id": "d3feb4ee-ff1d-4d3d-bd10-5b28a238cc72",
         "description": "Detects usage of system utilities to discover files and directories",
@@ -429,7 +467,7 @@
             "attack.t1069.001"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/groups' ESCAPE '\\' OR (Image LIKE '%/cat' ESCAPE '\\' AND CommandLine LIKE '%/etc/group%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Image LIKE '%/groups' ESCAPE '\\' OR ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\') AND CommandLine LIKE '%/etc/group%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_local_groups.yml"
     },
@@ -450,6 +488,24 @@
             "SELECT * FROM logs WHERE (Image LIKE '%bpftrace' ESCAPE '\\' AND CommandLine LIKE '%--unsafe%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_bpftrace_unsafe_option_usage.yml"
+    },
+    {
+        "title": "Linux Base64 Encoded Shebang In CLI",
+        "id": "fe2f9663-41cb-47e2-b954-8a228f3b9dff",
+        "description": "Detects the presence of a base64 version of the shebang in the commandline, which could indicate a malicious payload about to be decoded",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1140"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (CommandLine LIKE '%IyEvYmluL2Jhc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL2Rhc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL3pza%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL2Zpc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL3No%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_base64_shebang_cli.yml"
     },
     {
         "title": "Apache Spark Shell Command Injection - ProcessCreation",
@@ -484,7 +540,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (CommandLine LIKE '%rm /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -r /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -f /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -rf /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%mv /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% >/var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% > /var/log/syslog%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (CommandLine LIKE '%rm /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -r /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -f /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -rf /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink -r /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink -f /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink -rf /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%mv /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% >/var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% > /var/log/syslog%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_clear_syslog.yml"
     },
@@ -502,7 +558,7 @@
             "attack.t1087.001"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/lastlog' ESCAPE '\\' OR CommandLine LIKE '%''x:0:''%' ESCAPE '\\' OR (Image LIKE '%/cat' ESCAPE '\\' AND (CommandLine LIKE '%/etc/passwd%' ESCAPE '\\' OR CommandLine LIKE '%/etc/sudoers%' ESCAPE '\\')) OR Image LIKE '%/id' ESCAPE '\\' OR (Image LIKE '%/lsof' ESCAPE '\\' AND CommandLine LIKE '%-u%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Image LIKE '%/lastlog' ESCAPE '\\' OR CommandLine LIKE '%''x:0:''%' ESCAPE '\\' OR ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\') AND (CommandLine LIKE '%/etc/passwd%' ESCAPE '\\' OR CommandLine LIKE '%/etc/shadow%' ESCAPE '\\' OR CommandLine LIKE '%/etc/sudoers%' ESCAPE '\\')) OR Image LIKE '%/id' ESCAPE '\\' OR (Image LIKE '%/lsof' ESCAPE '\\' AND CommandLine LIKE '%-u%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_local_account.yml"
     },
@@ -671,7 +727,7 @@
     {
         "title": "Security Software Discovery",
         "id": "c9d8b7fd-78e4-44fe-88f6-599135d46d60",
-        "description": "Detects usage of system utilities (only grep for now) to discover security software discovery",
+        "description": "Detects usage of system utilities (only grep and egrep for now) to discover security software discovery",
         "author": "Daniil Yugoslavskiy, oscd.community",
         "falsepositives": [
             "Legitimate activities"
@@ -682,7 +738,7 @@
             "attack.t1518.001"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/grep' ESCAPE '\\' AND (CommandLine LIKE '%nessusd%' ESCAPE '\\' OR CommandLine LIKE '%td-agent%' ESCAPE '\\' OR CommandLine LIKE '%packetbeat%' ESCAPE '\\' OR CommandLine LIKE '%filebeat%' ESCAPE '\\' OR CommandLine LIKE '%auditbeat%' ESCAPE '\\' OR CommandLine LIKE '%osqueryd%' ESCAPE '\\' OR CommandLine LIKE '%cbagentd%' ESCAPE '\\' OR CommandLine LIKE '%falcond%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/grep' ESCAPE '\\' OR Image LIKE '%/egrep' ESCAPE '\\') AND (CommandLine LIKE '%nessusd%' ESCAPE '\\' OR CommandLine LIKE '%td-agent%' ESCAPE '\\' OR CommandLine LIKE '%packetbeat%' ESCAPE '\\' OR CommandLine LIKE '%filebeat%' ESCAPE '\\' OR CommandLine LIKE '%auditbeat%' ESCAPE '\\' OR CommandLine LIKE '%osqueryd%' ESCAPE '\\' OR CommandLine LIKE '%cbagentd%' ESCAPE '\\' OR CommandLine LIKE '%falcond%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_security_software_discovery.yml"
     },
@@ -718,7 +774,7 @@
             "attack.t1565.001"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/rm' ESCAPE '\\' AND ((CommandLine LIKE '%/.bash\\_history%' ESCAPE '\\' OR CommandLine LIKE '%/.zsh\\_history%' ESCAPE '\\') OR CommandLine LIKE '%\\_history' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/rm' ESCAPE '\\' OR Image LIKE '%/unlink' ESCAPE '\\' OR Image LIKE '%/shred' ESCAPE '\\') AND ((CommandLine LIKE '%/.bash\\_history%' ESCAPE '\\' OR CommandLine LIKE '%/.zsh\\_history%' ESCAPE '\\') OR (CommandLine LIKE '%\\_history' ESCAPE '\\' OR CommandLine LIKE '%.history' ESCAPE '\\' OR CommandLine LIKE '%zhistory' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_susp_history_delete.yml"
     },
@@ -739,6 +795,41 @@
             "SELECT * FROM logs WHERE (((ParentImage LIKE '%/httpd' ESCAPE '\\' OR ParentImage LIKE '%/lighttpd' ESCAPE '\\' OR ParentImage LIKE '%/nginx' ESCAPE '\\' OR ParentImage LIKE '%/apache2' ESCAPE '\\' OR ParentImage LIKE '%/node' ESCAPE '\\' OR ParentImage LIKE '%/caddy' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%tomcat%' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%websphere%' ESCAPE '\\')) AND (Image LIKE '%/whoami' ESCAPE '\\' OR Image LIKE '%/ifconfig' ESCAPE '\\' OR Image LIKE '%/usr/bin/ip' ESCAPE '\\' OR Image LIKE '%/usr/sbin/ip' ESCAPE '\\' OR Image LIKE '%/bin/uname' ESCAPE '\\' OR Image LIKE '%/bin/cat' ESCAPE '\\' OR Image LIKE '%/bin/crontab' ESCAPE '\\' OR Image LIKE '%/hostname' ESCAPE '\\' OR Image LIKE '%/iptables' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\' OR Image LIKE '%/pwd' ESCAPE '\\' OR Image LIKE '%/route' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_webshell_detection.yml"
+    },
+    {
+        "title": "Remove Scheduled Cron Task/Job",
+        "id": "c2e234de-03a3-41e1-b39a-1e56dc17ba67",
+        "description": "Detects usage of the 'crontab' utility to remove the current crontab. This is a common occurrence where cryptocurrency miners compete against each other by removing traces of other miners to hijack the maximum amount of resources possible",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%crontab' ESCAPE '\\' AND CommandLine LIKE '% -r%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_crontab_removal.yml"
+    },
+    {
+        "title": "Remove Immutable File Attribute",
+        "id": "34979410-e4b5-4e5d-8cfb-389fdff05c12",
+        "description": "Detects usage of the 'chattr' utility to remove immutable file attribute.",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Administrator interacting with immutable files (e.g. for instance backups)."
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1222.002"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/chattr' ESCAPE '\\' AND CommandLine LIKE '% -i %' ESCAPE '\\')"
+        ],
+        "filename": "prox_creation_lnx_chattr_immutable_removal.yml"
     },
     {
         "title": "Nohup Execution",
@@ -773,6 +864,25 @@
         "filename": "proc_creation_lnx_susp_pipe_shell.yml"
     },
     {
+        "title": "Suspicious Curl File Upload - Linux",
+        "id": "00b90cc1-17ec-402c-96ad-3a8117d7a582",
+        "description": "Detects a suspicious curl process start the adds a file to a web request",
+        "author": "Nasreddine Bencherchali",
+        "falsepositives": [
+            "Scripts created by developers and admins"
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1567",
+            "attack.t1105"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/curl' ESCAPE '\\' AND (CommandLine LIKE '% -F %' ESCAPE '\\' OR CommandLine LIKE '% --form%' ESCAPE '\\' OR CommandLine LIKE '% -T %' ESCAPE '\\' OR CommandLine LIKE '% --upload-file %' ESCAPE '\\' OR CommandLine LIKE '% -d %' ESCAPE '\\' OR CommandLine LIKE '% --data %' ESCAPE '\\' OR CommandLine LIKE '% --data-%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_susp_curl_fileupload.yml"
+    },
+    {
         "title": "Linux Crypto Mining Indicators",
         "id": "9069ea3c-b213-4c52-be13-86506a227ab1",
         "description": "Detects command line parameters or strings often used by crypto miners",
@@ -805,9 +915,26 @@
         "filename": "proc_creation_lnx_dd_file_overwrite.yml"
     },
     {
+        "title": "Disable Or Stop Services",
+        "id": "de25eeb8-3655-4643-ac3a-b662d3f26b6b",
+        "description": "Detects the usage of utilities such as 'systemctl', 'service'...etc to stop or disable tools and services",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/service' ESCAPE '\\' OR Image LIKE '%/systemctl' ESCAPE '\\' OR Image LIKE '%/chkconfig' ESCAPE '\\') AND (CommandLine LIKE '%stop%' ESCAPE '\\' OR CommandLine LIKE '%disable%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_services_stop_and_disable.yml"
+    },
+    {
         "title": "File Deletion",
         "id": "30aed7b6-d2c1-4eaf-9382-b6bc43e50c57",
-        "description": "Detects file deletion using \"rm\" or \"shred\" commands which are used often by adversaries to delete files left behind by the actions of their intrusion activity",
+        "description": "Detects file deletion using \"rm\", \"shred\" or \"unlink\" commands which are used often by adversaries to delete files left behind by the actions of their intrusion activity",
         "author": "Ömer Günal, oscd.community",
         "falsepositives": [
             "Legitimate administration activities"
@@ -818,7 +945,7 @@
             "attack.t1070.004"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/rm' ESCAPE '\\' OR Image LIKE '%/shred' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Image LIKE '%/rm' ESCAPE '\\' OR Image LIKE '%/shred' ESCAPE '\\' OR Image LIKE '%/unlink' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_file_deletion.yml"
     },
@@ -857,7 +984,7 @@
             "attack.t1592.004"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/cat' ESCAPE '\\' AND ((CommandLine LIKE '%/.bash\\_history%' ESCAPE '\\' OR CommandLine LIKE '%/.zsh\\_history%' ESCAPE '\\') OR CommandLine LIKE '%\\_history' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\') AND ((CommandLine LIKE '%/.bash\\_history%' ESCAPE '\\' OR CommandLine LIKE '%/.zsh\\_history%' ESCAPE '\\') OR (CommandLine LIKE '%\\_history' ESCAPE '\\' OR CommandLine LIKE '%.history' ESCAPE '\\' OR CommandLine LIKE '%zhistory' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_susp_history_recon.yml"
     },
@@ -875,7 +1002,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%xclip%' ESCAPE '\\' AND (CommandLine LIKE '%-selection%' ESCAPE '\\' OR CommandLine LIKE '%-sel%' ESCAPE '\\') AND (CommandLine LIKE '%clipboard%' ESCAPE '\\' OR CommandLine LIKE '%clip%' ESCAPE '\\') AND CommandLine LIKE '%-o%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Image LIKE '%xclip%' ESCAPE '\\' AND CommandLine LIKE '%-sel%' ESCAPE '\\' AND CommandLine LIKE '%clip%' ESCAPE '\\' AND CommandLine LIKE '%-o%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_clipboard_collection.yml"
     },
@@ -911,7 +1038,7 @@
             "attack.t1592.004"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%grep' ESCAPE '\\') AND CommandLine LIKE '% /etc/sudoers%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%grep' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\') AND CommandLine LIKE '% /etc/sudoers%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_cat_sudoers.yml"
     },
