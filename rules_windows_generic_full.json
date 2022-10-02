@@ -24849,6 +24849,28 @@
         "filename": "proc_creation_win_wmi_backdoor_exchange_transport_agent.yml"
     },
     {
+        "title": "Chopper Webshell Process Pattern",
+        "id": "fa3c117a-bc0d-416e-a31b-0c0e80653efb",
+        "description": "Detects patterns found in process executions cause by China Chopper like tiny (ASPX) webshells",
+        "author": "Florian Roth (rule), MSTI (query)",
+        "status": "experimental",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.003",
+            "attack.t1018",
+            "attack.t1033",
+            "attack.t1087"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\w3wp.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\w3wp.exe' ESCAPE '\\') AND (CommandLine LIKE '%&ipconfig&echo%' ESCAPE '\\' OR CommandLine LIKE '%&quser&echo%' ESCAPE '\\' OR CommandLine LIKE '%&whoami&echo%' ESCAPE '\\' OR CommandLine LIKE '%&c:&echo%' ESCAPE '\\' OR CommandLine LIKE '%&cd&echo%' ESCAPE '\\' OR CommandLine LIKE '%&dir&echo%' ESCAPE '\\' OR CommandLine LIKE '%&echo [E]%' ESCAPE '\\' OR CommandLine LIKE '%&echo [S]%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_webshell_chopper.yml"
+    },
+    {
         "title": "CsExec Remote Execution Tool Usage",
         "id": "d08a2711-ee8b-4323-bdec-b7d85e892b31",
         "status": "experimental",
@@ -35204,6 +35226,25 @@
             "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\lsass.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.zip' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.rar' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Temp\\\\dumpert.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Andrew.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Coredump.dmp' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass\\_2%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdump%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdmp%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp%' ESCAPE '\\') OR (TargetFilename LIKE '%SQLDmpr%' ESCAPE '\\' AND TargetFilename LIKE '%.mdmp' ESCAPE '\\') OR (TargetFilename LIKE 'nanodump%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_lsass_dump.yml"
+    },
+    {
+        "title": "Suspicious ASPX File Drop by Exchange",
+        "id": "bd1212e5-78da-431e-95fa-c58e3237a8e6",
+        "description": "Detects suspicious file type dropped by an Exchange component in IIS into a suspicious folder",
+        "author": "Florian Roth (rule), MSTI (query, idea)",
+        "status": "experimental",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\w3wp.exe' ESCAPE '\\' AND CommandLine LIKE '%MSExchange%' ESCAPE '\\' AND (TargetFilename LIKE '%FrontEnd\\\\HttpProxy\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\inetpub\\\\wwwroot\\\\aspnet\\_client\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%.aspx' ESCAPE '\\' OR TargetFilename LIKE '%.asp' ESCAPE '\\' OR TargetFilename LIKE '%.ashx' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_exchange_webshell_drop.yml"
     },
     {
         "title": "UAC Bypass Abusing Winsat Path Parsing - File",
