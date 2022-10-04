@@ -16020,7 +16020,7 @@
         "title": "New Lolbin Process by Office Applications",
         "id": "23daeb52-e6eb-493c-8607-c4f0246cb7d8",
         "description": "This rule will monitor any office apps that spins up a new LOLBin process. This activity is pretty suspicious and should be investigated.",
-        "author": "Vadim Khrykov (ThreatIntel), Cyb3rEng (Rule), Michael Haag",
+        "author": "Vadim Khrykov (ThreatIntel), Cyb3rEng (Rule), Michael Haag, Christopher Peacock @securepeacock (Update), SCYTHE @scythe_io (Update)",
         "tags": [
             "attack.t1204.002",
             "attack.t1047",
@@ -16034,7 +16034,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\verclsid.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\control.exe' ESCAPE '\\') AND (ParentProcessName LIKE '%\\\\winword.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\msaccess.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\mspub.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\visio.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wordview.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\verclsid.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\control.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msidb.exe' ESCAPE '\\') AND (ParentProcessName LIKE '%\\\\winword.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\msaccess.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\mspub.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\visio.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wordview.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_lolbins_by_office_applications.yml"
     },
@@ -20202,7 +20202,7 @@
         "title": "Phishing Pattern ISO in Archive",
         "id": "fcdf69e5-a3d3-452a-9724-26f2308bf2b1",
         "status": "experimental",
-        "description": "Detects cases in which an ISO files is opend within an archiver like 7Zip or Winrar, which is open a signa of phishing as threat actors put small ISO files in archives as email attachments to bypass certain filters and protective measures (mark of web)",
+        "description": "Detects cases in which an ISO files is opend within an archiver like 7Zip or Winrar, which is a sign of phishing as threat actors put small ISO files in archives as email attachments to bypass certain filters and protective measures (mark of web)",
         "author": "Florian Roth",
         "tags": [
             "attack.initial_access",
