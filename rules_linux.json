@@ -142,14 +142,14 @@
         "id": "c67e0c98-4d39-46ee-8f6b-437ebf6b950e",
         "description": "Detects shellshock expressions in log files",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.persistence",
             "attack.t1505.003"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (logs MATCH ('\"(){:;};\" OR \"() {:;};\" OR \"() { :;};\" OR \"() { :; };\"'))"
         ],
@@ -180,15 +180,15 @@
         "id": "7e3c4651-c347-40c4-b1d4-d48590fdf684",
         "description": "Detects the ld.so preload persistence file. See `man ld.so` for more information.",
         "author": "Christian Burkard",
-        "falsepositives": [
-            "Rare temporary workaround for library misconfiguration"
-        ],
-        "level": "high",
         "tags": [
             "attack.persistence",
             "attack.privilege_escalation",
             "attack.t1574.006"
         ],
+        "falsepositives": [
+            "Rare temporary workaround for library misconfiguration"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE logs MATCH ('\"/etc/ld.so.preload\"')"
         ],

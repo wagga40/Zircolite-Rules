@@ -77,8 +77,8 @@
     {
         "title": "T1021 DCOM InternetExplorer.Application Iertutil DLL Hijack",
         "id": "e554f142-5cf3-4e55-ace9-a1b59e0def65",
+        "status": "test",
         "description": "Detects a threat actor creating a file named `iertutil.dll` in the `C:\\Program Files\\Internet Explorer\\` directory over the network and loading it for a DCOM InternetExplorer DLL Hijack scenario.",
-        "status": "experimental",
         "author": "Roberto Rodriguez @Cyb3rWard0g, Open Threat Research (OTR), wagga",
         "tags": [
             "attack.lateral_movement",
@@ -135,9 +135,9 @@
     {
         "title": "UAC Bypass Using WOW64 Logger DLL Hijack",
         "id": "4f6c43e2-f989-4ea5-bcd8-843b49a0317c",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using a WoW64 logger DLL hijack (UACMe 30)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -277,7 +277,7 @@
     {
         "title": "WerFault Accassing LSASS",
         "id": "e5b33f7d-eb93-48b6-9851-09e1e610b6d7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects process LSASS memory dump using Mimikatz, NanoDump, Invoke-Mimikatz, Procdump or Taskmgr based on the CallTrace pointing to ntdll.dll, dbghelp.dll or dbgcore.dll for win10, server2016 and up.",
         "author": "Florian Roth",
         "tags": [
@@ -318,17 +318,17 @@
     {
         "title": "Credential Dumping by Pypykatz",
         "id": "7186e989-4ed7-4f4e-a656-4674b9e3e48b",
+        "status": "test",
         "description": "Detects LSASS process access by pypykatz for credential dumping.",
-        "status": "experimental",
         "author": "Bhabesh Raj",
         "tags": [
             "attack.credential_access",
             "attack.t1003.001"
         ],
-        "level": "critical",
         "falsepositives": [
             "Unknown"
         ],
+        "level": "critical",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '10' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetImage LIKE '%\\\\lsass.exe' ESCAPE '\\' AND CallTrace LIKE '%C:\\\\Windows\\\\SYSTEM32\\\\ntdll.dll+%' ESCAPE '\\' AND CallTrace LIKE '%C:\\\\Windows\\\\System32\\\\KERNELBASE.dll+%' ESCAPE '\\' AND CallTrace LIKE '%libffi-7.dll%' ESCAPE '\\' AND CallTrace LIKE '%\\_ctypes.pyd+%' ESCAPE '\\' AND CallTrace LIKE '%python3%.dll+%' ESCAPE '\\' AND GrantedAccess = '0x1FFFFF')"
         ],
@@ -440,8 +440,8 @@
     {
         "title": "Lsass Memory Dump via Comsvcs DLL",
         "id": "a49fa4d5-11db-418c-8473-1e014a8dd462",
+        "status": "test",
         "description": "Detects adversaries leveraging the MiniDump export function from comsvcs.dll via rundll32 to perform a memory dump from lsass.",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.credential_access",
@@ -583,19 +583,19 @@
     {
         "title": "CobaltStrike BOF Injection Pattern",
         "id": "09706624-b7f6-455d-9d02-adee024cee1d",
+        "status": "test",
         "description": "Detects a typical pattern of a CobaltStrike BOF which inject into other processes",
-        "status": "experimental",
         "author": "Christian Burkard",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.execution",
             "attack.t1106",
             "attack.defense_evasion",
             "attack.t1562.001"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '10' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CallTrace REGEXP '^C:\\\\\\\\Windows\\\\\\\\SYSTEM32\\\\\\\\ntdll\\\\.dll\\+[a-z0-9]{4,6}\\|C:\\\\\\\\Windows\\\\\\\\System32\\\\\\\\KERNELBASE\\\\.dll\\+[a-z0-9]{4,6}\\|UNKNOWN\\([A-Z0-9]{16}\\)$' AND GrantedAccess IN ('0x1028', '0x1fffff'))"
         ],
@@ -642,8 +642,8 @@
     {
         "title": "SVCHOST Credential Dump",
         "id": "174afcfa-6e40-4ae9-af64-496546389294",
+        "status": "test",
         "description": "Detects when a process, such as mimikatz, accesses the memory of svchost to dump credentials",
-        "status": "experimental",
         "author": "Florent Labouyrie",
         "tags": [
             "attack.t1548"
@@ -1070,19 +1070,19 @@
     {
         "title": "Regsvr32 Network Activity",
         "id": "c7e91a02-d771-4a6d-a700-42587e0b1095",
+        "status": "test",
         "description": "Detects network connections and DNS queries initiated by Regsvr32.exe",
         "author": "Dmitriy Lifanov, oscd.community",
-        "status": "experimental",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.execution",
             "attack.t1559.001",
             "attack.defense_evasion",
             "attack.t1218.010"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\')"
         ],
@@ -1226,7 +1226,7 @@
     {
         "title": "RDP Over Reverse SSH Tunnel",
         "id": "5f699bc5-5446-4a4a-a0b7-5ef2885a3eb4",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects svchost hosting RDP termsvcs communicating with the loopback address and on TCP port 3389",
         "author": "Samir Bousseaden",
         "tags": [
@@ -1387,17 +1387,17 @@
     {
         "title": "WMI Event Consumer Created Named Pipe",
         "id": "493fb4ab-cdcc-4c4f-818c-0e363bd1e4bb",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the WMI Event Consumer service scrcons.exe creating a named pipe",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.t1047",
             "attack.execution"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID IN ('17', '18') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\scrcons.exe' ESCAPE '\\')"
         ],
@@ -1406,7 +1406,7 @@
     {
         "title": "CobaltStrike Named Pipe",
         "id": "d5601f8c-b26f-4ab0-9035-69e11a8d4ad2",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a named pipe as used by CobaltStrike",
         "author": "Florian Roth, Wojciech Lesicki",
         "tags": [
@@ -1524,7 +1524,7 @@
     {
         "title": "PsExec Tool Execution",
         "id": "f3f3a972-f982-40ad-b63c-bca6afdfad7c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects PsExec service installation and execution events (service and Sysmon)",
         "author": "Thomas Patzke",
         "tags": [
@@ -1544,7 +1544,7 @@
     {
         "title": "CobaltStrike Named Pipe Pattern Regex",
         "id": "0e7163d4-9e19-4fa7-9be6-000c61aad77a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a named pipe matching a pattern used by CobaltStrike Malleable C2 profiles",
         "author": "Florian Roth",
         "tags": [
@@ -1584,7 +1584,7 @@
     {
         "title": "CobaltStrike Named Pipe Patterns",
         "id": "85adeb13-4fc9-4e68-8a4a-c7cb2c336eb7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a named pipe with a pattern found in CobaltStrike malleable C2 profiles",
         "author": "Florian Roth, Christian Burkard",
         "tags": [
@@ -1722,13 +1722,13 @@
     {
         "title": "MSExchange Transport Agent Installation",
         "id": "4fe151c2-ecf9-4fae-95ae-b88ec9c2fca6",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the Installation of a Exchange Transport Agent",
+        "author": "Tobias Michalski",
         "tags": [
             "attack.persistence",
             "attack.t1505.002"
         ],
-        "author": "Tobias Michalski",
         "falsepositives": [
             "Legitimate installations of exchange TransportAgents. AssemblyPath is a good indicator for this."
         ],
@@ -2906,17 +2906,17 @@
     {
         "title": "Suspicious Rejected SMB Guest Logon From IP",
         "id": "71886b70-d7b4-4dbf-acce-87d2ca135262",
+        "status": "test",
         "description": "Detect Attempt PrintNightmare (CVE-2021-1675) Remote code execution in Windows Spooler Service",
         "author": "Florian Roth, KevTheHermit, fuzzyf10w",
-        "status": "experimental",
-        "level": "medium",
-        "falsepositives": [
-            "Account fallback reasons (after failed login with specific account)"
-        ],
         "tags": [
             "attack.credential_access",
             "attack.t1110.001"
         ],
+        "falsepositives": [
+            "Account fallback reasons (after failed login with specific account)"
+        ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-SmbClient/Security' AND EventID = '31017' AND Description LIKE '%Rejected an insecure guest logon%' ESCAPE '\\' AND UserName = '' AND ServerName LIKE '\\\\1%' ESCAPE '\\')"
         ],
@@ -2945,7 +2945,7 @@
     {
         "title": "GALLIUM Artefacts",
         "id": "3db10f25-2527-4b79-8d4b-471eb900ee29",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects artefacts associated with activity group GALLIUM - Microsoft Threat Intelligence Center indicators released in December 2019.",
         "author": "Tim Burrell",
         "tags": [
@@ -3004,8 +3004,8 @@
     {
         "title": "HybridConnectionManager Service Running",
         "id": "b55d23e5-6821-44ff-8a6e-67218891e49f",
+        "status": "test",
         "description": "Rule to detect the Hybrid Connection Manager service running on an endpoint.",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.persistence",
@@ -3023,16 +3023,16 @@
     {
         "title": "LDAP Reconnaissance / Active Directory Enumeration",
         "id": "31d68132-4038-47c7-8f8e-635a39a7c174",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects possible Active Directory enumeration via LDAP",
         "author": "Adeem Mawani",
-        "level": "medium",
         "tags": [
             "attack.discovery",
             "attack.t1069.002",
             "attack.t1087.002",
             "attack.t1482"
         ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (((EventID = '30' AND (SearchFilter LIKE '%(groupType:1.2.840.113556.1.4.803:=2147483648)%' ESCAPE '\\' OR SearchFilter LIKE '%(groupType:1.2.840.113556.1.4.803:=2147483656)%' ESCAPE '\\' OR SearchFilter LIKE '%(groupType:1.2.840.113556.1.4.803:=2147483652)%' ESCAPE '\\' OR SearchFilter LIKE '%(groupType:1.2.840.113556.1.4.803:=2147483650)%' ESCAPE '\\' OR SearchFilter LIKE '%(sAMAccountType=805306369)%' ESCAPE '\\' OR SearchFilter LIKE '%(sAMAccountType=805306368)%' ESCAPE '\\' OR SearchFilter LIKE '%(sAMAccountType=536870913)%' ESCAPE '\\' OR SearchFilter LIKE '%(sAMAccountType=536870912)%' ESCAPE '\\' OR SearchFilter LIKE '%(sAMAccountType=268435457)%' ESCAPE '\\' OR SearchFilter LIKE '%(sAMAccountType=268435456)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=groupPolicyContainer)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=organizationalUnit)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=Computer)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=nTDSDSA)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=server)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=domain)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=person)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=group)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectCategory=user)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectClass=trustedDomain)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectClass=computer)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectClass=server)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectClass=group)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectClass=user)%' ESCAPE '\\' OR SearchFilter LIKE '%(primaryGroupID=521)%' ESCAPE '\\' OR SearchFilter LIKE '%(primaryGroupID=516)%' ESCAPE '\\' OR SearchFilter LIKE '%(primaryGroupID=515)%' ESCAPE '\\' OR SearchFilter LIKE '%(primaryGroupID=512)%' ESCAPE '\\' OR SearchFilter LIKE '%Domain Admins%' ESCAPE '\\')) AND NOT (EventID = '30' AND (SearchFilter LIKE '%(domainSid=%)%' ESCAPE '\\' OR SearchFilter LIKE '%(objectSid=%)%' ESCAPE '\\'))) OR (EventID = '30' AND (SearchFilter LIKE '%(userAccountControl:1.2.840.113556.1.4.803:=4194304)%' ESCAPE '\\' OR SearchFilter LIKE '%(userAccountControl:1.2.840.113556.1.4.803:=2097152)%' ESCAPE '\\' OR SearchFilter LIKE '%!(userAccountControl:1.2.840.113556.1.4.803:=1048574)%' ESCAPE '\\' OR SearchFilter LIKE '%(userAccountControl:1.2.840.113556.1.4.803:=524288)%' ESCAPE '\\' OR SearchFilter LIKE '%(userAccountControl:1.2.840.113556.1.4.803:=65536)%' ESCAPE '\\' OR SearchFilter LIKE '%(userAccountControl:1.2.840.113556.1.4.803:=8192)%' ESCAPE '\\' OR SearchFilter LIKE '%(userAccountControl:1.2.840.113556.1.4.803:=544)%' ESCAPE '\\' OR SearchFilter LIKE '%!(UserAccountControl:1.2.840.113556.1.4.803:=2)%' ESCAPE '\\' OR SearchFilter LIKE '%msDS-AllowedToActOnBehalfOfOtherIdentity%' ESCAPE '\\' OR SearchFilter LIKE '%msDS-AllowedToDelegateTo%' ESCAPE '\\' OR SearchFilter LIKE '%(accountExpires=9223372036854775807)%' ESCAPE '\\' OR SearchFilter LIKE '%(accountExpires=0)%' ESCAPE '\\' OR SearchFilter LIKE '%(adminCount=1)%' ESCAPE '\\' OR SearchFilter LIKE '%ms-MCS-AdmPwd%' ESCAPE '\\')))"
         ],
@@ -3194,7 +3194,7 @@
     {
         "title": "Windows Defender Malware Detection History Deletion",
         "id": "2afe6582-e149-11ea-87d0-0242ac130003",
-        "status": "experimental",
+        "status": "test",
         "description": "Windows Defender logs when the history of detected infections is deleted. Log file will contain the message \"Windows Defender Antivirus has removed history of malware and other potentially unwanted software\".",
         "author": "Cian Heasley",
         "tags": [
@@ -3793,8 +3793,8 @@
     {
         "title": "Invalid Users Failing To Authenticate From Source Using Kerberos",
         "id": "bc93dfe6-8242-411e-a2dd-d16fa0cc8564",
+        "status": "test",
         "description": "Detects failed logins with multiple invalid domain accounts from a single source system using the Kerberos protocol.",
-        "status": "experimental",
         "author": "Mauricio Velazco, frack113",
         "tags": [
             "attack.t1110.003",
@@ -3879,8 +3879,8 @@
     {
         "title": "Invoke-Obfuscation VAR++ LAUNCHER OBFUSCATION",
         "id": "4c54ba8f-73d2-4d40-8890-d9cf1dca3d30",
+        "status": "test",
         "description": "Detects Obfuscated Powershell via VAR++ LAUNCHER",
-        "status": "experimental",
         "author": "Timur Zinniatullin, oscd.community",
         "tags": [
             "attack.defense_evasion",
@@ -3975,8 +3975,8 @@
     {
         "title": "Meterpreter or Cobalt Strike Getsystem Service Installation",
         "id": "ecbc5e16-58e0-4521-9c60-eb9a7ea4ad34",
+        "status": "test",
         "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service installation",
-        "status": "experimental",
         "author": "Teymur Kheirkhabarov, Ecco, Florian Roth",
         "tags": [
             "attack.privilege_escalation",
@@ -4014,9 +4014,9 @@
     {
         "title": "Operation Wocao Activity",
         "id": "74ad4314-482e-4c3e-b237-3f7ed3b9ca8d",
-        "author": "Florian Roth, frack113",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects activity mentioned in Operation Wocao report",
+        "author": "Florian Roth, frack113",
         "tags": [
             "attack.discovery",
             "attack.t1012",
@@ -4183,8 +4183,8 @@
     {
         "title": "AD User Enumeration",
         "id": "ab6bffca-beff-4baa-af11-6733f296d57a",
+        "status": "test",
         "description": "Detects access to a domain user from a non-machine account",
-        "status": "experimental",
         "author": "Maxime Thiebaut (@0xThiebaut)",
         "tags": [
             "attack.discovery",
@@ -4282,8 +4282,8 @@
     {
         "title": "Suspicious Access to Sensitive File Extensions",
         "id": "91c945bc-2ad1-4799-a591-4d00198a1215",
+        "status": "test",
         "description": "Detects known sensitive file extensions accessed on a network share",
-        "status": "experimental",
         "author": "Samir Bousseaden",
         "tags": [
             "attack.collection",
@@ -4302,9 +4302,9 @@
     {
         "title": "Correct Execution of Nltest.exe",
         "id": "eeb66bbb-3dde-4582-815a-584aee9fe6d1",
-        "status": "experimental",
-        "author": "Arun Chauhan",
+        "status": "test",
         "description": "The attacker might use LOLBAS nltest.exe for discovery of domain controllers, domain trusts, parent domain and the current user permissions.",
+        "author": "Arun Chauhan",
         "tags": [
             "attack.discovery",
             "attack.t1482",
@@ -4324,8 +4324,8 @@
     {
         "title": "Credential Dumping Tools Service Execution",
         "id": "f0d1feba-4344-4ca9-8121-a6c97bd6df52",
+        "status": "test",
         "description": "Detects well-known credential dumping tools execution via service execution events",
-        "status": "experimental",
         "author": "Florian Roth, Teymur Kheirkhabarov, Daniil Yugoslavskiy, oscd.community",
         "tags": [
             "attack.credential_access",
@@ -4350,8 +4350,8 @@
     {
         "title": "Multiple Users Remotely Failing To Authenticate From Single Source",
         "id": "add2ef8d-dc91-4002-9e7e-f2702369f53a",
+        "status": "test",
         "description": "Detects a source system failing to authenticate against a remote host with multiple users.",
-        "status": "experimental",
         "author": "Mauricio Velazco",
         "tags": [
             "attack.t1110.003",
@@ -4551,7 +4551,7 @@
     {
         "title": "RottenPotato Like Attack Pattern",
         "id": "16f5d8ca-44bd-47c8-acbe-6fc95a16c12f",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects logon events that have characteristics of events generated during an attack with RottenPotato and the like",
         "author": "@SBousseaden, Florian Roth",
         "tags": [
@@ -4613,8 +4613,8 @@
     {
         "title": "Failed Logins with Different Accounts from Single Source System",
         "id": "e98374a6-e2d9-4076-9b5c-11bdb2569995",
+        "status": "test",
         "description": "Detects suspicious failed logins with different user accounts from a single source system",
-        "status": "experimental",
         "author": "Florian Roth",
         "tags": [
             "attack.persistence",
@@ -4806,8 +4806,8 @@
     {
         "title": "Hacktool Ruler",
         "id": "24549159-ac1b-479c-8175-d42aea947cae",
+        "status": "test",
         "description": "This events that are generated when using the hacktool Ruler by Sensepost",
-        "status": "experimental",
         "author": "Florian Roth",
         "tags": [
             "attack.discovery",
@@ -4886,7 +4886,7 @@
     {
         "title": "WMI Persistence",
         "id": "f033f3f3-fd24-4995-97d8-a3bb17550a88",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious WMI event filter and command line event consumer based on WMI and Security Logs.",
         "author": "Florian Roth, Gleb Sukhodolskiy, Timur Zinniatullin oscd.community",
         "tags": [
@@ -4906,8 +4906,8 @@
     {
         "title": "Azure AD Health Monitoring Agent Registry Keys Access",
         "id": "ff151c33-45fa-475d-af4f-c2f93571f4fe",
+        "status": "test",
         "description": "This detection uses Windows security events to detect suspicious access attempts to the registry key of Azure AD Health monitoring agent.\nThis detection requires an access control entry (ACE) on the system access control list (SACL) of the following securable object HKLM\\SOFTWARE\\Microsoft\\Microsoft Online\\Reporting\\MonitoringAgent.\n",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC",
         "tags": [
             "attack.discovery",
@@ -4965,13 +4965,13 @@
     {
         "title": "Hidden Local User Creation",
         "id": "7b449a5e-1db5-4dd0-a2dc-4e3a67282538",
+        "status": "test",
         "description": "Detects the creation of a local hidden user account which should not happen for event ID 4720.",
-        "status": "experimental",
+        "author": "Christian Burkard",
         "tags": [
             "attack.persistence",
             "attack.t1136.001"
         ],
-        "author": "Christian Burkard",
         "falsepositives": [
             "Unknown"
         ],
@@ -5003,14 +5003,14 @@
     {
         "title": "Register new Logon Process by Rubeus",
         "id": "12e6d621-194f-4f59-90cc-1959e21e69f7",
+        "status": "test",
         "description": "Detects potential use of Rubeus via registered new trusted logon process",
-        "status": "experimental",
+        "author": "Roberto Rodriguez (source), Ilyas Ochkov (rule), oscd.community",
         "tags": [
             "attack.lateral_movement",
             "attack.privilege_escalation",
             "attack.t1558.003"
         ],
-        "author": "Roberto Rodriguez (source), Ilyas Ochkov (rule), oscd.community",
         "falsepositives": [
             "Unknown"
         ],
@@ -5023,8 +5023,8 @@
     {
         "title": "Invalid Users Failing To Authenticate From Single Source Using NTLM",
         "id": "56d62ef8-3462-4890-9859-7b41e541f8d5",
+        "status": "test",
         "description": "Detects failed logins with multiple invalid domain accounts from a single source system using the NTLM protocol.",
-        "status": "experimental",
         "author": "Mauricio Velazco",
         "tags": [
             "attack.t1110.003",
@@ -5046,8 +5046,8 @@
     {
         "title": "Disabled Users Failing To Authenticate From Source Using Kerberos",
         "id": "4b6fe998-b69c-46d8-901b-13677c9fb663",
+        "status": "test",
         "description": "Detects failed logins with multiple disabled domain accounts from a single source system using the Kerberos protocol.",
-        "status": "experimental",
         "author": "Mauricio Velazco, frack113",
         "tags": [
             "attack.t1110.003",
@@ -5089,8 +5089,8 @@
     {
         "title": "Defrag Deactivation",
         "id": "c5a178bf-9cfb-4340-b584-e4df39b6a3e7",
+        "status": "test",
         "description": "Detects the deactivation and disabling of the Scheduled defragmentation task as seen by Slingshot APT group",
-        "status": "experimental",
         "author": "Florian Roth, Bartlomiej Czyz (@bczyz1)",
         "tags": [
             "attack.persistence",
@@ -5130,7 +5130,7 @@
     {
         "title": "Suspicious Windows ANONYMOUS LOGON Local Account Created",
         "id": "1bbf25b9-8038-4154-a50b-118f2a32be27",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of suspicious accounts similar to ANONYMOUS LOGON, such as using additional spaces. Created as an covering detection for exclusion of Logon Type 3 from ANONYMOUS LOGON accounts.",
         "author": "James Pemberton / @4A616D6573",
         "tags": [
@@ -5169,13 +5169,13 @@
     {
         "title": "New or Renamed User Account with '$' in Attribute 'SamAccountName'",
         "id": "cfeed607-6aa4-4bbd-9627-b637deb723c8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects possible bypass EDR and SIEM via abnormal user account name.",
+        "author": "Ilyas Ochkov, oscd.community",
         "tags": [
             "attack.defense_evasion",
             "attack.t1036"
         ],
-        "author": "Ilyas Ochkov, oscd.community",
         "falsepositives": [
             "Unknown"
         ],
@@ -5188,8 +5188,8 @@
     {
         "title": "Tap Driver Installation",
         "id": "9c8afa4d-0022-48f0-9456-3712466f9701",
+        "status": "test",
         "description": "Well-known TAP software installation. Possible preparation for data exfiltration using tunnelling techniques",
-        "status": "experimental",
         "author": "Daniil Yugoslavskiy, Ian Davis, oscd.community",
         "tags": [
             "attack.exfiltration",
@@ -5267,8 +5267,8 @@
     {
         "title": "Remote PowerShell Sessions Network Connections (WinRM)",
         "id": "13acf386-b8c6-4fe0-9a6e-c4756b974698",
+        "status": "test",
         "description": "Detects basic PowerShell Remoting (WinRM) by monitoring for network inbound connections to ports 5985 OR 5986",
-        "status": "experimental",
         "author": "Roberto Rodriguez @Cyb3rWard0g",
         "tags": [
             "attack.execution",
@@ -5286,8 +5286,8 @@
     {
         "title": "Password Dumper Activity on LSASS",
         "id": "aa1697b7-d611-4f9a-9cb2-5125b4ccfd5c",
+        "status": "test",
         "description": "Detects process handle on LSASS process with certain access mask and object type SAM_DOMAIN",
-        "status": "experimental",
         "author": "sigma",
         "tags": [
             "attack.credential_access",
@@ -5363,7 +5363,9 @@
     {
         "title": "Admin User Remote Logon",
         "id": "0f63e1ef-1eb9-4226-9d54-8927ca08520a",
+        "status": "test",
         "description": "Detect remote login by Administrator user (depending on internal pattern).",
+        "author": "juju4",
         "tags": [
             "attack.lateral_movement",
             "attack.t1078.001",
@@ -5371,8 +5373,6 @@
             "attack.t1078.003",
             "car.2016-04-005"
         ],
-        "status": "experimental",
-        "author": "juju4",
         "falsepositives": [
             "Legitimate administrative activity."
         ],
@@ -5385,8 +5385,8 @@
     {
         "title": "Multiple Users Failing to Authenticate from Single Process",
         "id": "fe563ab6-ded4-4916-b49f-a3a8445fe280",
+        "status": "test",
         "description": "Detects failed logins with multiple accounts from a single process on the system.",
-        "status": "experimental",
         "author": "Mauricio Velazco",
         "tags": [
             "attack.t1110.003",
@@ -5408,8 +5408,8 @@
     {
         "title": "NetNTLM Downgrade Attack",
         "id": "d3abac66-f11c-4ed0-8acb-50cc29c97eed",
+        "status": "test",
         "description": "Detects NetNTLM downgrade attack",
-        "status": "experimental",
         "author": "Florian Roth, wagga",
         "tags": [
             "attack.defense_evasion",
@@ -5470,8 +5470,8 @@
     {
         "title": "Valid Users Failing to Authenticate From Single Source Using Kerberos",
         "id": "5d1d946e-32e6-4d9a-a0dc-0ac022c7eb98",
+        "status": "test",
         "description": "Detects multiple failed logins with multiple valid domain accounts from a single source system using the Kerberos protocol.",
-        "status": "experimental",
         "author": "Mauricio Velazco, frack113",
         "tags": [
             "attack.t1110.003",
@@ -5509,8 +5509,8 @@
     {
         "title": "Malicious Service Installations",
         "id": "cb062102-587e-4414-8efa-dbe3c7bf19c6",
+        "status": "test",
         "description": "Detects known malicious service installs that only appear in cases of lateral movement, credential dumping, and other suspicious activities.",
-        "status": "experimental",
         "author": "Florian Roth, Daniil Yugoslavskiy, oscd.community (update)",
         "tags": [
             "attack.persistence",
@@ -5552,8 +5552,8 @@
     {
         "title": "Azure AD Health Service Agents Registry Keys Access",
         "id": "1d2ab8ac-1a01-423b-9c39-001510eae8e8",
+        "status": "test",
         "description": "This detection uses Windows security events to detect suspicious access attempts to the registry key values and sub-keys of Azure AD Health service agents (e.g AD FS).\nInformation from AD Health service agents can be used to potentially abuse some of the features provided by those services in the cloud (e.g. Federation).\nThis detection requires an access control entry (ACE) on the system access control list (SACL) of the following securable object: HKLM:\\SOFTWARE\\Microsoft\\ADHealthAgent.\nMake sure you set the SACL to propagate to its sub-keys.\n",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC",
         "tags": [
             "attack.discovery",
@@ -5631,8 +5631,9 @@
     {
         "title": "Chafer Activity",
         "id": "c0580559-a6bd-4ef6-b9b7-83703d98b561",
+        "status": "test",
         "description": "Detects Chafer activity attributed to OilRig as reported in Nyotron report in March 2018",
-        "status": "experimental",
+        "author": "Florian Roth, Markus Neis, Jonhnathan Ribeiro, Daniil Yugoslavskiy, oscd.community",
         "tags": [
             "attack.persistence",
             "attack.g0049",
@@ -5644,7 +5645,6 @@
             "attack.command_and_control",
             "attack.t1071.004"
         ],
-        "author": "Florian Roth, Markus Neis, Jonhnathan Ribeiro, Daniil Yugoslavskiy, oscd.community",
         "falsepositives": [
             "Unknown"
         ],
@@ -5753,8 +5753,8 @@
     {
         "title": "Failed Logins with Different Accounts from Single Source System",
         "id": "6309ffc4-8fa2-47cf-96b8-a2f72e58e538",
+        "status": "test",
         "description": "Detects suspicious failed logins with different user accounts from a single source system",
-        "status": "experimental",
         "author": "Florian Roth",
         "tags": [
             "attack.persistence",
@@ -5776,8 +5776,8 @@
     {
         "title": "PowerShell Scripts Installed as Services",
         "id": "2a926e6a-4b81-4011-8a96-e36cc8c04302",
+        "status": "test",
         "description": "Detects powershell script installed as a Service",
-        "status": "experimental",
         "author": "oscd.community, Natalia Shornikova",
         "tags": [
             "attack.execution",
@@ -5975,8 +5975,8 @@
     {
         "title": "Multiple Users Attempting To Authenticate Using Explicit Credentials",
         "id": "196a29c2-e378-48d8-ba07-8a9e61f7fab9",
+        "status": "test",
         "description": "Detects a source user failing to authenticate with multiple users using explicit credentials on a host.",
-        "status": "experimental",
         "author": "Mauricio Velazco",
         "tags": [
             "attack.t1110.003",
@@ -6019,8 +6019,8 @@
     {
         "title": "HybridConnectionManager Service Installation",
         "id": "0ee4d8a5-4e67-4faf-acfa-62a78457d1f2",
+        "status": "test",
         "description": "Rule to detect the Hybrid Connection Manager service installation.",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.persistence",
@@ -6037,9 +6037,9 @@
     },
     {
         "title": "Metasploit SMB Authentication",
-        "description": "Alerts on Metasploit host's authentications on the domain.",
-        "status": "experimental",
         "id": "72124974-a68b-4366-b990-d30e0b2a190d",
+        "status": "test",
+        "description": "Alerts on Metasploit host's authentications on the domain.",
         "author": "Chakib Gzenayi (@Chak092), Hosni Mribah",
         "tags": [
             "attack.lateral_movement",
@@ -6096,8 +6096,8 @@
     {
         "title": "External Disk Drive Or USB Storage Device",
         "id": "f69a87ea-955e-4fb4-adb2-bb9fd6685632",
+        "status": "test",
         "description": "Detects external diskdrives or plugged in USB devices , EventID 6416 on windows 10 or later",
-        "status": "experimental",
         "author": "Keith Wright",
         "tags": [
             "attack.t1091",
@@ -6178,14 +6178,14 @@
     {
         "title": "RDP Login from Localhost",
         "id": "51e33403-2a37-4d66-a574-1fda1782cc31",
+        "status": "test",
         "description": "RDP login with localhost source address may be a tunnelled login",
+        "author": "Thomas Patzke",
         "tags": [
             "attack.lateral_movement",
             "car.2013-07-002",
             "attack.t1021.001"
         ],
-        "status": "experimental",
-        "author": "Thomas Patzke",
         "falsepositives": [
             "Unknown"
         ],
@@ -6236,8 +6236,8 @@
     {
         "title": "Valid Users Failing to Authenticate from Single Source Using NTLM",
         "id": "f88bab7f-b1f4-41bb-bdb1-4b8af35b0470",
+        "status": "test",
         "description": "Detects failed logins with multiple valid domain accounts from a single source system using the NTLM protocol.",
-        "status": "experimental",
         "author": "Mauricio Velazco",
         "tags": [
             "attack.t1110.003",
@@ -6527,9 +6527,9 @@
     {
         "title": "CVE-2021-1675 Print Spooler Exploitation",
         "id": "f34d942d-c8c4-4f1f-b196-22471aecf10a",
+        "status": "test",
         "description": "Detects driver load events print service operational log that are a sign of successful exploitation attempts against print spooler vulnerability CVE-2021-1675",
         "author": "Florian Roth",
-        "status": "experimental",
         "tags": [
             "attack.execution",
             "attack.t1569",
@@ -8263,17 +8263,17 @@
     {
         "title": "Suspicious Set Value of MSDT in Registry (CVE-2022-30190)",
         "id": "2d9403d5-7927-46b7-8216-37ab7c9ec5e3",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects set value ms-msdt MSProtocol URI scheme in Registry that could be an attempt to exploit CVE-2022-30190.",
         "author": "Sittikorn S",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
         "tags": [
             "attack.defense_evasion",
             "attack.t1221"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE 'HKCR\\\\ms-msdt\\\\%' ESCAPE '\\')"
         ],
@@ -9577,15 +9577,15 @@
     {
         "title": "PortProxy Registry Key",
         "id": "a54f842a-3713-4b45-8c84-5f136fdebd3c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the modification of PortProxy registry key which is used for port forwarding. For command execution see rule win_netsh_port_fwd.yml.",
+        "author": "Andreas Hunkeler (@Karneades)",
         "tags": [
             "attack.lateral_movement",
             "attack.defense_evasion",
             "attack.command_and_control",
             "attack.t1090"
         ],
-        "author": "Andreas Hunkeler (@Karneades)",
         "falsepositives": [
             "WSL2 network bridge PowerShell script used for WSL/Kubernetes/Docker (e.g. https://github.com/microsoft/WSL/issues/4150#issuecomment-504209723)",
             "Synergy Software KVM (https://symless.com/synergy)"
@@ -9621,7 +9621,7 @@
     {
         "title": "PrinterNightmare Mimimkatz Driver Name",
         "id": "ba6b9e43-1d45-4d3c-a504-1043a64c8469",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects static QMS 810 and mimikatz driver name used by Mimikatz as exploited in CVE-2021-1675 and CVE-2021-34527",
         "author": "Markus Neis, @markus_neis, Florian Roth",
         "tags": [
@@ -9642,13 +9642,9 @@
     {
         "title": "Chafer Activity",
         "id": "7bdf2a7c-3acc-4091-9581-0a77dad1c5b5",
+        "status": "test",
         "description": "Detects Chafer activity attributed to OilRig as reported in Nyotron report in March 2018",
-        "status": "experimental",
         "author": "Florian Roth, Markus Neis, Jonhnathan Ribeiro, Daniil Yugoslavskiy, oscd.community",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
         "tags": [
             "attack.persistence",
             "attack.g0049",
@@ -9660,6 +9656,10 @@
             "attack.command_and_control",
             "attack.t1071.004"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
         "rule": [
             "SELECT * FROM logs WHERE (EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\UMe' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\UT' ESCAPE '\\'))"
         ],
@@ -9668,13 +9668,13 @@
     {
         "title": "OceanLotus Registry Activity",
         "id": "4ac5fc44-a601-4c06-955b-309df8c4e9d4",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects registry keys created in OceanLotus (also known as APT32) attacks",
+        "author": "megan201296, Jonhnathan Ribeiro",
         "tags": [
             "attack.defense_evasion",
             "attack.t1112"
         ],
-        "author": "megan201296, Jonhnathan Ribeiro",
         "falsepositives": [
             "Unknown"
         ],
@@ -9687,13 +9687,13 @@
     {
         "title": "Pandemic Registry Key",
         "id": "47e0852a-cf81-4494-a8e6-31864f8c86ed",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects Pandemic Windows Implant",
+        "author": "Florian Roth",
         "tags": [
             "attack.lateral_movement",
             "attack.t1105"
         ],
-        "author": "Florian Roth",
         "falsepositives": [
             "Unknown"
         ],
@@ -9821,7 +9821,7 @@
     {
         "title": "FlowCloud Malware",
         "id": "5118765f-6657-4ddb-a487-d7bd673abbf1",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects FlowCloud malware from threat group TA410.",
         "author": "NVISO",
         "tags": [
@@ -9899,8 +9899,8 @@
     {
         "title": "Suspicious Camera and Microphone Access",
         "id": "62120148-6b7a-42be-8b91-271c04e281a3",
+        "status": "test",
         "description": "Detects Processes accessing the camera and microphone from suspicious folder",
-        "status": "experimental",
         "author": "Den Iuzvyk",
         "tags": [
             "attack.collection",
@@ -9919,8 +9919,8 @@
     {
         "title": "NetNTLM Downgrade Attack",
         "id": "d67572a0-e2ec-45d6-b8db-c100d14b8ef2",
+        "status": "test",
         "description": "Detects NetNTLM downgrade attack",
-        "status": "experimental",
         "author": "Florian Roth, wagga",
         "tags": [
             "attack.defense_evasion",
@@ -9939,7 +9939,7 @@
     {
         "title": "Office Application Startup - Office Test",
         "id": "3d27f6dd-1c74-4687-b4fa-ca849d128d1c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the addition of office test registry that allows a user to specify an arbitrary DLL that will be executed every time an Office application is started",
         "author": "omkar72",
         "tags": [
@@ -10015,14 +10015,14 @@
     {
         "title": "Leviathan Registry Key Activity",
         "id": "70d43542-cd2d-483c-8f30-f16b436fd7db",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects registry key used by Leviathan APT in Malaysian focused campaign",
         "author": "Aidan Bracher",
-        "level": "critical",
         "tags": [
             "attack.persistence",
             "attack.t1547.001"
         ],
+        "level": "critical",
         "rule": [
             "SELECT * FROM logs WHERE (EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE 'HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\ntkd' ESCAPE '\\')"
         ],
@@ -10182,17 +10182,17 @@
     {
         "title": "Ursnif",
         "id": "21f17060-b282-4249-ade0-589ea3591558",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects new registry key created by Ursnif malware.",
         "author": "megan201296",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.execution",
             "attack.t1112"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '12' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'CreateKey' AND TargetObject LIKE '%\\\\Software\\\\AppDataLow\\\\Software\\\\Microsoft\\\\%' ESCAPE '\\') AND NOT ((TargetObject LIKE '%\\\\SOFTWARE\\\\AppDataLow\\\\Software\\\\Microsoft\\\\Internet Explorer\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\AppDataLow\\\\Software\\\\Microsoft\\\\RepService\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\AppDataLow\\\\Software\\\\Microsoft\\\\IME\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\AppDataLow\\\\Software\\\\Microsoft\\\\Edge\\\\%' ESCAPE '\\')))"
         ],
@@ -10414,9 +10414,9 @@
     {
         "title": "Zip A Folder With PowerShell For Staging In Temp",
         "id": "71ff406e-b633-4989-96ec-bc49d825a412",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Use living off the land tools to zip a file and stage it in the Windows temporary folder for later exfiltration",
+        "author": "frack113",
         "tags": [
             "attack.collection",
             "attack.t1074.001"
@@ -10453,8 +10453,8 @@
     {
         "title": "Suspicious Non PowerShell WSMAN COM Provider",
         "id": "df9a0e0e-fedb-4d6c-8668-d765dfc92aa7",
+        "status": "test",
         "description": "Detects suspicious use of the WSMAN provider without PowerShell.exe as the host application.",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.execution",
@@ -10514,9 +10514,9 @@
     {
         "title": "Abusable Invoke-ATHRemoteFXvGPUDisablementCommand",
         "id": "f65e22f9-819e-4f96-9c7b-498364ae7a25",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "RemoteFXvGPUDisablement.exe is an abusable, signed PowerShell host executable that was introduced in Windows 10 and Server 2019 (OS Build 17763.1339).",
+        "author": "frack113",
         "tags": [
             "attack.defense_evasion",
             "attack.t1218"
@@ -12631,7 +12631,7 @@
     {
         "title": "Powershell Add Name Resolution Policy Table Rule",
         "id": "4368354e-1797-463c-bc39-a309effbe8d7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects powershell scripts that adds a Name Resolution Policy Table (NRPT) rule for the specified namespace. This will bypass the default DNS server and uses a specified server for answering the query.",
         "author": "Borna Talebi",
         "tags": [
@@ -12921,13 +12921,13 @@
     {
         "title": "Suspicious Export-PfxCertificate",
         "id": "aa7a3fce-bef5-4311-9cc1-5f04bb8c308c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects Commandlet that is used to export certificates from the local certificate store and sometimes used by threat actors to steal private keys from compromised machines",
+        "author": "Florian Roth",
         "tags": [
             "attack.credential_access",
             "attack.t1552.004"
         ],
-        "author": "Florian Roth",
         "falsepositives": [
             "Legitimate certificate exports invoked by administrators or users (depends on processes in the environment - filter if unusable)"
         ],
@@ -14014,8 +14014,8 @@
     {
         "title": "Meterpreter or Cobalt Strike Getsystem Service Installation",
         "id": "d585ab5a-6a69-49a8-96e8-4a726a54de46",
+        "status": "test",
         "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service installation",
-        "status": "experimental",
         "author": "Teymur Kheirkhabarov, Ecco, Florian Roth",
         "tags": [
             "attack.privilege_escalation",
@@ -14034,8 +14034,8 @@
     {
         "title": "PowerShell Scripts Run by a Services",
         "id": "46deb5e1-28c9-4905-b2df-51cdcc9e6073",
+        "status": "test",
         "description": "Detects powershell script installed as a Service",
-        "status": "experimental",
         "author": "oscd.community, Natalia Shornikova",
         "tags": [
             "attack.execution",
@@ -14072,8 +14072,8 @@
     {
         "title": "Suspicious DNS Query for IP Lookup Service APIs",
         "id": "ec82e2a5-81ea-4211-a1f8-37a0286df2c2",
+        "status": "test",
         "description": "Detects DNS queries for ip lookup services such as api.ipify.org not originating from a browser process.",
-        "status": "experimental",
         "author": "Brandon George (blog post), Thomas Patzke (rule)",
         "tags": [
             "attack.reconnaissance",
@@ -14225,8 +14225,8 @@
     {
         "title": "DNS HybridConnectionManager Service Bus",
         "id": "7bd3902d-8b8b-4dd4-838a-c6862d40150d",
+        "status": "test",
         "description": "Detects Azure Hybrid Connection Manager services querying the Azure service bus service",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.persistence",
@@ -14244,7 +14244,7 @@
     {
         "title": "Regsvr32 Network Activity",
         "id": "36e037c4-c228-4866-b6a3-48eb292b9955",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects network connections and DNS queries initiated by Regsvr32.exe",
         "author": "Dmitriy Lifanov, oscd.community",
         "tags": [
@@ -14281,8 +14281,8 @@
     {
         "title": "DNS Query for MEGA.io Upload Domain",
         "id": "613c03ba-0779-4a53-8a1f-47f914a4ded3",
+        "status": "test",
         "description": "Detects DNS queries for subdomains used for upload to MEGA.io",
-        "status": "experimental",
         "author": "Aaron Greetham (@beardofbinary) - NCC Group",
         "tags": [
             "attack.exfiltration",
@@ -14339,18 +14339,18 @@
     {
         "title": "APT PRIVATELOG Image Load Pattern",
         "id": "33a2d1dd-f3b0-40bd-8baf-7974468927cc",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects an image load pattern as seen when a tool named PRIVATELOG is used and rarely observed under legitimate circumstances",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Rarely observed"
-        ],
-        "level": "high",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
             "attack.t1055"
         ],
+        "falsepositives": [
+            "Rarely observed"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\svchost.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\clfsw32.dll' ESCAPE '\\')"
         ],
@@ -14378,17 +14378,17 @@
     {
         "title": "FoggyWeb Backdoor DLL Loading",
         "id": "640dc51c-7713-4faa-8a0e-e7c0d9d4654c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DLL image load activity as used by FoggyWeb backdoor loader",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "critical",
         "tags": [
             "attack.resource_development",
             "attack.t1587"
         ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE 'C:\\\\Windows\\\\ADFS\\\\version.dll' ESCAPE '\\')"
         ],
@@ -14613,7 +14613,7 @@
     {
         "title": "SILENTTRINITY Stager Execution",
         "id": "75c505b1-711d-4f68-a357-8c3fe37dbf2d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects SILENTTRINITY stager use",
         "author": "Aleksey Potapov, oscd.community",
         "tags": [
@@ -14749,8 +14749,8 @@
     {
         "title": "PCRE.NET Package Image Load",
         "id": "84b0a8f3-680b-4096-a45b-e9a89221727c",
+        "status": "test",
         "description": "Detects processes loading modules related to PCRE.NET package",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.execution",
@@ -14789,7 +14789,7 @@
     {
         "title": "Time Travel Debugging Utility Usage",
         "id": "e76c8240-d68f-4773-8880-5c6f63595aaf",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects usage of Time Travel Debugging Utility. Adversaries can execute malicious processes and dump processes, such as lsass.exe, via tttracer.exe.",
         "author": "Ensar Şamil, @sblmsrsn, @oscd_initiative",
         "tags": [
@@ -15157,8 +15157,8 @@
     {
         "title": "Wmiprvse Wbemcomn DLL Hijack",
         "id": "7707a579-e0d8-4886-a853-ce47e4575aaa",
+        "status": "test",
         "description": "Detects a threat actor creating a file named `wbemcomn.dll` in the `C:\\Windows\\System32\\wbem\\` directory over the network and loading it for a WMI DLL Hijack scenario.",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.execution",
@@ -15417,9 +15417,9 @@
     {
         "title": "Discover Private Keys",
         "id": "213d6a77-3d55-4ce8-ba74-fcfef741974e",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Adversaries may search for private key certificate files on compromised systems for insecurely stored credential",
+        "author": "frack113",
         "tags": [
             "attack.credential_access",
             "attack.t1552.004"
@@ -15765,8 +15765,8 @@
     },
     {
         "title": "Impacket Tool Execution",
-        "status": "experimental",
         "id": "4627c6ae-6899-46e2-aa0c-6ebcb1becd19",
+        "status": "test",
         "description": "Detects the execution of different compiled Windows binaries of the impacket toolset (based on names or part of their names - could lead to false positives)",
         "author": "Florian Roth",
         "tags": [
@@ -16298,7 +16298,7 @@
     {
         "title": "Pingback Backdoor",
         "id": "b2400ffb-7680-47c0-b08a-098a7de7e7a9",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
         "author": "Bhabesh Raj",
         "tags": [
@@ -16317,13 +16317,13 @@
     {
         "title": "Possible Privilege Escalation via Service Permissions Weakness",
         "id": "0f9c21f1-6a73-4b0e-9809-cb562cb8d981",
+        "status": "test",
         "description": "Detect modification of services configuration (ImagePath, FailureCommand and ServiceDLL) in registry by processes with Medium integrity level",
+        "author": "Teymur Kheirkhabarov",
         "tags": [
             "attack.privilege_escalation",
             "attack.t1574.011"
         ],
-        "status": "experimental",
-        "author": "Teymur Kheirkhabarov",
         "falsepositives": [
             "Unknown"
         ],
@@ -16413,9 +16413,8 @@
     {
         "title": "Process Dump via RdrLeakDiag.exe",
         "id": "edadb1e5-5919-4e4c-8462-a9e643b02c4b",
+        "status": "test",
         "description": "Detects a process memory dump performed by RdrLeakDiag.exe",
-        "status": "experimental",
-        "level": "high",
         "author": "Cedric MAURUGEON",
         "tags": [
             "attack.credential_access",
@@ -16424,6 +16423,7 @@
         "falsepositives": [
             "Unknown"
         ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND OriginalFileName = 'RdrLeakDiag.exe' AND CommandLine LIKE '%fullmemdmp%' ESCAPE '\\')"
         ],
@@ -16453,13 +16453,13 @@
     {
         "title": "Raccine Uninstall",
         "id": "a31eeaed-3fd5-478e-a8ba-e62c6b3f9ecc",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects commands that indicate a Raccine removal from an end system. Raccine is a free ransomware protection tool.",
+        "author": "Florian Roth",
         "tags": [
             "attack.defense_evasion",
             "attack.t1562.001"
         ],
-        "author": "Florian Roth",
         "falsepositives": [
             "Legitimate deinstallation by administrative staff"
         ],
@@ -16595,7 +16595,7 @@
     {
         "title": "GALLIUM Artefacts",
         "id": "440a56bf-7873-4439-940a-1c8a671073c2",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects artefacts associated with activity group GALLIUM - Microsoft Threat Intelligence Center indicators released in December 2019.",
         "author": "Tim Burrell",
         "tags": [
@@ -17137,7 +17137,7 @@
     {
         "title": "Renamed Whoami Execution",
         "id": "f1086bf7-a0c4-4a37-9102-01e573caf4a0",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of whoami that has been renamed to a different name to avoid detection",
         "author": "Florian Roth",
         "tags": [
@@ -17157,9 +17157,9 @@
     {
         "title": "UAC Bypass Tools Using ComputerDefaults",
         "id": "3c05e90d-7eba-4324-9972-5d7f711a60a8",
+        "status": "test",
         "description": "Detects tools such as UACMe used to bypass UAC with computerdefaults.exe (UACMe 59)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -17239,7 +17239,7 @@
         "id": "32410e29-5f94-4568-b6a3-d91a8adad863",
         "status": "experimental",
         "description": "Detects the use of Fast Reverse Proxy. frp is a fast reverse proxy to help you expose a local server behind a NAT or firewall to the Internet.",
-        "author": "frack113",
+        "author": "frack113, Florian Roth",
         "tags": [
             "attack.command_and_control",
             "attack.t1090"
@@ -17249,7 +17249,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\frpc.exe' ESCAPE '\\' OR Image LIKE '%\\\\frps.exe' ESCAPE '\\') AND CommandLine LIKE '%\\\\frpc.ini%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\frpc.exe' ESCAPE '\\' OR Image LIKE '%\\\\frps.exe' ESCAPE '\\') OR CommandLine LIKE '%\\\\frpc.ini%' ESCAPE '\\' OR (Hashes LIKE '%MD5=7D9C233B8C9E3F0EA290D2B84593C842%' ESCAPE '\\' OR Hashes LIKE '%SHA1=06DDC9280E1F1810677935A2477012960905942F%' ESCAPE '\\' OR Hashes LIKE '%SHA256=57B0936B8D336D8E981C169466A15A5FD21A7D5A2C7DAF62D5E142EE860E387C%' ESCAPE '\\') OR md5 = '7d9c233b8c9e3f0ea290d2b84593c842' OR sha1 = '06ddc9280e1f1810677935a2477012960905942f' OR sha256 = '57b0936b8d336d8e981c169466a15a5fd21a7d5a2c7daf62d5e142ee860e387c'))"
         ],
         "filename": "proc_creation_win_frp.yml"
     },
@@ -17372,17 +17372,17 @@
     {
         "title": "Suspicious Userinit Child Process",
         "id": "b655a06a-31c0-477a-95c2-3726b83d649d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects a suspicious child process of userinit",
         "author": "Florian Roth (rule), Samir Bousseaden (idea)",
-        "falsepositives": [
-            "Administrative scripts"
-        ],
-        "level": "medium",
         "tags": [
             "attack.defense_evasion",
             "attack.t1055"
         ],
+        "falsepositives": [
+            "Administrative scripts"
+        ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((CommandLine LIKE '%\\\\netlogon\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ImageFileName = 'explorer.exe')))"
         ],
@@ -17919,9 +17919,9 @@
     {
         "title": "UAC Bypass Abusing Winsat Path Parsing - Process",
         "id": "7a01183d-71a2-46ad-ad5c-acd989ac1793",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using a path parsing issue in winsat.exe (UACMe 52)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -18209,6 +18209,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND Image LIKE '%aspnet\\_compiler.exe%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_lolbin_aspnet_compiler.yml"
+    },
+    {
+        "title": "IOX Tunneling Tool",
+        "id": "d7654f02-e04b-4934-9838-65c46f187ebc",
+        "status": "experimental",
+        "description": "Detects the use of IOX - a tool for port forwarding and intranet proxy purposes",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1090"
+        ],
+        "falsepositives": [
+            "Legitimate use"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\iox.exe' ESCAPE '\\' OR (CommandLine LIKE '%.exe fwd -l %' ESCAPE '\\' OR CommandLine LIKE '%.exe fwd -r %' ESCAPE '\\' OR CommandLine LIKE '%.exe proxy -l %' ESCAPE '\\' OR CommandLine LIKE '%.exe proxy -r %' ESCAPE '\\') OR (Hashes LIKE '%MD5=9DB2D314DD3F704A02051EF5EA210993%' ESCAPE '\\' OR Hashes LIKE '%SHA1=039130337E28A6623ECF9A0A3DA7D92C5964D8DD%' ESCAPE '\\' OR Hashes LIKE '%SHA256=C6CF82919B809967D9D90EA73772A8AA1C1EB3BC59252D977500F64F1A0D6731%' ESCAPE '\\') OR md5 = '9db2d314dd3f704a02051ef5ea210993' OR sha1 = '039130337e28a6623ecf9a0a3da7d92c5964d8dd' OR sha256 = 'c6cf82919b809967d9d90ea73772a8aa1c1eb3bc59252d977500f64f1a0d6731'))"
+        ],
+        "filename": "proc_creation_win_iox.yml"
     },
     {
         "title": "Suspicious Compression Tool Parameters",
@@ -18651,7 +18670,7 @@
     {
         "title": "Suspicious WMIC ActiveScriptEventConsumer Creation",
         "id": "ebef4391-1a81-4761-a40a-1db446c0e625",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects WMIC executions in which a event consumer gets created in order to establish persistence",
         "author": "Florian Roth",
         "tags": [
@@ -18808,9 +18827,9 @@
     {
         "title": "Execute From Alternate Data Streams",
         "id": "7f43c430-5001-4f8b-aaa9-c3b88f18fa5c",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Adversaries may use NTFS file attributes to hide their malicious data in order to evade detection",
+        "author": "frack113",
         "tags": [
             "attack.defense_evasion",
             "attack.t1564.004"
@@ -18864,6 +18883,25 @@
         "filename": "proc_creation_win_apt_mustangpanda.yml"
     },
     {
+        "title": "NPS Tunneling Tool",
+        "id": "68d37776-61db-42f5-bf54-27e87072d17e",
+        "status": "experimental",
+        "description": "Detects the use of NPS a port forwarding tool",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1090"
+        ],
+        "falsepositives": [
+            "Legitimate use"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\npc.exe' ESCAPE '\\' OR (CommandLine LIKE '% -server=%' ESCAPE '\\' AND CommandLine LIKE '% -vkey=%' ESCAPE '\\' AND CommandLine LIKE '% -password=%' ESCAPE '\\') OR CommandLine LIKE '% -config=npc%' ESCAPE '\\' OR ((Hashes LIKE '%MD5=AE8ACF66BFE3A44148964048B826D005%' ESCAPE '\\' OR Hashes LIKE '%SHA1=CEA49E9B9B67F3A13AD0BE1C2655293EA3C18181%' ESCAPE '\\' OR Hashes LIKE '%SHA256=5A456283392FFCEEEACA3D3426C306EB470304637520D72FED1CC1FEBBBD6856%' ESCAPE '\\') OR md5 = 'ae8acf66bfe3a44148964048b826d005' OR sha1 = 'cea49e9b9b67f3a13ad0be1c2655293ea3c18181' OR sha256 = '5a456283392ffceeeaca3d3426c306eb470304637520d72fed1cc1febbbd6856')))"
+        ],
+        "filename": "proc_creation_win_nps.yml"
+    },
+    {
         "title": "Hydra Password Guessing Hack Tool",
         "id": "aaafa146-074c-11eb-adc1-0242ac120002",
         "status": "test",
@@ -18907,7 +18945,7 @@
     {
         "title": "UAC Bypass via Event Viewer",
         "id": "be344333-921d-4c4d-8bb8-e584cf584780",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects UAC bypass method using Windows event viewer",
         "author": "Florian Roth",
         "tags": [
@@ -18968,9 +19006,9 @@
     {
         "title": "Remove Windows Defender Definition Files",
         "id": "9719a8aa-401c-41af-8108-ced7ec9cd75c",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Adversaries may disable security tools to avoid possible detection of their tools and activities by removing Windows Defender Definition Files",
+        "author": "frack113",
         "tags": [
             "attack.defense_evasion",
             "attack.t1562.001"
@@ -19239,14 +19277,14 @@
     {
         "title": "Suspicious Bitstransfer via PowerShell",
         "id": "cd5c8085-4070-4e22-908d-a5b3342deb74",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects transferring files from system on a server bitstransfer Powershell cmdlets",
+        "author": "Austin Songer @austinsonger",
         "tags": [
             "attack.exfiltration",
             "attack.persistence",
             "attack.t1197"
         ],
-        "author": "Austin Songer @austinsonger",
         "falsepositives": [
             "Unknown"
         ],
@@ -19280,18 +19318,18 @@
     {
         "title": "Renamed PAExec",
         "id": "c4e49831-1496-40cf-8ce1-b53f942b02f9",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious renamed PAExec execution as often used by attackers",
         "author": "Florian Roth",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1202"
+        ],
         "falsepositives": [
             "Weird admins that rename their tools",
             "Software companies that bundle PAExec with their software and rename it, so that it is less embarrassing"
         ],
         "level": "high",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1202"
-        ],
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Description = 'PAExec Application' OR OriginalFileName = 'PAExec.exe') AND NOT ((Image LIKE '%\\\\PAexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\paexec.exe' ESCAPE '\\')))"
         ],
@@ -19514,17 +19552,17 @@
     {
         "title": "Regedit as Trusted Installer",
         "id": "883835a7-df45-43e4-bf1d-4268768afda4",
+        "status": "test",
         "description": "Detects a regedit started with TrustedInstaller privileges or by ProcessHacker.exe",
-        "status": "experimental",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
         "tags": [
             "attack.privilege_escalation",
             "attack.t1548"
         ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\regedit.exe' ESCAPE '\\' AND (ParentImage LIKE '%\\\\TrustedInstaller.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\ProcessHacker.exe' ESCAPE '\\'))"
         ],
@@ -19655,9 +19693,9 @@
     {
         "title": "Abusable Invoke-ATHRemoteFXvGPUDisablementCommand",
         "id": "a6fc3c46-23b8-4996-9ea2-573f4c4d88c5",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "RemoteFXvGPUDisablement.exe is an abusable, signed PowerShell host executable that was introduced in Windows 10 and Server 2019 (OS Build 17763.1339).",
+        "author": "frack113",
         "tags": [
             "attack.defense_evasion",
             "attack.t1218"
@@ -19674,7 +19712,7 @@
     {
         "title": "Suspicious Scheduled Task Creation Involving Temp Folder",
         "id": "39019a4e-317f-4ce3-ae63-309a8c6b53c5",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of scheduled tasks that involves a temporary folder and runs only once",
         "author": "Florian Roth",
         "tags": [
@@ -19695,9 +19733,9 @@
     {
         "title": "UAC Bypass Using PkgMgr and DISM",
         "id": "a743ceba-c771-4d75-97eb-8a90f7f4844c",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using pkgmgr.exe and dism.exe (UACMe 23)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -19753,17 +19791,17 @@
     {
         "title": "ScreenConnect Remote Access",
         "id": "75bfe6e6-cd8e-429e-91d3-03921e1d7962",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects ScreenConnect program starts that establish a remote access to that system (not meeting, not remote support)",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Legitimate use by administrative staff"
-        ],
-        "level": "high",
         "tags": [
             "attack.initial_access",
             "attack.t1133"
         ],
+        "falsepositives": [
+            "Legitimate use by administrative staff"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%e=Access&%' ESCAPE '\\' AND CommandLine LIKE '%y=Guest&%' ESCAPE '\\' AND CommandLine LIKE '%&p=%' ESCAPE '\\' AND CommandLine LIKE '%&c=%' ESCAPE '\\' AND CommandLine LIKE '%&k=%' ESCAPE '\\')"
         ],
@@ -19790,9 +19828,9 @@
     {
         "title": "UAC Bypass Using MSConfig Token Modification - Process",
         "id": "ad92e3f9-7eb6-460e-96b1-582b0ccbb980",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using a msconfig GUI hack (UACMe 55)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -19926,7 +19964,7 @@
     {
         "title": "Adwind RAT / JRAT",
         "id": "1fac1481-2dbc-48b2-9096-753c49b4ec71",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects javaw.exe in AppData folder as used by Adwind / JRAT",
         "author": "Florian Roth, Tom Ueltschi, Jonhnathan Ribeiro, oscd.community",
         "tags": [
@@ -19981,10 +20019,10 @@
     },
     {
         "title": "Suspicious Driver Install by pnputil.exe",
-        "status": "experimental",
         "id": "a2ea3ae7-d3d0-40a0-a55c-25a45c87cac1",
-        "author": "Hai Vaknin @LuxNoBulIshit, Avihay eldad  @aloneliassaf, Austin Songer @austinsonger",
+        "status": "test",
         "description": "Detects when a possible suspicious driver is being installed via pnputil.exe lolbin",
+        "author": "Hai Vaknin @LuxNoBulIshit, Avihay eldad  @aloneliassaf, Austin Songer @austinsonger",
         "tags": [
             "attack.persistence",
             "attack.t1547"
@@ -20196,7 +20234,7 @@
     {
         "title": "GALLIUM Artefacts",
         "id": "18739897-21b1-41da-8ee4-5b786915a676",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects artefacts associated with activity group GALLIUM - Microsoft Threat Intelligence Center indicators released in December 2019.",
         "author": "Tim Burrell",
         "tags": [
@@ -20236,8 +20274,8 @@
     {
         "title": "Meterpreter or Cobalt Strike Getsystem Service Start",
         "id": "15619216-e993-4721-b590-4c520615a67d",
+        "status": "test",
         "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service starting",
-        "status": "experimental",
         "author": "Teymur Kheirkhabarov, Ecco, Florian Roth",
         "tags": [
             "attack.privilege_escalation",
@@ -20471,15 +20509,15 @@
     {
         "title": "Netsh Port Forwarding",
         "id": "322ed9ec-fcab-4f67-9a34-e7c6aef43614",
+        "status": "test",
         "description": "Detects netsh commands that configure a port forwarding (PortProxy)",
+        "author": "Florian Roth, omkar72, oscd.community",
         "tags": [
             "attack.lateral_movement",
             "attack.defense_evasion",
             "attack.command_and_control",
             "attack.t1090"
         ],
-        "status": "experimental",
-        "author": "Florian Roth, omkar72, oscd.community",
         "falsepositives": [
             "Legitimate administration",
             "WSL2 network bridge PowerShell script used for WSL/Kubernetes/Docker (e.g. https://github.com/microsoft/WSL/issues/4150#issuecomment-504209723)"
@@ -20587,7 +20625,7 @@
     {
         "title": "DNS ServerLevelPluginDll Install",
         "id": "f63b56ee-3f79-4b8a-97fb-5c48007e8573",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the installation of a plugin DLL via ServerLevelPluginDll parameter in Registry, which can be used to execute code in context of the DNS server (restart required)",
         "author": "Florian Roth",
         "tags": [
@@ -20607,8 +20645,8 @@
     {
         "title": "Defrag Deactivation",
         "id": "958d81aa-8566-4cea-a565-59ccd4df27b0",
+        "status": "test",
         "description": "Detects the deactivation and disabling of the Scheduled defragmentation task as seen by Slingshot APT group",
-        "status": "experimental",
         "author": "Florian Roth, Bartlomiej Czyz (@bczyz1)",
         "tags": [
             "attack.persistence",
@@ -20647,17 +20685,17 @@
     {
         "title": "InfDefaultInstall.exe .inf Execution",
         "id": "ce7cf472-6fcc-490a-9481-3786840b5d9b",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Executes SCT script using scrobj.dll from a command in entered into a specially prepared INF file.",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
+        "author": "frack113",
         "tags": [
             "attack.defense_evasion",
             "attack.t1218"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%InfDefaultInstall.exe %' ESCAPE '\\' AND CommandLine LIKE '%.inf%' ESCAPE '\\')"
         ],
@@ -20707,8 +20745,8 @@
     {
         "title": "Dropping Of Password Filter DLL",
         "id": "b7966f4a-b333-455b-8370-8ca53c229762",
+        "status": "test",
         "description": "Detects dropping of dll files in system32 that may be used to retrieve user credentials from LSASS",
-        "status": "experimental",
         "author": "Sreeman",
         "tags": [
             "attack.credential_access",
@@ -20746,13 +20784,13 @@
     {
         "title": "Malicious PE Execution by Microsoft Visual Studio Debugger",
         "id": "15c7904e-6ad1-4a45-9b46-5fb25df37fd2",
-        "status": "experimental",
+        "status": "test",
         "description": "There is an option for a MS VS Just-In-Time Debugger \"vsjitdebugger.exe\" to launch specified executable and attach a debugger. This option may be used adversaries to execute malicious code by signed verified binary. The debugger is installed alongside with Microsoft Visual Studio package.",
+        "author": "Agro (@agro_sev), Ensar Şamil (@sblmsrsn), oscd.community",
         "tags": [
             "attack.t1218",
             "attack.defense_evasion"
         ],
-        "author": "Agro (@agro_sev), Ensar Şamil (@sblmsrsn), oscd.community",
         "falsepositives": [
             "The process spawned by vsjitdebugger.exe is uncommon."
         ],
@@ -20765,9 +20803,9 @@
     {
         "title": "UAC Bypass Using Disk Cleanup",
         "id": "b697e69c-746f-4a86-9f59-7bfff8eab881",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using scheduled tasks and variable expansion of cleanmgr.exe (UACMe 34)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -20952,9 +20990,9 @@
     {
         "title": "Use of CLIP",
         "id": "ddeff553-5233-4ae9-bbab-d64d2bd634be",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Adversaries may collect data stored in the clipboard from users copying information within or between applications.",
+        "author": "frack113",
         "tags": [
             "attack.collection",
             "attack.t1115"
@@ -20971,9 +21009,9 @@
     {
         "title": "Zip A Folder With PowerShell For Staging In Temp",
         "id": "85a8e5ba-bd03-4bfb-bbfa-a4409a8f8b98",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Use living off the land tools to zip a file and stage it in the Windows temporary folder for later exfiltration",
+        "author": "frack113",
         "tags": [
             "attack.collection",
             "attack.t1074.001"
@@ -21131,7 +21169,7 @@
     {
         "title": "Mounted Windows Admin Shares with net.exe",
         "id": "3abd6094-7027-475f-9630-8ab9be7b9725",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects when an admin share is mounted using net.exe",
         "author": "oscd.community, Teymur Kheirkhabarov @HeirhabarovT, Zach Stanford @svch0st, wagga",
         "tags": [
@@ -21505,19 +21543,19 @@
     {
         "title": "Reg Add RUN Key",
         "id": "de587dce-915e-4218-aac4-835ca6af6f70",
+        "status": "test",
         "description": "Detects suspicious command line reg.exe tool adding key to RUN key in Registry",
-        "status": "experimental",
         "author": "Florian Roth",
+        "tags": [
+            "attack.persistence",
+            "attack.t1547.001"
+        ],
         "falsepositives": [
             "Legitimate software automatically (mostly, during installation) sets up autorun keys for legitimate reasons.",
             "Legitimate administrator sets up autorun keys for legitimate reasons.",
             "Discord"
         ],
         "level": "medium",
-        "tags": [
-            "attack.persistence",
-            "attack.t1547.001"
-        ],
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%reg%' ESCAPE '\\' AND CommandLine LIKE '% ADD %' ESCAPE '\\' AND CommandLine LIKE '%Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\')"
         ],
@@ -21565,9 +21603,9 @@
     {
         "title": "UAC Bypass Using Consent and Comctl32 - Process",
         "id": "1ca6bd18-0ba0-44ca-851c-92ed89a61085",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using consent.exe and comctl32.dll (UACMe 22)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -21623,7 +21661,7 @@
     {
         "title": "Xwizard DLL Sideloading",
         "id": "193d5ccd-6f59-40c6-b5b0-8e32d5ddd3d1",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of Xwizard tool from the non-default directory which can be used to sideload a custom xwizards.dll",
         "author": "Christian Burkard",
         "tags": [
@@ -21799,7 +21837,7 @@
     {
         "title": "Possible Ransomware or Unauthorized MBR Modifications",
         "id": "c9fbe8e9-119d-40a6-9b59-dd58a5d84429",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects, possibly, malicious unauthorized usage of bcdedit.exe",
         "author": "@neu5ron",
         "tags": [
@@ -21876,7 +21914,7 @@
     {
         "title": "Suspicious RazerInstaller Explorer Subprocess",
         "id": "a4eaf250-7dc1-4842-862a-5e71cd59a167",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects a explorer.exe sub process of the RazerInstaller software which can be invoked from the installer to select a different installation folder but can also be exploited to escalate privileges to LOCAL SYSTEM",
         "author": "Florian Roth, Maxime Thiebaut",
         "tags": [
@@ -22489,17 +22527,17 @@
     {
         "title": "Suspicious Rundll32 Invoking Inline VBScript",
         "id": "1cc50f3f-1fc8-4acf-b2e9-6f172e1fdebd",
+        "status": "test",
         "description": "Detects suspicious process related to rundll32 based on command line that invokes inline VBScript as seen being used by UNC2452",
-        "status": "experimental",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.defense_evasion",
             "attack.t1055"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%rundll32.exe%' ESCAPE '\\' AND CommandLine LIKE '%Execute%' ESCAPE '\\' AND CommandLine LIKE '%RegRead%' ESCAPE '\\' AND CommandLine LIKE '%window.close%' ESCAPE '\\')"
         ],
@@ -22889,14 +22927,14 @@
     {
         "title": "Lazarus Activity",
         "id": "4a12fa47-c735-4032-a214-6fab5b120670",
+        "status": "test",
         "description": "Detects different process creation events as described in Malwarebytes's threat report on Lazarus group activity",
-        "status": "experimental",
+        "author": "Bhabesh Raj",
         "tags": [
             "attack.g0032",
             "attack.execution",
             "attack.t1106"
         ],
-        "author": "Bhabesh Raj",
         "falsepositives": [
             "Should not be any false positives"
         ],
@@ -23085,8 +23123,8 @@
     {
         "title": "Execution via CL_Invocation.ps1",
         "id": "a0459f02-ac51-4c09-b511-b8c9203fc429",
+        "status": "test",
         "description": "Detects Execution via SyncInvoke in CL_Invocation.ps1 module",
-        "status": "experimental",
         "author": "oscd.community, Natalia Shornikova",
         "tags": [
             "attack.defense_evasion",
@@ -23145,17 +23183,17 @@
     {
         "title": "Suspicious VBScript UN2452 Pattern",
         "id": "20c3f09d-c53d-4e85-8b74-6aa50e2f1b61",
+        "status": "test",
         "description": "Detects suspicious inline VBScript keywords as used by UNC2452",
-        "status": "experimental",
         "author": "Florian Roth",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.persistence",
             "attack.t1547.001"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%Execute%' ESCAPE '\\' AND CommandLine LIKE '%CreateObject%' ESCAPE '\\' AND CommandLine LIKE '%RegRead%' ESCAPE '\\' AND CommandLine LIKE '%window.close%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion%' ESCAPE '\\') AND NOT (CommandLine LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\'))"
         ],
@@ -23245,13 +23283,13 @@
     {
         "title": "Suspicious Usage of the Manage-bde.wsf Script",
         "id": "c363385c-f75d-4753-a108-c1a8e28bdbda",
+        "status": "test",
         "description": "Detects a usage of the manage-bde.wsf script that may indicate an attempt of proxy execution from script",
-        "status": "experimental",
+        "author": "oscd.community, Natalia Shornikova",
         "tags": [
             "attack.defense_evasion",
             "attack.t1216"
         ],
-        "author": "oscd.community, Natalia Shornikova",
         "falsepositives": [
             "Unknown"
         ],
@@ -23485,13 +23523,13 @@
     {
         "title": "MSExchange Transport Agent Installation",
         "id": "83809e84-4475-4b69-bc3e-4aad8568612f",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the Installation of a Exchange Transport Agent",
+        "author": "Tobias Michalski",
         "tags": [
             "attack.persistence",
             "attack.t1505.002"
         ],
-        "author": "Tobias Michalski",
         "falsepositives": [
             "Legitimate installations of exchange TransportAgents. AssemblyPath is a good indicator for this."
         ],
@@ -23563,8 +23601,8 @@
     {
         "title": "Domain Trust Discovery",
         "id": "3bad990e-4848-4a78-9530-b427d854aac0",
+        "status": "test",
         "description": "Identifies execution of nltest.exe and dsquery.exe for domain trust discovery. This technique is used by attackers to enumerate Active Directory trusts.",
-        "status": "experimental",
         "author": "E.M. Anhaus (originally from Atomic Blue Detections, Tony Lambert), oscd.community, omkar72",
         "tags": [
             "attack.discovery",
@@ -23681,9 +23719,9 @@
     {
         "title": "Uninstall Crowdstrike Falcon",
         "id": "f0f7be61-9cf5-43be-9836-99d6ef448a18",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Adversaries may disable security tools to avoid possible detection of their tools and activities by uninstalling Crowdstrike Falcon",
+        "author": "frack113",
         "tags": [
             "attack.defense_evasion",
             "attack.t1562.001"
@@ -23778,9 +23816,9 @@
     {
         "title": "UAC Bypass Using ChangePK and SLUI",
         "id": "503d581c-7df0-4bbe-b9be-5840c0ecc1fc",
+        "status": "test",
         "description": "Detects an UAC bypass that uses changepk.exe and slui.exe (UACMe 61)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -23993,7 +24031,7 @@
     {
         "title": "Serv-U Exploitation CVE-2021-35211 by DEV-0322",
         "id": "75578840-9526-4b2a-9462-af469a45e767",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects patterns as noticed in exploitation of Serv-U CVE-2021-35211 vulnerability by threat group DEV-0322",
         "author": "Florian Roth",
         "tags": [
@@ -24155,8 +24193,8 @@
     {
         "title": "Non Interactive PowerShell",
         "id": "f4bbd493-b796-416e-bbf2-121235348529",
+        "status": "test",
         "description": "Detects non-interactive PowerShell activity by looking at powershell.exe with not explorer.exe as a parent.",
-        "status": "experimental",
         "author": "Roberto Rodriguez @Cyb3rWard0g (rule), oscd.community (improvements)",
         "tags": [
             "attack.execution",
@@ -24174,8 +24212,8 @@
     {
         "title": "PowerShell Get-Process LSASS",
         "id": "b2815d0d-7481-4bf0-9b6c-a4c48a94b349",
+        "status": "test",
         "description": "Detects a Get-Process command on lsass process, which is in almost all cases a sign of malicious activity",
-        "status": "experimental",
         "author": "Florian Roth",
         "tags": [
             "attack.credential_access",
@@ -24353,18 +24391,18 @@
     {
         "title": "Exchange Exploitation Activity",
         "id": "bbb2dedd-a0e3-46ab-ba6c-6c82ae7a9aa7",
+        "status": "test",
         "description": "Detects activity observed by different researchers to be HAFNIUM group activity (or related) on Exchange servers",
         "author": "Florian Roth",
-        "status": "experimental",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.persistence",
             "attack.t1546",
             "attack.t1053"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%attrib%' ESCAPE '\\' AND CommandLine LIKE '% +h %' ESCAPE '\\' AND CommandLine LIKE '% +s %' ESCAPE '\\' AND CommandLine LIKE '% +r %' ESCAPE '\\' AND CommandLine LIKE '%.aspx%' ESCAPE '\\') OR (CommandLine LIKE '%schtasks%' ESCAPE '\\' AND CommandLine LIKE '%VSPerfMon%' ESCAPE '\\') OR (CommandLine LIKE '%vssadmin list shadows%' ESCAPE '\\' AND CommandLine LIKE '%Temp\\\\\\_\\_output%' ESCAPE '\\') OR CommandLine LIKE '%\\%TEMP\\%\\\\execute.bat%' ESCAPE '\\' OR Image LIKE '%Users\\\\Public\\\\opera\\\\Opera\\_browser.exe' ESCAPE '\\' OR (Image LIKE '%Opera\\_browser.exe' ESCAPE '\\' AND (ParentImage LIKE '%\\\\services.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\svchost.exe' ESCAPE '\\')) OR Image LIKE '%\\\\ProgramData\\\\VSPerfMon\\\\%' ESCAPE '\\' OR (CommandLine LIKE '% -t7z %' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\Programdata\\\\pst%' ESCAPE '\\' AND CommandLine LIKE '%\\\\it.zip%' ESCAPE '\\') OR (Image LIKE '%\\\\makecab.exe' ESCAPE '\\' AND (CommandLine LIKE '%Microsoft\\\\Exchange Server\\\\%' ESCAPE '\\' OR CommandLine LIKE '%inetpub\\\\wwwroot%' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\Temp\\\\xx.bat%' ESCAPE '\\' OR CommandLine LIKE '%Windows\\\\WwanSvcdcs%' ESCAPE '\\' OR CommandLine LIKE '%Windows\\\\Temp\\\\cw.exe%' ESCAPE '\\') OR (CommandLine LIKE '%\\\\comsvcs.dll%' ESCAPE '\\' AND CommandLine LIKE '%Minidump%' ESCAPE '\\' AND CommandLine LIKE '%\\\\inetpub\\\\wwwroot%' ESCAPE '\\') OR (CommandLine LIKE '%dsquery%' ESCAPE '\\' AND CommandLine LIKE '% -uco %' ESCAPE '\\' AND CommandLine LIKE '%\\\\inetpub\\\\wwwroot%' ESCAPE '\\')))"
         ],
@@ -25122,17 +25160,17 @@
     {
         "title": "Suspicious Service Binary Directory",
         "id": "883faa95-175a-4e22-8181-e5761aeb373c",
+        "status": "test",
         "description": "Detects a service binary running in a suspicious directory",
         "author": "Florian Roth",
-        "status": "experimental",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.defense_evasion",
             "attack.t1202"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\$Recycle.bin%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\All Users\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Default\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Contacts\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Searches\\\\%' ESCAPE '\\' OR Image LIKE '%C:\\\\Perflogs\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\config\\\\systemprofile\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\Fonts\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\IME\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\addins\\\\%' ESCAPE '\\') AND (ParentImage LIKE '%\\\\services.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\svchost.exe' ESCAPE '\\'))"
         ],
@@ -25162,7 +25200,7 @@
     {
         "title": "Windows Suspicious Use Of Web Request in CommandLine",
         "id": "9fc51a3c-81b3-4fa7-b35f-7c02cf10fd2d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the use of various web request with commandline tools or Windows PowerShell command,methods (including aliases)",
         "author": "James Pemberton / @4A616D6573",
         "tags": [
@@ -25570,17 +25608,17 @@
     {
         "title": "AWL Bypass with Winrm.vbs and Malicious WsmPty.xsl/WsmTxt.xsl",
         "id": "074e0ded-6ced-4ebd-8b4d-53f55908119d",
+        "status": "test",
         "description": "Detects execution of attacker-controlled WsmPty.xsl or WsmTxt.xsl via winrm.vbs and copied cscript.exe (can be renamed)",
-        "status": "experimental",
         "author": "Julia Fomina, oscd.community",
         "tags": [
             "attack.defense_evasion",
             "attack.t1216"
         ],
-        "level": "medium",
         "falsepositives": [
             "Unlikely"
         ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%winrm%' ESCAPE '\\' AND (CommandLine LIKE '%format:pretty%' ESCAPE '\\' OR CommandLine LIKE '%format:\"pretty\"%' ESCAPE '\\' OR CommandLine LIKE '%format:\"text\"%' ESCAPE '\\' OR CommandLine LIKE '%format:text%' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')))"
         ],
@@ -25786,7 +25824,7 @@
     {
         "title": "Execution in Outlook Temp Folder",
         "id": "a018fdc3-46a3-44e5-9afb-2cd4af1d4b39",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects a suspicious program execution in Outlook temp folder",
         "author": "Florian Roth",
         "tags": [
@@ -25886,9 +25924,9 @@
     {
         "title": "Esentutl Gather Credentials",
         "id": "7df1713a-1a5b-4a4b-a071-dc83b144a101",
-        "status": "experimental",
-        "author": "sam0x90",
+        "status": "test",
         "description": "Conti recommendation to its affiliates to use esentutl to access NTDS dumped file. Trickbot also uses this utilities to get MSEdge info via its module pwgrab.",
+        "author": "sam0x90",
         "tags": [
             "attack.credential_access",
             "attack.t1003",
@@ -26159,9 +26197,9 @@
     {
         "title": "UAC Bypass WSReset",
         "id": "89a9a0e0-f61a-42e5-8957-b1479565a658",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass via WSReset usable by default sysmon-config",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -26199,9 +26237,9 @@
     {
         "title": "UAC Bypass Using IEInstal - Process",
         "id": "80fc36aa-945e-4181-89f2-2f907ab6775d",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using IEInstal.exe (UACMe 64)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -26284,7 +26322,7 @@
     {
         "title": "Scheduled Task Creation",
         "id": "92626ddd-662c-49e3-ac59-f6535f12d189",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of scheduled tasks in user session",
         "author": "Florian Roth",
         "tags": [
@@ -26349,14 +26387,14 @@
     {
         "title": "Possible Shim Database Persistence via sdbinst.exe",
         "id": "517490a7-115a-48c6-8862-1a481504d5a8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects installation of a new shim using sdbinst.exe. A shim can be used to load malicious DLLs into applications.",
+        "author": "Markus Neis",
         "tags": [
             "attack.persistence",
             "attack.privilege_escalation",
             "attack.t1546.011"
         ],
-        "author": "Markus Neis",
         "falsepositives": [
             "Unknown"
         ],
@@ -26485,14 +26523,14 @@
     {
         "title": "UNC2452 PowerShell Pattern",
         "id": "b7155193-8a81-4d8f-805d-88de864ca50c",
+        "status": "test",
         "description": "Detects a specific PowerShell command line pattern used by the UNC2452 actors as mentioned in Microsoft and Symantec reports",
-        "status": "experimental",
+        "author": "Florian Roth",
         "tags": [
             "attack.execution",
             "attack.t1059.001",
             "attack.t1047"
         ],
-        "author": "Florian Roth",
         "falsepositives": [
             "Unlikely"
         ],
@@ -26661,7 +26699,7 @@
     {
         "title": "SILENTTRINITY Stager Execution",
         "id": "03552375-cc2c-4883-bbe4-7958d5a980be",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects SILENTTRINITY stager use",
         "author": "Aleksey Potapov, oscd.community",
         "tags": [
@@ -26782,7 +26820,7 @@
     {
         "title": "Microsoft Workflow Compiler",
         "id": "419dbf2b-8a9b-4bea-bf99-7544b050ec8d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects invocation of Microsoft Workflow Compiler, which may permit the execution of arbitrary unsigned code.",
         "author": "Nik Seetharaman, frack113",
         "tags": [
@@ -26920,14 +26958,14 @@
     {
         "title": "Blue Mockingbird",
         "id": "c3198a27-23a0-4c2c-af19-e5328d49680e",
-        "status": "experimental",
+        "status": "test",
         "description": "Attempts to detect system changes made by Blue Mockingbird",
+        "author": "Trent Liffick (@tliffick)",
         "tags": [
             "attack.execution",
             "attack.t1112",
             "attack.t1047"
         ],
-        "author": "Trent Liffick (@tliffick)",
         "falsepositives": [
             "Unknown"
         ],
@@ -27075,9 +27113,9 @@
     {
         "title": "Operation Wocao Activity",
         "id": "1cfac73c-be78-4f9a-9b08-5bde0c3953ab",
-        "author": "Florian Roth, frack113",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects activity mentioned in Operation Wocao report",
+        "author": "Florian Roth, frack113",
         "tags": [
             "attack.discovery",
             "attack.t1012",
@@ -27259,9 +27297,9 @@
     {
         "title": "Sysmon Driver Unload",
         "id": "4d7cda18-1b12-4e52-b45c-d28653210df8",
-        "status": "experimental",
-        "author": "Kirill Kiryanov, oscd.community",
+        "status": "test",
         "description": "Detect possible Sysmon driver unload",
+        "author": "Kirill Kiryanov, oscd.community",
         "tags": [
             "attack.defense_evasion",
             "attack.t1070",
@@ -27726,8 +27764,9 @@
     {
         "title": "Bitsadmin Download",
         "id": "d059842b-6b9d-4ed1-b5c3-5b89143c6ede",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects usage of bitsadmin downloading a file",
+        "author": "Michael Haag, FPT.EagleEye",
         "tags": [
             "attack.defense_evasion",
             "attack.persistence",
@@ -27735,7 +27774,6 @@
             "attack.s0190",
             "attack.t1036.003"
         ],
-        "author": "Michael Haag, FPT.EagleEye",
         "falsepositives": [
             "Some legitimate apps use this, but limited."
         ],
@@ -27825,10 +27863,10 @@
     },
     {
         "title": "Cabinet File Expansion",
-        "status": "experimental",
         "id": "9f107a84-532c-41af-b005-8d12a607639f",
-        "author": "Bhabesh Raj",
+        "status": "test",
         "description": "Adversaries can use the inbuilt expand utility to decompress cab files as seen in recent Iranian MeteorExpress attack",
+        "author": "Bhabesh Raj",
         "tags": [
             "attack.execution",
             "attack.t1218"
@@ -28066,13 +28104,13 @@
     {
         "title": "Suspicious Rundll32 Activity Invoking Sys File",
         "id": "731231b9-0b5d-4219-94dd-abb6959aa7ea",
+        "status": "test",
         "description": "Detects suspicious process related to rundll32 based on command line that includes a *.sys file as seen being used by UNC2452",
-        "status": "experimental",
+        "author": "Florian Roth",
         "tags": [
             "attack.defense_evasion",
             "attack.t1218.011"
         ],
-        "author": "Florian Roth",
         "falsepositives": [
             "Unknown"
         ],
@@ -28162,7 +28200,7 @@
     {
         "title": "Renamed MegaSync",
         "id": "643bdcac-8b82-49f4-9fd9-25a90b929f3b",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a renamed meg.exe of MegaSync during incident response engagements associated with ransomware families like Nefilim, Sodinokibi, Pysa, and Conti.",
         "author": "Sittikorn S",
         "tags": [
@@ -28337,8 +28375,8 @@
     {
         "title": "Suspicious Csc.exe Source File Folder",
         "id": "dcaa3f04-70c3-427a-80b4-b870d73c94c4",
+        "status": "test",
         "description": "Detects a suspicious execution of csc.exe, which uses a source in a suspicious folder (e.g. AppData)",
-        "status": "experimental",
         "author": "Florian Roth",
         "tags": [
             "attack.defense_evasion",
@@ -28452,8 +28490,8 @@
     {
         "title": "Suspicious File Characteristics Due to Missing Fields",
         "id": "9637e8a5-7131-4f7f-bdc7-2b05d8670c43",
+        "status": "test",
         "description": "Detects Executables in the Downloads folder without FileVersion,Description,Product,Company likely created with py2exe",
-        "status": "experimental",
         "author": "Markus Neis, Sander Wiebing",
         "tags": [
             "attack.execution",
@@ -28507,9 +28545,9 @@
     {
         "title": "SOURGUM Actor Behaviours",
         "id": "7ba08e95-1e0b-40cd-9db5-b980555e42fd",
+        "status": "test",
         "description": "Suspicious behaviours related to an actor tracked by Microsoft as SOURGUM",
         "author": "MSTIC, FPT.EagleEye",
-        "status": "experimental",
         "tags": [
             "attack.t1546",
             "attack.t1546.015",
@@ -29041,7 +29079,7 @@
     {
         "title": "Suspicious Plink Remote Forwarding",
         "id": "48a61b29-389f-4032-b317-b30de6b95314",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious Plink tunnel remote forarding to a local port",
         "author": "Florian Roth",
         "tags": [
@@ -29156,19 +29194,19 @@
     {
         "title": "Automated Collection Command Prompt",
         "id": "f576a613-2392-4067-9d1a-9345fb58d8d1",
-        "status": "experimental",
-        "author": "frack113",
+        "status": "test",
         "description": "Once established within a system or network, an adversary may use automated techniques for collecting internal data.",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
+        "author": "frack113",
         "tags": [
             "attack.collection",
             "attack.t1119",
             "attack.credential_access",
             "attack.t1552.001"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%.doc%' ESCAPE '\\' OR CommandLine LIKE '%.docx%' ESCAPE '\\' OR CommandLine LIKE '%.xls%' ESCAPE '\\' OR CommandLine LIKE '%.xlsx%' ESCAPE '\\' OR CommandLine LIKE '%.ppt%' ESCAPE '\\' OR CommandLine LIKE '%.pptx%' ESCAPE '\\' OR CommandLine LIKE '%.rtf%' ESCAPE '\\' OR CommandLine LIKE '%.pdf%' ESCAPE '\\' OR CommandLine LIKE '%.txt%' ESCAPE '\\') AND ((CommandLine LIKE '%dir %' ESCAPE '\\' AND CommandLine LIKE '% /b %' ESCAPE '\\' AND CommandLine LIKE '% /s %' ESCAPE '\\') OR (OriginalFileName = 'FINDSTR.EXE' AND (CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% /si %' ESCAPE '\\'))))"
         ],
@@ -29177,17 +29215,17 @@
     {
         "title": "Conti NTDS Exfiltration Command",
         "id": "aa92fd02-09f2-48b0-8a93-864813fb8f41",
+        "status": "test",
         "description": "Detects a command used by conti to exfiltrate NTDS",
         "author": "Max Altgelt, Tobias Michalski",
-        "status": "experimental",
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
         "tags": [
             "attack.collection",
             "attack.t1560"
         ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%7za.exe%' ESCAPE '\\' AND CommandLine LIKE '%\\\\C$\\\\temp\\\\log.zip%' ESCAPE '\\')"
         ],
@@ -29196,9 +29234,9 @@
     {
         "title": "UAC Bypass Using DismHost",
         "id": "853e74f9-9392-4935-ad3b-2e8c040dae86",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using DismHost DLL hijacking (UACMe 63)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -29235,13 +29273,13 @@
     {
         "title": "UNC2452 Process Creation Patterns",
         "id": "9be34ad0-b6a7-4fbd-91cf-fc7ec1047f5f",
+        "status": "test",
         "description": "Detects a specific process creation patterns as seen used by UNC2452 and provided by Microsoft as Microsoft Defender ATP queries",
-        "status": "experimental",
+        "author": "Florian Roth",
         "tags": [
             "attack.execution",
             "attack.t1059.001"
         ],
-        "author": "Florian Roth",
         "falsepositives": [
             "Unknown"
         ],
@@ -29514,8 +29552,8 @@
     {
         "title": "Disabled Volume Snapshots",
         "id": "dee4af55-1f22-4e1d-a9d2-4bdc7ecb472a",
+        "status": "test",
         "description": "Detects commands that temporarily turn off Volume Snapshots",
-        "status": "experimental",
         "author": "Florian Roth",
         "tags": [
             "attack.defense_evasion",
@@ -29591,9 +29629,9 @@
     {
         "title": "UAC Bypass Using Windows Media Player - Process",
         "id": "0058b9e5-bcd7-40d4-9205-95ca5a16d7b2",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using Windows Media Player osksupport.dll (UACMe 32)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -29801,9 +29839,9 @@
     {
         "title": "AnyDesk Silent Installation",
         "id": "114e7f1c-f137-48c8-8f54-3088c24ce4b9",
-        "status": "experimental",
-        "author": "Ján Trenčanský",
+        "status": "test",
         "description": "AnyDesk Remote Desktop silent installation can be used by attacker to gain remote access.",
+        "author": "Ján Trenčanský",
         "tags": [
             "attack.command_and_control",
             "attack.t1219"
@@ -30049,17 +30087,17 @@
     {
         "title": "Suspicious Auditpol Usage",
         "id": "0a13e132-651d-11eb-ae93-0242ac130002",
+        "status": "test",
         "description": "Threat actors can use auditpol binary to change audit policy configuration to impair detection capability. This can be carried out by selectively disabling/removing certain audit policies as well as restoring a custom policy owned by the threat actor.",
-        "status": "experimental",
         "author": "Janantha Marasinghe (https://github.com/blueteam0ps)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1562.002"
         ],
-        "level": "high",
         "falsepositives": [
             "Admin activity"
         ],
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\auditpol.exe' ESCAPE '\\' AND (CommandLine LIKE '%disable%' ESCAPE '\\' OR CommandLine LIKE '%clear%' ESCAPE '\\' OR CommandLine LIKE '%remove%' ESCAPE '\\' OR CommandLine LIKE '%restore%' ESCAPE '\\'))"
         ],
@@ -30200,9 +30238,9 @@
     {
         "title": "UAC Bypass Using NTFS Reparse Point - Process",
         "id": "39ed3c80-e6a1-431b-9df3-911ac53d08a7",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using NTFS reparse point and wusa.exe DLL hijacking (UACMe 36)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -30316,7 +30354,7 @@
     {
         "title": "Root Certificate Installed",
         "id": "46591fae-7a4c-46ea-aec3-dff5e6d785dc",
-        "status": "experimental",
+        "status": "test",
         "description": "Adversaries may install a root certificate on a compromised system to avoid warnings when connecting to adversary controlled web servers.",
         "author": "oscd.community, @redcanary, Zach Stanford @svch0st",
         "tags": [
@@ -30487,8 +30525,8 @@
     {
         "title": "Suspicious Atbroker Execution",
         "id": "f24bcaea-0cd1-11eb-adc1-0242ac120002",
+        "status": "test",
         "description": "Atbroker executing non-deafualt Assistive Technology applications",
-        "status": "experimental",
         "author": "Mateusz Wydra, oscd.community",
         "tags": [
             "attack.defense_evasion",
@@ -30693,7 +30731,7 @@
     {
         "title": "Time Travel Debugging Utility Usage",
         "id": "0b4ae027-2a2d-4b93-8c7e-962caaba5b2a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects usage of Time Travel Debugging Utility. Adversaries can execute malicious processes and dump processes, such as lsass.exe, via tttracer.exe.",
         "author": "Ensar Şamil, @sblmsrsn, @oscd_initiative",
         "tags": [
@@ -31043,8 +31081,9 @@
     {
         "title": "Turla Group Lateral Movement",
         "id": "c601f20d-570a-4cde-a7d6-e17f99cb8e7f",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects automated lateral movement by Turla group",
+        "author": "Markus Neis",
         "tags": [
             "attack.g0010",
             "attack.execution",
@@ -31055,11 +31094,10 @@
             "attack.t1083",
             "attack.t1135"
         ],
-        "author": "Markus Neis",
-        "level": "critical",
         "falsepositives": [
             "Unknown"
         ],
+        "level": "critical",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE 'net use \\\\\\\\\\%DomainController\\%\\\\C$ \"P@ssw0rd\" %' ESCAPE '\\' OR CommandLine LIKE 'dir c:\\\\%.doc% /s' ESCAPE '\\' OR CommandLine LIKE 'dir \\%TEMP\\%\\\\%.exe' ESCAPE '\\'))"
         ],
@@ -31264,8 +31302,8 @@
     {
         "title": "Ngrok Usage",
         "id": "ee37eb7c-a4e7-4cd5-8fa4-efa27f1c3f31",
+        "status": "test",
         "description": "Detects the use of Ngrok, a utility used for port forwarding and tunneling, often used by threat actors to make local protected services publicly available. Involved domains are bin.equinox.io for download and *.ngrok.io for connections.",
-        "status": "experimental",
         "author": "Florian Roth",
         "tags": [
             "attack.command_and_control",
@@ -31381,8 +31419,8 @@
     {
         "title": "Proxy Execution via Wuauclt",
         "id": "af77cf95-c469-471c-b6a0-946c685c4798",
+        "status": "test",
         "description": "Detects the use of the Windows Update Client binary (wuauclt.exe) to proxy execute code.",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), Florian Roth, Sreeman, FPT.EagleEye Team",
         "tags": [
             "attack.defense_evasion",
@@ -31500,8 +31538,8 @@
     {
         "title": "Remote PowerShell Session Host Process (WinRM)",
         "id": "734f8d9b-42b8-41b2-bcf5-abaf49d5a3c8",
+        "status": "test",
         "description": "Detects remote PowerShell sections by monitoring for wsmprovhost (WinRM host process) as a parent or child process (sign of an active PowerShell remote session).",
-        "status": "experimental",
         "author": "Roberto Rodriguez @Cyb3rWard0g",
         "tags": [
             "attack.execution",
@@ -32053,8 +32091,8 @@
     {
         "title": "Detected Windows Software Discovery",
         "id": "e13f668e-7f95-443d-98d2-1816a7648a7b",
+        "status": "test",
         "description": "Adversaries may attempt to enumerate software for a variety of reasons, such as figuring out what security measures are present or if the compromised system has a version of software that is vulnerable.",
-        "status": "experimental",
         "author": "Nikita Nazarov, oscd.community",
         "tags": [
             "attack.discovery",
@@ -32710,7 +32748,7 @@
     {
         "title": "Rundll32 Without Parameters",
         "id": "5bb68627-3198-40ca-b458-49f973db8752",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects rundll32 execution without parameters as observed when running Metasploit windows/smb/psexec exploit module",
         "author": "Bartlomiej Czyz, Relativity",
         "tags": [
@@ -33136,7 +33174,7 @@
     {
         "title": "Atlassian Confluence CVE-2021-26084",
         "id": "245f92e3-c4da-45f1-9070-bc552e06db11",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects spawning of suspicious child processes by Atlassian Confluence server which may indicate successful exploitation of CVE-2021-26084",
         "author": "Bhabesh Raj",
         "tags": [
@@ -33217,14 +33255,14 @@
     {
         "title": "Lazarus Activity",
         "id": "24c4d154-05a4-4b99-b57d-9b977472443a",
+        "status": "test",
         "description": "Detects different process creation events as described in various threat reports on Lazarus group activity",
-        "status": "experimental",
+        "author": "Florian Roth",
         "tags": [
             "attack.g0032",
             "attack.execution",
             "attack.t1059"
         ],
-        "author": "Florian Roth",
         "falsepositives": [
             "Overlap with legitimate process activity in some cases (especially selection 3 and 4)"
         ],
@@ -33507,7 +33545,7 @@
     {
         "title": "PsExec Tool Execution",
         "id": "259e5a6a-b8d2-4c38-86e2-26c5e651361d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects PsExec service installation and execution events (service and Sysmon)",
         "author": "Thomas Patzke",
         "tags": [
@@ -33640,8 +33678,8 @@
     {
         "title": "Rclone Config File Creation",
         "id": "34986307-b7f4-49be-92f3-e7a4d01ac5db",
+        "status": "test",
         "description": "Detects Rclone config file being created",
-        "status": "experimental",
         "author": "Aaron Greetham (@beardofbinary) - NCC Group",
         "tags": [
             "attack.exfiltration",
@@ -33699,7 +33737,7 @@
     {
         "title": "Advanced IP Scanner",
         "id": "fed85bf9-e075-4280-9159-fbe8a023d6fa",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the use of Advanced IP Scanner. Seems to be a popular tool for ransomware groups.",
         "author": "@ROxPinTeddy",
         "tags": [
@@ -33887,9 +33925,9 @@
     {
         "title": "UAC Bypass Using MSConfig Token Modification - File",
         "id": "41bb431f-56d8-4691-bb56-ed34e390906f",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using a msconfig GUI hack (UACMe 55)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -33945,7 +33983,7 @@
     {
         "title": "Pingback Backdoor",
         "id": "2bd63d53-84d4-4210-80ff-bf0658f1bf78",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
         "author": "Bhabesh Raj",
         "tags": [
@@ -34003,9 +34041,9 @@
     {
         "title": "UAC Bypass Using NTFS Reparse Point - File",
         "id": "7fff6773-2baa-46de-a24a-b6eec1aba2d1",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using NTFS reparse point and wusa.exe DLL hijacking (UACMe 36)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -34760,7 +34798,7 @@
     {
         "title": "Dumpert Process Dumper",
         "id": "93d94efc-d7ad-4161-ad7d-1638c4f908d8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the use of Dumpert process dumper, which dumps the lsass.exe process memory",
         "author": "Florian Roth",
         "tags": [
@@ -34857,8 +34895,8 @@
     {
         "title": "Wmiprvse Wbemcomn DLL Hijack",
         "id": "614a7e17-5643-4d89-b6fe-f9df1a79641c",
+        "status": "test",
         "description": "Detects a threat actor creating a file named `wbemcomn.dll` in the `C:\\Windows\\System32\\wbem\\` directory over the network and loading it for a WMI DLL Hijack scenario.",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.execution",
@@ -34954,18 +34992,18 @@
     {
         "title": "Moriya Rootkit",
         "id": "a1507d71-0b60-44f6-b17c-bf53220fdd88",
+        "status": "test",
         "description": "Detects the use of Moriya rootkit as described in the securelist's Operation TunnelSnake report",
-        "status": "experimental",
         "author": "Bhabesh Raj",
         "tags": [
             "attack.persistence",
             "attack.privilege_escalation",
             "attack.t1543.003"
         ],
-        "level": "critical",
         "falsepositives": [
             "Unknown"
         ],
+        "level": "critical",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\drivers\\\\MoriyaStreamWatchmen.sys' ESCAPE '\\')"
         ],
@@ -35012,7 +35050,7 @@
     {
         "title": "Powerup Write Hijack DLL",
         "id": "602a1f13-c640-4d73-b053-be9a2fa58b96",
-        "status": "experimental",
+        "status": "test",
         "description": "Powerup tool's Write Hijack DLL exploits DLL hijacking for privilege escalation.\nIn it's default mode, it builds a self deleting .bat file which executes malicious command.\nThe detection rule relies on creation of the malicious bat file (debug.bat by default).\n",
         "author": "Subhash Popuri (@pbssubhash)",
         "tags": [
@@ -35033,7 +35071,7 @@
     {
         "title": "Adwind RAT / JRAT",
         "id": "0bcfabcb-7929-47f4-93d6-b33fb67d34d1",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects javaw.exe in AppData folder as used by Adwind / JRAT",
         "author": "Florian Roth, Tom Ueltschi, Jonhnathan Ribeiro, oscd.community",
         "tags": [
@@ -35110,9 +35148,9 @@
     {
         "title": "CVE-2021-26858 Exchange Exploitation",
         "id": "b06335b3-55ac-4b41-937e-16b7f5d57dfd",
+        "status": "test",
         "description": "Detects possible successful exploitation for vulnerability described in CVE-2021-26858 by looking for | creation of non-standard files on disk by Exchange Server’s Unified Messaging service | which could indicate dropping web shells or other malicious content",
         "author": "Bhabesh Raj",
-        "status": "experimental",
         "tags": [
             "attack.t1203",
             "attack.execution",
@@ -35164,9 +35202,9 @@
     {
         "title": "UAC Bypass Using .NET Code Profiler on MMC",
         "id": "93a19907-d4f9-4deb-9f91-aac4692776a6",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using .NET Code Profiler and mmc.exe DLL hijacking (UACMe 39)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -35222,9 +35260,9 @@
     {
         "title": "UAC Bypass Using Windows Media Player - File",
         "id": "68578b43-65df-4f81-9a9b-92f32711a951",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using Windows Media Player osksupport.dll (UACMe 32)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -35242,9 +35280,9 @@
     {
         "title": "UAC Bypass Using IEInstal - File",
         "id": "bdd8157d-8e85-4397-bb82-f06cc9c71dbb",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using IEInstal.exe (UACMe 64)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -35281,17 +35319,17 @@
     {
         "title": "AWL Bypass with Winrm.vbs and Malicious WsmPty.xsl/WsmTxt.xsl",
         "id": "d353dac0-1b41-46c2-820c-d7d2561fc6ed",
+        "status": "test",
         "description": "Detects execution of attacker-controlled WsmPty.xsl or WsmTxt.xsl via winrm.vbs and copied cscript.exe (can be renamed)",
-        "status": "experimental",
         "author": "Julia Fomina, oscd.community",
         "tags": [
             "attack.defense_evasion",
             "attack.t1216"
         ],
-        "level": "medium",
         "falsepositives": [
             "Unlikely"
         ],
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetFilename LIKE '%WsmPty.xsl' ESCAPE '\\' OR TargetFilename LIKE '%WsmTxt.xsl' ESCAPE '\\') AND NOT ((TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')))"
         ],
@@ -35300,7 +35338,7 @@
     {
         "title": "CVE-2021-31979 CVE-2021-33771 Exploits by Sourgum",
         "id": "ad7085ac-92e4-4b76-8ce2-276d2c0e68ef",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects patterns as noticed in exploitation of Windows CVE-2021-31979 CVE-2021-33771 vulnerability and DevilsTongue malware by threat group Sourgum",
         "author": "Sittikorn S",
         "tags": [
@@ -35343,9 +35381,9 @@
     {
         "title": "UAC Bypass Using Consent and Comctl32 - File",
         "id": "62ed5b55-f991-406a-85d9-e8e8fdf18789",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using consent.exe and comctl32.dll (UACMe 22)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -35440,8 +35478,8 @@
     {
         "title": "PCRE.NET Package Temp Files",
         "id": "6e90ae7a-7cd3-473f-a035-4ebb72d961da",
+        "status": "test",
         "description": "Detects processes creating temp files related to PCRE.NET package",
-        "status": "experimental",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.execution",
@@ -35459,7 +35497,7 @@
     {
         "title": "Typical HiveNightmare SAM File Export",
         "id": "6ea858a8-ba71-4a12-b2cc-5d83312404c7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects files written by the different tools that exploit HiveNightmare",
         "author": "Florian Roth",
         "tags": [
@@ -35517,9 +35555,9 @@
     {
         "title": "UAC Bypass Abusing Winsat Path Parsing - File",
         "id": "155dbf56-e0a4-4dd0-8905-8a98705045e8",
+        "status": "test",
         "description": "Detects the pattern of UAC Bypass using a path parsing issue in winsat.exe (UACMe 52)",
         "author": "Christian Burkard",
-        "status": "experimental",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -35653,6 +35691,7 @@
     {
         "title": "LSASS Memory Dump File Creation",
         "id": "5e3d3601-0662-4af0-b1d2-36a05e90c40a",
+        "status": "test",
         "description": "LSASS memory dump creation using operating systems utilities. Procdump will use process name in output file if no name is specified",
         "author": "Teymur Kheirkhabarov, oscd.community",
         "tags": [
@@ -35664,7 +35703,6 @@
             "Dumps of another process that contains lsass in its process name (substring)"
         ],
         "level": "high",
-        "status": "experimental",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%lsass%' ESCAPE '\\' AND TargetFilename LIKE '%dmp' ESCAPE '\\')"
         ],
@@ -35707,7 +35745,7 @@
     {
         "title": "Outlook C2 Macro Creation",
         "id": "8c31f563-f9a7-450c-bfa8-35f8f32f1f61",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a macro file for Outlook. Goes with win_outlook_c2_registry_key. VbaProject.OTM is explicitly mentioned in T1137. Particularly interesting if both events Registry & File Creation happens at the same time.",
         "author": "@ScoubiMtl",
         "tags": [
