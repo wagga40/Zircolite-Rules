@@ -12167,7 +12167,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%MicrosoftAccountTokenProvider.dll' ESCAPE '\\' AND NOT ((Image LIKE '%\\\\BackgroundTaskHost.exe' ESCAPE '\\' OR Image LIKE '%\\\\devenv.exe' ESCAPE '\\' OR Image LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR Image LIKE '%\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR Image LIKE '%\\\\OneDrive.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%MicrosoftAccountTokenProvider.dll' ESCAPE '\\' AND NOT ((Image LIKE '%\\\\BackgroundTaskHost.exe' ESCAPE '\\' OR Image LIKE '%\\\\devenv.exe' ESCAPE '\\' OR Image LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR Image LIKE '%\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR Image LIKE '%\\\\OneDrive.exe' ESCAPE '\\') OR CommandLine LIKE '%C:\\\\Windows\\\\system32\\\\BackgroundTaskHost.exe%' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\')))"
         ],
         "filename": "image_load_abusing_azure_browser_sso.yml"
     },
@@ -20808,7 +20808,7 @@
             "attack.execution"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND (Provider_Name = 'MsiInstaller' AND EventID IN ('1040', '1042') AND (Data LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Data LIKE '%C:\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\\\\\\\*' ESCAPE '\\')) AND NOT ((Data LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\WinGet\\\\%' ESCAPE '\\') OR (Data LIKE '%C:\\\\Windows\\\\TEMP\\\\UpdHealthTools.msi%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND (Provider_Name = 'MsiInstaller' AND EventID IN ('1040', '1042') AND (Data LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Data LIKE '%C:\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\\\\\\\*' ESCAPE '\\')) AND NOT ((Data LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\WinGet\\\\%' ESCAPE '\\') OR (Data LIKE '%C:\\\\Windows\\\\TEMP\\\\UpdHealthTools.msi%' ESCAPE '\\')))"
         ],
         "filename": "win_msi_install_from_susp_locations.yml"
     },
