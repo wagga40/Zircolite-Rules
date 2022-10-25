@@ -1,5 +1,24 @@
 [
     {
+        "title": "Creation Of a Suspicious ADS File Outside a Browser Download",
+        "id": "573df571-a223-43bc-846e-3f98da481eca",
+        "status": "experimental",
+        "description": "Detects the creation of a suspicious ADS (Alternate Data Stream) file by software other than browsers",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Other legitimate browsers not currently included in the filter (please add them)",
+            "Legitimate downloads via scripting or command-line tools (Investigate to determine if it's legitimate)"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Contents LIKE '[ZoneTransfer]  ZoneId=3%' ESCAPE '\\' AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND (TargetFilename LIKE '%.exe%' ESCAPE '\\' OR TargetFilename LIKE '%.scr%' ESCAPE '\\' OR TargetFilename LIKE '%.bat%' ESCAPE '\\' OR TargetFilename LIKE '%.cmd%' ESCAPE '\\' OR TargetFilename LIKE '%.docx%' ESCAPE '\\' OR TargetFilename LIKE '%.hta%' ESCAPE '\\' OR TargetFilename LIKE '%.jse%' ESCAPE '\\' OR TargetFilename LIKE '%.lnk%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx%' ESCAPE '\\' OR TargetFilename LIKE '%.ps%' ESCAPE '\\' OR TargetFilename LIKE '%.reg%' ESCAPE '\\' OR TargetFilename LIKE '%.sct%' ESCAPE '\\' OR TargetFilename LIKE '%.vb%' ESCAPE '\\' OR TargetFilename LIKE '%.wsc%' ESCAPE '\\' OR TargetFilename LIKE '%.wsf%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\')))"
+        ],
+        "filename": "create_stream_hash_creation_internet_file.yml"
+    },
+    {
         "title": "Hacktool Download",
         "id": "19b041f6-e583-40dc-b842-d6fa8011493f",
         "status": "experimental",
@@ -1829,6 +1848,26 @@
             "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '524' AND Provider_Name = 'Microsoft-Windows-Backup')"
         ],
         "filename": "win_susp_backup_delete.yml"
+    },
+    {
+        "title": "MSI Installation From Web",
+        "id": "5594e67a-7f92-4a04-b65d-1a42fd824a60",
+        "status": "experimental",
+        "description": "Detects installation of a remote msi file from web.",
+        "author": "Stamatis Chatzimangou",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "tags": [
+            "attack.execution",
+            "attack.t1218",
+            "attack.t1218.007"
+        ],
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MsiInstaller' AND EventID IN ('1040', '1042') AND Data LIKE '%://%' ESCAPE '\\')"
+        ],
+        "filename": "win_msi_install_from_web.yml"
     },
     {
         "title": "MSSQL SPProcoption Set",
@@ -10340,7 +10379,7 @@
             "attack.t1218.007"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND CommandLine LIKE '% /z %' ESCAPE '\\' AND CommandLine LIKE '%.dll%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% /z %' ESCAPE '\\' OR CommandLine LIKE '% -z %' ESCAPE '\\') AND CommandLine LIKE '%.dll%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_msiexec_dll.yml"
     },
@@ -17667,7 +17706,7 @@
             "attack.t1218.007"
         ],
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND CommandLine LIKE '% /y%' ESCAPE '\\') AND NOT (((CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% /y%' ESCAPE '\\' OR CommandLine LIKE '% -y%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_msiexec_execute_dll.yml"
     },
