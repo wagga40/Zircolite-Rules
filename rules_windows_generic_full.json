@@ -14,7 +14,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((Contents LIKE '[ZoneTransfer]  ZoneId=3%' ESCAPE '\\' AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND (TargetFilename LIKE '%.exe%' ESCAPE '\\' OR TargetFilename LIKE '%.scr%' ESCAPE '\\' OR TargetFilename LIKE '%.bat%' ESCAPE '\\' OR TargetFilename LIKE '%.cmd%' ESCAPE '\\' OR TargetFilename LIKE '%.docx%' ESCAPE '\\' OR TargetFilename LIKE '%.hta%' ESCAPE '\\' OR TargetFilename LIKE '%.jse%' ESCAPE '\\' OR TargetFilename LIKE '%.lnk%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx%' ESCAPE '\\' OR TargetFilename LIKE '%.ps%' ESCAPE '\\' OR TargetFilename LIKE '%.reg%' ESCAPE '\\' OR TargetFilename LIKE '%.sct%' ESCAPE '\\' OR TargetFilename LIKE '%.vb%' ESCAPE '\\' OR TargetFilename LIKE '%.wsc%' ESCAPE '\\' OR TargetFilename LIKE '%.wsf%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((Contents LIKE '[ZoneTransfer]  ZoneId=3%' ESCAPE '\\' AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND (TargetFilename LIKE '%.exe%' ESCAPE '\\' OR TargetFilename LIKE '%.scr%' ESCAPE '\\' OR TargetFilename LIKE '%.bat%' ESCAPE '\\' OR TargetFilename LIKE '%.cmd%' ESCAPE '\\' OR TargetFilename LIKE '%.docx%' ESCAPE '\\' OR TargetFilename LIKE '%.hta%' ESCAPE '\\' OR TargetFilename LIKE '%.jse%' ESCAPE '\\' OR TargetFilename LIKE '%.lnk%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx%' ESCAPE '\\' OR TargetFilename LIKE '%.ps%' ESCAPE '\\' OR TargetFilename LIKE '%.reg%' ESCAPE '\\' OR TargetFilename LIKE '%.sct%' ESCAPE '\\' OR TargetFilename LIKE '%.vb%' ESCAPE '\\' OR TargetFilename LIKE '%.wsc%' ESCAPE '\\' OR TargetFilename LIKE '%.wsf%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\')))"
         ],
         "filename": "create_stream_hash_creation_internet_file.yml"
     },
@@ -902,6 +902,24 @@
         "filename": "win_system_ntfs_vuln_exploit.yml"
     },
     {
+        "title": "Remote Utilities Host Service Install",
+        "id": "85cce894-dd8b-4427-a958-5cc47a4dc9b9",
+        "status": "experimental",
+        "description": "Detects Remote Utilities Host service installation on the target system.",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Legitimate use of the tool"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND ((ImagePath LIKE '%\\\\rutserv.exe%' ESCAPE '\\' AND ImagePath LIKE '%-service%' ESCAPE '\\') OR ServiceName = 'Remote Utilities - Host'))"
+        ],
+        "filename": "win_system_service_install_remote_utilities.yml"
+    },
+    {
         "title": "Sysmon Crash",
         "id": "4d7f1827-1637-4def-8d8a-fd254f9454df",
         "status": "experimental",
@@ -1214,6 +1232,24 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog')"
         ],
         "filename": "win_system_eventlog_cleared.yml"
+    },
+    {
+        "title": "NetSupport Manager Service Install",
+        "id": "2d510d8d-912b-45c5-b1df-36faa3d8c3f4",
+        "status": "experimental",
+        "description": "Detects NetSupport Manager service installation on the target system.",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Legitimate use of the tool"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND (ImagePath LIKE '%\\\\NetSupport Manager\\\\client32.exe%' ESCAPE '\\' OR ServiceName = 'Client32'))"
+        ],
+        "filename": "win_system_service_install_netsupport_manager.yml"
     },
     {
         "title": "New PDQDeploy Service - Server Side",
@@ -1765,7 +1801,7 @@
         "author": "frack113",
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND EventID = '2004' AND NOT ((Action = '2') OR ((ApplicationPath LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ApplicationPath LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\oobe\\\\Setup.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR (ModifyingApplication LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND EventID = '2004' AND NOT ((Action = '2') OR ((ApplicationPath LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ApplicationPath LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\oobe\\\\Setup.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR (ModifyingApplication LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\')) OR (ModifyingApplication LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')))"
         ],
         "filename": "win_firewall_as_add_rule.yml"
     },
@@ -9359,7 +9395,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\tracker.exe' ESCAPE '\\' OR Description = 'Tracker') AND (CommandLine LIKE '% /d %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\tracker.exe' ESCAPE '\\' OR Description = 'Tracker') AND (CommandLine LIKE '% /d %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE '%\\\\Msbuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\VC\\\\Tools\\\\MSVC\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\bin\\\\HostX86\\\\x64\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_tracker_execution.yml"
     },
@@ -10468,7 +10504,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\' OR CommandLine LIKE '%.dll #%' ESCAPE '\\' OR CommandLine LIKE '%.ocx #%' ESCAPE '\\')) AND NOT (CommandLine LIKE '%EDGEHTML.dll%' ESCAPE '\\' AND CommandLine LIKE '%#141%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\' OR CommandLine LIKE '%.dll #%' ESCAPE '\\' OR CommandLine LIKE '%.ocx #%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%EDGEHTML.dll%' ESCAPE '\\' AND CommandLine LIKE '%#141%' ESCAPE '\\') OR (CommandLine LIKE '%EDGEHTML.dll%' ESCAPE '\\' AND CommandLine LIKE '%#141%' ESCAPE '\\') OR (ParentProcessName LIKE '%\\\\Msbuild\\\\Current\\\\Bin\\\\Tracker.exe' ESCAPE '\\' AND (CommandLine LIKE '%\\\\FileTracker32.dll,#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker32.dll\",#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker64.dll,#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker64.dll\",#1%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_susp_rundll32_by_ordinal.yml"
     },
@@ -12661,7 +12697,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName = 'esentutl.exe') AND (CommandLine LIKE '%/r %' ESCAPE '\\' AND CommandLine LIKE '%\\\\Windows\\\\WebCache%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName = 'esentutl.exe') AND (CommandLine LIKE '%/r%' ESCAPE '\\' OR CommandLine LIKE '%-r%' ESCAPE '\\') AND CommandLine LIKE '%\\\\Windows\\\\WebCache%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_esentutl_webcache.yml"
     },
@@ -14150,6 +14186,25 @@
         "filename": "proc_creation_win_susp_double_extension.yml"
     },
     {
+        "title": "Suspicious Regsvr32 Execution From Remote Share",
+        "id": "88a87a10-384b-4ad7-8871-2f9bf9259ce5",
+        "status": "experimental",
+        "description": "Detects REGSVR32.exe to execute DLL hosted on remote shares",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.010"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\REGSVR32.EXE' ESCAPE '\\') AND CommandLine LIKE '% \\\\\\\\\\*' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_susp_regsvr32_remote_share.yml"
+    },
+    {
         "title": "DLL Sideloading by Microsoft Defender",
         "id": "7002aa10-b8d4-47ae-b5ba-51ab07e228b9",
         "status": "experimental",
@@ -14798,7 +14853,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\sdiagnhost.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskkill.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\sdiagnhost.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskkill.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_sdiagnhost_susp_child.yml"
     },
@@ -15781,6 +15836,25 @@
         "filename": "proc_creation_win_rundll32_unc_path.yml"
     },
     {
+        "title": "Suspicious Scheduled Task Name As GUID",
+        "id": "ff2fff64-4cd6-4a2b-ba7d-e28a30bbe66b",
+        "status": "experimental",
+        "description": "Detects creation of a scheduled task with a GUID like name",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Legitimate software naming their tasks as GUIDs"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Create %' ESCAPE '\\' AND (CommandLine LIKE '%/TN \"{%' ESCAPE '\\' OR CommandLine LIKE '%/TN ''{%' ESCAPE '\\' OR CommandLine LIKE '%/TN {%' ESCAPE '\\') AND (CommandLine LIKE '%}\"%' ESCAPE '\\' OR CommandLine LIKE '%}''%' ESCAPE '\\' OR CommandLine LIKE '%} %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_guid_task_name.yml"
+    },
+    {
         "title": "Download Arbitrary Files Via MSOHTMED.EXE",
         "id": "459f2f98-397b-4a4a-9f47-6a5ec2f1c69d",
         "status": "experimental",
@@ -16060,7 +16134,7 @@
         "title": "Suspicious Regsvr32 Execution With Image Extension",
         "id": "089fc3d2-71e8-4763-a8a5-c97fbb0a403e",
         "status": "experimental",
-        "description": "utilizes REGSVR32.exe to execute this DLL masquerading as a Image file",
+        "description": "Detects execution of REGSVR32.exe with DLL masquerading as image files",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
@@ -16071,7 +16145,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND CommandLine LIKE '%.jpg' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\REGSVR32.EXE' ESCAPE '\\') AND (CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_regsvr32_image.yml"
     },
@@ -31369,7 +31443,7 @@
         "title": "Suspicious DNS Query for IP Lookup Service APIs",
         "id": "ec82e2a5-81ea-4211-a1f8-37a0286df2c2",
         "status": "test",
-        "description": "Detects DNS queries for ip lookup services such as api.ipify.org not originating from a browser process.",
+        "description": "Detects DNS queries for ip lookup services such as api.ipify.org not originating from a non browser process.",
         "author": "Brandon George (blog post), Thomas Patzke (rule)",
         "tags": [
             "attack.reconnaissance",
@@ -31380,7 +31454,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (QueryName IN ('canireachthe.net', 'ipv4.icanhazip.com', 'ip.anysrc.net', 'edns.ip-api.com', 'wtfismyip.com', 'checkip.dyndns.org', 'api.2ip.ua', 'icanhazip.com', 'api.ipify.org', 'ip-api.com', 'checkip.amazonaws.com', 'ipecho.net', 'ipinfo.io', 'ipv4bot.whatismyipaddress.com', 'freegeoip.app') AND NOT ((NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (QueryName IN ('canireachthe.net', 'ipv4.icanhazip.com', 'ip.anysrc.net', 'edns.ip-api.com', 'wtfismyip.com', 'checkip.dyndns.org', 'api.2ip.ua', 'icanhazip.com', 'api.ipify.org', 'ip-api.com', 'checkip.amazonaws.com', 'ipecho.net', 'ipinfo.io', 'ipv4bot.whatismyipaddress.com', 'freegeoip.app', 'ifconfig.me') AND NOT ((NewProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\')))"
         ],
         "filename": "dns_query_win_susp_ipify.yml"
     },
@@ -31399,7 +31473,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (QueryName LIKE '%.getgo.com' ESCAPE '\\' OR QueryName LIKE '%.logmein.com' ESCAPE '\\' OR QueryName LIKE '%.ammyy.com' ESCAPE '\\' OR QueryName LIKE '%.netsupportsoftware.com' ESCAPE '\\' OR QueryName LIKE '%remoteutilities.com' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((QueryName LIKE '%.getgo.com' ESCAPE '\\' OR QueryName LIKE '%.logmein.com' ESCAPE '\\' OR QueryName LIKE '%.ammyy.com' ESCAPE '\\' OR QueryName LIKE '%.netsupportsoftware.com' ESCAPE '\\' OR QueryName LIKE '%remoteutilities.com' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\')))"
         ],
         "filename": "dns_query_remote_access_software_domains.yml"
     },
@@ -31536,10 +31610,10 @@
         "filename": "dns_query_win_regsvr32_network_activity.yml"
     },
     {
-        "title": "Credentials Dumping Tools Accessing LSASS Memory",
+        "title": "Credential Dumping Tools Accessing LSASS Memory",
         "id": "32d0d3e2-e58d-4d41-926b-18b520b2b32d",
         "status": "experimental",
-        "description": "Detects process access LSASS memory which is typical for credentials dumping tools",
+        "description": "Detects processes requesting access to LSASS memory via suspicious access masks. This is typical for credentials dumping tools",
         "author": "Florian Roth, Roberto Rodriguez, Dimitrios Slamaris, Mark Russinovich, Thomas Patzke, Teymur Kheirkhabarov, Sherif Eldeeb, James Dickenson, Aleksey Potapov, oscd.community (update)",
         "tags": [
             "attack.credential_access",
@@ -31552,7 +31626,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((TargetImage LIKE '%\\\\lsass.exe' ESCAPE '\\' AND (GrantedAccess LIKE '0x40%' ESCAPE '\\' OR GrantedAccess LIKE '0x100000%' ESCAPE '\\' OR GrantedAccess LIKE '0x1410%' ESCAPE '\\' OR GrantedAccess LIKE '0x1438%' ESCAPE '\\' OR GrantedAccess LIKE '0x143a%' ESCAPE '\\' OR GrantedAccess LIKE '0x1418%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f0fff%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f1fff%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f2fff%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f3fff%' ESCAPE '\\')) AND NOT (((SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskmgr.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\perfmon.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND CallTrace LIKE '%|C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Definition Updates\\\\{%' ESCAPE '\\' AND CallTrace LIKE '%}\\\\mpengine.dll+%' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\GamingServices.exe' ESCAPE '\\' AND GrantedAccess IN ('0x1410', '0x410')) OR ((SourceImage LIKE '%\\\\PROCEXP64.EXE' ESCAPE '\\' OR SourceImage LIKE '%\\\\PROCEXP.EXE' ESCAPE '\\' OR SourceImage LIKE '%C:\\\\WINDOWS\\\\system32\\\\taskhostw.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\MBAMInstallerService.exe' ESCAPE '\\') AND GrantedAccess IN ('0x1410', '0x410', '0x40')) OR (SourceImage LIKE 'C:\\\\ProgramData\\\\VMware\\\\VMware Tools\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\vmtoolsd.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND GrantedAccess = '0x100000') OR ((SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\wbem\\\\wmiprvse.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\syswow64\\\\MsiExec.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') AND GrantedAccess IN ('0x1410', '0x410')) OR ((SourceImage LIKE '%\\\\thor.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\thor64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent-64.exe' ESCAPE '\\') AND GrantedAccess IN ('0x40', '0x1010')) OR (SourceImage LIKE '%\\\\explorer.exe' ESCAPE '\\' AND GrantedAccess = '0x401') OR ((SourceImage LIKE 'C:\\\\Windows\\\\system32\\\\wininit.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\') AND GrantedAccess = '0x1000000') OR (SourceImage LIKE 'C:\\\\Windows\\\\system32\\\\MRT.exe' ESCAPE '\\' AND GrantedAccess IN ('0x1410', '0x1418')) OR (GrantedAccess = '0x40' AND (SourceImage LIKE '%\\\\handle.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\handle64.exe' ESCAPE '\\')) OR ((SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') AND GrantedAccess IN ('0x1410', '0x410')) OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\Installer\\\\setup.exe' ESCAPE '\\') OR (SourceImage LIKE '%\\\\AppData\\\\Local\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' AND GrantedAccess = '0x401') OR (SourceImage LIKE 'C:\\\\PROGRAMDATA\\\\MALWAREBYTES\\\\MBAMSERVICE\\\\ctlrupdate\\\\mbupdatr.exe' ESCAPE '\\' AND GrantedAccess = '0x1410') OR ((CallTrace LIKE '%|c:\\\\program files\\\\windows defender\\\\mprtp.dll%' ESCAPE '\\' OR CallTrace LIKE '%|c:\\\\program files\\\\windows defender\\\\MpClient.dll%' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess IN ('0x410', '0x1410')) OR (SourceImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess = '0x1410')))"
+            "SELECT * FROM logs WHERE ((TargetImage LIKE '%\\\\lsass.exe' ESCAPE '\\' AND (GrantedAccess LIKE '0x40%' ESCAPE '\\' OR GrantedAccess LIKE '0x100000%' ESCAPE '\\' OR GrantedAccess LIKE '0x1410%' ESCAPE '\\' OR GrantedAccess LIKE '0x1438%' ESCAPE '\\' OR GrantedAccess LIKE '0x143a%' ESCAPE '\\' OR GrantedAccess LIKE '0x1418%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f0fff%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f1fff%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f2fff%' ESCAPE '\\' OR GrantedAccess LIKE '0x1f3fff%' ESCAPE '\\')) AND NOT (((SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskmgr.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\perfmon.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND CallTrace LIKE '%|C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Definition Updates\\\\{%' ESCAPE '\\' AND CallTrace LIKE '%}\\\\mpengine.dll+%' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\GamingServices.exe' ESCAPE '\\' AND GrantedAccess IN ('0x1410', '0x410')) OR ((SourceImage LIKE '%\\\\PROCEXP64.EXE' ESCAPE '\\' OR SourceImage LIKE '%\\\\PROCEXP.EXE' ESCAPE '\\' OR SourceImage LIKE '%C:\\\\WINDOWS\\\\system32\\\\taskhostw.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\MBAMInstallerService.exe' ESCAPE '\\') AND GrantedAccess IN ('0x1410', '0x410', '0x40')) OR (SourceImage LIKE 'C:\\\\ProgramData\\\\VMware\\\\VMware Tools\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\vmtoolsd.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND GrantedAccess = '0x100000') OR ((SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\wbem\\\\wmiprvse.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\syswow64\\\\MsiExec.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') AND GrantedAccess IN ('0x1410', '0x410')) OR ((SourceImage LIKE '%\\\\thor.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\thor64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent-64.exe' ESCAPE '\\') AND GrantedAccess IN ('0x40', '0x1010')) OR (SourceImage LIKE '%\\\\explorer.exe' ESCAPE '\\' AND GrantedAccess = '0x401') OR ((SourceImage LIKE 'C:\\\\Windows\\\\system32\\\\wininit.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\') AND GrantedAccess = '0x1000000') OR (SourceImage LIKE 'C:\\\\Windows\\\\system32\\\\MRT.exe' ESCAPE '\\' AND GrantedAccess IN ('0x1410', '0x1418')) OR (GrantedAccess = '0x40' AND (SourceImage LIKE '%\\\\handle.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\handle64.exe' ESCAPE '\\')) OR ((SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') AND GrantedAccess IN ('0x1410', '0x410')) OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\Installer\\\\setup.exe' ESCAPE '\\') OR (SourceImage LIKE '%\\\\AppData\\\\Local\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' AND GrantedAccess = '0x401') OR (SourceImage LIKE 'C:\\\\PROGRAMDATA\\\\MALWAREBYTES\\\\MBAMSERVICE\\\\ctlrupdate\\\\mbupdatr.exe' ESCAPE '\\' AND GrantedAccess = '0x1410') OR ((CallTrace LIKE '%|c:\\\\program files\\\\windows defender\\\\mprtp.dll%' ESCAPE '\\' OR CallTrace LIKE '%|c:\\\\program files\\\\windows defender\\\\MpClient.dll%' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess IN ('0x410', '0x1410')) OR (SourceImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess = '0x1410') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF')))"
         ],
         "filename": "proc_access_win_cred_dump_lsass_access.yml"
     },
@@ -31572,7 +31646,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((GrantedAccess IN ('0x147a', '0x1f3fff') AND CallTrace LIKE '%UNKNOWN%' ESCAPE '\\') AND NOT (((SourceImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\UpdateService\\\\ServiceShell.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\Explorer.EXE' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR ((SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\') AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((GrantedAccess IN ('0x147a', '0x1f3fff') AND CallTrace LIKE '%UNKNOWN%' ESCAPE '\\') AND NOT (((SourceImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\UpdateService\\\\ServiceShell.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\Explorer.EXE' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR ((SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\') AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Program Files\\\\Dell\\\\DellDataVault\\\\DDVDataCollector.exe' ESCAPE '\\')))"
         ],
         "filename": "process_access_win_shellcode_inject_msf_empire.yml"
     },
@@ -31792,7 +31866,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetImage LIKE '%\\\\WINDOWS\\\\System32\\\\svchost.exe' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE '%UNKNOWN%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((TargetImage LIKE '%\\\\WINDOWS\\\\System32\\\\svchost.exe' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE '%UNKNOWN%' ESCAPE '\\') AND NOT ((SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND (CallTrace LIKE '%Microsoft.Build.ni.dll%' ESCAPE '\\' OR CallTrace LIKE '%System.ni.dll%' ESCAPE '\\'))))"
         ],
         "filename": "proc_access_win_invoke_phantom.yml"
     },
@@ -31872,7 +31946,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((TargetImage LIKE '%\\\\lsass.exe' ESCAPE '\\' AND (GrantedAccess LIKE '%10' ESCAPE '\\' OR GrantedAccess LIKE '%30' ESCAPE '\\' OR GrantedAccess LIKE '%50' ESCAPE '\\' OR GrantedAccess LIKE '%70' ESCAPE '\\' OR GrantedAccess LIKE '%90' ESCAPE '\\' OR GrantedAccess LIKE '%B0' ESCAPE '\\' OR GrantedAccess LIKE '%D0' ESCAPE '\\' OR GrantedAccess LIKE '%F0' ESCAPE '\\' OR GrantedAccess LIKE '%18' ESCAPE '\\' OR GrantedAccess LIKE '%38' ESCAPE '\\' OR GrantedAccess LIKE '%58' ESCAPE '\\' OR GrantedAccess LIKE '%78' ESCAPE '\\' OR GrantedAccess LIKE '%98' ESCAPE '\\' OR GrantedAccess LIKE '%B8' ESCAPE '\\' OR GrantedAccess LIKE '%D8' ESCAPE '\\' OR GrantedAccess LIKE '%F8' ESCAPE '\\' OR GrantedAccess LIKE '%1A' ESCAPE '\\' OR GrantedAccess LIKE '%3A' ESCAPE '\\' OR GrantedAccess LIKE '%5A' ESCAPE '\\' OR GrantedAccess LIKE '%7A' ESCAPE '\\' OR GrantedAccess LIKE '%9A' ESCAPE '\\' OR GrantedAccess LIKE '%BA' ESCAPE '\\' OR GrantedAccess LIKE '%DA' ESCAPE '\\' OR GrantedAccess LIKE '%FA' ESCAPE '\\' OR GrantedAccess LIKE '%0x14C2' ESCAPE '\\' OR GrantedAccess LIKE '%FF' ESCAPE '\\') AND (SourceImage LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\Temporary%' ESCAPE '\\')) AND NOT ((SourceImage LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' AND (SourceImage LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\software\\_reporter\\_tool.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\DropboxUpdate.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\MBAMInstallerService.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\WebexMTA.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\JetBrains\\\\Toolbox\\\\bin\\\\jetbrains-toolbox.exe' ESCAPE '\\') AND GrantedAccess = '0x410') OR (SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess IN ('0x410', '0x1410')) OR (SourceImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess = '0x1410') OR ((SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\asgard2-agent\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\asgard2-agent-sc\\\\%' ESCAPE '\\') AND (SourceImage LIKE '%\\\\thor64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\thor.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent-64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent.exe' ESCAPE '\\') AND GrantedAccess IN ('0x1fffff', '0x1010', '0x101010')) OR (SourceImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\vs\\_bootstrapper\\_%' ESCAPE '\\' AND GrantedAccess = '0x1410') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\GoogleUpdate.exe' ESCAPE '\\' AND GrantedAccess = '0x410') OR ((SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((TargetImage LIKE '%\\\\lsass.exe' ESCAPE '\\' AND (GrantedAccess LIKE '%10' ESCAPE '\\' OR GrantedAccess LIKE '%30' ESCAPE '\\' OR GrantedAccess LIKE '%50' ESCAPE '\\' OR GrantedAccess LIKE '%70' ESCAPE '\\' OR GrantedAccess LIKE '%90' ESCAPE '\\' OR GrantedAccess LIKE '%B0' ESCAPE '\\' OR GrantedAccess LIKE '%D0' ESCAPE '\\' OR GrantedAccess LIKE '%F0' ESCAPE '\\' OR GrantedAccess LIKE '%18' ESCAPE '\\' OR GrantedAccess LIKE '%38' ESCAPE '\\' OR GrantedAccess LIKE '%58' ESCAPE '\\' OR GrantedAccess LIKE '%78' ESCAPE '\\' OR GrantedAccess LIKE '%98' ESCAPE '\\' OR GrantedAccess LIKE '%B8' ESCAPE '\\' OR GrantedAccess LIKE '%D8' ESCAPE '\\' OR GrantedAccess LIKE '%F8' ESCAPE '\\' OR GrantedAccess LIKE '%1A' ESCAPE '\\' OR GrantedAccess LIKE '%3A' ESCAPE '\\' OR GrantedAccess LIKE '%5A' ESCAPE '\\' OR GrantedAccess LIKE '%7A' ESCAPE '\\' OR GrantedAccess LIKE '%9A' ESCAPE '\\' OR GrantedAccess LIKE '%BA' ESCAPE '\\' OR GrantedAccess LIKE '%DA' ESCAPE '\\' OR GrantedAccess LIKE '%FA' ESCAPE '\\' OR GrantedAccess LIKE '%0x14C2' ESCAPE '\\' OR GrantedAccess LIKE '%FF' ESCAPE '\\') AND (SourceImage LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\Temporary%' ESCAPE '\\')) AND NOT ((SourceImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' AND (SourceImage LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\software\\_reporter\\_tool.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\DropboxUpdate.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\MBAMInstallerService.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\WebexMTA.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\JetBrains\\\\Toolbox\\\\bin\\\\jetbrains-toolbox.exe' ESCAPE '\\') AND GrantedAccess = '0x410') OR (SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess IN ('0x410', '0x1410')) OR (SourceImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\DropboxUpdate.exe' ESCAPE '\\' AND GrantedAccess = '0x1410') OR ((SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\asgard2-agent\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\asgard2-agent-sc\\\\%' ESCAPE '\\') AND (SourceImage LIKE '%\\\\thor64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\thor.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent-64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent.exe' ESCAPE '\\') AND GrantedAccess IN ('0x1fffff', '0x1010', '0x101010')) OR (SourceImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\vs\\_bootstrapper\\_%' ESCAPE '\\' AND GrantedAccess = '0x1410') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Temp\\\\%' ESCAPE '\\' AND SourceImage LIKE '%.tmp\\\\GoogleUpdate.exe' ESCAPE '\\' AND GrantedAccess = '0x410') OR ((SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\AppData\\\\Local\\\\Keybase\\\\keybase.exe' ESCAPE '\\' AND GrantedAccess = '0x1fffff')))"
         ],
         "filename": "proc_access_win_susp_proc_access_lsass_susp_source.yml"
     },
@@ -32647,7 +32721,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Wow6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\ShellServiceObjectDelayLoad%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Run\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnceEx\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServices\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServicesOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellServiceObjects%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellIconOverlayIdentifiers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellExecuteHooks%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\SharedTaskScheduler%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects%' ESCAPE '\\')) AND NOT ((NewValue = '(Empty)') OR (NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\{%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\setup.exe%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\OfficeClickToRun.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Office\\\\ClickToRun\\\\REGISTRY\\\\MACHINE\\\\Software\\\\Wow6432Node\\\\%' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\integration\\\\integrator.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\integration\\\\integrator.exe' ESCAPE '\\') AND TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects\\\\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}\\\\%' ESCAPE '\\') OR (NewValue LIKE '%-A251-47B7-93E1-CDD82E34AF8B}' ESCAPE '\\' OR NewValue = 'grpconv -o' OR NewValue LIKE '%C:\\\\Program Files%' ESCAPE '\\' AND NewValue LIKE '%\\\\Dropbox\\\\Client\\\\Dropbox.exe%' ESCAPE '\\' AND NewValue LIKE '% /systemstartup%' ESCAPE '\\') OR (TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects\\\\{92EF2EAD-A7CE-4424-B0DB-499CF856608E}\\\\NoExplorer' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\windowsdesktop-runtime-%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\WOW6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\{e2d1ae32-dd1d-4ad7-a298-10e42e7840fc}' ESCAPE '\\' OR TargetObject LIKE '%\\\\WOW6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\{7037b699-7382-448c-89a7-4765961d2537}' ESCAPE '\\') AND (NewValue LIKE '\"C:\\\\ProgramData\\\\Package Cache\\\\{7037b699-7382-448c-89a7-4765961d2537}\\\\windowsdesktop-runtime-%' ESCAPE '\\' OR NewValue LIKE '\"C:\\\\ProgramData\\\\Package Cache\\\\{e2d1ae32-dd1d-4ad7-a298-10e42e7840fc}\\\\windowsdesktop-runtime-%' ESCAPE '\\') AND NewValue LIKE '%.exe\" /burn.runonce' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\Updates\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (NewValue LIKE '\"C:\\\\ProgramData\\\\Package Cache\\\\{d21a4f20-968a-4b0c-bf04-a38da5f06e41}\\\\windowsdesktop-runtime-%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\VC\\_redist.x64.exe' ESCAPE '\\' AND NewValue LIKE '%}\\\\VC\\_redist.x64.exe\" /burn.runonce' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Wow6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\ShellServiceObjectDelayLoad%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Run\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunOnceEx\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServices\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\RunServicesOnce\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellServiceObjects%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellIconOverlayIdentifiers%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\ShellExecuteHooks%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\SharedTaskScheduler%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects%' ESCAPE '\\')) AND NOT ((NewValue = '(Empty)') OR (NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\{%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\setup.exe%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\OfficeClickToRun.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Office\\\\ClickToRun\\\\REGISTRY\\\\MACHINE\\\\Software\\\\Wow6432Node\\\\%' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\integration\\\\integrator.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\integration\\\\integrator.exe' ESCAPE '\\') AND TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects\\\\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}\\\\%' ESCAPE '\\') OR (NewValue LIKE '%-A251-47B7-93E1-CDD82E34AF8B}' ESCAPE '\\' OR NewValue = 'grpconv -o' OR NewValue LIKE '%C:\\\\Program Files%' ESCAPE '\\' AND NewValue LIKE '%\\\\Dropbox\\\\Client\\\\Dropbox.exe%' ESCAPE '\\' AND NewValue LIKE '% /systemstartup%' ESCAPE '\\') OR (TargetObject LIKE '%\\\\Explorer\\\\Browser Helper Objects\\\\{92EF2EAD-A7CE-4424-B0DB-499CF856608E}\\\\NoExplorer' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\windowsdesktop-runtime-%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\WOW6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\{e2d1ae32-dd1d-4ad7-a298-10e42e7840fc}' ESCAPE '\\' OR TargetObject LIKE '%\\\\WOW6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\{7037b699-7382-448c-89a7-4765961d2537}' ESCAPE '\\') AND (NewValue LIKE '\"C:\\\\ProgramData\\\\Package Cache\\\\{7037b699-7382-448c-89a7-4765961d2537}\\\\windowsdesktop-runtime-%' ESCAPE '\\' OR NewValue LIKE '\"C:\\\\ProgramData\\\\Package Cache\\\\{e2d1ae32-dd1d-4ad7-a298-10e42e7840fc}\\\\windowsdesktop-runtime-%' ESCAPE '\\') AND NewValue LIKE '%.exe\" /burn.runonce' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\Updates\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (NewValue LIKE '\"C:\\\\ProgramData\\\\Package Cache\\\\{d21a4f20-968a-4b0c-bf04-a38da5f06e41}\\\\windowsdesktop-runtime-%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\VC\\_redist.x64.exe' ESCAPE '\\' AND NewValue LIKE '%}\\\\VC\\_redist.x64.exe\" /burn.runonce' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\ProgramData\\\\Package Cache%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\winsdksetup.exe' ESCAPE '\\' AND NewValue LIKE '%\\\\winsdksetup.exe\" /burn.runonce' ESCAPE '\\')))"
         ],
         "filename": "registry_set_asep_reg_keys_modification_wow6432node.yml"
     },
@@ -35987,7 +36061,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((PipeName LIKE '%\\\\MSSE-%' ESCAPE '\\' AND PipeName LIKE '%-server%' ESCAPE '\\') OR PipeName LIKE '\\\\postex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\postex\\_ssh\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\status\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\msagent\\_%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((PipeName LIKE '%\\\\MSSE-%' ESCAPE '\\' AND PipeName LIKE '%-server%' ESCAPE '\\') OR PipeName LIKE '\\\\postex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\status\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\msagent\\_%' ESCAPE '\\')"
         ],
         "filename": "pipe_created_mal_cobaltstrike.yml"
     },
@@ -36115,7 +36189,7 @@
         "title": "Image Load of VSS_PS.dll by Uncommon Executable",
         "id": "333cdbe8-27bb-4246-bf82-b41a0dca4b70",
         "status": "experimental",
-        "description": "Detects the image load of vss_ps.dll by uncommon executables using OriginalFileName datapoint",
+        "description": "Detects the image load of vss_ps.dll by uncommon executables",
         "author": "Markus Neis, @markus_neis",
         "tags": [
             "attack.defense_evasion",
@@ -36127,7 +36201,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\') AND NewProcessName LIKE '%c:\\\\windows\\\\%' ESCAPE '\\') OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\') AND NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\')))"
         ],
         "filename": "image_load_susp_vss_ps_load.yml"
     },
@@ -36462,6 +36536,26 @@
         "filename": "image_load_susp_office_kerberos_dll_load.yml"
     },
     {
+        "title": "Image Load of VSS Dll by Uncommon Executable",
+        "id": "37774c23-25a1-4adb-bb6d-8bb9fd59c0f8",
+        "status": "experimental",
+        "description": "Detects the image load of VSS DLL by uncommon executables",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.impact",
+            "attack.t1490"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\vsstrace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vssapi.dll' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_susp_vss_dll_load.yml"
+    },
+    {
         "title": "Python Py2Exe Image Load",
         "id": "cbb56d62-4060-40f7-9466-d8aaf3123f83",
         "status": "experimental",
@@ -36477,7 +36571,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Description = 'Python Core' AND NOT ((NewProcessName LIKE '%Python%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\ProgramData\\\\Anaconda3\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Description = 'Python Core' AND NOT (((NewProcessName LIKE '%Python%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\ProgramData\\\\Anaconda3\\\\%' ESCAPE '\\')) OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND NewProcessName = '')))"
         ],
         "filename": "image_load_susp_python_image_load.yml"
     },
