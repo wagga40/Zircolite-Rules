@@ -6435,7 +6435,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%domainlist%' ESCAPE '\\' OR CommandLine LIKE '%trustdmp%' ESCAPE '\\' OR CommandLine LIKE '%dcmodes%' ESCAPE '\\' OR CommandLine LIKE '%adinfo%' ESCAPE '\\' OR CommandLine LIKE '% dclist %' ESCAPE '\\' OR CommandLine LIKE '%computer\\_pwdnotreqd%' ESCAPE '\\' OR CommandLine LIKE '%objectcategory=%' ESCAPE '\\' OR CommandLine LIKE '%-subnets -f%' ESCAPE '\\' OR CommandLine LIKE '%name=\"Domain Admins\"%' ESCAPE '\\' OR CommandLine LIKE '%-sc u:%' ESCAPE '\\' OR CommandLine LIKE '%domainncs%' ESCAPE '\\' OR CommandLine LIKE '%dompol%' ESCAPE '\\' OR CommandLine LIKE '% oudmp %' ESCAPE '\\' OR CommandLine LIKE '%subnetdmp%' ESCAPE '\\' OR CommandLine LIKE '%gpodmp%' ESCAPE '\\' OR CommandLine LIKE '%fspdmp%' ESCAPE '\\' OR CommandLine LIKE '%users\\_noexpire%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_active%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_pwdnotreqd%' ESCAPE '\\') OR Imphash IN ('bca5675746d13a1f246e2da3c2217492', '53e117a96057eaf19c41380d0e87f1c2') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\')) AND NOT (Image LIKE '%\\\\AdFind.exe' ESCAPE '\\' AND OriginalFileName = 'AdFind.exe'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%domainlist%' ESCAPE '\\' OR CommandLine LIKE '%trustdmp%' ESCAPE '\\' OR CommandLine LIKE '%dcmodes%' ESCAPE '\\' OR CommandLine LIKE '%adinfo%' ESCAPE '\\' OR CommandLine LIKE '% dclist %' ESCAPE '\\' OR CommandLine LIKE '%computer\\_pwdnotreqd%' ESCAPE '\\' OR CommandLine LIKE '%objectcategory=%' ESCAPE '\\' OR CommandLine LIKE '%-subnets -f%' ESCAPE '\\' OR CommandLine LIKE '%name=\"Domain Admins\"%' ESCAPE '\\' OR CommandLine LIKE '%-sc u:%' ESCAPE '\\' OR CommandLine LIKE '%domainncs%' ESCAPE '\\' OR CommandLine LIKE '%dompol%' ESCAPE '\\' OR CommandLine LIKE '% oudmp %' ESCAPE '\\' OR CommandLine LIKE '%subnetdmp%' ESCAPE '\\' OR CommandLine LIKE '%gpodmp%' ESCAPE '\\' OR CommandLine LIKE '%fspdmp%' ESCAPE '\\' OR CommandLine LIKE '%users\\_noexpire%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_active%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_pwdnotreqd%' ESCAPE '\\') OR Imphash IN ('bca5675746d13a1f246e2da3c2217492', '53e117a96057eaf19c41380d0e87f1c2') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\') OR OriginalFileName = 'AdFind.exe') AND NOT (Image LIKE '%\\\\AdFind.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_renamed_adfind.yml"
     },
@@ -16483,6 +16483,31 @@
         "filename": "net_connection_win_rdp_to_http.yml"
     },
     {
+        "title": "Communication To Ngrok Tunneling Service",
+        "id": "1d08ac94-400d-4469-a82f-daee9a908849",
+        "status": "experimental",
+        "description": "Detects an executable accessing an ngrok tunneling endpoint, which could be a sign of forbidden exfiltration of data exfiltration by malicious actors",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.exfiltration",
+            "attack.command_and_control",
+            "attack.t1567",
+            "attack.t1568.002",
+            "attack.t1572",
+            "attack.t1090",
+            "attack.t1102",
+            "attack.s0508"
+        ],
+        "falsepositives": [
+            "Legitimate use of ngrok"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (DestinationHostname LIKE '%tunnel.us.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.eu.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.ap.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.au.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.sa.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.jp.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.in.ngrok.com%' ESCAPE '\\'))"
+        ],
+        "filename": "net_connection_win_ngrok_tunnel.yml"
+    },
+    {
         "title": "Suspicious Outbound RDP Connections",
         "id": "ed74fe75-7594-4b4b-ae38-e38e3fd2eb23",
         "status": "test",
@@ -16499,7 +16524,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationPort = '3389' AND Initiated = 'true') AND NOT ((Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR Image LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR Image LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR Image LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR Image LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR Image LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR Image LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationPort = '3389' AND Initiated = 'true') AND NOT ((Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR Image LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR Image LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR Image LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR Image LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR Image LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR Image LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\'))"
         ],
         "filename": "net_connection_win_susp_rdp.yml"
     },

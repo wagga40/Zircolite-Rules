@@ -1926,6 +1926,30 @@
         "filename": "net_connection_lnx_back_connect_shell_dev.yml"
     },
     {
+        "title": "Communication To Ngrok Tunneling Service - Linux",
+        "id": "19bf6fdb-7721-4f3d-867f-53467f6a5db6",
+        "description": "Detects an executable accessing an ngrok tunneling endpoint, which could be a sign of forbidden exfiltration of data exfiltration by malicious actors",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.exfiltration",
+            "attack.command_and_control",
+            "attack.t1567",
+            "attack.t1568.002",
+            "attack.t1572",
+            "attack.t1090",
+            "attack.t1102",
+            "attack.s0508"
+        ],
+        "falsepositives": [
+            "Legitimate use of ngrok"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (DestinationHostname LIKE '%tunnel.us.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.eu.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.ap.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.au.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.sa.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.jp.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.in.ngrok.com%' ESCAPE '\\')"
+        ],
+        "filename": "net_connection_lnx_ngrok_tunnel.yml"
+    },
+    {
         "title": "Linux Crypto Mining Pool Connections",
         "id": "a46c93b7-55ed-4d27-a41b-c259456c4746",
         "description": "Detects process connections to a Monero crypto mining pool",

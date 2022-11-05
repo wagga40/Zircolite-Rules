@@ -5625,7 +5625,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%.exe' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\cleanmgr.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\dxgiadaptercache.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\Dism.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\wuauclt.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\Download\\\\Install\\\\%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%.exe' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\cleanmgr.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\dxgiadaptercache.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\Dism.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\wuauclt.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\Download\\\\Install\\\\%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Squirrel.exe' ESCAPE '\\'))))"
         ],
         "filename": "file_event_win_susp_dropper.yml"
     },
@@ -10386,7 +10386,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%domainlist%' ESCAPE '\\' OR CommandLine LIKE '%trustdmp%' ESCAPE '\\' OR CommandLine LIKE '%dcmodes%' ESCAPE '\\' OR CommandLine LIKE '%adinfo%' ESCAPE '\\' OR CommandLine LIKE '% dclist %' ESCAPE '\\' OR CommandLine LIKE '%computer\\_pwdnotreqd%' ESCAPE '\\' OR CommandLine LIKE '%objectcategory=%' ESCAPE '\\' OR CommandLine LIKE '%-subnets -f%' ESCAPE '\\' OR CommandLine LIKE '%name=\"Domain Admins\"%' ESCAPE '\\' OR CommandLine LIKE '%-sc u:%' ESCAPE '\\' OR CommandLine LIKE '%domainncs%' ESCAPE '\\' OR CommandLine LIKE '%dompol%' ESCAPE '\\' OR CommandLine LIKE '% oudmp %' ESCAPE '\\' OR CommandLine LIKE '%subnetdmp%' ESCAPE '\\' OR CommandLine LIKE '%gpodmp%' ESCAPE '\\' OR CommandLine LIKE '%fspdmp%' ESCAPE '\\' OR CommandLine LIKE '%users\\_noexpire%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_active%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_pwdnotreqd%' ESCAPE '\\') OR Imphash IN ('bca5675746d13a1f246e2da3c2217492', '53e117a96057eaf19c41380d0e87f1c2') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\')) AND NOT (NewProcessName LIKE '%\\\\AdFind.exe' ESCAPE '\\' AND OriginalFileName = 'AdFind.exe'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%domainlist%' ESCAPE '\\' OR CommandLine LIKE '%trustdmp%' ESCAPE '\\' OR CommandLine LIKE '%dcmodes%' ESCAPE '\\' OR CommandLine LIKE '%adinfo%' ESCAPE '\\' OR CommandLine LIKE '% dclist %' ESCAPE '\\' OR CommandLine LIKE '%computer\\_pwdnotreqd%' ESCAPE '\\' OR CommandLine LIKE '%objectcategory=%' ESCAPE '\\' OR CommandLine LIKE '%-subnets -f%' ESCAPE '\\' OR CommandLine LIKE '%name=\"Domain Admins\"%' ESCAPE '\\' OR CommandLine LIKE '%-sc u:%' ESCAPE '\\' OR CommandLine LIKE '%domainncs%' ESCAPE '\\' OR CommandLine LIKE '%dompol%' ESCAPE '\\' OR CommandLine LIKE '% oudmp %' ESCAPE '\\' OR CommandLine LIKE '%subnetdmp%' ESCAPE '\\' OR CommandLine LIKE '%gpodmp%' ESCAPE '\\' OR CommandLine LIKE '%fspdmp%' ESCAPE '\\' OR CommandLine LIKE '%users\\_noexpire%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_active%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_pwdnotreqd%' ESCAPE '\\') OR Imphash IN ('bca5675746d13a1f246e2da3c2217492', '53e117a96057eaf19c41380d0e87f1c2') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\') OR OriginalFileName = 'AdFind.exe') AND NOT (NewProcessName LIKE '%\\\\AdFind.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_renamed_adfind.yml"
     },
@@ -14319,25 +14319,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%Compress-Archive %' ESCAPE '\\' AND CommandLine LIKE '% -Path %' ESCAPE '\\' AND CommandLine LIKE '% -DestinationPath %' ESCAPE '\\' AND CommandLine LIKE '%$env:TEMP\\\\%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_susp_zip_compress.yml"
-    },
-    {
-        "title": "Process Start From Suspicious Folder",
-        "id": "dca91cfd-d7ab-4c66-8da7-ee57d487b35b",
-        "status": "experimental",
-        "description": "Detects process start from rare or uncommon folders like temporary folder or folders that usually don't contain executable files",
-        "author": "frack113",
-        "tags": [
-            "attack.execution",
-            "attack.t1204"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Temporary Internet%' ESCAPE '\\') AND NOT (((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\cleanmgr.exe' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\Installer\\\\resources\\\\app\\\\ServiceHub\\\\Services\\\\Microsoft.VisualStudio.Setup.Service\\\\BackgroundDownload.exe' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\dxgiadaptercache.exe' ESCAPE '\\') OR ParentProcessName LIKE 'C:\\\\Program Files (x86)\\\\NVIDIA Corporation\\\\%' ESCAPE '\\') OR (NewProcessName LIKE '%setup.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Temp\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%.tmp\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_susp_run_folder.yml"
     },
     {
         "title": "Emotet RunDLL32 Process Creation",
@@ -18337,30 +18318,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '% -version 2 %' ESCAPE '\\' OR CommandLine LIKE '% -versio 2 %' ESCAPE '\\' OR CommandLine LIKE '% -versi 2 %' ESCAPE '\\' OR CommandLine LIKE '% -vers 2 %' ESCAPE '\\' OR CommandLine LIKE '% -ver 2 %' ESCAPE '\\' OR CommandLine LIKE '% -ve 2 %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_downgrade_attack.yml"
-    },
-    {
-        "title": "Possible Applocker Bypass",
-        "id": "82a19e3a-2bfe-4a91-8c0d-5d4c98fbb719",
-        "status": "test",
-        "description": "Detects execution of executables that can be used to bypass Applocker whitelisting",
-        "author": "juju4",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218.004",
-            "attack.t1218.009",
-            "attack.t1127.001",
-            "attack.t1218.005",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "False positives depend on scripts and administrative tools used in the monitored environment",
-            "Using installutil to add features for .NET applications (primarily would occur in developer environments)"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%\\\\msdt.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\installutil.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\regsvcs.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\regasm.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\msbuild.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ieexec.exe%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_possible_applocker_bypass.yml"
     },
     {
         "title": "Windows Update Client LOLBIN",
@@ -26983,6 +26940,31 @@
         "filename": "net_connection_win_script.yml"
     },
     {
+        "title": "Communication To Ngrok Tunneling Service",
+        "id": "1d08ac94-400d-4469-a82f-daee9a908849",
+        "status": "experimental",
+        "description": "Detects an executable accessing an ngrok tunneling endpoint, which could be a sign of forbidden exfiltration of data exfiltration by malicious actors",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.exfiltration",
+            "attack.command_and_control",
+            "attack.t1567",
+            "attack.t1568.002",
+            "attack.t1572",
+            "attack.t1090",
+            "attack.t1102",
+            "attack.s0508"
+        ],
+        "falsepositives": [
+            "Legitimate use of ngrok"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (DestinationHostname LIKE '%tunnel.us.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.eu.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.ap.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.au.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.sa.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.jp.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.in.ngrok.com%' ESCAPE '\\')"
+        ],
+        "filename": "net_connection_win_ngrok_tunnel.yml"
+    },
+    {
         "title": "HH.EXE Network Connections",
         "id": "468a8cea-2920-4909-a593-0cbe1d96674a",
         "status": "experimental",
@@ -27018,7 +27000,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((DestinationPort = '3389' AND Initiated = 'true') AND NOT ((NewProcessName LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((DestinationPort = '3389' AND Initiated = 'true') AND NOT ((NewProcessName LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR NewProcessName LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\'))"
         ],
         "filename": "net_connection_win_susp_rdp.yml"
     },
@@ -29948,7 +29930,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '%Get-WmiObject%' ESCAPE '\\' OR ScriptBlockText LIKE '%gwmi%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText LIKE '%Get-WmiObject%' ESCAPE '\\' OR ScriptBlockText LIKE '%gwmi%' ESCAPE '\\') AND NOT ((Path LIKE '%\\\\CL\\_Utility.ps1' ESCAPE '\\' AND ScriptBlockText LIKE '%function Get-FreeSpace%' ESCAPE '\\' AND ScriptBlockText LIKE '%SELECT % FROM Win32\\_LogicalDisk WHERE MediaType=12%' ESCAPE '\\')))"
         ],
         "filename": "posh_ps_susp_gwmi.yml"
     },
@@ -30631,7 +30613,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND ContextInfo LIKE '%' ESCAPE '\\' AND NOT (((ContextInfo LIKE '%= powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/System32/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/SysWOW64/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\')) OR (ContextInfo LIKE '%ConfigSyncRun.exe%' ESCAPE '\\') OR (ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\dsac.exe%' ESCAPE '\\') OR (ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\wsmprovhost.exe -Embedding%' ESCAPE '\\') OR ((Payload LIKE '%Update-Help%' ESCAPE '\\' OR Payload LIKE '%Failed to update Help for the module%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND ContextInfo LIKE '%' ESCAPE '\\' AND NOT (((ContextInfo LIKE '%= powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/System32/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/SysWOW64/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\WINDOWS\\\\System32\\\\sdiagnhost.exe -Embedding %' ESCAPE '\\')) OR (ContextInfo LIKE '%ConfigSyncRun.exe%' ESCAPE '\\') OR (ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\dsac.exe%' ESCAPE '\\') OR (ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\wsmprovhost.exe -Embedding%' ESCAPE '\\') OR ((Payload LIKE '%Update-Help%' ESCAPE '\\' OR Payload LIKE '%Failed to update Help for the module%' ESCAPE '\\'))))"
         ],
         "filename": "posh_pm_alternate_powershell_hosts.yml"
     },
@@ -32088,7 +32070,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((((CallTrace LIKE '%C:\\\\WINDOWS\\\\SYSTEM32\\\\ntdll.dll+%' ESCAPE '\\' AND CallTrace LIKE '%|C:\\\\WINDOWS\\\\System32\\\\KERNELBASE.dll+%' ESCAPE '\\' AND CallTrace LIKE '%|UNKNOWN(%' ESCAPE '\\' AND CallTrace LIKE '%)%' ESCAPE '\\') OR (CallTrace LIKE '%UNKNOWN(%' ESCAPE '\\' AND CallTrace LIKE '%)|UNKNOWN(%' ESCAPE '\\' AND CallTrace LIKE '%)' ESCAPE '\\')) OR (CallTrace LIKE '%UNKNOWN%' ESCAPE '\\' AND GrantedAccess IN ('0x1F0FFF', '0x1F1FFF', '0x143A', '0x1410', '0x1010', '0x1F2FFF', '0x1F3FFF', '0x1FFFFF'))) AND NOT (((SourceImage LIKE '%\\\\Windows\\\\System32\\\\sdiagnhost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\procexp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent-64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\git\\\\usr\\\\bin\\\\sh.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\IDE\\\\devenv.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\GitHubDesktop\\\\Update.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\backgroundTaskHost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%\\\\NGenTask.exe%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\System32\\\\DriverStore\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Users\\\\%\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskhostw.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\ctfmon.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\NhNotifSys.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\') OR TargetImage LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR CallTrace LIKE '%|C:\\\\WINDOWS\\\\System32\\\\RPCRT4.dll+%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\Explorer.EXE' ESCAPE '\\' AND (TargetImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\backgroundTaskHost.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\WINDOWS\\\\explorer.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR (SourceImage LIKE '%\\\\eclipse.exe' ESCAPE '\\' AND (CallTrace LIKE '%\\\\jre\\\\bin\\\\java.dll%' ESCAPE '\\' OR CallTrace LIKE '%|C:\\\\Windows\\\\SYSTEM32\\\\windows.storage.dll+%' ESCAPE '\\' OR CallTrace LIKE '%\\\\configuration\\\\org.eclipse.osgi\\\\%' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Windows\\\\system32\\\\OpenWith.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\Explorer.EXE' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (((CallTrace LIKE '%C:\\\\WINDOWS\\\\SYSTEM32\\\\ntdll.dll+%' ESCAPE '\\' AND CallTrace LIKE '%|C:\\\\WINDOWS\\\\System32\\\\KERNELBASE.dll+%' ESCAPE '\\' AND CallTrace LIKE '%|UNKNOWN(%' ESCAPE '\\' AND CallTrace LIKE '%)%' ESCAPE '\\') OR (CallTrace LIKE '%UNKNOWN(%' ESCAPE '\\' AND CallTrace LIKE '%)|UNKNOWN(%' ESCAPE '\\' AND CallTrace LIKE '%)' ESCAPE '\\') OR (CallTrace LIKE '%UNKNOWN%' ESCAPE '\\' AND GrantedAccess IN ('0x1F0FFF', '0x1F1FFF', '0x143A', '0x1410', '0x1010', '0x1F2FFF', '0x1F3FFF', '0x1FFFFF'))) AND NOT (((SourceImage LIKE '%\\\\Windows\\\\System32\\\\sdiagnhost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\procexp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent-64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\aurora-agent.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\git\\\\usr\\\\bin\\\\sh.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\IDE\\\\devenv.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\GitHubDesktop\\\\Update.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\backgroundTaskHost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%\\\\NGenTask.exe%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\System32\\\\DriverStore\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskhostw.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\ctfmon.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\NhNotifSys.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\') OR TargetImage LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR CallTrace LIKE '%|C:\\\\WINDOWS\\\\System32\\\\RPCRT4.dll+%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\Explorer.EXE' ESCAPE '\\' AND (TargetImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\backgroundTaskHost.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\WINDOWS\\\\explorer.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR (SourceImage LIKE '%\\\\eclipse.exe' ESCAPE '\\' AND (CallTrace LIKE '%\\\\jre\\\\bin\\\\java.dll%' ESCAPE '\\' OR CallTrace LIKE '%|C:\\\\Windows\\\\SYSTEM32\\\\windows.storage.dll+%' ESCAPE '\\' OR CallTrace LIKE '%\\\\configuration\\\\org.eclipse.osgi\\\\%' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Windows\\\\system32\\\\OpenWith.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\Explorer.EXE' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe' ESCAPE '\\' AND (TargetImage LIKE '%:\\\\Windows\\\\Explorer.EXE' ESCAPE '\\' OR TargetImage LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\WWAHost.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\sppsvc.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\SppExtComObj.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_access_win_in_memory_assembly_execution.yml"
     },
