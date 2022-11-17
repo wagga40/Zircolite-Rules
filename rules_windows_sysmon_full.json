@@ -8341,7 +8341,7 @@
         "title": "Always Install Elevated MSI Spawned Cmd And Powershell",
         "id": "1e53dd56-8d83-4eb4-a43e-b790a05510aa",
         "status": "test",
-        "description": "This rule looks for Windows Installer service (msiexec.exe) spawned command line and/or powershell",
+        "description": "Detects Windows Installer service (msiexec.exe) spawning \"cmd\" or \"powershell\"",
         "author": "Teymur Kheirkhabarov (idea), Mangatas Tondang (rule), oscd.community",
         "tags": [
             "attack.privilege_escalation",
@@ -8695,7 +8695,7 @@
         "title": "Execute From Alternate Data Streams",
         "id": "7f43c430-5001-4f8b-aaa9-c3b88f18fa5c",
         "status": "test",
-        "description": "Adversaries may use NTFS file attributes to hide their malicious data in order to evade detection",
+        "description": "Detects execution from an Alternate Data Stream (ADS). Adversaries may use NTFS file attributes to hide their malicious data in order to evade detection",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
@@ -9252,7 +9252,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_susp_targetfolder.yml"
     },
@@ -10560,7 +10560,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' AND (CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\') OR (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' AND CommandLine LIKE '% /transfer %' ESCAPE '\\') OR CommandLine LIKE '%copy bitsadmin.exe%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\') OR ((Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND CommandLine LIKE '% /transfer %' ESCAPE '\\') OR CommandLine LIKE '%copy bitsadmin.exe%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download.yml"
     },
@@ -10579,7 +10579,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\attrib.exe' ESCAPE '\\' AND CommandLine LIKE '% +s %' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +s %' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_attrib_system.yml"
     },
@@ -11883,7 +11883,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\services.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\lsass.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\csrss.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\smss.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\wininit.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\searchindexer.exe' ESCAPE '\\') AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\')) AND NOT (CommandLine LIKE '% route %' ESCAPE '\\' AND CommandLine LIKE '% ADD %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentImage LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\services.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\lsass.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\csrss.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\smss.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\wininit.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\searchindexer.exe' ESCAPE '\\') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\')) AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'Cmd.Exe'))) AND NOT (CommandLine LIKE '% route %' ESCAPE '\\' AND CommandLine LIKE '% ADD %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_abusing_debug_privilege.yml"
     },
@@ -12671,7 +12671,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%http://1%' ESCAPE '\\' OR CommandLine LIKE '%http://2%' ESCAPE '\\' OR CommandLine LIKE '%http://3%' ESCAPE '\\' OR CommandLine LIKE '%http://4%' ESCAPE '\\' OR CommandLine LIKE '%http://5%' ESCAPE '\\' OR CommandLine LIKE '%http://6%' ESCAPE '\\' OR CommandLine LIKE '%http://7%' ESCAPE '\\' OR CommandLine LIKE '%http://8%' ESCAPE '\\' OR CommandLine LIKE '%http://9%' ESCAPE '\\' OR CommandLine LIKE '%https://1%' ESCAPE '\\' OR CommandLine LIKE '%https://2%' ESCAPE '\\' OR CommandLine LIKE '%https://3%' ESCAPE '\\' OR CommandLine LIKE '%https://4%' ESCAPE '\\' OR CommandLine LIKE '%https://5%' ESCAPE '\\' OR CommandLine LIKE '%https://6%' ESCAPE '\\' OR CommandLine LIKE '%https://7%' ESCAPE '\\' OR CommandLine LIKE '%https://8%' ESCAPE '\\' OR CommandLine LIKE '%https://9%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%http://1%' ESCAPE '\\' OR CommandLine LIKE '%http://2%' ESCAPE '\\' OR CommandLine LIKE '%http://3%' ESCAPE '\\' OR CommandLine LIKE '%http://4%' ESCAPE '\\' OR CommandLine LIKE '%http://5%' ESCAPE '\\' OR CommandLine LIKE '%http://6%' ESCAPE '\\' OR CommandLine LIKE '%http://7%' ESCAPE '\\' OR CommandLine LIKE '%http://8%' ESCAPE '\\' OR CommandLine LIKE '%http://9%' ESCAPE '\\' OR CommandLine LIKE '%https://1%' ESCAPE '\\' OR CommandLine LIKE '%https://2%' ESCAPE '\\' OR CommandLine LIKE '%https://3%' ESCAPE '\\' OR CommandLine LIKE '%https://4%' ESCAPE '\\' OR CommandLine LIKE '%https://5%' ESCAPE '\\' OR CommandLine LIKE '%https://6%' ESCAPE '\\' OR CommandLine LIKE '%https://7%' ESCAPE '\\' OR CommandLine LIKE '%https://8%' ESCAPE '\\' OR CommandLine LIKE '%https://9%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_susp_ip.yml"
     },
@@ -13008,7 +13008,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\attrib.exe' ESCAPE '\\' AND CommandLine LIKE '% +s%' ESCAPE '\\' AND (CommandLine LIKE '% \\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') AND (CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.ps1%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.exe%' ESCAPE '\\')) AND NOT (CommandLine LIKE '%\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.exe%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +s%' ESCAPE '\\' AND (CommandLine LIKE '% \\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') AND (CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.ps1%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.exe%' ESCAPE '\\')) AND NOT (CommandLine LIKE '%\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.exe%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_attrib_system_susp_paths.yml"
     },
@@ -15084,7 +15084,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND ParentImage LIKE '%\\\\7zFM.exe' ESCAPE '\\') AND NOT ((CommandLine LIKE '% /c %' ESCAPE '\\') OR (CommandLine = '')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND ParentImage LIKE '%\\\\7zFM.exe' ESCAPE '\\') AND NOT ((CommandLine LIKE '% /c %' ESCAPE '\\') OR (CommandLine = '')))"
         ],
         "filename": "proc_creation_win_7zip_cve_2022_29072.yml"
     },
@@ -15621,7 +15621,7 @@
         "id": "54773c5f-f1cc-4703-9126-2f797d96a69d",
         "status": "experimental",
         "description": "Detects the use of Advanced Port Scanner.",
-        "author": "Nasreddine Bencherchali @nas_bench",
+        "author": "Nasreddine Bencherchali",
         "tags": [
             "attack.discovery",
             "attack.t1046",
@@ -15633,7 +15633,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\advanced\\_port\\_scanner%' ESCAPE '\\' OR (CommandLine LIKE '%/portable%' ESCAPE '\\' AND CommandLine LIKE '%/lng%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\advanced\\_port\\_scanner%' ESCAPE '\\' OR OriginalFileName LIKE '%advanced\\_port\\_scanner%' ESCAPE '\\' OR Description LIKE '%Advanced Port Scanner%' ESCAPE '\\') OR (CommandLine LIKE '%/portable%' ESCAPE '\\' AND CommandLine LIKE '%/lng%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_advanced_port_scanner.yml"
     },
@@ -16049,7 +16049,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%.paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%.hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%.ghostbin.co/%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%.paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%.hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%.ghostbin.co/%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_susp_domain.yml"
     },
@@ -18296,7 +18296,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\xcopy.exe' ESCAPE '\\' AND CommandLine LIKE '%/S%' ESCAPE '\\' AND CommandLine LIKE '%/E%' ESCAPE '\\' AND CommandLine LIKE '%/C%' ESCAPE '\\' AND CommandLine LIKE '%/Q%' ESCAPE '\\' AND CommandLine LIKE '%/H%' ESCAPE '\\' AND CommandLine LIKE '%\\\\\\\\\\*' ESCAPE '\\') OR (Image LIKE '%\\\\adexplorer.exe' ESCAPE '\\' AND CommandLine LIKE '%-snapshot%' ESCAPE '\\' AND CommandLine LIKE '%\"\"%' ESCAPE '\\' AND CommandLine LIKE '%c:\\\\users\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\xcopy.exe' ESCAPE '\\' OR OriginalFileName = 'XCOPY.EXE') AND (CommandLine LIKE '%/S%' ESCAPE '\\' AND CommandLine LIKE '%/E%' ESCAPE '\\' AND CommandLine LIKE '%/C%' ESCAPE '\\' AND CommandLine LIKE '%/Q%' ESCAPE '\\' AND CommandLine LIKE '%/H%' ESCAPE '\\' AND CommandLine LIKE '%\\\\\\\\\\*' ESCAPE '\\')) OR ((Image LIKE '%\\\\adexplorer.exe' ESCAPE '\\' OR OriginalFileName = 'AdExp') AND (CommandLine LIKE '%-snapshot%' ESCAPE '\\' AND CommandLine LIKE '%\"\"%' ESCAPE '\\' AND CommandLine LIKE '%c:\\\\users\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_apt_bear_activity_gtr19.yml"
     },
@@ -18390,7 +18390,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%>%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'Cmd.Exe' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') AND CommandLine LIKE '%>%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_cmd_redirect.yml"
     },
@@ -18468,7 +18468,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\reg.exe' ESCAPE '\\' AND (CommandLine LIKE '% save %' ESCAPE '\\' OR CommandLine LIKE '% export %' ESCAPE '\\') AND (CommandLine LIKE '%hklm\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%hklm\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%HKEY\\_LOCAL\\_MACHINE\\\\SAM%' ESCAPE '\\' OR CommandLine LIKE '%HKEY\\_LOCAL\\_MACHINE\\\\SECURITY%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '% save %' ESCAPE '\\' OR CommandLine LIKE '% export %' ESCAPE '\\') AND (CommandLine LIKE '%hklm\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%hklm\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%HKEY\\_LOCAL\\_MACHINE\\\\SAM%' ESCAPE '\\' OR CommandLine LIKE '%HKEY\\_LOCAL\\_MACHINE\\\\SECURITY%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_credential_acquisition_registry_hive_dumping.yml"
     },
@@ -18528,7 +18528,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\reg.exe' ESCAPE '\\' AND CommandLine LIKE '%add%' ESCAPE '\\' AND CommandLine LIKE '%CurrentVersion\\\\Control Panel\\\\CPLs%' ESCAPE '\\') OR (CommandLine LIKE '%.cpl' ESCAPE '\\' AND NOT (((CommandLine LIKE '%\\\\System32\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%System\\%%' ESCAPE '\\')) OR (CommandLine LIKE '%regsvr32 %' ESCAPE '\\' AND CommandLine LIKE '% /s %' ESCAPE '\\' AND CommandLine LIKE '%igfxCPL.cpl%' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '%add%' ESCAPE '\\' AND CommandLine LIKE '%CurrentVersion\\\\Control Panel\\\\CPLs%' ESCAPE '\\')) OR (CommandLine LIKE '%.cpl' ESCAPE '\\' AND NOT (((CommandLine LIKE '%\\\\System32\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%System\\%%' ESCAPE '\\')) OR (CommandLine LIKE '%regsvr32 %' ESCAPE '\\' AND CommandLine LIKE '% /s %' ESCAPE '\\' AND CommandLine LIKE '%igfxCPL.cpl%' ESCAPE '\\')))))"
         ],
         "filename": "proc_creation_win_control_panel_item.yml"
     },
@@ -18971,7 +18971,7 @@
         "title": "AnyDesk Silent Installation",
         "id": "114e7f1c-f137-48c8-8f54-3088c24ce4b9",
         "status": "test",
-        "description": "AnyDesk Remote Desktop silent installation can be used by attacker to gain remote access.",
+        "description": "Detects AnyDesk Remote Desktop silent installation. Which can be used by attackers to gain remote access.",
         "author": "Ján Trenčanský",
         "tags": [
             "attack.command_and_control",
@@ -19967,7 +19967,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%ProgramData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%ProgramData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_uncommon_targetfolder.yml"
     },
@@ -20673,7 +20673,7 @@
         "title": "Always Install Elevated Windows Installer",
         "id": "cd951fdc-4b2f-47f5-ba99-a33bf61e3770",
         "status": "experimental",
-        "description": "This rule looks for Windows Installer service (msiexec.exe) trying to install MSI packages with SYSTEM privilege",
+        "description": "Detects Windows Installer service (msiexec.exe) trying to install MSI packages with SYSTEM privilege",
         "author": "Teymur Kheirkhabarov (idea), Mangatas Tondang (rule), oscd.community",
         "tags": [
             "attack.privilege_escalation",
@@ -21018,7 +21018,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (CommandLine LIKE 'cmd.exe%' ESCAPE '\\' OR CommandLine LIKE 'c:\\\\windows\\\\system32\\\\cmd.exe%' ESCAPE '\\') AND (CommandLine LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ShareFinder%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Kerberoast%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SMBAutoBrute%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR CommandLine LIKE '%zerologon%' ESCAPE '\\' OR CommandLine LIKE '%av\\_query%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'Cmd.Exe' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') AND ((CommandLine LIKE 'cmd.exe%' ESCAPE '\\' OR CommandLine LIKE 'c:\\\\windows\\\\system32\\\\cmd.exe%' ESCAPE '\\') AND (CommandLine LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ShareFinder%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Kerberoast%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SMBAutoBrute%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR CommandLine LIKE '%zerologon%' ESCAPE '\\' OR CommandLine LIKE '%av\\_query%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_cobaltstrike_bloopers_modules.yml"
     },
@@ -21228,7 +21228,7 @@
         "id": "bef37fa2-f205-4a7b-b484-0759bfd5f86f",
         "status": "experimental",
         "description": "Detects the use of Advanced IP Scanner. Seems to be a popular tool for ransomware groups.",
-        "author": "@ROxPinTeddy, Nasreddine Bencherchali @nas_bench",
+        "author": "@ROxPinTeddy, Nasreddine Bencherchali",
         "tags": [
             "attack.discovery",
             "attack.t1046",
@@ -21239,7 +21239,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\advanced\\_ip\\_scanner%' ESCAPE '\\' OR (CommandLine LIKE '%/portable%' ESCAPE '\\' AND CommandLine LIKE '%/lng%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\advanced\\_ip\\_scanner%' ESCAPE '\\' OR OriginalFileName LIKE '%advanced\\_ip\\_scanner%' ESCAPE '\\' OR Description LIKE '%Advanced IP Scanner%' ESCAPE '\\') OR (CommandLine LIKE '%/portable%' ESCAPE '\\' AND CommandLine LIKE '%/lng%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_advanced_ip_scanner.yml"
     },
@@ -21617,7 +21617,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') AND CommandLine LIKE '%.vbs%' ESCAPE '\\' AND CommandLine LIKE '%/shell%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR OriginalFileName IN ('cscript.exe', 'wscript.exe')) AND (CommandLine LIKE '%.vbs%' ESCAPE '\\' AND CommandLine LIKE '%/shell%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_apt_cloudhopper.yml"
     },
@@ -21892,7 +21892,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\wmic.exe' ESCAPE '\\' AND CommandLine LIKE '%wmic%' ESCAPE '\\' AND CommandLine LIKE '%format%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\') OR ((Imphash IN ('1B1A3F43BF37B5BFE60751F2EE2F326E', '37777A96245A3C74EB217308F3546F4C', '9D87C9D67CE724033C0B40CC4CA1B206') OR (Hashes LIKE '%IMPHASH=1B1A3F43BF37B5BFE60751F2EE2F326E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=37777A96245A3C74EB217308F3546F4C%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=9D87C9D67CE724033C0B40CC4CA1B206%' ESCAPE '\\')) AND (CommandLine LIKE '%format:%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR OriginalFileName = 'wmic.exe') AND (CommandLine LIKE '%wmic%' ESCAPE '\\' AND CommandLine LIKE '%format%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\')) OR ((Imphash IN ('1B1A3F43BF37B5BFE60751F2EE2F326E', '37777A96245A3C74EB217308F3546F4C', '9D87C9D67CE724033C0B40CC4CA1B206') OR (Hashes LIKE '%IMPHASH=1B1A3F43BF37B5BFE60751F2EE2F326E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=37777A96245A3C74EB217308F3546F4C%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=9D87C9D67CE724033C0B40CC4CA1B206%' ESCAPE '\\')) AND (CommandLine LIKE '%format:%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_bypass_squiblytwo.yml"
     },
@@ -22030,7 +22030,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\attrib.exe' ESCAPE '\\' AND CommandLine LIKE '% +h %' ESCAPE '\\') AND NOT ((CommandLine LIKE '%\\\\desktop.ini %' ESCAPE '\\' OR (ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '+R +H +S +A \\\\%.cui' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\%.bat' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +h %' ESCAPE '\\') AND NOT ((CommandLine LIKE '%\\\\desktop.ini %' ESCAPE '\\') OR (ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '+R +H +S +A \\\\\\*.cui' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\\\*.bat' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_attrib_hiding_files.yml"
     },
@@ -22730,7 +22730,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%.asax%' ESCAPE '\\' OR CommandLine LIKE '%.ashx%' ESCAPE '\\' OR CommandLine LIKE '%.asmx%' ESCAPE '\\' OR CommandLine LIKE '%.asp%' ESCAPE '\\' OR CommandLine LIKE '%.aspx%' ESCAPE '\\' OR CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.cfm%' ESCAPE '\\' OR CommandLine LIKE '%.cgi%' ESCAPE '\\' OR CommandLine LIKE '%.chm%' ESCAPE '\\' OR CommandLine LIKE '%.cmd%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.jsp%' ESCAPE '\\' OR CommandLine LIKE '%.jspx%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.ps1%' ESCAPE '\\' OR CommandLine LIKE '%.psm1%' ESCAPE '\\' OR CommandLine LIKE '%.scf%' ESCAPE '\\' OR CommandLine LIKE '%.sct%' ESCAPE '\\' OR CommandLine LIKE '%.txt%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.war%' ESCAPE '\\' OR CommandLine LIKE '%.wsf%' ESCAPE '\\' OR CommandLine LIKE '%.wsh%' ESCAPE '\\' OR CommandLine LIKE '%.zip%' ESCAPE '\\' OR CommandLine LIKE '%.rar%' ESCAPE '\\' OR CommandLine LIKE '%.dll%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%.asax%' ESCAPE '\\' OR CommandLine LIKE '%.ashx%' ESCAPE '\\' OR CommandLine LIKE '%.asmx%' ESCAPE '\\' OR CommandLine LIKE '%.asp%' ESCAPE '\\' OR CommandLine LIKE '%.aspx%' ESCAPE '\\' OR CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.cfm%' ESCAPE '\\' OR CommandLine LIKE '%.cgi%' ESCAPE '\\' OR CommandLine LIKE '%.chm%' ESCAPE '\\' OR CommandLine LIKE '%.cmd%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.jsp%' ESCAPE '\\' OR CommandLine LIKE '%.jspx%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.ps1%' ESCAPE '\\' OR CommandLine LIKE '%.psm1%' ESCAPE '\\' OR CommandLine LIKE '%.scf%' ESCAPE '\\' OR CommandLine LIKE '%.sct%' ESCAPE '\\' OR CommandLine LIKE '%.txt%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.war%' ESCAPE '\\' OR CommandLine LIKE '%.wsf%' ESCAPE '\\' OR CommandLine LIKE '%.wsh%' ESCAPE '\\' OR CommandLine LIKE '%.zip%' ESCAPE '\\' OR CommandLine LIKE '%.rar%' ESCAPE '\\' OR CommandLine LIKE '%.dll%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_susp_ext.yml"
     },
@@ -23225,7 +23225,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' AND (CommandLine LIKE '%vss%' ESCAPE '\\' OR CommandLine LIKE '% /m %' ESCAPE '\\' OR CommandLine LIKE '% /y %' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\windows\\\\ntds\\\\ntds.dit%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\system %' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\security%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\esentutl.exe' ESCAPE '\\') AND (CommandLine LIKE '%vss%' ESCAPE '\\' OR CommandLine LIKE '% /m %' ESCAPE '\\' OR CommandLine LIKE '% /y %' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\windows\\\\ntds\\\\ntds.dit%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\system %' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\security%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_copying_sensitive_files_with_credential_data.yml"
     },
@@ -23842,7 +23842,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bcdedit.exe' ESCAPE '\\' AND CommandLine LIKE '%set%' ESCAPE '\\') AND ((CommandLine LIKE '%bootstatuspolicy%' ESCAPE '\\' AND CommandLine LIKE '%ignoreallfailures%' ESCAPE '\\') OR (CommandLine LIKE '%recoveryenabled%' ESCAPE '\\' AND CommandLine LIKE '%no%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR OriginalFileName = 'bcdedit.exe') AND CommandLine LIKE '%set%' ESCAPE '\\' AND ((CommandLine LIKE '%bootstatuspolicy%' ESCAPE '\\' AND CommandLine LIKE '%ignoreallfailures%' ESCAPE '\\') OR (CommandLine LIKE '%recoveryenabled%' ESCAPE '\\' AND CommandLine LIKE '%no%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_bootconf_mod.yml"
     },
@@ -24813,7 +24813,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '% > \\%USERPROFILE\\%\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\%APPDATA\\%\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\\\Users\\\\Public\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\%TEMP\\%\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\%TMP\\%\\\\%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND (CommandLine LIKE '% > \\%USERPROFILE\\%\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\%APPDATA\\%\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\\\Users\\\\Public\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\%TEMP\\%\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > \\%TMP\\%\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_cmd_redirection_susp_folder.yml"
     },
@@ -25155,7 +25155,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE 'reg query \"HKEY\\_CURRENT\\_USER\\\\Software\\\\Microsoft\\\\Terminal Server Client\\\\Default\"' ESCAPE '\\' OR CommandLine LIKE 'powershell.exe mshta.exe http%' ESCAPE '\\' OR CommandLine LIKE 'cmd.exe /c taskkill /im cmd.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%reg query \"HKEY\\_CURRENT\\_USER\\\\Software\\\\Microsoft\\\\Terminal Server Client\\\\Default\"%' ESCAPE '\\' OR CommandLine LIKE '%powershell.exe mshta.exe http%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /c taskkill /im cmd.exe%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_apt_babyshark.yml"
     },
@@ -25778,7 +25778,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE 'cmd.exe%' ESCAPE '\\' OR CommandLine LIKE 'c:\\\\windows\\\\system32\\\\cmd.exe%' ESCAPE '\\') AND (CommandLine LIKE '%psinject%' ESCAPE '\\' OR CommandLine LIKE '%spawnas%' ESCAPE '\\' OR CommandLine LIKE '%make\\_token%' ESCAPE '\\' OR CommandLine LIKE '%remote-exec%' ESCAPE '\\' OR CommandLine LIKE '%rev2self%' ESCAPE '\\' OR CommandLine LIKE '%dcsync%' ESCAPE '\\' OR CommandLine LIKE '%logonpasswords%' ESCAPE '\\' OR CommandLine LIKE '%execute-assembly%' ESCAPE '\\' OR CommandLine LIKE '%getsystem%' ESCAPE '\\') AND Image LIKE '%\\\\cmd.exe' ESCAPE '\\') AND NOT ((ParentImage LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' AND CommandLine LIKE '%/d /s /c %' ESCAPE '\\' AND CommandLine LIKE '%checkfilenameiocs --ioc-path %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((OriginalFileName = 'Cmd.Exe' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') AND ((CommandLine LIKE 'cmd.exe%' ESCAPE '\\' OR CommandLine LIKE 'c:\\\\windows\\\\system32\\\\cmd.exe%' ESCAPE '\\') AND (CommandLine LIKE '%psinject%' ESCAPE '\\' OR CommandLine LIKE '%spawnas%' ESCAPE '\\' OR CommandLine LIKE '%make\\_token%' ESCAPE '\\' OR CommandLine LIKE '%remote-exec%' ESCAPE '\\' OR CommandLine LIKE '%rev2self%' ESCAPE '\\' OR CommandLine LIKE '%dcsync%' ESCAPE '\\' OR CommandLine LIKE '%logonpasswords%' ESCAPE '\\' OR CommandLine LIKE '%execute-assembly%' ESCAPE '\\' OR CommandLine LIKE '%getsystem%' ESCAPE '\\'))) AND NOT ((ParentImage LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' AND CommandLine LIKE '%/d /s /c %' ESCAPE '\\' AND CommandLine LIKE '%checkfilenameiocs --ioc-path %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_cobaltstrike_bloopers_cmd.yml"
     },
