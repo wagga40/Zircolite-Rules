@@ -7028,7 +7028,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine REGEXP '.*cmd.{0,5}(?:\\/c|\\/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\\\"\\{\\d\\}.+\\-f.+\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%&&%' ESCAPE '\\' AND CommandLine LIKE '%clipboard]::%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\' AND (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_invoke_obfuscation_clip.yml"
     },
@@ -8213,7 +8213,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine REGEXP '(?i).*?echo.*clip.*&&.*(Clipboard|i`?n`?v`?o`?k`?e`?).*')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%echo%' ESCAPE '\\' AND CommandLine LIKE '%clip%' ESCAPE '\\' AND CommandLine LIKE '%&&%' ESCAPE '\\' AND (CommandLine LIKE '%clipboard%' ESCAPE '\\' OR CommandLine LIKE '%invoke%' ESCAPE '\\' OR CommandLine LIKE '%i`%' ESCAPE '\\' OR CommandLine LIKE '%n`%' ESCAPE '\\' OR CommandLine LIKE '%v`%' ESCAPE '\\' OR CommandLine LIKE '%o`%' ESCAPE '\\' OR CommandLine LIKE '%k`%' ESCAPE '\\' OR CommandLine LIKE '%e`%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_invoke_obfuscation_via_use_clip.yml"
     },
@@ -9479,7 +9479,8 @@
             "attack.execution",
             "attack.t1059.001",
             "attack.defense_evasion",
-            "attack.t1027"
+            "attack.t1027",
+            "attack.t1620"
         ],
         "falsepositives": [
             "Unlikely"
@@ -13210,7 +13211,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\\\"\\s+?\\-f.*&&.*cmd.*\\/c')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%&&set%' ESCAPE '\\' AND CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\' AND (CommandLine LIKE '%{0}%' ESCAPE '\\' OR CommandLine LIKE '%{1}%' ESCAPE '\\' OR CommandLine LIKE '%{2}%' ESCAPE '\\' OR CommandLine LIKE '%{3}%' ESCAPE '\\' OR CommandLine LIKE '%{4}%' ESCAPE '\\' OR CommandLine LIKE '%{5}%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_invoke_obfuscation_via_var.yml"
     },
@@ -13733,7 +13734,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine REGEXP '.*cmd.{0,5}(?:\\/c|\\/r)(?:\\s|)\\\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\\\"\\s+?\\-f(?:.*\\)){1,}.*\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%\"set%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\' AND (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_invoke_obfuscation_var.yml"
     },
@@ -15272,7 +15273,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine REGEXP '.*cmd.{0,5}(?:\\/c|\\/r).+powershell.+(?:\\$\\{?input\\}?|noexit).+\\\"')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%powershell%' ESCAPE '\\' AND (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\')) AND (CommandLine LIKE '%noexit%' ESCAPE '\\' OR (CommandLine LIKE '%input%' ESCAPE '\\' AND CommandLine LIKE '%$%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_invoke_obfuscation_stdin.yml"
     },
@@ -15638,7 +15639,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine REGEXP '(?i).*(set).*&&\\s?set.*(environment|invoke|\\${?input).*&&.*\"')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%set%' ESCAPE '\\' AND CommandLine LIKE '%&&%' ESCAPE '\\' AND (CommandLine LIKE '%environment%' ESCAPE '\\' OR CommandLine LIKE '%invoke%' ESCAPE '\\' OR CommandLine LIKE '%input%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_invoke_obfuscation_via_stdin.yml"
     },
