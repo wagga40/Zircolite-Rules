@@ -465,7 +465,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath REGEXP '(?i).*(set).*&&\\s?set.*(environment|invoke|\\${?input).*&&.*\"')"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath LIKE '%set%' ESCAPE '\\' AND ImagePath LIKE '%&&%' ESCAPE '\\' AND (ImagePath LIKE '%environment%' ESCAPE '\\' OR ImagePath LIKE '%invoke%' ESCAPE '\\' OR ImagePath LIKE '%input%' ESCAPE '\\'))"
         ],
         "filename": "win_system_invoke_obfuscation_via_stdin_services.yml"
     },
@@ -883,7 +883,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\\\"\\s+?\\-f.*&&.*cmd.*\\/c')"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath LIKE '%&&set%' ESCAPE '\\' AND ImagePath LIKE '%cmd%' ESCAPE '\\' AND ImagePath LIKE '%/c%' ESCAPE '\\' AND ImagePath LIKE '%-f%' ESCAPE '\\' AND (ImagePath LIKE '%{0}%' ESCAPE '\\' OR ImagePath LIKE '%{1}%' ESCAPE '\\' OR ImagePath LIKE '%{2}%' ESCAPE '\\' OR ImagePath LIKE '%{3}%' ESCAPE '\\' OR ImagePath LIKE '%{4}%' ESCAPE '\\' OR ImagePath LIKE '%{5}%' ESCAPE '\\'))"
         ],
         "filename": "win_system_invoke_obfuscation_via_var_services.yml"
     },
@@ -966,7 +966,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath REGEXP '.*cmd.{0,5}(?:\\/c|\\/r)(?:\\s|)\\\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\\\"\\s+?\\-f(?:.*\\)){1,}.*\\\"')"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath LIKE '%cmd%' ESCAPE '\\' AND ImagePath LIKE '%\"set%' ESCAPE '\\' AND ImagePath LIKE '%-f%' ESCAPE '\\' AND (ImagePath LIKE '%/c%' ESCAPE '\\' OR ImagePath LIKE '%/r%' ESCAPE '\\'))"
         ],
         "filename": "win_system_invoke_obfuscation_var_services.yml"
     },
@@ -987,7 +987,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath REGEXP '.*cmd.{0,5}(?:\\/c|\\/r).+powershell.+(?:\\$\\{?input\\}?|noexit).+\\\"')"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath LIKE '%cmd%' ESCAPE '\\' AND ImagePath LIKE '%powershell%' ESCAPE '\\' AND (ImagePath LIKE '%/c%' ESCAPE '\\' OR ImagePath LIKE '%/r%' ESCAPE '\\')) AND (ImagePath LIKE '%noexit%' ESCAPE '\\' OR (ImagePath LIKE '%input%' ESCAPE '\\' AND ImagePath LIKE '%$%' ESCAPE '\\')))"
         ],
         "filename": "win_system_invoke_obfuscation_stdin_services.yml"
     },
@@ -2362,7 +2362,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ServiceFileName REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\\\"\\s+?\\-f.*&&.*cmd.*\\/c')"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ServiceFileName LIKE '%&&set%' ESCAPE '\\' AND ServiceFileName LIKE '%cmd%' ESCAPE '\\' AND ServiceFileName LIKE '%/c%' ESCAPE '\\' AND ServiceFileName LIKE '%-f%' ESCAPE '\\' AND (ServiceFileName LIKE '%{0}%' ESCAPE '\\' OR ServiceFileName LIKE '%{1}%' ESCAPE '\\' OR ServiceFileName LIKE '%{2}%' ESCAPE '\\' OR ServiceFileName LIKE '%{3}%' ESCAPE '\\' OR ServiceFileName LIKE '%{4}%' ESCAPE '\\' OR ServiceFileName LIKE '%{5}%' ESCAPE '\\'))"
         ],
         "filename": "win_security_invoke_obfuscation_via_var_services_security.yml"
     },
@@ -2822,7 +2822,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ServiceFileName REGEXP '.*cmd.{0,5}(?:\\/c|\\/r)(?:\\s|)\\\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\\\"\\s+?\\-f(?:.*\\)){1,}.*\\\"')"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ServiceFileName LIKE '%cmd%' ESCAPE '\\' AND ServiceFileName LIKE '%\"set%' ESCAPE '\\' AND ServiceFileName LIKE '%-f%' ESCAPE '\\' AND (ServiceFileName LIKE '%/c%' ESCAPE '\\' OR ServiceFileName LIKE '%/r%' ESCAPE '\\'))"
         ],
         "filename": "win_security_invoke_obfuscation_var_services_security.yml"
     },
