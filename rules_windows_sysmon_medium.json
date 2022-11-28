@@ -227,7 +227,7 @@
         "filename": "registry_set_disable_function_user.yml"
     },
     {
-        "title": "Persistent Outlook Landing Pages",
+        "title": "Persistent Outlook Landing Today Pages",
         "id": "487bb375-12ef-41f6-baae-c6a1572b4dd1",
         "status": "experimental",
         "description": "Detects the manipulation of persistent URLs which could execute malicious code",
@@ -241,7 +241,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((EventType = 'SetValue' AND (TargetObject LIKE '%Software\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Outlook\\\\Today\\\\%' ESCAPE '\\')) AND ((TargetObject LIKE '%Stamp' ESCAPE '\\' AND Details = 'DWORD (0x00000001)') OR TargetObject LIKE '%UserDefinedUrl' ESCAPE '\\')) AND NOT (((Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\Updates\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Outlook\\\\Today\\\\%' ESCAPE '\\') AND ((TargetObject LIKE '%Stamp' ESCAPE '\\' AND Details = 'DWORD (0x00000001)') OR TargetObject LIKE '%UserDefinedUrl' ESCAPE '\\')) AND NOT (((Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\Updates\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\')))"
         ],
         "filename": "registry_set_outlook_registry_todaypage.yml"
     },
@@ -513,7 +513,7 @@
         "filename": "regsitry_set_natural_language_persistence.yml"
     },
     {
-        "title": "Adwind RAT / JRAT",
+        "title": "Adwind RAT / JRAT - Registry",
         "id": "42f0e038-767e-4b85-9d96-2c6335bad0b5",
         "status": "experimental",
         "description": "Detects javaw.exe in AppData folder as used by Adwind / JRAT",
@@ -1368,10 +1368,10 @@
         "filename": "registry_set_hide_function_user.yml"
     },
     {
-        "title": "RDP Sensitive Settings Changed",
+        "title": "RDP Sensitive Settings Changed to Zero",
         "id": "a2863fbc-d5cb-48d5-83fb-d976d4b1743b",
         "status": "test",
-        "description": "Detects tampering to RDP Terminal Service/Server sensitive settings. Such as allowing unauthorized users access to a system via the 'fAllowUnsolicited' or enabling RDP via 'fDenyTSConnections'...etc",
+        "description": "Detects tampering to RDP Terminal Service/Server sensitive settings.\nSuch as allowing unauthorized users access to a system via the 'fAllowUnsolicited' or enabling RDP via 'fDenyTSConnections'...etc\n",
         "author": "Samir Bousseaden, David ANDRE, Roberto Rodriguez @Cyb3rWard0g, Nasreddine Bencherchali",
         "tags": [
             "attack.defense_evasion",
@@ -1465,7 +1465,7 @@
         "filename": "registry_set_windows_defender_tamper.yml"
     },
     {
-        "title": "Wow6432Node CurrentVersion Autorun Keys Modification",
+        "title": "Wow6432Node Windows NT CurrentVersion Autorun Keys Modification",
         "id": "480421f9-417f-4d3b-9552-fd2728443ec8",
         "status": "experimental",
         "description": "Detects modification of autostart extensibility point (ASEP) in registry.",
@@ -1725,7 +1725,7 @@
         "filename": "registry_set_disable_security_center_notifications.yml"
     },
     {
-        "title": "Windows Defender Exclusions Added",
+        "title": "Windows Defender Exclusions Added - Registry",
         "id": "a982fc9c-6333-4ffb-a51d-addb04e8b529",
         "status": "test",
         "description": "Detects the Setting of Windows Defender Exclusions",
@@ -2056,7 +2056,7 @@
         "title": "RDP Sensitive Settings Changed",
         "id": "3f6b7b62-61aa-45db-96bd-9c31b36b653c",
         "status": "test",
-        "description": "Detects tampering to RDP Terminal Service/Server sensitive settings. Such as allowing unauthorized users access to a system via the 'fAllowUnsolicited' or enabling RDP via 'fDenyTSConnections'...etc",
+        "description": "Detects tampering to RDP Terminal Service/Server sensitive settings.\nSuch as allowing unauthorized users access to a system via the 'fAllowUnsolicited' or enabling RDP via 'fDenyTSConnections'...etc\n",
         "author": "Samir Bousseaden, David ANDRE, Roberto Rodriguez @Cyb3rWard0g, Nasreddine Bencherchali",
         "tags": [
             "attack.defense_evasion",
@@ -2128,7 +2128,7 @@
         "filename": "registry_set_vbs_payload_stored.yml"
     },
     {
-        "title": "COMPlus_ETWEnabled Registry Modification",
+        "title": "COMPlus_ETWEnabled Registry Modification - Registry",
         "id": "bf4fc428-dcc3-4bbd-99fe-2422aeee2544",
         "status": "test",
         "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
@@ -2186,7 +2186,7 @@
         "filename": "registry_set_disable_administrative_share.yml"
     },
     {
-        "title": "Blue Mockingbird",
+        "title": "Blue Mockingbird - Registry",
         "id": "92b0b372-a939-44ed-a11b-5136cf680e27",
         "status": "experimental",
         "description": "Attempts to detect system changes made by Blue Mockingbird",
@@ -2345,10 +2345,10 @@
         "filename": "registry_set_crashdump_disabled.yml"
     },
     {
-        "title": "Disable Windows Security Center Notifications",
+        "title": "Activate Suppression of Windows Security Center Notifications",
         "id": "0c93308a-3f1b-40a9-b649-57ea1a1c1d63",
         "status": "experimental",
-        "description": "Detect set UseActionCenterExperience to 0 to disable the windows security center notification",
+        "description": "Detect set Notification_Suppress to 1 to disable the windows security center notification",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
@@ -2421,7 +2421,7 @@
         "filename": "registry_set_asep_reg_keys_modification_currentcontrolset.yml"
     },
     {
-        "title": "DNS ServerLevelPluginDll Install",
+        "title": "DNS ServerLevelPluginDll Install - Registry",
         "id": "e61e8a88-59a9-451c-874e-70fcc9740d67",
         "status": "experimental",
         "description": "Detects the installation of a plugin DLL via ServerLevelPluginDll parameter in Registry, which can be used to execute code in context of the DNS server (restart required)",
@@ -3133,7 +3133,7 @@
         "filename": "registry_event_hack_wce_reg.yml"
     },
     {
-        "title": "Sticky Key Like Backdoor Usage",
+        "title": "Sticky Key Like Backdoor Usage - Registry",
         "id": "baca5663-583c-45f9-b5dc-ea96a22ce542",
         "status": "experimental",
         "description": "Detects the usage and installation of a backdoor that uses an option to register a malicious debugger for built-in tools that are accessible in the login screen",
@@ -5350,7 +5350,7 @@
         "filename": "win_security_register_new_logon_process_by_rubeus.yml"
     },
     {
-        "title": "T1021 DCOM InternetExplorer.Application Iertutil DLL Hijack",
+        "title": "DCOM InternetExplorer.Application Iertutil DLL Hijack - Security",
         "id": "c39f0c81-7348-4965-ab27-2fde35a1b641",
         "status": "test",
         "description": "Detects a threat actor creating a file named `iertutil.dll` in the `C:\\Program Files\\Internet Explorer\\` directory over the network for a DCOM InternetExplorer DLL Hijack scenario.",
@@ -5448,7 +5448,7 @@
         "filename": "win_security_apt_slingshot.yml"
     },
     {
-        "title": "Failed Logins with Different Accounts from Single Source System",
+        "title": "Failed NTLM Logins with Different Accounts from Single Source System",
         "id": "6309ffc4-8fa2-47cf-96b8-a2f72e58e538",
         "status": "test",
         "description": "Detects suspicious failed logins with different user accounts from a single source system",
@@ -10018,7 +10018,7 @@
         "filename": "sysmon_accessing_winapi_in_powershell_credentials_dumping.yml"
     },
     {
-        "title": "T1021 DCOM InternetExplorer.Application Iertutil DLL Hijack",
+        "title": "DCOM InternetExplorer.Application Iertutil DLL Hijack - Sysmon",
         "id": "e554f142-5cf3-4e55-ace9-a1b59e0def65",
         "status": "test",
         "description": "Detects a threat actor creating a file named `iertutil.dll` in the `C:\\Program Files\\Internet Explorer\\` directory over the network and loading it for a DCOM InternetExplorer DLL Hijack scenario.",
@@ -29718,7 +29718,7 @@
         "filename": "posh_ps_windows_firewall_profile_disabled.yml"
     },
     {
-        "title": "Windows Defender Exclusions Added via Powershell",
+        "title": "Windows Defender Exclusions Added - PowerShell",
         "id": "c1344fa2-323b-4d2e-9176-84b4d4821c88",
         "status": "experimental",
         "description": "Detects modifications to the Windows Defender configuration settings using PowerShell to add exclusions",
@@ -33982,6 +33982,25 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\')"
         ],
         "filename": "file_event_win_tsclient_filewrite_startup.yml"
+    },
+    {
+        "title": "Remote Credential Dump",
+        "id": "6e2a900a-ced9-4e4a-a9c2-13e706f9518a",
+        "status": "experimental",
+        "description": "Detects default filenames output from the execution of CrackMapExec and Impacket-secretsdump against an endpoint.",
+        "author": "SecurityAura",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Windows\\\\System32\\?_______.tmp' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_remote_cred_dump.yml"
     },
     {
         "title": "UAC Bypass Using .NET Code Profiler on MMC",
