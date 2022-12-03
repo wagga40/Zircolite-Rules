@@ -8608,7 +8608,7 @@
         "filename": "image_load_side_load_dbgcore_dll.yml"
     },
     {
-        "title": "Pingback Backdoor",
+        "title": "Pingback Backdoor - Image",
         "id": "35a7dc42-bc6f-46e0-9f83-81f8e56c8d4b",
         "status": "experimental",
         "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
@@ -9246,7 +9246,7 @@
         "filename": "image_load_susp_office_kerberos_dll_load.yml"
     },
     {
-        "title": "Time Travel Debugging Utility Usage",
+        "title": "Time Travel Debugging Utility Usage - Image",
         "id": "e76c8240-d68f-4773-8880-5c6f63595aaf",
         "status": "test",
         "description": "Detects usage of Time Travel Debugging Utility. Adversaries can execute malicious processes and dump processes, such as lsass.exe, via tttracer.exe.",
@@ -13598,7 +13598,7 @@
         "filename": "proc_creation_win_net_default_accounts_manipulation.yml"
     },
     {
-        "title": "Suspicious Encoded PowerShell Command Line",
+        "title": "Suspicious Xor PowerShell Command Line",
         "id": "5b572dcf-254b-425c-a8c5-d9af6bea35a6",
         "status": "test",
         "description": "Detects specific combinations of encoding methods in the PowerShell command lines",
@@ -15156,7 +15156,7 @@
         "title": "Excel Proxy Executing Regsvr32 With Payload",
         "id": "9d1c72f5-43f0-4da5-9320-648cf2099dd0",
         "status": "experimental",
-        "description": "Excel called wmic to finally proxy execute regsvr32 with the payload. An attacker wanted to break suspicious parent-child chain (Office app spawns LOLBin).But we have command-line in the event which allow us to \"restore\" this suspicious parent-child chain and detect it. Monitor process creation with \"wmic process call create\" and LOLBins in command-line with parent Office application processes.",
+        "description": "Excel called wmic to finally proxy execute regsvr32 with the payload.\nAn attacker wanted to break suspicious parent-child chain (Office app spawns LOLBin).\nBut we have command-line in the event which allow us to \"restore\" this suspicious parent-child chain and detect it.\nMonitor process creation with \"wmic process call create\" and LOLBins in command-line with parent Office application processes.\n",
         "author": "Vadim Khrykov (ThreatIntel), Cyb3rEng (Rule)",
         "tags": [
             "attack.t1204.002",
@@ -16030,7 +16030,7 @@
         "filename": "proc_creation_win_ntdsutil_usage.yml"
     },
     {
-        "title": "Lazarus Activity",
+        "title": "Lazarus Activity Apr21",
         "id": "4a12fa47-c735-4032-a214-6fab5b120670",
         "status": "test",
         "description": "Detects different process creation events as described in Malwarebytes's threat report on Lazarus group activity",
@@ -17260,6 +17260,42 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\bginfo.exe' ESCAPE '\\' AND CommandLine LIKE '%/popup%' ESCAPE '\\' AND CommandLine LIKE '%/nolicprompt%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_susp_bginfo.yml"
+    },
+    {
+        "title": "Potential Suspicious Activity Using SeCEdit",
+        "id": "c2c76b77-32be-4d1f-82c9-7e544bdfe0eb",
+        "status": "experimental",
+        "description": "Detects potential suspicious behaviour using secedit.exe. Such as exporting or modifying the security policy",
+        "author": "Janantha Marasinghe",
+        "tags": [
+            "attack.discovery",
+            "attack.persistence",
+            "attack.defense_evasion",
+            "attack.credential_access",
+            "attack.privilege_escalation",
+            "attack.t1562.002",
+            "attack.t1547.001",
+            "attack.t1505.005",
+            "attack.t1556.002",
+            "attack.t1562",
+            "attack.t1574.007",
+            "attack.t1564.002",
+            "attack.t1546.008",
+            "attack.t1546.007",
+            "attack.t1547.014",
+            "attack.t1547.010",
+            "attack.t1547.002",
+            "attack.t1557",
+            "attack.t1082"
+        ],
+        "falsepositives": [
+            "Legitimate administrative use"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\secedit.exe' ESCAPE '\\' OR OriginalFileName = 'SeCEdit') AND ((CommandLine LIKE '%/export%' ESCAPE '\\' AND CommandLine LIKE '%/cfg%' ESCAPE '\\') OR (CommandLine LIKE '%/configure%' ESCAPE '\\' AND CommandLine LIKE '%/db%' ESCAPE '\\'))) AND NOT (SubjectUserName LIKE '%$' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_secedit.yml"
     },
     {
         "title": "PurpleSharp Indicator",
@@ -22408,7 +22444,7 @@
         "filename": "proc_creation_win_apt_ke3chang_regadd.yml"
     },
     {
-        "title": "Ryuk Ransomware",
+        "title": "Ryuk Ransomware Command Line Activity",
         "id": "0acaad27-9f02-4136-a243-c357202edd74",
         "status": "stable",
         "description": "Detects Ryuk Ransomware command lines",
@@ -24580,10 +24616,10 @@
         "filename": "proc_creation_win_wmi_backdoor_exchange_transport_agent.yml"
     },
     {
-        "title": "Excel Proxy Executing Regsvr32 With Payload",
+        "title": "Excel Proxy Executing Regsvr32 With Payload Alternate",
         "id": "c0e1c3d5-4381-4f18-8145-2583f06a1fe5",
         "status": "experimental",
-        "description": "Excel called wmic to finally proxy execute regsvr32 with the payload. An attacker wanted to break suspicious parent-child chain (Office app spawns LOLBin).But we have command-line in the event which allow us to \"restore\" this suspicious parent-child chain and detect it. Monitor process creation with \"wmic process call create\" and LOLBins in command-line with parent Office application processes.",
+        "description": "Excel called wmic to finally proxy execute regsvr32 with the payload.\nAn attacker wanted to break suspicious parent-child chain (Office app spawns LOLBin).\nBut we have command-line in the event which allow us to \"restore\" this suspicious parent-child chain and detect it.\nMonitor process creation with \"wmic process call create\" and LOLBins in command-line with parent Office application processes.\n",
         "author": "Vadim Khrykov (ThreatIntel), Cyb3rEng (Rule)",
         "tags": [
             "attack.t1204.002",
@@ -25272,24 +25308,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%ˣ%' ESCAPE '\\' OR CommandLine LIKE '%˪%' ESCAPE '\\' OR CommandLine LIKE '%ˢ%' ESCAPE '\\') OR (CommandLine LIKE '%∕%' ESCAPE '\\' OR CommandLine LIKE '%⁄%' ESCAPE '\\') OR (CommandLine LIKE '%―%' ESCAPE '\\' OR CommandLine LIKE '%—%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_commandline_chars.yml"
-    },
-    {
-        "title": "Rundll32 From Abnormal Drive",
-        "id": "d4ca7c59-e9e4-42d8-bf57-91a776efcb87",
-        "status": "experimental",
-        "description": "Detects rundll32.exe executing from an abnormal drive such as a mounted ISO.",
-        "author": "Christopher Peacock '@securepeacock', SCYTHE '@scythe_io'",
-        "tags": [
-            "attack.t1218.001"
-        ],
-        "falsepositives": [
-            "Rare false positives could occur on servers with multiple drives."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND NOT ((CurrentDirectory LIKE '%C:\\\\%' ESCAPE '\\' OR CurrentDirectory = '') OR (CurrentDirectory = '')))"
-        ],
-        "filename": "proc_creation_win_rundll32_not_from_c_drive.yml"
     },
     {
         "title": "Use Short Name Path in Image",
@@ -26021,7 +26039,7 @@
         "filename": "proc_creation_win_lolbin_openconsole.yml"
     },
     {
-        "title": "Lazarus Activity",
+        "title": "Lazarus Activity Dec20",
         "id": "24c4d154-05a4-4b99-b57d-9b977472443a",
         "status": "test",
         "description": "Detects different process creation events as described in various threat reports on Lazarus group activity",
@@ -27283,7 +27301,7 @@
         "filename": "proc_creation_win_susp_new_service_creation.yml"
     },
     {
-        "title": "Suspicious WebDav Client Execution",
+        "title": "Suspicious NTLM Authentication on the Printer Spooler Service",
         "id": "bb76d96b-821c-47cf-944b-7ce377864492",
         "status": "experimental",
         "description": "Detects a privilege elevation attempt by coercing NTLM authentication on the Printer Spooler service",
@@ -27794,7 +27812,7 @@
         "filename": "proc_creation_win_susp_rundll32_by_ordinal.yml"
     },
     {
-        "title": "Office Applications Spawning Wmi Cli",
+        "title": "Office Applications Spawning Wmi Cli Alternate",
         "id": "04f5363a-6bca-42ff-be70-0d28bf629ead",
         "status": "experimental",
         "description": "Initial execution of malicious document calls wmic to execute the file with regsvr32",
@@ -28302,7 +28320,7 @@
         "filename": "posh_ps_test_netconnection.yml"
     },
     {
-        "title": "Root Certificate Installed",
+        "title": "Root Certificate Installed - PowerShell",
         "id": "42821614-9264-4761-acfc-5772c3286f76",
         "status": "experimental",
         "description": "Adversaries may install a root certificate on a compromised system to avoid warnings when connecting to adversary controlled web servers.",
@@ -28793,7 +28811,7 @@
         "filename": "posh_ps_prompt_credentials.yml"
     },
     {
-        "title": "Suspicious PowerShell Download",
+        "title": "Suspicious PowerShell Download - Powershell Script",
         "id": "403c2cc0-7f6b-4925-9423-bfa573bed7eb",
         "status": "experimental",
         "description": "Detects suspicious PowerShell download command",
@@ -28831,7 +28849,7 @@
         "filename": "posh_ps_computer_discovery_get_adcomputer.yml"
     },
     {
-        "title": "Deletion of Volume Shadow Copies via WMI with PowerShell",
+        "title": "Deletion of Volume Shadow Copies via WMI with PowerShell - PS Script",
         "id": "c1337eb8-921a-4b59-855b-4ba188ddcc42",
         "status": "experimental",
         "description": "Detects deletion of Windows Volume Shadow Copies with PowerShell code and Get-WMIObject. This technique is used by numerous ransomware families such as Sodinokibi/REvil",
@@ -29507,7 +29525,7 @@
         "filename": "posh_ps_susp_mail_acces.yml"
     },
     {
-        "title": "Change PowerShell Policies to an Insecure Level",
+        "title": "Change PowerShell Policies to an Insecure Level - PowerShell",
         "id": "61d0475c-173f-4844-86f7-f3eebae1c66b",
         "status": "experimental",
         "description": "Detects use of Set-ExecutionPolicy to set insecure policies",
@@ -29583,7 +29601,7 @@
         "filename": "posh_ps_sensitive_file_discovery.yml"
     },
     {
-        "title": "Detected Windows Software Discovery",
+        "title": "Detected Windows Software Discovery - PowerShell",
         "id": "2650dd1a-eb2a-412d-ac36-83f06c4f2282",
         "status": "experimental",
         "description": "Adversaries may attempt to enumerate software for a variety of reasons, such as figuring out what security measures are present or if the compromised system has a version of software that is vulnerable.",
@@ -29621,7 +29639,7 @@
         "filename": "posh_ps_xml_iex.yml"
     },
     {
-        "title": "Delete Volume Shadow Copies via WMI with PowerShell",
+        "title": "Delete Volume Shadow Copies via WMI with PowerShell - PS Script",
         "id": "e17121b4-ef2a-4418-8a59-12fb1631fa9e",
         "status": "test",
         "description": "Deletes Windows Volume Shadow Copies with PowerShell code and Get-WMIObject. This technique is used by numerous ransomware families such as Sodinokibi/REvil",
@@ -29640,7 +29658,7 @@
         "filename": "posh_ps_susp_win32_shadowcopy.yml"
     },
     {
-        "title": "Clear PowerShell History",
+        "title": "Clear PowerShell History - PowerShell",
         "id": "26b692dc-1722-49b2-b496-a8258aa6371d",
         "status": "experimental",
         "description": "Detects keywords that could indicate clearing PowerShell history",
@@ -29678,7 +29696,7 @@
         "filename": "posh_ps_directoryservices_accountmanagement.yml"
     },
     {
-        "title": "Zip A Folder With PowerShell For Staging In Temp",
+        "title": "Zip A Folder With PowerShell For Staging In Temp - PowerShell Script",
         "id": "b7a3c9a3-09ea-4934-8864-6a32cacd98d9",
         "status": "experimental",
         "description": "Use living off the land tools to zip a file and stage it in the Windows temporary folder for later exfiltration",
@@ -30777,7 +30795,7 @@
         "filename": "posh_pm_remote_powershell_session.yml"
     },
     {
-        "title": "Netcat The Powershell Version",
+        "title": "Netcat The Powershell Version - PowerShell Module",
         "id": "bf7286e7-c0be-460b-a7e8-5b2e07ecc2f2",
         "status": "experimental",
         "description": "Adversaries may use a non-application layer protocol for communication between host and C2 server or among infected hosts within a network",
@@ -30796,7 +30814,7 @@
         "filename": "posh_pm_powercat.yml"
     },
     {
-        "title": "Suspicious PowerShell Invocations - Generic",
+        "title": "Suspicious PowerShell Invocations - Generic - PowerShell Module",
         "id": "bbb80e91-5746-4fbe-8898-122e2cafdbf4",
         "status": "experimental",
         "description": "Detects suspicious PowerShell invocation command parameters",
@@ -30815,7 +30833,7 @@
         "filename": "posh_pm_susp_invocation_generic.yml"
     },
     {
-        "title": "Alternate PowerShell Hosts",
+        "title": "Alternate PowerShell Hosts - PowerShell Module",
         "id": "64e8e417-c19a-475a-8d19-98ea705394cc",
         "status": "test",
         "description": "Detects alternate PowerShell hosts potentially bypassing detections looking for powershell.exe",
@@ -30914,7 +30932,7 @@
         "filename": "posh_pm_bad_opsec_artifacts.yml"
     },
     {
-        "title": "Suspicious PowerShell Invocations - Specific",
+        "title": "Suspicious PowerShell Invocations - Specific - PowerShell Module",
         "id": "8ff28fdd-e2fa-4dfa-aeda-ef3d61c62090",
         "status": "experimental",
         "description": "Detects suspicious PowerShell invocation command parameters",
@@ -30954,7 +30972,7 @@
         "filename": "posh_pm_invoke_obfuscation_via_compress.yml"
     },
     {
-        "title": "Abusable Invoke-ATHRemoteFXvGPUDisablementCommand",
+        "title": "Abusable Invoke-ATHRemoteFXvGPUDisablementCommand - PowerShell Module",
         "id": "38a7625e-b2cb-485d-b83d-aff137d859f4",
         "status": "experimental",
         "description": "RemoteFXvGPUDisablement.exe is an abusable, signed PowerShell host executable that was introduced in Windows 10 and Server 2019 (OS Build 17763.1339).",
@@ -30994,7 +31012,7 @@
         "filename": "posh_pm_invoke_obfuscation_var.yml"
     },
     {
-        "title": "Suspicious PowerShell Download",
+        "title": "Suspicious PowerShell Download - PowerShell Module",
         "id": "de41232e-12e8-49fa-86bc-c05c7e722df9",
         "status": "experimental",
         "description": "Detects suspicious PowerShell download command",
@@ -31013,7 +31031,7 @@
         "filename": "posh_pm_susp_download.yml"
     },
     {
-        "title": "Zip A Folder With PowerShell For Staging In Temp",
+        "title": "Zip A Folder With PowerShell For Staging In Temp  - PowerShell Module",
         "id": "daf7eb81-35fd-410d-9d7a-657837e602bb",
         "status": "experimental",
         "description": "Use living off the land tools to zip a file and stage it in the Windows temporary folder for later exfiltration",
@@ -31135,7 +31153,7 @@
         "filename": "posh_pm_invoke_obfuscation_stdin.yml"
     },
     {
-        "title": "SyncAppvPublishingServer Execution to Bypass Powershell Restriction",
+        "title": "SyncAppvPublishingServer Bypass Powershell Restriction - PS Module",
         "id": "fe5ce7eb-dad8-467c-84a9-31ec23bd644a",
         "status": "experimental",
         "description": "Detects SyncAppvPublishingServer process execution which usually utilized by adversaries to bypass PowerShell execution restrictions.",
@@ -31196,7 +31214,7 @@
         "filename": "posh_pm_invoke_obfuscation_via_var.yml"
     },
     {
-        "title": "Clear PowerShell History",
+        "title": "Clear PowerShell History - PowerShell Module",
         "id": "f99276ad-d122-4989-a09a-d00904a5f9d2",
         "status": "experimental",
         "description": "Detects keywords that could indicate clearing PowerShell history",
@@ -31215,7 +31233,7 @@
         "filename": "posh_pm_clear_powershell_history.yml"
     },
     {
-        "title": "Zip A Folder With PowerShell For Staging In Temp",
+        "title": "Zip A Folder With PowerShell For Staging In Temp - PowerShell",
         "id": "71ff406e-b633-4989-96ec-bc49d825a412",
         "status": "test",
         "description": "Use living off the land tools to zip a file and stage it in the Windows temporary folder for later exfiltration",
@@ -31272,7 +31290,7 @@
         "filename": "posh_pc_powercat.yml"
     },
     {
-        "title": "PowerShell Downgrade Attack",
+        "title": "PowerShell Downgrade Attack - PowerShell",
         "id": "6331d09b-4785-4c13-980f-f96661356249",
         "status": "experimental",
         "description": "Detects PowerShell downgrade attack by comparing the host versions with the actually used engine version 2.0",
@@ -31331,7 +31349,7 @@
         "filename": "posh_pc_tamper_with_windows_defender.yml"
     },
     {
-        "title": "Suspicious XOR Encoded PowerShell Command Line",
+        "title": "Suspicious XOR Encoded PowerShell Command Line - PowerShell",
         "id": "812837bb-b17f-45e9-8bd0-0ec35d2e3bd6",
         "status": "experimental",
         "description": "Detects suspicious powershell process which includes bxor command, alternative obfuscation method to b64 encoded commands.",
@@ -31392,7 +31410,7 @@
         "filename": "posh_pc_alternate_powershell_hosts.yml"
     },
     {
-        "title": "Abusable Invoke-ATHRemoteFXvGPUDisablementCommand",
+        "title": "Abusable Invoke-ATHRemoteFXvGPUDisablementCommand - PowerShell",
         "id": "f65e22f9-819e-4f96-9c7b-498364ae7a25",
         "status": "test",
         "description": "RemoteFXvGPUDisablement.exe is an abusable, signed PowerShell host executable that was introduced in Windows 10 and Server 2019 (OS Build 17763.1339).",
@@ -33151,7 +33169,7 @@
         "filename": "file_event_win_susp_clr_logs.yml"
     },
     {
-        "title": "Pingback Backdoor",
+        "title": "Pingback Backdoor - File",
         "id": "2bd63d53-84d4-4210-80ff-bf0658f1bf78",
         "status": "test",
         "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
@@ -33170,7 +33188,7 @@
         "filename": "file_event_win_pingback_backdoor.yml"
     },
     {
-        "title": "Dumpert Process Dumper",
+        "title": "Dumpert Process Dumper Default File",
         "id": "93d94efc-d7ad-4161-ad7d-1638c4f908d8",
         "status": "test",
         "description": "Detects the use of Dumpert process dumper, which dumps the lsass.exe process memory",
@@ -33377,7 +33395,7 @@
         "filename": "file_event_win_cve_2021_44077_poc_default_files.yml"
     },
     {
-        "title": "WScript or CScript Dropper",
+        "title": "WScript or CScript Dropper - File",
         "id": "002bdb95-0cf1-46a6-9e08-d38c128a6127",
         "status": "experimental",
         "description": "Detects a file ending in jse, vbe, js, vba, vbs written by cscript.exe or wscript.exe",
@@ -33765,7 +33783,7 @@
         "filename": "file_event_win_uac_bypass_ieinstal.yml"
     },
     {
-        "title": "Wmiprvse Wbemcomn DLL Hijack",
+        "title": "Wmiprvse Wbemcomn DLL Hijack - File",
         "id": "614a7e17-5643-4d89-b6fe-f9df1a79641c",
         "status": "test",
         "description": "Detects a threat actor creating a file named `wbemcomn.dll` in the `C:\\Windows\\System32\\wbem\\` directory over the network and loading it for a WMI DLL Hijack scenario.",
@@ -34447,7 +34465,7 @@
         "filename": "file_event_win_startup_folder_file_write.yml"
     },
     {
-        "title": "Unidentified Attacker November 2018",
+        "title": "Unidentified Attacker November 2018 - File",
         "id": "3a3f81ca-652c-482b-adeb-b1c804727f74",
         "status": "stable",
         "description": "A sigma rule detecting an unidetefied attacker who used phishing emails to target high profile orgs on November 2018. The Actor shares some TTPs with YYTRIUM/APT29 campaign in 2016.",
@@ -34901,7 +34919,7 @@
         "filename": "file_event_win_word_template_creation.yml"
     },
     {
-        "title": "Adwind RAT / JRAT",
+        "title": "Adwind RAT / JRAT File Artifact",
         "id": "0bcfabcb-7929-47f4-93d6-b33fb67d34d1",
         "status": "test",
         "description": "Detects javaw.exe in AppData folder as used by Adwind / JRAT",
