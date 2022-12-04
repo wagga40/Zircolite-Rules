@@ -1454,7 +1454,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((EventType = 'SetValue' AND TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Start' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Perflogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADMIN$\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Temp\\\\%' ESCAPE '\\') AND NewValue IN ('DWORD (0x00000000)', 'DWORD (0x00000001)', 'DWORD (0x00000002)')) OR (EventType = 'SetValue' AND TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\ImagePath' ESCAPE '\\' AND (NewValue LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Perflogs\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\ADMIN$\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Temp\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((EventType = 'SetValue' AND TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Start' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Perflogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADMIN$\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Temp\\\\%' ESCAPE '\\') AND NewValue IN ('DWORD (0x00000000)', 'DWORD (0x00000001)', 'DWORD (0x00000002)')) OR (EventType = 'SetValue' AND TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\ImagePath' ESCAPE '\\' AND (NewValue LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Perflogs\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\ADMIN$\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Temp\\\\%' ESCAPE '\\'))) AND NOT ((NewProcessName LIKE '%\\\\Common Files\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Temp\\\\%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_creation_service_susp_folder.yml"
     },
@@ -4038,7 +4038,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Bits-Client/Operational' AND EventID = '16403' AND (RemoteName LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%pastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR RemoteName LIKE '%mediafire.com%' ESCAPE '\\' OR RemoteName LIKE '%mega.nz%' ESCAPE '\\' OR RemoteName LIKE '%ddns.net%' ESCAPE '\\' OR RemoteName LIKE '%.paste.ee%' ESCAPE '\\' OR RemoteName LIKE '%.hastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%.ghostbin.co/%' ESCAPE '\\' OR RemoteName LIKE '%ufile.io%' ESCAPE '\\' OR RemoteName LIKE '%storage.googleapis.com%' ESCAPE '\\' OR RemoteName LIKE '%anonfiles.com%' ESCAPE '\\' OR RemoteName LIKE '%send.exploit.in%' ESCAPE '\\' OR RemoteName LIKE '%transfer.sh%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Bits-Client/Operational' AND EventID = '16403' AND (RemoteName LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%pastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR RemoteName LIKE '%mediafire.com%' ESCAPE '\\' OR RemoteName LIKE '%mega.nz%' ESCAPE '\\' OR RemoteName LIKE '%ddns.net%' ESCAPE '\\' OR RemoteName LIKE '%.paste.ee%' ESCAPE '\\' OR RemoteName LIKE '%.hastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%.ghostbin.co/%' ESCAPE '\\' OR RemoteName LIKE '%ufile.io%' ESCAPE '\\' OR RemoteName LIKE '%storage.googleapis.com%' ESCAPE '\\' OR RemoteName LIKE '%anonfiles.com%' ESCAPE '\\' OR RemoteName LIKE '%send.exploit.in%' ESCAPE '\\' OR RemoteName LIKE '%transfer.sh%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.net%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.com%' ESCAPE '\\' OR RemoteName LIKE '%sendspace.com%' ESCAPE '\\'))"
         ],
         "filename": "win_bits_client_susp_domain.yml"
     },
@@ -5721,7 +5721,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (ImageLoaded LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\PerfLogs\\\\%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR (ImageLoaded LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\cleanmgr.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\ssshim.dll' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (ImageLoaded LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\PerfLogs\\\\%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR (ImageLoaded LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\rundll32.exe' ESCAPE '\\') OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\setup.exe%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\cleanmgr.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\ssshim.dll' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')))"
         ],
         "filename": "image_load_susp_dll_load_system_process.yml"
     },
@@ -8391,6 +8391,28 @@
         "filename": "proc_creation_win_proc_dump_createdump.yml"
     },
     {
+        "title": "Office Processes Proxy Execution Through WMIC",
+        "id": "e1693bc8-7168-4eab-8718-cdcaa68a1738",
+        "status": "experimental",
+        "description": "Office application called wmic to proxye execution through a LOLBIN process. This is often used to break suspicious parent-child chain (Office app spawns LOLBin).",
+        "author": "Vadim Khrykov (ThreatIntel), Cyb3rEng (Rule)",
+        "tags": [
+            "attack.t1204.002",
+            "attack.t1047",
+            "attack.t1218.010",
+            "attack.execution",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wbem\\\\WMIC.exe' ESCAPE '\\' OR OriginalFileName = 'wmic.exe') AND ((ParentProcessName LIKE '%\\\\winword.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\powerpnt.exe' ESCAPE '\\') AND CommandLine LIKE '%process%' ESCAPE '\\' AND CommandLine LIKE '%create%' ESCAPE '\\' AND CommandLine LIKE '%call%' ESCAPE '\\' AND (CommandLine LIKE '%regsvr32%' ESCAPE '\\' OR CommandLine LIKE '%rundll32%' ESCAPE '\\' OR CommandLine LIKE '%msiexec%' ESCAPE '\\' OR CommandLine LIKE '%mshta%' ESCAPE '\\' OR CommandLine LIKE '%verclsid%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_office_proxy_exec_wmic.yml"
+    },
+    {
         "title": "Xwizard DLL Sideloading",
         "id": "193d5ccd-6f59-40c6-b5b0-8e32d5ddd3d1",
         "status": "test",
@@ -9728,7 +9750,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND NOT ((CommandLine = '') OR (CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine = '') OR (ParentProcessName LIKE '%:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' AND CommandLine LIKE '%.cpl%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\syswow64\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND ParentCommandLine LIKE '% C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\%' ESCAPE '\\') OR (CommandLine LIKE '% -localserver %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND NOT ((CommandLine = '') OR (CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine = '') OR (ParentProcessName LIKE '%:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' AND CommandLine LIKE '%.cpl%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\syswow64\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND ParentCommandLine LIKE '% C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\%' ESCAPE '\\') OR (CommandLine LIKE '% -localserver %' ESCAPE '\\') OR (ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe\" \"C:\\\\Program Files\\\\McAfee\\\\MSC\\\\mcmscins.dll\",DllUninstallFunction %' ESCAPE '\\' OR CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe\" /uninstall /longpath \"C:\\\\Program Files\\\\McAfee\\\\MSC\\\\mscrem.inf%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_run_executable_invalid_extension.yml"
     },
@@ -9869,28 +9891,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\services.exe' ESCAPE '\\' AND ((CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%echo%' ESCAPE '\\' AND CommandLine LIKE '%\\\\pipe\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%echo%' ESCAPE '\\' AND CommandLine LIKE '%\\\\pipe\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%echo%' ESCAPE '\\' AND CommandLine LIKE '%\\\\pipe\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%rundll32%' ESCAPE '\\' AND CommandLine LIKE '%.dll,a%' ESCAPE '\\' AND CommandLine LIKE '%/p:%' ESCAPE '\\'))) AND NOT (CommandLine LIKE '%MpCmdRun%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_meterpreter_or_cobaltstrike_getsystem_service_start.yml"
-    },
-    {
-        "title": "Excel Proxy Executing Regsvr32 With Payload",
-        "id": "9d1c72f5-43f0-4da5-9320-648cf2099dd0",
-        "status": "experimental",
-        "description": "Excel called wmic to finally proxy execute regsvr32 with the payload.\nAn attacker wanted to break suspicious parent-child chain (Office app spawns LOLBin).\nBut we have command-line in the event which allow us to \"restore\" this suspicious parent-child chain and detect it.\nMonitor process creation with \"wmic process call create\" and LOLBins in command-line with parent Office application processes.\n",
-        "author": "Vadim Khrykov (ThreatIntel), Cyb3rEng (Rule)",
-        "tags": [
-            "attack.t1204.002",
-            "attack.t1047",
-            "attack.t1218.010",
-            "attack.execution",
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wbem\\\\WMIC.exe' ESCAPE '\\' OR OriginalFileName = 'wmic.exe') AND ((CommandLine LIKE '%regsvr32%' ESCAPE '\\' OR CommandLine LIKE '%rundll32%' ESCAPE '\\' OR CommandLine LIKE '%msiexec%' ESCAPE '\\' OR CommandLine LIKE '%mshta%' ESCAPE '\\' OR CommandLine LIKE '%verclsid%' ESCAPE '\\') AND (ParentProcessName LIKE '%\\\\winword.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\powerpnt.exe' ESCAPE '\\') AND CommandLine LIKE '%process%' ESCAPE '\\' AND CommandLine LIKE '%create%' ESCAPE '\\' AND CommandLine LIKE '%call%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_office_from_proxy_executing_regsvr32_payload.yml"
     },
     {
         "title": "Suspicious Add Scheduled Command Pattern",
@@ -12455,7 +12455,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' AND (ParentProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\')) AND NOT ((ParentCommandLine LIKE '%-k apphost -s AppHostSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k imgsvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k LocalSystemNetworkRestricted -p -s NgcSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k netsvcs -p -s NetSetupSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k netsvcs -p -s wlidsvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k NetworkService -p -s DoSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k wsappx -p -s AppXSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k wsappx -p -s ClipSVC%' ESCAPE '\\' OR ParentCommandLine LIKE '%C:\\\\Program Files (x86)\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%C:\\\\Program Files\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' AND (ParentProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\')) AND NOT ((ParentCommandLine LIKE '%-k apphost -s AppHostSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k imgsvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k localService -p -s RemoteRegistry%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k LocalSystemNetworkRestricted -p -s NgcSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k NetSvcs -p -s NcaSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k netsvcs -p -s NetSetupSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k netsvcs -p -s wlidsvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k NetworkService -p -s DoSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k wsappx -p -s AppXSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k wsappx -p -s ClipSVC%' ESCAPE '\\' OR ParentCommandLine LIKE '%C:\\\\Program Files (x86)\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%C:\\\\Program Files\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_parent_of_conhost.yml"
     },
@@ -15849,28 +15849,6 @@
         "filename": "proc_creation_win_wmi_backdoor_exchange_transport_agent.yml"
     },
     {
-        "title": "Excel Proxy Executing Regsvr32 With Payload Alternate",
-        "id": "c0e1c3d5-4381-4f18-8145-2583f06a1fe5",
-        "status": "experimental",
-        "description": "Excel called wmic to finally proxy execute regsvr32 with the payload.\nAn attacker wanted to break suspicious parent-child chain (Office app spawns LOLBin).\nBut we have command-line in the event which allow us to \"restore\" this suspicious parent-child chain and detect it.\nMonitor process creation with \"wmic process call create\" and LOLBins in command-line with parent Office application processes.\n",
-        "author": "Vadim Khrykov (ThreatIntel), Cyb3rEng (Rule)",
-        "tags": [
-            "attack.t1204.002",
-            "attack.t1047",
-            "attack.t1218.010",
-            "attack.execution",
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%regsvr32%' ESCAPE '\\' OR CommandLine LIKE '%rundll32%' ESCAPE '\\' OR CommandLine LIKE '%msiexec%' ESCAPE '\\' OR CommandLine LIKE '%mshta%' ESCAPE '\\' OR CommandLine LIKE '%verclsid%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\wbem\\\\WMIC.exe' ESCAPE '\\' OR CommandLine LIKE '%wmic %' ESCAPE '\\') AND (ParentProcessName LIKE '%\\\\winword.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\powerpnt.exe' ESCAPE '\\') AND (CommandLine LIKE '%process%' ESCAPE '\\' AND CommandLine LIKE '%create%' ESCAPE '\\' AND CommandLine LIKE '%call%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_office_from_proxy_executing_regsvr32_payload2.yml"
-    },
-    {
         "title": "BlueMashroom DLL Load",
         "id": "bd70d3f8-e60e-4d25-89f0-0b5a9cff20e0",
         "status": "test",
@@ -18076,6 +18054,26 @@
         "filename": "proc_creation_win_hashcat.yml"
     },
     {
+        "title": "Wsudo Suspicious Execution",
+        "id": "bdeeabc9-ff2a-4a51-be59-bb253aac7891",
+        "status": "experimental",
+        "description": "Detects usage of wsudo (Windows Sudo Utility). Which is a tool that let the user execute programs with different permissions (System, Trusted Installer, Administrator...etc)",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wsudo.exe' ESCAPE '\\' OR OriginalFileName = 'wsudo.exe' OR Description = 'Windows sudo utility' OR ParentProcessName LIKE '%\\\\wsudo-bridge.exe' ESCAPE '\\' OR (CommandLine LIKE '%-u System%' ESCAPE '\\' OR CommandLine LIKE '%-uSystem%' ESCAPE '\\' OR CommandLine LIKE '%-u TrustedInstaller%' ESCAPE '\\' OR CommandLine LIKE '%-uTrustedInstaller%' ESCAPE '\\' OR CommandLine LIKE '% --ti %' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_wsudo_susp_execution.yml"
+    },
+    {
         "title": "Renamed jusched.exe",
         "id": "edd8a48c-1b9f-4ba1-83aa-490338cd1ccb",
         "status": "test",
@@ -18523,7 +18521,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\\\"\\s+?\\-f.*&&.*cmd.*\\/c')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\"\\s+?-f.*&&.*cmd.*/c')"
         ],
         "filename": "posh_ps_invoke_obfuscation_via_var.yml"
     },
@@ -18821,7 +18819,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:\\/c|\\/r)(?:\\s|)\\\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\\\"\\s+?\\-f(?:.*\\)){1,}.*\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:/c|/r)(?:\\s|)\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\"\\s+?-f(?:.*\\)){1,}.*\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_var.yml"
     },
@@ -18842,7 +18840,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:\\/c|\\/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\\\"\\{\\d\\}.+\\-f.+\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:/c|/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\"\\{\\d\\}.+-f.+\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_clip.yml"
     },
@@ -19282,7 +19280,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:\\/c|\\/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\\\"\\{\\d\\}.+\\-f.+\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:/c|/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\"\\{\\d\\}.+-f.+\"')"
         ],
         "filename": "posh_pm_invoke_obfuscation_clip.yml"
     },
@@ -19442,7 +19440,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:\\/c|\\/r)(?:\\s|)\\\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\\\"\\s+?\\-f(?:.*\\)){1,}.*\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:/c|/r)(?:\\s|)\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\"\\s+?-f(?:.*\\)){1,}.*\"')"
         ],
         "filename": "posh_pm_invoke_obfuscation_var.yml"
     },
@@ -19505,7 +19503,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:\\/c|\\/r).+powershell.+(?:\\$\\{?input\\}?|noexit).+\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:/c|/r).+powershell.+(?:\\$\\{?input\\}?|noexit).+\"')"
         ],
         "filename": "posh_pm_invoke_obfuscation_stdin.yml"
     },
@@ -19547,7 +19545,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\\\"\\s+?\\-f.*&&.*cmd.*\\/c')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\"\\s+?-f.*&&.*cmd.*/c')"
         ],
         "filename": "posh_pm_invoke_obfuscation_via_var.yml"
     },
@@ -20370,7 +20368,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Initiated = 'true' AND (DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%.pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com/attachments/' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%.paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%.hastebin.com/raw/' ESCAPE '\\' OR DestinationHostname LIKE '%.ghostbin.co/' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\') AND (NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Initiated = 'true' AND (DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%.pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com/attachments/' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%.paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%.hastebin.com/raw/' ESCAPE '\\' OR DestinationHostname LIKE '%.ghostbin.co/' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\') AND (NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\'))"
         ],
         "filename": "net_connection_win_binary_susp_com.yml"
     },
@@ -20665,7 +20663,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((Contents LIKE '%https://transfer.sh/%' ESCAPE '\\' OR Contents LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%pastebin.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Contents LIKE '%mediafire.com%' ESCAPE '\\' OR Contents LIKE '%mega.nz%' ESCAPE '\\' OR Contents LIKE '%ddns.net%' ESCAPE '\\' OR Contents LIKE '%.paste.ee%' ESCAPE '\\' OR Contents LIKE '%.hastebin.com%' ESCAPE '\\' OR Contents LIKE '%.ghostbin.co/%' ESCAPE '\\' OR Contents LIKE '%ufile.io%' ESCAPE '\\' OR Contents LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Contents LIKE '%anonfiles.com%' ESCAPE '\\' OR Contents LIKE '%send.exploit.in%' ESCAPE '\\') AND (TargetFilename LIKE '%.exe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbs:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dll:Zone%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Contents LIKE '%https://transfer.sh/%' ESCAPE '\\' OR Contents LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%pastebin.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Contents LIKE '%mediafire.com%' ESCAPE '\\' OR Contents LIKE '%mega.nz%' ESCAPE '\\' OR Contents LIKE '%ddns.net%' ESCAPE '\\' OR Contents LIKE '%.paste.ee%' ESCAPE '\\' OR Contents LIKE '%.hastebin.com%' ESCAPE '\\' OR Contents LIKE '%.ghostbin.co/%' ESCAPE '\\' OR Contents LIKE '%ufile.io%' ESCAPE '\\' OR Contents LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Contents LIKE '%anonfiles.com%' ESCAPE '\\' OR Contents LIKE '%send.exploit.in%' ESCAPE '\\' OR Contents LIKE '%privatlab.net%' ESCAPE '\\' OR Contents LIKE '%privatlab.com%' ESCAPE '\\' OR Contents LIKE '%sendspace.com%' ESCAPE '\\') AND (TargetFilename LIKE '%.exe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbs:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dll:Zone%' ESCAPE '\\'))"
         ],
         "filename": "create_stream_hash_susp_domain_ext_combo.yml"
     },
