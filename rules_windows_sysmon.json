@@ -1319,7 +1319,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\isolatedCommand' ESCAPE '\\') OR (EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Classes\\\\Folder\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND Details LIKE '%-1___\\\\Software\\\\Classes\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\isolatedCommand' ESCAPE '\\') OR (EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Classes\\\\Folder\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND Details REGEXP '-1[0-9]{3}\\\\Software\\\\Classes\\\\')))"
         ],
         "filename": "registry_set_uac_bypass_sdclt.yml"
     },
@@ -6453,7 +6453,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID IN ('17', '18') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (PipeName REGEXP '\\\\\\\\mojo\\.5688\\.8052\\.(?:183894939787088877|35780273329370473)[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\wkssvc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\ntsvcs[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\DserNamePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\SearchTextHarvester[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\mypipe\\-(?:f|h)[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\windows\\.update\\.manager[0-9a-f]{2,3}' OR PipeName REGEXP '\\\\\\\\ntsvcs_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\scerpc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\PGMessagePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\MsFteWds[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\f4c3[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\fullduplex_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\msrpc_[0-9a-f]{4}' OR PipeName REGEXP '\\\\\\\\win\\\\\\\\msrpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\f53f[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\rpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\spoolss_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\Winsock2\\\\\\\\CatalogChangeListener-[0-9a-f]{3}-0,'))"
+            "SELECT * FROM logs WHERE ((EventID IN ('17', '18') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (PipeName REGEXP '\\\\\\\\mojo\\.5688\\.8052\\.(?:183894939787088877|35780273329370473)[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\wkssvc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\ntsvcs[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\DserNamePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\SearchTextHarvester[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\mypipe-(?:f|h)[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\windows\\.update\\.manager[0-9a-f]{2,3}' OR PipeName REGEXP '\\\\\\\\ntsvcs_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\scerpc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\PGMessagePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\MsFteWds[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\f4c3[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\fullduplex_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\msrpc_[0-9a-f]{4}' OR PipeName REGEXP '\\\\\\\\win\\\\\\\\msrpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\f53f[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\rpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\spoolss_[0-9a-f]{2}' OR PipeName REGEXP '\\\\\\\\Winsock2\\\\\\\\CatalogChangeListener-[0-9a-f]{3}-0,'))"
         ],
         "filename": "pipe_created_mal_cobaltstrike_re.yml"
     },
@@ -9168,7 +9168,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '% tcp 139%' ESCAPE '\\' OR CommandLine LIKE '% tcp 445%' ESCAPE '\\' OR CommandLine LIKE '% tcp 3389%' ESCAPE '\\' OR CommandLine LIKE '% tcp 5985%' ESCAPE '\\' OR CommandLine LIKE '% tcp 5986%' ESCAPE '\\') OR (CommandLine LIKE '% start %' ESCAPE '\\' AND CommandLine LIKE '%--all%' ESCAPE '\\' AND CommandLine LIKE '%--config%' ESCAPE '\\' AND CommandLine LIKE '%.yml%' ESCAPE '\\') OR (Image LIKE '%ngrok.exe' ESCAPE '\\' AND (CommandLine LIKE '% tcp %' ESCAPE '\\' OR CommandLine LIKE '% http %' ESCAPE '\\' OR CommandLine LIKE '% authtoken %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '% tcp 139%' ESCAPE '\\' OR CommandLine LIKE '% tcp 445%' ESCAPE '\\' OR CommandLine LIKE '% tcp 3389%' ESCAPE '\\' OR CommandLine LIKE '% tcp 5985%' ESCAPE '\\' OR CommandLine LIKE '% tcp 5986%' ESCAPE '\\') OR (CommandLine LIKE '% start %' ESCAPE '\\' AND CommandLine LIKE '%--all%' ESCAPE '\\' AND CommandLine LIKE '%--config%' ESCAPE '\\' AND CommandLine LIKE '%.yml%' ESCAPE '\\') OR (Image LIKE '%ngrok.exe' ESCAPE '\\' AND (CommandLine LIKE '% tcp %' ESCAPE '\\' OR CommandLine LIKE '% http %' ESCAPE '\\' OR CommandLine LIKE '% authtoken %' ESCAPE '\\')) OR (CommandLine LIKE '%.exe authtoken %' ESCAPE '\\' OR CommandLine LIKE '%.exe start --all%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_ngrok_pua.yml"
     },
@@ -9910,6 +9910,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Create %' ESCAPE '\\') AND (((CommandLine LIKE '%/sc minute %' ESCAPE '\\' OR CommandLine LIKE '%/ru system %' ESCAPE '\\') AND (CommandLine LIKE '%cmd.exe /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r %' ESCAPE '\\' OR CommandLine LIKE '%cmd /r%' ESCAPE '\\')) OR (CommandLine LIKE '% bypass %' ESCAPE '\\' OR CommandLine LIKE '%.DownloadString%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadFile%' ESCAPE '\\' OR CommandLine LIKE '%FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '% -w hidden %' ESCAPE '\\' OR CommandLine LIKE '% IEX%' ESCAPE '\\' OR CommandLine LIKE '% -enc %' ESCAPE '\\' OR CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '%/c start /min %' ESCAPE '\\' OR CommandLine LIKE '% curl %' ESCAPE '\\') OR (CommandLine LIKE '%/xml C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%wscript.exe%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_schtasks_pattern.yml"
+    },
+    {
+        "title": "SysmonEOP Hack Tool",
+        "id": "8a7e90c5-fe6e-45dc-889e-057fe4378bd9",
+        "status": "experimental",
+        "description": "Detects the execution of the PoC that can be used to exploit Sysmon CVE-2022-41120",
+        "author": "Florian Roth",
+        "tags": [
+            "cve.2022.41120",
+            "attack.t1068",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\SysmonEOP.exe' ESCAPE '\\' OR Hashes IN ('IMPHASH=22F4089EB8ABA31E1BB162C6D9BF72E5', 'IMPHASH=5123FA4C4384D431CD0D893EEB49BBEC') OR Imphash IN ('22f4089eb8aba31e1bb162c6d9bf72e5', '5123fa4c4384d431cd0d893eeb49bbec')))"
+        ],
+        "filename": "proc_creation_win_hack_sysmoneop.yml"
     },
     {
         "title": "Netsh RDP Port Opening",
@@ -17594,7 +17614,7 @@
     },
     {
         "title": "Suspicious WERMGR Process Patterns",
-        "id": "CBEC226F-63D9-4ECA-9F52-DFB6652F24DF",
+        "id": "396f6630-f3ac-44e3-bfc8-1b161bc00c4e",
         "status": "experimental",
         "description": "Detects suspicious Windows Error Reporting manager (wermgr.exe) process patterns - suspicious parents / children, execution folders, command lines etc.",
         "author": "Florian Roth",
@@ -17618,7 +17638,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\Sysmon.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\Sysmon64.exe' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Windows\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\Sysmon.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\Sysmon64.exe' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Windows\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\' OR Image LIKE 'wevtutil.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\wevtutil.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_sysmon_exploitation.yml"
     },
@@ -17850,7 +17870,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\' OR CommandLine LIKE '%.dll #%' ESCAPE '\\' OR CommandLine LIKE '%.ocx #%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%EDGEHTML.dll%' ESCAPE '\\' AND CommandLine LIKE '%#141%' ESCAPE '\\') OR ((ParentImage LIKE '%\\\\Msbuild\\\\Current\\\\Bin\\\\%' ESCAPE '\\' OR ParentImage LIKE '%\\\\Tracker.exe%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\FileTracker32.dll,#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker32.dll\",#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker64.dll,#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker64.dll\",#1%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\' OR CommandLine LIKE '%.dll #%' ESCAPE '\\' OR CommandLine LIKE '%.ocx #%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%EDGEHTML.dll%' ESCAPE '\\' AND CommandLine LIKE '%#141%' ESCAPE '\\') OR ((ParentImage LIKE '%\\\\Msbuild\\\\Current\\\\Bin\\\\%' ESCAPE '\\' OR ParentImage LIKE '%\\\\VC\\\\Tools\\\\MSVC\\\\%' ESCAPE '\\' OR ParentImage LIKE '%\\\\Tracker.exe%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\FileTracker32.dll,#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker32.dll\",#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker64.dll,#1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\FileTracker64.dll\",#1%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_susp_rundll32_by_ordinal.yml"
     },
@@ -18288,7 +18308,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:\\/c|\\/r).+powershell.+(?:\\$?\\{?input\\}?|noexit).+\\\"')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:/c|/r).+powershell.+(?:\\$?\\{?input\\}?|noexit).+\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_stdin.yml"
     },
