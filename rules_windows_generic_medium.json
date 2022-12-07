@@ -3425,7 +3425,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND ((EventType = 'RenameKey' AND NewName LIKE 'HKCR\\\\CLSID\\\\{645FF040-5081-101B-9F08-00AA002F954E}\\\\shell\\\\open' ESCAPE '\\') OR (EventType = 'SetValue' AND TargetObject LIKE 'HKCR\\\\CLSID\\\\{645FF040-5081-101B-9F08-00AA002F954E}\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND ((EventType = 'RenameKey' AND NewName LIKE '%\\\\CLSID\\\\{645FF040-5081-101B-9F08-00AA002F954E}\\\\shell\\\\open%' ESCAPE '\\') OR (EventType = 'SetValue' AND TargetObject LIKE '%\\\\CLSID\\\\{645FF040-5081-101B-9F08-00AA002F954E}\\\\shell\\\\open\\\\command\\\\(Default)%' ESCAPE '\\')))"
         ],
         "filename": "registry_event_persistence_recycle_bin.yml"
     },
@@ -3775,6 +3775,27 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID IN ('4656', '4663') AND ObjectType = 'Key' AND ObjectName LIKE '\\\\REGISTRY\\\\MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Microsoft Online\\\\Reporting\\\\MonitoringAgent' ESCAPE '\\') AND NOT ((ProcessName LIKE '%Microsoft.Identity.Health.Adfs.DiagnosticsAgent.exe%' ESCAPE '\\' OR ProcessName LIKE '%Microsoft.Identity.Health.Adfs.InsightsService.exe%' ESCAPE '\\' OR ProcessName LIKE '%Microsoft.Identity.Health.Adfs.MonitoringAgent.Startup.exe%' ESCAPE '\\' OR ProcessName LIKE '%Microsoft.Identity.Health.Adfs.PshSurrogate.exe%' ESCAPE '\\' OR ProcessName LIKE '%Microsoft.Identity.Health.Common.Clients.ResourceMonitor.exe%' ESCAPE '\\')))"
         ],
         "filename": "win_security_aadhealth_mon_agent_regkey_access.yml"
+    },
+    {
+        "title": "Suspicious Scheduled Task Update",
+        "id": "614cf376-6651-47c4-9dcc-6b9527f749f4",
+        "status": "experimental",
+        "description": "Detects update to a scheduled task event that contain suspicious keywords.",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.persistence",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4702' AND (TaskContentNew LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%\\\\WINDOWS\\\\Temp\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR TaskContentNew LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR TaskContentNew LIKE '%C:\\\\Perflogs\\\\%' ESCAPE '\\') AND (TaskContentNew LIKE '%regsvr32%' ESCAPE '\\' OR TaskContentNew LIKE '%rundll32%' ESCAPE '\\' OR TaskContentNew LIKE '%cmd.exe</Command>%' ESCAPE '\\' OR TaskContentNew LIKE '%cmd</Command>%' ESCAPE '\\' OR TaskContentNew LIKE '%<Arguments>/c %' ESCAPE '\\' OR TaskContentNew LIKE '%<Arguments>/k %' ESCAPE '\\' OR TaskContentNew LIKE '%<Arguments>/r %' ESCAPE '\\' OR TaskContentNew LIKE '%powershell%' ESCAPE '\\' OR TaskContentNew LIKE '%pwsh%' ESCAPE '\\' OR TaskContentNew LIKE '%mshta%' ESCAPE '\\' OR TaskContentNew LIKE '%wscript%' ESCAPE '\\' OR TaskContentNew LIKE '%cscript%' ESCAPE '\\' OR TaskContentNew LIKE '%certutil%' ESCAPE '\\' OR TaskContentNew LIKE '%bitsadmin%' ESCAPE '\\' OR TaskContentNew LIKE '%bash.exe%' ESCAPE '\\' OR TaskContentNew LIKE '%bash %' ESCAPE '\\' OR TaskContentNew LIKE '%scrcons%' ESCAPE '\\' OR TaskContentNew LIKE '%wmic %' ESCAPE '\\' OR TaskContentNew LIKE '%wmic.exe%' ESCAPE '\\' OR TaskContentNew LIKE '%forfiles%' ESCAPE '\\' OR TaskContentNew LIKE '%scriptrunner%' ESCAPE '\\' OR TaskContentNew LIKE '%hh.exe%' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_susp_scheduled_task_update.yml"
     },
     {
         "title": "RottenPotato Like Attack Pattern",
@@ -4534,6 +4555,27 @@
         "filename": "win_security_susp_failed_logons_single_source_kerberos.yml"
     },
     {
+        "title": "Important Scheduled Task Deleted/Disabled",
+        "id": "7595ba94-cf3b-4471-aa03-4f6baa9e5fad",
+        "status": "experimental",
+        "description": "Detects when adversaries stop services or processes by deleting or disabling their respective schdueled tasks in order to conduct data destructive activities",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.persistence",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4699', '4701') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_susp_scheduled_task_delete.yml"
+    },
+    {
         "title": "Active Directory User Backdoors",
         "id": "300bac00-e041-4ee2-9c36-e262656a6ecc",
         "status": "test",
@@ -4614,6 +4656,27 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4656', '4658', '4660', '4663') AND ObjectName LIKE '%\\\\wceaux.dll' ESCAPE '\\')"
         ],
         "filename": "win_security_mal_wceaux_dll.yml"
+    },
+    {
+        "title": "Suspicious Scheduled Task Creation",
+        "id": "3a734d25-df5c-4b99-8034-af1ddb5883a4",
+        "status": "experimental",
+        "description": "Detects suspicious scheduled task creation events. Based on attributes such as paths, commands line flags, etc.",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.persistence",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (TaskContent LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\WINDOWS\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\Perflogs\\\\%' ESCAPE '\\') AND (TaskContent LIKE '%regsvr32%' ESCAPE '\\' OR TaskContent LIKE '%rundll32%' ESCAPE '\\' OR TaskContent LIKE '%cmd.exe</Command>%' ESCAPE '\\' OR TaskContent LIKE '%cmd</Command>%' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/c %' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/k %' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/r %' ESCAPE '\\' OR TaskContent LIKE '%powershell%' ESCAPE '\\' OR TaskContent LIKE '%pwsh%' ESCAPE '\\' OR TaskContent LIKE '%mshta%' ESCAPE '\\' OR TaskContent LIKE '%wscript%' ESCAPE '\\' OR TaskContent LIKE '%cscript%' ESCAPE '\\' OR TaskContent LIKE '%certutil%' ESCAPE '\\' OR TaskContent LIKE '%bitsadmin%' ESCAPE '\\' OR TaskContent LIKE '%bash.exe%' ESCAPE '\\' OR TaskContent LIKE '%bash %' ESCAPE '\\' OR TaskContent LIKE '%scrcons%' ESCAPE '\\' OR TaskContent LIKE '%wmic %' ESCAPE '\\' OR TaskContent LIKE '%wmic.exe%' ESCAPE '\\' OR TaskContent LIKE '%forfiles%' ESCAPE '\\' OR TaskContent LIKE '%scriptrunner%' ESCAPE '\\' OR TaskContent LIKE '%hh.exe%' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_susp_scheduled_task_creation.yml"
     },
     {
         "title": "Suspicious Kerberos RC4 Ticket Encryption",
@@ -6552,6 +6615,25 @@
             "SELECT * FROM (SELECT *,count(*) AS agg FROM logs WHERE (Channel = 'Microsoft-Windows-SmbClient/Security' AND EventID = '31010' AND ShareName LIKE '%$' ESCAPE '\\')) WHERE agg > 10"
         ],
         "filename": "win_susp_failed_hidden_share_mount.yml"
+    },
+    {
+        "title": "Suspicious Scheduled Tasks Locations",
+        "id": "424273ea-7cf8-43a6-b712-375f925e481f",
+        "status": "experimental",
+        "description": "Detects the execution of Scheduled Tasks where the Program being run is located in a suspicious location or it's an unusale program to be run from a Scheduled Task",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.persistence",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '129' AND (Path LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Path LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR Path LIKE '%C:\\\\Windows\\\\System32\\\\calc.exe%' ESCAPE '\\' OR Path LIKE '%C:\\\\Windows\\\\System32\\\\regsvr32.exe%' ESCAPE '\\' OR Path LIKE '%C:\\\\Windows\\\\System32\\\\rundll32.exe%' ESCAPE '\\'))"
+        ],
+        "filename": "win_task_scheduler_susp_task_locations.yml"
     },
     {
         "title": "LDAP Reconnaissance / Active Directory Enumeration",
@@ -11461,6 +11543,27 @@
         "filename": "proc_creation_win_uac_bypass_wsreset_integrity_level.yml"
     },
     {
+        "title": "Suspicious Elevated System Shell",
+        "id": "178e615d-e666-498b-9630-9ed363038101",
+        "status": "experimental",
+        "description": "Detects when a shell program such as the windows Command Prompt or PowerShell is launched with system privileges.",
+        "author": "frack113",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'Cmd.Exe')) AND ((User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND SubjectLogonId = '0x3e7'))"
+        ],
+        "filename": "proc_creation_win_susp_cmd.yml"
+    },
+    {
         "title": "Regsvr32 Anomaly",
         "id": "8e2b24c9-4add-46a0-b4bb-0057b4e6187d",
         "status": "experimental",
@@ -16147,7 +16250,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' AND NOT ((Provider_Name = 'SystemTraceProvider-Process') OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND NewProcessName LIKE '%\\\\git.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% show --textconv %' ESCAPE '\\' OR ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (ParentCommandLine LIKE '%C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4%' ESCAPE '\\' AND (CommandLine LIKE '% show --textconv %' ESCAPE '\\' OR CommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR ((ParentCommandLine LIKE '\\?_\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4' ESCAPE '\\' OR ParentCommandLine LIKE '\\?_\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1' ESCAPE '\\') AND NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR (ParentCommandLine LIKE '\\?_\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Program Files\\\\Git\\\\mingw64\\\\bin\\\\git.exe' ESCAPE '\\' AND CommandLine LIKE '%show --textconv :%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' AND NOT ((Provider_Name = 'SystemTraceProvider-Process') OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND NewProcessName LIKE '%\\\\git.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% show --textconv %' ESCAPE '\\' OR ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (ParentCommandLine LIKE '%C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4%' ESCAPE '\\' AND (CommandLine LIKE '% show --textconv %' ESCAPE '\\' OR CommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR ((ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4' ESCAPE '\\' OR ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1' ESCAPE '\\') AND NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR (ParentCommandLine LIKE '\\?_\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Program Files\\\\Git\\\\mingw64\\\\bin\\\\git.exe' ESCAPE '\\' AND CommandLine LIKE '%show --textconv :%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_conhost.yml"
     },
@@ -16631,7 +16734,7 @@
         "id": "2d3cdeec-c0db-45b4-aa86-082f7eb75701",
         "status": "experimental",
         "description": "Detects the Internet Information Services (IIS) command-line tool, AppCmd, being used to list passwords",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Janantha Marasinghe",
         "tags": [
             "attack.credential_access",
             "attack.t1003"
@@ -16641,7 +16744,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\appcmd.exe' ESCAPE '\\' OR OriginalFilename = 'appcmd.exe') AND (CommandLine LIKE '% /list %' ESCAPE '\\' OR CommandLine LIKE '% list %' ESCAPE '\\') AND (CommandLine LIKE '% /text%' ESCAPE '\\' AND CommandLine LIKE '% password%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\appcmd.exe' ESCAPE '\\' OR OriginalFilename = 'appcmd.exe') AND CommandLine LIKE '%list %' ESCAPE '\\' AND (CommandLine LIKE '% /@t%' ESCAPE '\\' OR CommandLine LIKE '% /text%' ESCAPE '\\' OR CommandLine LIKE '% /show%' ESCAPE '\\' OR CommandLine LIKE '% /config%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_iis_service_account_password_dumped.yml"
     },
@@ -19246,6 +19349,27 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' AND (ParentProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\')) AND NOT ((ParentCommandLine LIKE '%-k apphost -s AppHostSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k imgsvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k localService -p -s RemoteRegistry%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k LocalSystemNetworkRestricted -p -s NgcSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k NetSvcs -p -s NcaSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k netsvcs -p -s NetSetupSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k netsvcs -p -s wlidsvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k NetworkService -p -s DoSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k wsappx -p -s AppXSvc%' ESCAPE '\\' OR ParentCommandLine LIKE '%-k wsappx -p -s ClipSVC%' ESCAPE '\\' OR ParentCommandLine LIKE '%C:\\\\Program Files (x86)\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%C:\\\\Program Files\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_parent_of_conhost.yml"
+    },
+    {
+        "title": "Rename Mavinject Execution",
+        "id": "e6474a1b-5390-49cd-ab41-8d88655f7394",
+        "status": "experimental",
+        "description": "Detects execution of a renamed version of the \"Mavinject\" process. Which can be abused to perform process injection using the \"/INJECTRUNNING\" flag",
+        "author": "frack113, Florian Roth",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1055.001",
+            "attack.t1218.013"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND OriginalFileName IN ('mavinject32.exe', 'mavinject64.exe') AND NOT ((NewProcessName LIKE '%\\\\mavinject32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mavinject64.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_renamed_mavinject.yml"
     },
     {
         "title": "Suspicious HWP Sub Processes",
@@ -22245,6 +22369,27 @@
         "filename": "proc_creation_win_susp_reg_open_command.yml"
     },
     {
+        "title": "Mavinject Inject DLL Into Running Process",
+        "id": "4f73421b-5a0b-4bbf-a892-5a7fb99bea66",
+        "status": "experimental",
+        "description": "Detects process injection using the signed Windows tool \"Mavinject\" via the \"INJECTRUNNING\" flag",
+        "author": "frack113, Florian Roth",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1055.001",
+            "attack.t1218.013"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND CommandLine LIKE '% /INJECTRUNNING %' ESCAPE '\\' AND NOT (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\AppVClient.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_lolbin_mavinject_process_injection.yml"
+    },
+    {
         "title": "High Integrity Sdclt Process",
         "id": "40f9af16-589d-4984-b78d-8c2aec023197",
         "status": "test",
@@ -25200,7 +25345,7 @@
         "title": "Delete Important Scheduled Task",
         "id": "dbc1f800-0fe0-4bc0-9c66-292c2abe3f78",
         "status": "experimental",
-        "description": "Detects when adversaries stop services or processes by disabling their respective schdueled tasks in order to conduct data destructive activities",
+        "description": "Detects when adversaries stop services or processes by deleting their respective schdueled tasks in order to conduct data destructive activities",
         "author": "Nasreddine Bencherchali",
         "tags": [
             "attack.impact",
@@ -27609,16 +27754,17 @@
         "id": "9cfc00b6-bfb7-49ce-9781-ef78503154bb",
         "status": "experimental",
         "description": "Detects use of Wlrmdr.exe in which the -u parameter is passed to ShellExecute",
-        "author": "frack113",
+        "author": "frack113, manasmbellani",
         "tags": [
-            "attack.defense_evasion"
+            "attack.defense_evasion",
+            "attack.t1218"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wlrmdr.exe' ESCAPE '\\' AND CommandLine LIKE '%-s %' ESCAPE '\\' AND CommandLine LIKE '%-f %' ESCAPE '\\' AND CommandLine LIKE '%-t %' ESCAPE '\\' AND CommandLine LIKE '%-m %' ESCAPE '\\' AND CommandLine LIKE '%-a %' ESCAPE '\\' AND CommandLine LIKE '%-u %' ESCAPE '\\') AND NOT ((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\') OR (ParentProcessName = '-')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\wlrmdr.exe' ESCAPE '\\' OR (((NewProcessName LIKE '%\\\\wlrmdr.exe' ESCAPE '\\' OR OriginalFileName = 'WLRMNDR.EXE') AND (CommandLine LIKE '%-s %' ESCAPE '\\' AND CommandLine LIKE '%-f %' ESCAPE '\\' AND CommandLine LIKE '%-t %' ESCAPE '\\' AND CommandLine LIKE '%-m %' ESCAPE '\\' AND CommandLine LIKE '%-a %' ESCAPE '\\' AND CommandLine LIKE '%-u %' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\') OR (ParentProcessName = '-')))))"
         ],
         "filename": "proc_creation_win_lolbin_wlrmdr.yml"
     },
@@ -27931,27 +28077,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\gmer.exe' ESCAPE '\\' OR (Hashes LIKE '%MD5=E9DC058440D321AA17D0600B3CA0AB04%' ESCAPE '\\' OR Hashes LIKE '%SHA1=539C228B6B332F5AA523E5CE358C16647D8BBE57%' ESCAPE '\\' OR Hashes LIKE '%SHA256=E8A3E804A96C716A3E9B69195DB6FFB0D33E2433AF871E4D4E1EAB3097237173%' ESCAPE '\\') OR MD5 = 'e9dc058440d321aa17d0600b3ca0ab04' OR SHA1 = '539c228b6b332f5aa523e5ce358c16647d8bbe57' OR SHA256 = 'e8a3e804a96c716a3e9b69195db6ffb0d33e2433af871e4d4e1eab3097237173'))"
         ],
         "filename": "proc_creation_win_gmer_execution.yml"
-    },
-    {
-        "title": "Mavinject Inject DLL Into Running Process",
-        "id": "4f73421b-5a0b-4bbf-a892-5a7fb99bea66",
-        "status": "experimental",
-        "description": "Detects process injection using the signed Windows tool \"Mavinject\" via the \"INJECTRUNNING\" flag or a renamed execution of the tool",
-        "author": "frack113, Florian Roth",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.privilege_escalation",
-            "attack.t1055.001",
-            "attack.t1218.013"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '% /INJECTRUNNING %' ESCAPE '\\' OR (OriginalFileName IN ('mavinject32.exe', 'mavinject64.exe') AND NOT ((NewProcessName LIKE '%\\\\mavinject32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mavinject64.exe' ESCAPE '\\')))))"
-        ],
-        "filename": "proc_creation_win_creation_mavinject_process_injection.yml"
     },
     {
         "title": "Invoke-Obfuscation STDIN+ Launcher",
