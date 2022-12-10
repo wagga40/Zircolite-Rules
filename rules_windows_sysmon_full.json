@@ -23,7 +23,7 @@
         "title": "Usage of Renamed Sysinternals Tools",
         "id": "f50f3c09-557d-492d-81db-9064a8d4e211",
         "status": "experimental",
-        "description": "Detects the of the \"accepteula\" key related to sysinternals tools being created from non sysinternals tools",
+        "description": "Detects the \"accepteula\" key related to sysinternals tools being created from non sysinternals tools",
         "author": "Nasreddine Bencherchali",
         "tags": [
             "attack.resource_development",
@@ -34,7 +34,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '12' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'CreateKey' AND (TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT ((Image LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle64.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR Image LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR Image LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR Image LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR Image LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '12' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'CreateKey' AND (TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoggedon%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPing%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsService%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT ((Image LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR Image LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle64.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsLoggedon.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsLoggedon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR Image LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR Image LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsPing.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsPing64.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsService.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsService64.exe' ESCAPE '\\')))"
         ],
         "filename": "registry_add_renamed_sysinternals_eula_accepted.yml"
     },
@@ -1364,7 +1364,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\Explorer\\\\Run' ESCAPE '\\') AND ((Details LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\ProgramData\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\$Recycle.bin\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Users\\\\Default\\\\%' ESCAPE '\\') OR (Details LIKE '%\\\\AppData\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\Explorer\\\\Run' ESCAPE '\\') AND ((Details LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\ProgramData\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\$Recycle.bin\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Users\\\\Default\\\\%' ESCAPE '\\') OR Details LIKE '%\\\\AppData\\\\%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_susp_reg_persist_explorer_run.yml"
     },
@@ -1422,7 +1422,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND (TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\NalDrv\\\\ImagePath' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\PROCEXP152\\\\ImagePath' ESCAPE '\\')) AND NOT ((Image LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp.exe' ESCAPE '\\' OR Image LIKE '%\\\\procmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procmon.exe' ESCAPE '\\') AND Details LIKE '%\\\\WINDOWS\\\\system32\\\\Drivers\\\\PROCEXP152.SYS%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND (TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\NalDrv\\\\ImagePath' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\PROCEXP152\\\\ImagePath' ESCAPE '\\')) AND NOT ((Image LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp.exe' ESCAPE '\\' OR Image LIKE '%\\\\procmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procmon.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle64.exe' ESCAPE '\\') AND Details LIKE '%\\\\WINDOWS\\\\system32\\\\Drivers\\\\PROCEXP152.SYS%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_susp_service_installed.yml"
     },
@@ -1956,6 +1956,25 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\%' ESCAPE '\\' AND ((TargetObject LIKE '%\\\\Image File Execution Options\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\GlobalFlag%' ESCAPE '\\') OR (TargetObject LIKE '%SilentProcessExit\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\ReportingMode%' ESCAPE '\\') OR (TargetObject LIKE '%SilentProcessExit\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\MonitorProcess%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_globalflags_persistence.yml"
+    },
+    {
+        "title": "Lsass Full Dump Request Via DumpType Registry Settings",
+        "id": "33efc23c-6ea2-4503-8cfe-bdf82ce8f719",
+        "status": "experimental",
+        "description": "Detects the setting of the \"DumpType\" registry value to \"2\" which stands for a \"Full Dump\". Technique such as LSASS Shtinkering requires this value to be \"2\" in order to dump LSASS.",
+        "author": "@pbssubhash",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Legitimate application that needs to do a full dump of their process"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\Windows Error Reporting\\\\LocalDumps\\\\DumpType%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\Windows Error Reporting\\\\LocalDumps\\\\lsass.exe\\\\DumpType%' ESCAPE '\\') AND Details = 'DWORD (0x00000002)')"
+        ],
+        "filename": "registry_set_lsass_usermode_dumping.yml"
     },
     {
         "title": "Disable Tamper Protection on Windows Defender",
@@ -3110,7 +3129,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{804423C2-F490-4ac3-BFA5-13DEDE63A71A}' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{A5124AF5-DF23-49bf-B0ED-A18ED3DEA027}' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{2DB80286-1784-48b5-A751-B6ED1F490303}' ESCAPE '\\') OR (TargetObject LIKE 'HKLM\\\\SYSTEM\\\\Setup\\\\PrintResponsor\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{804423C2-F490-4ac3-BFA5-13DEDE63A71A}' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{A5124AF5-DF23-49bf-B0ED-A18ED3DEA027}' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{2DB80286-1784-48b5-A751-B6ED1F490303}' ESCAPE '\\') OR TargetObject LIKE 'HKLM\\\\SYSTEM\\\\Setup\\\\PrintResponsor\\\\%' ESCAPE '\\'))"
         ],
         "filename": "registry_event_mal_flowcloud.yml"
     },
@@ -4729,7 +4748,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4699', '4701') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID IN ('4699', '4701') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT (SubjectUserName LIKE '%$' ESCAPE '\\'))"
         ],
         "filename": "win_security_susp_scheduled_task_delete.yml"
     },
@@ -4832,7 +4851,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (TaskContent LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\WINDOWS\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\Perflogs\\\\%' ESCAPE '\\') AND (TaskContent LIKE '%regsvr32%' ESCAPE '\\' OR TaskContent LIKE '%rundll32%' ESCAPE '\\' OR TaskContent LIKE '%cmd.exe</Command>%' ESCAPE '\\' OR TaskContent LIKE '%cmd</Command>%' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/c %' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/k %' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/r %' ESCAPE '\\' OR TaskContent LIKE '%powershell%' ESCAPE '\\' OR TaskContent LIKE '%pwsh%' ESCAPE '\\' OR TaskContent LIKE '%mshta%' ESCAPE '\\' OR TaskContent LIKE '%wscript%' ESCAPE '\\' OR TaskContent LIKE '%cscript%' ESCAPE '\\' OR TaskContent LIKE '%certutil%' ESCAPE '\\' OR TaskContent LIKE '%bitsadmin%' ESCAPE '\\' OR TaskContent LIKE '%bash.exe%' ESCAPE '\\' OR TaskContent LIKE '%bash %' ESCAPE '\\' OR TaskContent LIKE '%scrcons%' ESCAPE '\\' OR TaskContent LIKE '%wmic %' ESCAPE '\\' OR TaskContent LIKE '%wmic.exe%' ESCAPE '\\' OR TaskContent LIKE '%forfiles%' ESCAPE '\\' OR TaskContent LIKE '%scriptrunner%' ESCAPE '\\' OR TaskContent LIKE '%hh.exe%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4698' AND (TaskContent LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\WINDOWS\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR TaskContent LIKE '%C:\\\\Perflogs\\\\%' ESCAPE '\\') AND (TaskContent LIKE '%regsvr32%' ESCAPE '\\' OR TaskContent LIKE '%rundll32%' ESCAPE '\\' OR TaskContent LIKE '%cmd.exe</Command>%' ESCAPE '\\' OR TaskContent LIKE '%cmd</Command>%' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/c %' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/k %' ESCAPE '\\' OR TaskContent LIKE '%<Arguments>/r %' ESCAPE '\\' OR TaskContent LIKE '%powershell%' ESCAPE '\\' OR TaskContent LIKE '%pwsh%' ESCAPE '\\' OR TaskContent LIKE '%mshta%' ESCAPE '\\' OR TaskContent LIKE '%wscript%' ESCAPE '\\' OR TaskContent LIKE '%cscript%' ESCAPE '\\' OR TaskContent LIKE '%certutil%' ESCAPE '\\' OR TaskContent LIKE '%bitsadmin%' ESCAPE '\\' OR TaskContent LIKE '%bash.exe%' ESCAPE '\\' OR TaskContent LIKE '%bash %' ESCAPE '\\' OR TaskContent LIKE '%scrcons%' ESCAPE '\\' OR TaskContent LIKE '%wmic %' ESCAPE '\\' OR TaskContent LIKE '%wmic.exe%' ESCAPE '\\' OR TaskContent LIKE '%forfiles%' ESCAPE '\\' OR TaskContent LIKE '%scriptrunner%' ESCAPE '\\' OR TaskContent LIKE '%hh.exe%' ESCAPE '\\'))"
         ],
         "filename": "win_security_susp_scheduled_task_creation.yml"
     },
@@ -6291,7 +6310,7 @@
         "title": "Failed Code Integrity Checks",
         "id": "470ec5fa-7b4e-4071-b200-4c753100f49b",
         "status": "stable",
-        "description": "Code integrity failures may indicate tampered executables.",
+        "description": "Detects code integrity failures such as missing page hashes or corrupted drivers due unauthorized modification. This could be a sign of tampered binaries.",
         "author": "Thomas Patzke",
         "tags": [
             "attack.defense_evasion",
@@ -6361,7 +6380,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (Provider_Name = 'Microsoft-Windows-Security-Auditing' AND EventID = '4673' AND PrivilegeList = 'SeLoadDriverPrivilege' AND Service = '-') AND NOT ((ProcessName LIKE '%\\\\Windows\\\\System32\\\\Dism.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Windows\\\\System32\\\\rundll32.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Windows\\\\System32\\\\fltMC.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Windows\\\\HelpPane.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Windows\\\\System32\\\\mmc.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Windows\\\\System32\\\\wimserv.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\procmon64.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\procmon.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (Provider_Name = 'Microsoft-Windows-Security-Auditing' AND EventID = '4673' AND PrivilegeList = 'SeLoadDriverPrivilege' AND Service = '-') AND NOT ((ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\Dism.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\rundll32.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\fltMC.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\HelpPane.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\mmc.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\wimserv.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\') OR (ProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\procmon64.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\procmon.exe' ESCAPE '\\' OR ProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')))"
         ],
         "filename": "win_security_user_driver_loaded.yml"
     },
@@ -8477,7 +8496,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID IN ('7045', '7036')) AND ((ServiceName LIKE '%WCESERVICE%' ESCAPE '\\' OR ServiceName LIKE '%WCE SERVICE%' ESCAPE '\\' OR ServiceName LIKE '%winexesvc%' ESCAPE '\\' OR ServiceName LIKE '%DumpSvc%' ESCAPE '\\' OR ServiceName LIKE '%pwdump%' ESCAPE '\\' OR ServiceName LIKE '%gsecdump%' ESCAPE '\\' OR ServiceName LIKE '%cachedump%' ESCAPE '\\') OR (ImagePath LIKE '%bypass%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID IN ('7045', '7036')) AND ((ServiceName LIKE '%WCESERVICE%' ESCAPE '\\' OR ServiceName LIKE '%WCE SERVICE%' ESCAPE '\\' OR ServiceName LIKE '%winexesvc%' ESCAPE '\\' OR ServiceName LIKE '%DumpSvc%' ESCAPE '\\' OR ServiceName LIKE '%pwdump%' ESCAPE '\\' OR ServiceName LIKE '%gsecdump%' ESCAPE '\\' OR ServiceName LIKE '%cachedump%' ESCAPE '\\') OR ImagePath LIKE '%bypass%' ESCAPE '\\'))"
         ],
         "filename": "win_system_service_install_hacktools.yml"
     },
@@ -8845,6 +8864,25 @@
         "filename": "win_system_service_install_remote_utilities.yml"
     },
     {
+        "title": "Windows Defender Suspicious Configuration Changes",
+        "id": "801bd44f-ceed-4eb6-887c-11544633c0aa",
+        "status": "stable",
+        "description": "Detects suspicious changes to the windows defender configuration",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Administrator activity (must be investigated)"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '5007' AND (NewValue LIKE '%\\\\Windows Defender\\\\DisableAntiSpyware %' ESCAPE '\\' OR NewValue LIKE '%\\\\Windows Defender\\\\Scan\\\\DisableRemovableDriveScanning %' ESCAPE '\\' OR NewValue LIKE '%\\\\Windows Defender\\\\Scan\\\\DisableScanningMappedNetworkDrivesForFullScan %' ESCAPE '\\' OR NewValue LIKE '%\\\\Windows Defender\\\\SpyNet\\\\DisableBlockAtFirstSeen %' ESCAPE '\\' OR NewValue LIKE '%\\\\Real-Time Protection\\\\SpyNetReporting %' ESCAPE '\\' OR NewValue LIKE '%\\\\Real-Time Protection\\\\SubmitSamplesConsent %' ESCAPE '\\'))"
+        ],
+        "filename": "win_defender_suspicious_features_tampering.yml"
+    },
+    {
         "title": "Windows Defender AMSI Trigger Detected",
         "id": "ea9bf0fa-edec-4fb8-8b78-b119f2528186",
         "status": "stable",
@@ -8859,7 +8897,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '1116' AND Source_Name = 'AMSI')"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '1116' AND SourceName = 'AMSI')"
         ],
         "filename": "win_defender_amsi_trigger.yml"
     },
@@ -8893,9 +8931,9 @@
             "attack.t1562.001"
         ],
         "falsepositives": [
-            "Administrator actions"
+            "Administrator actions (should be investigated)"
         ],
-        "level": "low",
+        "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID IN ('5001', '5010', '5012', '5101'))"
         ],
@@ -8908,17 +8946,36 @@
         "description": "Detects when someone is adding or removing applications or folder from exploit guard \"ProtectedFolders\" and \"AllowedApplications\"",
         "author": "Nasreddine Bencherchali",
         "tags": [
-            "attack.execution",
-            "attack.t1059"
+            "attack.defense_evasion",
+            "attack.t1562.001"
         ],
         "falsepositives": [
             "Unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND ((EventID = '5007' AND NewValue LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows Defender\\\\Windows Defender Exploit Guard\\\\Controlled Folder Access\\\\AllowedApplications\\\\%' ESCAPE '\\' AND (NewValue LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')) OR (EventID = '5007' AND OldValue LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows Defender\\\\Windows Defender Exploit Guard\\\\Controlled Folder Access\\\\ProtectedFolders\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND ((EventID = '5007' AND NewValue LIKE '%\\\\Windows Defender\\\\Windows Defender Exploit Guard\\\\Controlled Folder Access\\\\AllowedApplications\\\\%' ESCAPE '\\' AND (NewValue LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')) OR (EventID = '5007' AND OldValue LIKE '%\\\\Windows Defender\\\\Windows Defender Exploit Guard\\\\Controlled Folder Access\\\\ProtectedFolders\\\\%' ESCAPE '\\')))"
         ],
         "filename": "win_defender_exploit_guard_tamper.yml"
+    },
+    {
+        "title": "Win Defender Restored Quarantine File",
+        "id": "bc92ca75-cd42-4d61-9a37-9d5aa259c88b",
+        "status": "experimental",
+        "description": "Detects the restoration of files from the defender quarantine",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Legitimate administrator activity restoring a file"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '1009')"
+        ],
+        "filename": "win_defender_restored_quarantine_file.yml"
     },
     {
         "title": "PSExec and WMI Process Creations Block",
@@ -8984,18 +9041,18 @@
         "title": "Microsoft Defender Tamper Protection Trigger",
         "id": "49e5bc24-8b86-49f1-b743-535f332c2856",
         "status": "stable",
-        "description": "Detects block of attempt to disable real time protection of Microsoft Defender by tamper protection",
-        "author": "Bhabesh Raj",
+        "description": "Detects blocked attempts to change any of Defender's settings such as \"Real Time Monitoring\" and \"Behavior Monitoring\"",
+        "author": "Bhabesh Raj, Nasreddine Bencherchali",
         "tags": [
             "attack.defense_evasion",
             "attack.t1562.001"
         ],
         "falsepositives": [
-            "Administrator actions"
+            "Administrator might try to disable defender features during testing (must be investigated)"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '5013' AND (Value LIKE '%\\\\Windows Defender\\\\DisableAntiSpyware = 0x1()' ESCAPE '\\' OR Value LIKE '%\\\\Real-Time Protection\\\\DisableRealtimeMonitoring = (Current)' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '5013' AND (Value LIKE '%\\\\Windows Defender\\\\DisableAntiSpyware' ESCAPE '\\' OR Value LIKE '%\\\\Windows Defender\\\\DisableAntiVirus' ESCAPE '\\' OR Value LIKE '%\\\\Windows Defender\\\\Scan\\\\DisableArchiveScanning' ESCAPE '\\' OR Value LIKE '%\\\\Windows Defender\\\\Scan\\\\DisableScanningNetworkFiles' ESCAPE '\\' OR Value LIKE '%\\\\Real-Time Protection\\\\DisableRealtimeMonitoring' ESCAPE '\\' OR Value LIKE '%\\\\Real-Time Protection\\\\DisableBehaviorMonitoring' ESCAPE '\\' OR Value LIKE '%\\\\Real-Time Protection\\\\DisableIOAVProtection' ESCAPE '\\' OR Value LIKE '%\\\\Real-Time Protection\\\\DisableScriptScanning' ESCAPE '\\'))"
         ],
         "filename": "win_defender_tamper_protection_trigger.yml"
     },
@@ -9006,15 +9063,14 @@
         "description": "Windows Defender logs when the history of detected infections is deleted. Log file will contain the message \"Windows Defender Antivirus has removed history of malware and other potentially unwanted software\".",
         "author": "Cian Heasley",
         "tags": [
-            "attack.defense_evasion",
-            "attack.t1070.001"
+            "attack.defense_evasion"
         ],
         "falsepositives": [
             "Deletion of Defender malware detections history for legitimate reasons"
         ],
-        "level": "high",
+        "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '1013' AND EventType = '4')"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND EventID = '1013')"
         ],
         "filename": "win_defender_history_delete.yml"
     },
@@ -9833,7 +9889,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Description = 'Python Core' AND NOT (((Image LIKE '%Python%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\ProgramData\\\\Anaconda3\\\\%' ESCAPE '\\')) OR (Image = '')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Description = 'Python Core' AND NOT ((Image LIKE '%Python%' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\ProgramData\\\\Anaconda3\\\\%' ESCAPE '\\')) OR (Image = '')))"
         ],
         "filename": "image_load_susp_python_image_load.yml"
     },
@@ -9975,7 +10031,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%MicrosoftAccountTokenProvider.dll' ESCAPE '\\' AND NOT ((Image LIKE '%\\\\BackgroundTaskHost.exe' ESCAPE '\\' OR Image LIKE '%\\\\devenv.exe' ESCAPE '\\' OR Image LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR Image LIKE '%\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR Image LIKE '%\\\\OneDrive.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\') OR Image = ''))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%MicrosoftAccountTokenProvider.dll' ESCAPE '\\' AND NOT ((Image LIKE '%\\\\BackgroundTaskHost.exe' ESCAPE '\\' OR Image LIKE '%\\\\devenv.exe' ESCAPE '\\' OR Image LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR Image LIKE '%\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR Image LIKE '%\\\\OneDrive.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR Image = ''))"
         ],
         "filename": "image_load_abusing_azure_browser_sso.yml"
     },
@@ -11873,7 +11929,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%localgroup%' ESCAPE '\\' AND CommandLine LIKE '%admin%' ESCAPE '\\' AND CommandLine LIKE '%/add%' ESCAPE '\\') OR (CommandLine LIKE '%\\\\Win64.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%localgroup%' ESCAPE '\\' AND CommandLine LIKE '%admin%' ESCAPE '\\' AND CommandLine LIKE '%/add%' ESCAPE '\\') OR CommandLine LIKE '%\\\\Win64.exe%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_apt_hurricane_panda.yml"
     },
@@ -12406,7 +12462,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'Cmd.Exe')) AND ((User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND LogonId = '0x3e7'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'Cmd.Exe')) AND ((User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND LogonId = '0x3e7')) AND NOT ((ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\CompatTelRunner.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%-m:appraiser.dll -f:DoScheduledTelemetryRun%' ESCAPE '\\' AND OriginalFileName = 'PowerShell.EXE' AND CommandLine LIKE '%-ExecutionPolicy Restricted -Command Write-Host%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_cmd.yml"
     },
@@ -12600,7 +12656,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\sqlps.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\sqlps.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\sqlps.exe' ESCAPE '\\') AND NOT (ParentImage LIKE '%\\\\sqlagent.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\sqlps.exe' ESCAPE '\\' OR ((Image LIKE '%\\\\sqlps.exe' ESCAPE '\\' OR OriginalFileName = 'sqlps.exe') AND NOT (ParentImage LIKE '%\\\\sqlagent.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_susp_use_of_sqlps_bin.yml"
     },
@@ -12665,21 +12721,21 @@
         "filename": "proc_creation_win_dll_sideload_vmware_xfer.yml"
     },
     {
-        "title": "Suspicious Conhost Legacy Option",
+        "title": "Suspicious High IntegrityLevel Conhost Legacy Option",
         "id": "3037d961-21e9-4732-b27a-637bcc7bf539",
         "status": "experimental",
-        "description": "ForceV1 asks for information directly from the kernel space. Conhost connects to the console application",
+        "description": "ForceV1 asks for information directly from the kernel space. Conhost connects to the console application. High IntegrityLevel means the process is running with elevated privileges, such as an Administrator context.",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
             "attack.t1202"
         ],
         "falsepositives": [
-            "Unknown"
+            "Very Likely, including launching cmd.exe via Run As Administrator"
         ],
         "level": "informational",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%conhost.exe%' ESCAPE '\\' AND CommandLine LIKE '%0xffffffff%' ESCAPE '\\' AND CommandLine LIKE '%-ForceV1%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND IntegrityLevel = 'High' AND CommandLine LIKE '%conhost.exe%' ESCAPE '\\' AND CommandLine LIKE '%0xffffffff%' ESCAPE '\\' AND CommandLine LIKE '%-ForceV1%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_susp_conhost_option.yml"
     },
@@ -12892,6 +12948,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((IntegrityLevel = 'System' AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\')) AND ((Image LIKE '%\\\\calc.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\hh.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR Image LIKE '%\\\\ping.exe' ESCAPE '\\') OR (CommandLine LIKE '% -NoP %' ESCAPE '\\' OR CommandLine LIKE '% -W Hidden %' ESCAPE '\\' OR CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '% /decode %' ESCAPE '\\' OR CommandLine LIKE '% /urlcache %' ESCAPE '\\' OR CommandLine LIKE '% -urlcache %' ESCAPE '\\' OR CommandLine LIKE '% -e% JAB%' ESCAPE '\\' OR CommandLine LIKE '% -e% SUVYI%' ESCAPE '\\' OR CommandLine LIKE '% -e% SQBFAFgA%' ESCAPE '\\' OR CommandLine LIKE '% -e% aWV4I%' ESCAPE '\\' OR CommandLine LIKE '% -e% IAB%' ESCAPE '\\' OR CommandLine LIKE '% -e% PAA%' ESCAPE '\\' OR CommandLine LIKE '% -e% aQBlAHgA%' ESCAPE '\\' OR CommandLine LIKE '%vssadmin delete shadows%' ESCAPE '\\' OR CommandLine LIKE '%reg SAVE HKLM%' ESCAPE '\\' OR CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '%Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\' OR CommandLine LIKE '%.downloadstring(%' ESCAPE '\\' OR CommandLine LIKE '%.downloadfile(%' ESCAPE '\\' OR CommandLine LIKE '% /ticket:%' ESCAPE '\\' OR CommandLine LIKE '%dpapi::%' ESCAPE '\\' OR CommandLine LIKE '%event::clear%' ESCAPE '\\' OR CommandLine LIKE '%event::drop%' ESCAPE '\\' OR CommandLine LIKE '%id::modify%' ESCAPE '\\' OR CommandLine LIKE '%kerberos::%' ESCAPE '\\' OR CommandLine LIKE '%lsadump::%' ESCAPE '\\' OR CommandLine LIKE '%misc::%' ESCAPE '\\' OR CommandLine LIKE '%privilege::%' ESCAPE '\\' OR CommandLine LIKE '%rpc::%' ESCAPE '\\' OR CommandLine LIKE '%sekurlsa::%' ESCAPE '\\' OR CommandLine LIKE '%sid::%' ESCAPE '\\' OR CommandLine LIKE '%token::%' ESCAPE '\\' OR CommandLine LIKE '%vault::cred%' ESCAPE '\\' OR CommandLine LIKE '%vault::list%' ESCAPE '\\' OR CommandLine LIKE '% p::d %' ESCAPE '\\' OR CommandLine LIKE '%;iex(%' ESCAPE '\\' OR CommandLine LIKE '%MiniDump%' ESCAPE '\\' OR CommandLine LIKE '%net user %' ESCAPE '\\'))) AND NOT ((CommandLine = 'ping 127.0.0.1 -n 5') OR (Image LIKE '%\\\\PING.EXE' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\DismFoDInstall.cmd%' ESCAPE '\\') OR (ParentImage LIKE 'C:\\\\Packages\\\\Plugins\\\\Microsoft.GuestConfiguration.ConfigurationforWindows\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_system_user_anomaly.yml"
+    },
+    {
+        "title": "Potential Credential Dumping Via Windows Error Reporting",
+        "id": "9a4ccd1a-3526-4d99-b980-9f9c5d3a6ff3",
+        "status": "experimental",
+        "description": "Detects potential credential dumping via Windows Error Reporting LSASS Shtinkering technique which uses the Windows Error Reporting to dump lsass",
+        "author": "@pbssubhash , Nasreddine Bencherchali",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Windows Error Reporting might produce similar behavior. In that case, check the PID associated with the \"-p\" parameter in the CommandLine."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\Werfault.exe' ESCAPE '\\' OR OriginalFileName = 'WerFault.exe') AND ((ParentUser LIKE '%AUTHORI%' ESCAPE '\\' OR ParentUser LIKE '%AUTORI%' ESCAPE '\\') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND CommandLine LIKE '% -u -p %' ESCAPE '\\' AND CommandLine LIKE '% -ip %' ESCAPE '\\' AND CommandLine LIKE '% -s %' ESCAPE '\\')) AND NOT ((ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_lsass_shtinkering.yml"
     },
     {
         "title": "Findstr Launching .lnk File",
@@ -13531,7 +13606,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% /y%' ESCAPE '\\' OR CommandLine LIKE '% -y%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% /y%' ESCAPE '\\' OR CommandLine LIKE '% -y%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_msiexec_execute_dll.yml"
     },
@@ -17371,7 +17446,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\conhost.exe' ESCAPE '\\' AND NOT ((Provider_Name = 'SystemTraceProvider-Process') OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND Image LIKE '%\\\\git.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% show --textconv %' ESCAPE '\\' OR ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (ParentCommandLine LIKE '%C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4%' ESCAPE '\\' AND (CommandLine LIKE '% show --textconv %' ESCAPE '\\' OR CommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\' AND Image LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR ((ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4' ESCAPE '\\' OR ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1' ESCAPE '\\') AND Image LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR (ParentCommandLine LIKE '\\?_\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1' ESCAPE '\\' AND Image LIKE 'C:\\\\Program Files\\\\Git\\\\mingw64\\\\bin\\\\git.exe' ESCAPE '\\' AND CommandLine LIKE '%show --textconv :%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\conhost.exe' ESCAPE '\\' AND NOT ((Provider_Name = 'SystemTraceProvider-Process') OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND Image LIKE '%\\\\git.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% show --textconv %' ESCAPE '\\' OR ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (ParentCommandLine LIKE '%C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4%' ESCAPE '\\' AND (CommandLine LIKE '% show --textconv %' ESCAPE '\\' OR CommandLine LIKE '% cat-file -s %' ESCAPE '\\')) OR (Provider_Name = 'Microsoft-Windows-Kernel-Process' AND (ParentCommandLine LIKE '% cat-file -s %' ESCAPE '\\' OR ParentCommandLine LIKE '%show --textconv%' ESCAPE '\\') AND Image LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR ((ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4' ESCAPE '\\' OR ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1' ESCAPE '\\') AND Image LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR ((ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0xffffffff -ForceV1''' ESCAPE '\\' OR ParentCommandLine LIKE '\\\\\\?\\?\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe 0x4''' ESCAPE '\\') AND Image LIKE 'C:\\\\Program Files\\\\Git\\\\mingw64\\\\bin\\\\git.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_conhost.yml"
     },
@@ -19307,7 +19382,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\mshta.exe' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\sh.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\') OR (Image LIKE '%\\\\BITSADMIN%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\mshta.exe' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\sh.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\') OR Image LIKE '%\\\\BITSADMIN%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_mshta_spawn_shell.yml"
     },
@@ -20159,7 +20234,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\chisel.exe' ESCAPE '\\' OR ((CommandLine LIKE '%exe client %' ESCAPE '\\' OR CommandLine LIKE '%exe server %' ESCAPE '\\') AND (CommandLine LIKE '% --socks5%' ESCAPE '\\' OR CommandLine LIKE '% --reverse%' ESCAPE '\\' OR CommandLine LIKE '% r:%' ESCAPE '\\' OR CommandLine LIKE '%:127.0.0.1:%' ESCAPE '\\' OR CommandLine LIKE '% --tls-skip-verify %' ESCAPE '\\' OR CommandLine LIKE '%:socks%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\chisel.exe' ESCAPE '\\' OR ((CommandLine LIKE '%exe client %' ESCAPE '\\' OR CommandLine LIKE '%exe server %' ESCAPE '\\') AND (CommandLine LIKE '%-socks5%' ESCAPE '\\' OR CommandLine LIKE '%-reverse%' ESCAPE '\\' OR CommandLine LIKE '% r:%' ESCAPE '\\' OR CommandLine LIKE '%:127.0.0.1:%' ESCAPE '\\' OR CommandLine LIKE '%-tls-skip-verify %' ESCAPE '\\' OR CommandLine LIKE '%:socks%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_chisel_usage.yml"
     },
@@ -21160,7 +21235,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\mmc.exe' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\sh.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\') OR (Image LIKE '%\\\\BITSADMIN%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\mmc.exe' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\sh.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\') OR Image LIKE '%\\\\BITSADMIN%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_mmc_spawn_shell.yml"
     },
@@ -23636,7 +23711,7 @@
             "attack.t1090.001"
         ],
         "falsepositives": [
-            "Some false positives may occure with other tools with similar commandlines"
+            "Unlikely"
         ],
         "level": "high",
         "rule": [
@@ -30289,7 +30364,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((CommandLine LIKE '%\\\\netlogon\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ImageFileName = 'explorer.exe')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((CommandLine LIKE '%\\\\netlogon\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\explorer.exe' ESCAPE '\\' OR OriginalFileName = 'explorer.exe')))"
         ],
         "filename": "proc_creation_win_susp_userinit_child.yml"
     },
@@ -31684,7 +31759,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText LIKE '%Set-ExecutionPolicy%' ESCAPE '\\' AND (ScriptBlockText LIKE '%Unrestricted%' ESCAPE '\\' OR ScriptBlockText LIKE '%bypass%' ESCAPE '\\' OR ScriptBlockText LIKE '%RemoteSigned%' ESCAPE '\\')) AND NOT ((ParentImage LIKE 'C:\\\\ProgramData\\\\chocolatey\\\\choco.exe' ESCAPE '\\') OR (ScriptBlockText LIKE '%(New-Object System.Net.WebClient).DownloadString(''https://community.chocolatey.org/install.ps1'')%' ESCAPE '\\' OR ScriptBlockText LIKE '%(New-Object System.Net.WebClient).DownloadString(''https://chocolatey.org/install.ps1'')%' ESCAPE '\\' OR ScriptBlockText LIKE '%\\\\AppData\\\\Roaming\\\\Code\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText LIKE '%Set-ExecutionPolicy%' ESCAPE '\\' AND (ScriptBlockText LIKE '%Unrestricted%' ESCAPE '\\' OR ScriptBlockText LIKE '%bypass%' ESCAPE '\\' OR ScriptBlockText LIKE '%RemoteSigned%' ESCAPE '\\')) AND NOT (ParentImage LIKE 'C:\\\\ProgramData\\\\chocolatey\\\\choco.exe' ESCAPE '\\' OR (ScriptBlockText LIKE '%(New-Object System.Net.WebClient).DownloadString(''https://community.chocolatey.org/install.ps1'')%' ESCAPE '\\' OR ScriptBlockText LIKE '%(New-Object System.Net.WebClient).DownloadString(''https://chocolatey.org/install.ps1'')%' ESCAPE '\\' OR ScriptBlockText LIKE '%\\\\AppData\\\\Roaming\\\\Code\\\\%' ESCAPE '\\')))"
         ],
         "filename": "posh_ps_set_policies_to_unsecure_level.yml"
     },
@@ -34770,7 +34845,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\Users\\\\All Users\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Default\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Contacts\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Searches\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\config\\\\systemprofile\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\Fonts\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\IME\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\addins\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\$Recycle.bin' ESCAPE '\\') OR (Image LIKE 'C:\\\\Perflogs\\\\%' ESCAPE '\\')) AND NOT ((Image LIKE 'C:\\\\Users\\\\Public\\\\IBM\\\\ClientSolutions\\\\Start\\_Programs\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\Users\\\\All Users\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Default\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Contacts\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Searches\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\config\\\\systemprofile\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\Fonts\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\IME\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\addins\\\\%' ESCAPE '\\') OR Image LIKE '%\\\\$Recycle.bin' ESCAPE '\\' OR Image LIKE 'C:\\\\Perflogs\\\\%' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Users\\\\Public\\\\IBM\\\\ClientSolutions\\\\Start\\_Programs\\\\%' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_susp_prog_location_network_connection.yml"
     },
@@ -34927,7 +35002,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND Initiated = 'true') AND NOT (((DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '192.168.%' ESCAPE '\\' OR DestinationIp LIKE '172.16.%' ESCAPE '\\' OR DestinationIp LIKE '172.17.%' ESCAPE '\\' OR DestinationIp LIKE '172.18.%' ESCAPE '\\' OR DestinationIp LIKE '172.19.%' ESCAPE '\\' OR DestinationIp LIKE '172.20.%' ESCAPE '\\' OR DestinationIp LIKE '172.21.%' ESCAPE '\\' OR DestinationIp LIKE '172.22.%' ESCAPE '\\' OR DestinationIp LIKE '172.23.%' ESCAPE '\\' OR DestinationIp LIKE '172.24.%' ESCAPE '\\' OR DestinationIp LIKE '172.25.%' ESCAPE '\\' OR DestinationIp LIKE '172.26.%' ESCAPE '\\' OR DestinationIp LIKE '172.27.%' ESCAPE '\\' OR DestinationIp LIKE '172.28.%' ESCAPE '\\' OR DestinationIp LIKE '172.29.%' ESCAPE '\\' OR DestinationIp LIKE '172.30.%' ESCAPE '\\' OR DestinationIp LIKE '172.31.%' ESCAPE '\\' OR DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '20.%' ESCAPE '\\' OR DestinationIp LIKE '51.103.%' ESCAPE '\\' OR DestinationIp LIKE '51.104.%' ESCAPE '\\' OR DestinationIp LIKE '51.105.%' ESCAPE '\\') OR (CommandLine LIKE '%PcaSvc.dll,PcaPatchSdbTask%' ESCAPE '\\')) OR (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND RemoteAddress LIKE '%:443' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND Initiated = 'true') AND NOT (((DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '192.168.%' ESCAPE '\\' OR DestinationIp LIKE '172.16.%' ESCAPE '\\' OR DestinationIp LIKE '172.17.%' ESCAPE '\\' OR DestinationIp LIKE '172.18.%' ESCAPE '\\' OR DestinationIp LIKE '172.19.%' ESCAPE '\\' OR DestinationIp LIKE '172.20.%' ESCAPE '\\' OR DestinationIp LIKE '172.21.%' ESCAPE '\\' OR DestinationIp LIKE '172.22.%' ESCAPE '\\' OR DestinationIp LIKE '172.23.%' ESCAPE '\\' OR DestinationIp LIKE '172.24.%' ESCAPE '\\' OR DestinationIp LIKE '172.25.%' ESCAPE '\\' OR DestinationIp LIKE '172.26.%' ESCAPE '\\' OR DestinationIp LIKE '172.27.%' ESCAPE '\\' OR DestinationIp LIKE '172.28.%' ESCAPE '\\' OR DestinationIp LIKE '172.29.%' ESCAPE '\\' OR DestinationIp LIKE '172.30.%' ESCAPE '\\' OR DestinationIp LIKE '172.31.%' ESCAPE '\\' OR DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '20.%' ESCAPE '\\' OR DestinationIp LIKE '51.103.%' ESCAPE '\\' OR DestinationIp LIKE '51.104.%' ESCAPE '\\' OR DestinationIp LIKE '51.105.%' ESCAPE '\\') OR CommandLine LIKE '%PcaSvc.dll,PcaPatchSdbTask%' ESCAPE '\\') OR (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND RemoteAddress LIKE '%:443' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_rundll32_net_connections.yml"
     },
@@ -34987,7 +35062,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\svchost.exe' ESCAPE '\\' AND Initiated = 'true' AND SourcePort = '3389') AND ((DestinationIp LIKE '127.%' ESCAPE '\\') OR (DestinationIp LIKE '::1' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\svchost.exe' ESCAPE '\\' AND Initiated = 'true' AND SourcePort = '3389') AND (DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp = '::1'))"
         ],
         "filename": "net_connection_win_rdp_reverse_tunnel.yml"
     },
@@ -35621,11 +35696,12 @@
         ],
         "falsepositives": [
             "Software installers",
-            "Update utilities"
+            "Update utilities",
+            "32bit applications launching their 64bit versions"
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%.exe' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND NOT (((Image LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\system32\\\\cleanmgr.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\dxgiadaptercache.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\Dism.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\wuauclt.exe' ESCAPE '\\')) OR (Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\WindowsUpdateBox.exe%' ESCAPE '\\') OR (Image LIKE 'C:\\\\WINDOWS\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\WindowsUpdateBox.Exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\$WINDOWS.~BT\\\\Sources\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (Image LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Squirrel.exe' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Windows\\\\assembly\\\\NativeImages\\_%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%.exe' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND NOT (((Image LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\system32\\\\cleanmgr.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\dxgiadaptercache.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\Dism.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\wuauclt.exe' ESCAPE '\\')) OR (Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\WindowsUpdateBox.exe%' ESCAPE '\\') OR (Image LIKE 'C:\\\\WINDOWS\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\WindowsUpdateBox.Exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\$WINDOWS.~BT\\\\Sources\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (Image LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Squirrel.exe' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND TargetFilename LIKE 'C:\\\\Windows\\\\assembly\\\\NativeImages\\_%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\.vscode\\\\extensions\\\\%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_susp_dropper.yml"
     },
@@ -37107,6 +37183,25 @@
         "filename": "file_event_win_cve_2021_1675_printspooler.yml"
     },
     {
+        "title": "LSASS Process Dump Artefact In CrashDumps Folder",
+        "id": "6902955a-01b7-432c-b32a-6f5f81d8f625",
+        "status": "experimental",
+        "description": "Detects the presence of an LSASS dump file in the \"CrashDumps\" folder. This could be a sign of LSASS credential dumping. Techniques such as the LSASS Shtinkering have been seen abusing the Windows Error Reporting to dump said process.",
+        "author": "@pbssubhash",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Rare legitimate dump of the process by the operating system due to a crash of lsass"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\config\\\\systemprofile\\\\AppData\\\\Local\\\\CrashDumps\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%lsass.exe.%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp' ESCAPE '\\')"
+        ],
+        "filename": "file_event_lsass_shtinkering.yml"
+    },
+    {
         "title": "Startup Folder File Write",
         "id": "2aa0a6b4-a865-495b-ab51-c28249537b75",
         "status": "test",
@@ -37577,7 +37672,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%\\\\hive\\_sam\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-2021-%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-2022-%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-2023-%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-haxx%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Sam.save%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\windows\\\\temp\\\\sam' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%\\\\hive\\_sam\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-2021-%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-2022-%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-2023-%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM-haxx%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Sam.save%' ESCAPE '\\') OR TargetFilename LIKE 'C:\\\\windows\\\\temp\\\\sam' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_hivenightmare_file_exports.yml"
     },
