@@ -432,7 +432,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\WMI\\\\Autologger\\\\%' ESCAPE '\\' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\EventLog-%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Defender%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\Enabled' ESCAPE '\\' OR TargetObject LIKE '%\\\\Start' ESCAPE '\\') AND Details = 'DWORD (0x00000000)') AND NOT ((Image LIKE 'C:\\\\Windows\\\\system32\\\\wevtutil.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\WMI\\\\Autologger\\\\%' ESCAPE '\\' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\EventLog-%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Defender%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\Enable' ESCAPE '\\' OR TargetObject LIKE '%\\\\Start' ESCAPE '\\') AND Details = 'DWORD (0x00000000)') AND NOT ((Image LIKE 'C:\\\\Windows\\\\system32\\\\wevtutil.exe' ESCAPE '\\')))"
         ],
         "filename": "registry_set_disable_autologger_sessions.yml"
     },
@@ -1763,6 +1763,26 @@
         "filename": "registry_set_fax_dll_persistance.yml"
     },
     {
+        "title": "ETW Logging Disabled In .NET Processes - Sysmon Registry",
+        "id": "bf4fc428-dcc3-4bbd-99fe-2422aeee2544",
+        "status": "test",
+        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
+        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((EventType = 'SetValue' AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\.NETFramework\\\\ETWEnabled' ESCAPE '\\' AND Details = 'DWORD (0x00000000)') OR (EventType = 'SetValue' AND (TargetObject LIKE '%\\\\COMPlus\\_ETWEnabled' ESCAPE '\\' OR TargetObject LIKE '%\\\\COMPlus\\_ETWFlags' ESCAPE '\\') AND Details IN ('0', 'DWORD (0x00000000)'))))"
+        ],
+        "filename": "registry_set_dot_net_etw_tamper.yml"
+    },
+    {
         "title": "Modify User Shell Folders Startup Value",
         "id": "9c226817-8dc9-46c2-a58d-66655aafd7dc",
         "status": "experimental",
@@ -2145,25 +2165,6 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Windows\\\\CurrentVersion%' ESCAPE '\\' AND (Details LIKE '%vbscript:%' ESCAPE '\\' OR Details LIKE '%jscript:%' ESCAPE '\\' OR Details LIKE '%mshtml,%' ESCAPE '\\' OR Details LIKE '%RunHTMLApplication%' ESCAPE '\\' OR Details LIKE '%Execute(%' ESCAPE '\\' OR Details LIKE '%CreateObject%' ESCAPE '\\' OR Details LIKE '%window.close%' ESCAPE '\\')) AND NOT ((TargetObject LIKE '%Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\') OR (Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Installer\\\\UserData\\\\%' ESCAPE '\\' AND (Details LIKE '%\\\\Microsoft.NET\\\\Primary Interop Assemblies\\\\Microsoft.mshtml.dll%' ESCAPE '\\' OR Details LIKE '%<\\\\Microsoft.mshtml,fileVersion=%' ESCAPE '\\' OR Details LIKE '%\\_mshtml\\_dll\\_%' ESCAPE '\\' OR Details LIKE '%<\\\\Microsoft.mshtml,culture=%' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_vbs_payload_stored.yml"
-    },
-    {
-        "title": "COMPlus_ETWEnabled Registry Modification - Registry",
-        "id": "bf4fc428-dcc3-4bbd-99fe-2422aeee2544",
-        "status": "test",
-        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1112"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\.NETFramework\\\\ETWEnabled' ESCAPE '\\' AND Details = 'DWORD (0x00000000)')"
-        ],
-        "filename": "registry_set_etw_disabled.yml"
     },
     {
         "title": "WinSock2 Autorun Keys Modification",
@@ -4383,6 +4384,26 @@
         "filename": "win_security_susp_opened_encrypted_zip_filename.yml"
     },
     {
+        "title": "ETW Logging Disabled In .NET Processes - Registry",
+        "id": "a4c90ea1-2634-4ca0-adbb-35eae169b6fc",
+        "status": "test",
+        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
+        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID = '4657' AND ObjectName LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\.NETFramework' ESCAPE '\\' AND ObjectValueName = 'ETWEnabled' AND NewValue = '0') OR (EventID = '4657' AND ObjectName LIKE '%\\\\Environment\\\\' ESCAPE '\\' AND (ObjectValueName LIKE 'COMPlus\\_ETWEnabled' ESCAPE '\\' OR ObjectValueName LIKE 'COMPlus\\_ETWFlags' ESCAPE '\\') AND NewValue = '0')))"
+        ],
+        "filename": "win_security_dot_net_etw_tamper.yml"
+    },
+    {
         "title": "Addition of Domain Trusts",
         "id": "0255a820-e564-4e40-af2b-6ac61160335c",
         "status": "stable",
@@ -4590,7 +4611,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID IN ('4699', '4701') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT (SubjectUserName LIKE '%$' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID IN ('4699', '4701') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT ((Task LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\AC Power Download%' ESCAPE '\\') OR (SubjectUserName LIKE '%$' ESCAPE '\\')))"
         ],
         "filename": "win_security_susp_scheduled_task_delete.yml"
     },
@@ -5961,25 +5982,6 @@
         "filename": "win_security_wmi_persistence.yml"
     },
     {
-        "title": "COMPlus_ETWEnabled Registry Modification",
-        "id": "a4c90ea1-2634-4ca0-adbb-35eae169b6fc",
-        "status": "test",
-        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1112"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4657' AND ObjectName LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\.NETFramework' ESCAPE '\\' AND ObjectValueName = 'ETWEnabled' AND NewValue = '0')"
-        ],
-        "filename": "win_security_etw_modification.yml"
-    },
-    {
         "title": "Invoke-Obfuscation Via Use Clip - Security",
         "id": "1a0a2ff1-611b-4dac-8216-8a7b47c618a6",
         "status": "experimental",
@@ -6791,6 +6793,25 @@
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Bits-Client/Operational' AND (EventID = '16403' AND (LocalName LIKE '%.ps1' ESCAPE '\\' OR LocalName LIKE '%.exe' ESCAPE '\\' OR LocalName LIKE '%.vbs' ESCAPE '\\' OR LocalName LIKE '%.bat' ESCAPE '\\')) AND NOT (LocalName LIKE '%\\\\AppData\\\\%' ESCAPE '\\' AND RemoteName LIKE '%.com%' ESCAPE '\\'))"
         ],
         "filename": "win_bits_client_susp_local_file.yml"
+    },
+    {
+        "title": "Potential Credential Dumping Via WER - Application",
+        "id": "a18e0862-127b-43ca-be12-1a542c75c7c5",
+        "status": "experimental",
+        "description": "Detects windows error reporting event where the process that crashed is lsass. This could be the cause of an intentional crash by techniques such as Lsass-Shtinkering to dump credential",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Rare legitimate crashing of the lsass process"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Application Error' AND EventID = '1000' AND AppName = 'lsass.exe' AND ExceptionCode = 'c0000001')"
+        ],
+        "filename": "win_werfault_susp_lsass_credential_dump.yml"
     },
     {
         "title": "MSSQL Disable Audit Settings",
@@ -9043,7 +9064,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND (Image LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\word.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\dnx.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvcs.exe' ESCAPE '\\' OR Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR Image LIKE '%\\\\scriptrunner.exe' ESCAPE '\\')) OR ((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND Signed = 'FALSE')) AND NOT ((Image LIKE '%Visual Studio%' ESCAPE '\\' OR (CommandLine LIKE '%-k LocalSystemNetworkRestricted%' ESCAPE '\\' OR CommandLine LIKE '%-k UnistackSvcGroup -s WpnUserService%' ESCAPE '\\')) OR ((CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe -k netsvcs -p -s wuauserv' ESCAPE '\\' OR CommandLine LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe -k WerSvcGroup' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\WINDOWS\\\\winsxs\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\TiWorker.exe -Embedding' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND (Image LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\word.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\dnx.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvcs.exe' ESCAPE '\\' OR Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR Image LIKE '%\\\\scriptrunner.exe' ESCAPE '\\')) OR ((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND Signed = 'false')) AND NOT ((Image LIKE '%Visual Studio%' ESCAPE '\\' OR (CommandLine LIKE '%-k LocalSystemNetworkRestricted%' ESCAPE '\\' OR CommandLine LIKE '%-k UnistackSvcGroup -s WpnUserService%' ESCAPE '\\')) OR ((CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe -k netsvcs -p -s wuauserv' ESCAPE '\\' OR CommandLine LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe -k WerSvcGroup' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\WINDOWS\\\\winsxs\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\TiWorker.exe -Embedding' ESCAPE '\\')))"
         ],
         "filename": "image_load_susp_dbghelp_dbgcore_load.yml"
     },
@@ -9223,7 +9244,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%\\\\shfolder.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\activeds.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\adsldpc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\aepic.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\apphelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\applicationframe.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appxalluserstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appxdeploymentclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\archiveint.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\atl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\audioses.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\auditpolcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\authfwcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\authz.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\avrt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcd.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcp47langs.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcp47mrm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcrypt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cabinet.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cabview.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\certenroll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cldapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\clipc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\clusapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cmpbk32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coloradapterclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\colorui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\comdlg32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\connect.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coremessaging.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\credui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptbase.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptdll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptxml.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cscapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cscobj.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cscui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d2d1.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10\\_1.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10\\_1core.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10core.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10warp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d11.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d12.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d9.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dataexchange.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\davclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dcomp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\defragproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\desktopshellext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\deviceassociation.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devicecredential.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devicepairing.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devobj.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devrtl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dhcpcmonitor.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dhcpcsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dhcpcsvc6.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\directmanipulation.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dismapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dismcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmcfgutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmcmnutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmenrollengine.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmenterprisediagnostics.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmiso8601utils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmoleaututils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmprocessxmlfiltered.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmpushproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmxmlhelputils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dnsapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dot3api.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dot3cfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\drprov.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsparse.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsreg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsrole.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dui70.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\duser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dusmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dwmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dwrite.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxgi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxva2.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\eappcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\eappprxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\edputil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\efsadu.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\efsutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\esent.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\execmodelproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\explorerframe.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fastprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\faultrep.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fddevquery.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\feclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fhcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\firewallapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\flightsettings.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fltlib.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fveapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwbase.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwpolicyiomgr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwpuclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\getuname.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\hid.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\hnetmon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\httpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\idstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ieadvpack.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iedkcs32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iertutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ifmon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iphlpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iri.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iscsidsc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iscsium.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\isv.exe\\_rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\joinutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ksuser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ktmw32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\licensemanagerapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\licensingdiagspp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\linkinfo.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\loadperf.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\logoncli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\logoncontroller.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lpksetupproxyserv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\magnification.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mapistub.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mfcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mfplat.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\midimap.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\miutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mlang.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mmdevapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mobilenetworking.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mpr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mprapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mrmcorer.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msacm32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscms.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscoree.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msctf.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msctfmonitor.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msdrm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msftedit.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msutb.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mswb7.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mswsock.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msxml3.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mtxclu.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\napinsp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ncrypt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ndfapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netid.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netiohlp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netplwiz.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netprofm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netsetupapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netshell.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\networkexplorer.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\newdev.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ninput.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nlaapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nlansp\\_c.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\npmproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nshhttp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nshipsec.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nshwfp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntdsapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntlanman.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntlmshared.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntmarta.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntshrui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\oleacc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\omadmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\onex.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\osbaseln.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\osuninst.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\p2p.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\p2pnetsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\p9np.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pcaui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pdh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\peerdistsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pla.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pnrpnsp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\policymanager.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\polstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\printui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\propsys.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\prvdmofcomp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\puiapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\radcui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasgcw.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasman.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasmontr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\reagent.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\regapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\resutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rmclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rpcnsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rtutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rtworkq.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\samcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\samlib.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sapi\\_onecore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sas.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\scansetting.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\scecli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\schedcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\secur32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\shell32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\slc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\snmpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\spp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sppc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srvcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ssp.exe\\_rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ssp\\_isv.exe\\_rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sspicli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ssshim.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\staterepository.core.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\structuredquery.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sxshared.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tbs.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tdh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tquery.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tsworkspace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ttdrecord.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\twext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\twinapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\twinui.appcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uianimation.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uiautomationcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uireng.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uiribbon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\updatepolicy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\userenv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\utildll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uxinit.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uxtheme.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vaultcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\virtdisk.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vssapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vsstrace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wcmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wcnnetsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wdi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wdscore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\webservices.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wecapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wer.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wevtapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\whhelper.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wimgapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winbrand.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windows.storage.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windows.storage.search.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windowscodecs.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windowscodecsext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windowsudk.shellcommon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winhttp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wininet.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winipsec.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winmde.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winmm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winnsi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winrnr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winsqlite3.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winsta.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wkscli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wlanapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wlancfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wldp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wlidprov.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmidcom.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmsgapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wofutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wpdshext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wshbth.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wshelper.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wtsapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wwapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xmllite.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xolehlp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xwizards.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xwtpw32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\aclui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bderepair.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bootmenuux.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dcntel.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dwmcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dynamoapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fhsvcctl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fxsst.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\inproclogger.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iumbase.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\kdstub.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\maintenanceui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mdmdiagnostics.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mintdh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msdtctm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nettrace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\osksupport.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\reseteng.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\resetengine.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\spectrumsyncclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\systemsettingsthresholdadminflowui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\timesync.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\upshared.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmpdui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wwancfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dpx.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fxsapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fxstiff.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xpsservices.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appvpolicy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\batmeter.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bootux.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cmutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\configmanager2.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coredplus.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coreuicomponents.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptsp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmcommandlineutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\drvstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsprop.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\edgeiso.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\framedynos.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fveskybackup.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fvewiz.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\gpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\icmp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ifsutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iumsdk.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lockhostingframework.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lrwizdll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mbaexmlparser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mfc42u.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msiso.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msvcp110\\_win.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netjoin.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netprovfw.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\opcservices.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pkeyhelper.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\playsndsrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\powrprof.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\prntvpt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\profapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\proximitycommon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\proximityservicepal.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasdlg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\security.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sppcext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srmtrace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tpmcoreprovisioning.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\umpdc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\unattend.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\urlmon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vdsutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\version.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winbio.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windows.ui.immersive.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winscard.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winsync.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wscapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wsmsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\FxsCompose.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WfsR.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rpchttp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\storageusage.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\amsi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\PrintIsolationProxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msdtcVSp1res.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rdpendp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxilconv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\utcutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appraiser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsound.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\DispBroker.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\FXSRESM.DLL' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptnet.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\COMRES.DLL' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igdumdim64.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igd10iumd64.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igd12umd64.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igdusc64.dll' ESCAPE '\\') AND NOT (((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SystemTemp\\\\%' ESCAPE '\\')) OR (ImageLoaded LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\AppVPolicy.dll' ESCAPE '\\' AND Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (ImageLoaded LIKE 'C:\\\\Packages\\\\Plugins\\\\Microsoft.GuestConfiguration.ConfigurationforWindows\\\\%' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\DellInc.DellSupportAssistforPCs%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\backgroundTaskHost.exe%' ESCAPE '\\') AND ImageLoaded LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\DellInc.DellSupportAssistforPCs%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\cleanmgr.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\ssshim.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\$WINDOWS.~BT\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%\\\\shfolder.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\activeds.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\adsldpc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\aepic.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\apphelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\applicationframe.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appxalluserstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appxdeploymentclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\archiveint.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\atl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\audioses.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\auditpolcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\authfwcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\authz.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\avrt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcd.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcp47langs.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcp47mrm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bcrypt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cabinet.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cabview.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\certenroll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cldapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\clipc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\clusapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cmpbk32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coloradapterclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\colorui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\comdlg32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\connect.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coremessaging.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\credui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptbase.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptdll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptxml.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cscapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cscobj.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cscui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d2d1.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10\\_1.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10\\_1core.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10core.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d10warp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d11.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d12.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\d3d9.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dataexchange.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\davclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dcomp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\defragproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\desktopshellext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\deviceassociation.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devicecredential.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devicepairing.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devobj.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\devrtl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dhcpcmonitor.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dhcpcsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dhcpcsvc6.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\directmanipulation.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dismapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dismcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmcfgutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmcmnutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmenrollengine.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmenterprisediagnostics.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmiso8601utils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmoleaututils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmprocessxmlfiltered.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmpushproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmxmlhelputils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dnsapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dot3api.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dot3cfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\drprov.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsparse.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsreg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsrole.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dui70.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\duser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dusmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dwmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dwrite.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxgi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxva2.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\eappcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\eappprxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\edputil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\efsadu.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\efsutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\esent.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\execmodelproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\explorerframe.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fastprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\faultrep.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fddevquery.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\feclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fhcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\firewallapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\flightsettings.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fltlib.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fveapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwbase.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwcfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwpolicyiomgr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fwpuclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\getuname.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\hid.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\hnetmon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\httpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\idstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ieadvpack.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iedkcs32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iertutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ifmon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iphlpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iri.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iscsidsc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iscsium.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\isv.exe\\_rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\joinutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ksuser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ktmw32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\licensemanagerapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\licensingdiagspp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\linkinfo.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\loadperf.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\logoncli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\logoncontroller.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lpksetupproxyserv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\magnification.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mapistub.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mfcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mfplat.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\midimap.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\miutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mlang.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mmdevapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mobilenetworking.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mpr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mprapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mrmcorer.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msacm32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscms.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscoree.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msctf.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msctfmonitor.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msdrm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msftedit.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msutb.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mswb7.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mswsock.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msxml3.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mtxclu.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\napinsp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ncrypt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ndfapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netid.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netiohlp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netplwiz.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netprofm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netsetupapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netshell.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\networkexplorer.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\newdev.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ninput.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nlaapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nlansp\\_c.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\npmproxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nshhttp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nshipsec.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nshwfp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntdsapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntlanman.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntlmshared.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntmarta.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ntshrui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\oleacc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\omadmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\onex.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\osbaseln.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\osuninst.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\p2p.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\p2pnetsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\p9np.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pcaui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pdh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\peerdistsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pla.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pnrpnsp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\policymanager.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\polstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\printui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\propsys.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\prvdmofcomp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\puiapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\radcui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasgcw.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasman.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasmontr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\reagent.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\regapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\resutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rmclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rpcnsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rtutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rtworkq.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\samcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\samlib.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sapi\\_onecore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sas.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\scansetting.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\scecli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\schedcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\secur32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\shell32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\slc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\snmpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\spp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sppc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srvcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ssp.exe\\_rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ssp\\_isv.exe\\_rsaenh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sspicli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ssshim.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\staterepository.core.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\structuredquery.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sxshared.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tbs.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tdh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tquery.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tsworkspace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ttdrecord.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\twext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\twinapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\twinui.appcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uianimation.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uiautomationcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uireng.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uiribbon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\updatepolicy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\userenv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\utildll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uxinit.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\uxtheme.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vaultcli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\virtdisk.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vssapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vsstrace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wcmapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wcnnetsh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wdi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wdscore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\webservices.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wecapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wer.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wevtapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\whhelper.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wimgapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winbrand.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windows.storage.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windows.storage.search.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windowscodecs.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windowscodecsext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windowsudk.shellcommon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winhttp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wininet.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winipsec.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winmde.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winmm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winnsi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winrnr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winsqlite3.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winsta.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wkscli.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wlanapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wlancfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wldp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wlidprov.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmidcom.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmsgapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wofutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wpdshext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wshbth.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wshelper.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wtsapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wwapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xmllite.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xolehlp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xwizards.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xwtpw32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\aclui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bderepair.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bootmenuux.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dcntel.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dwmcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dynamoapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fhsvcctl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fxsst.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\inproclogger.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iumbase.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\kdstub.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\maintenanceui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mdmdiagnostics.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mintdh.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msdtctm.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\nettrace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\osksupport.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\reseteng.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\resetengine.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\spectrumsyncclient.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\systemsettingsthresholdadminflowui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\timesync.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\upshared.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmpdui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wwancfg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dpx.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fxsapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fxstiff.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\xpsservices.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appvpolicy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\batmeter.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\bootux.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cmutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\configmanager2.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coredplus.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\coreuicomponents.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptsp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dmcommandlineutils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\drvstore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsprop.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxcore.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\edgeiso.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\framedynos.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fveskybackup.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\fvewiz.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\gpapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\icmp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ifsutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\iumsdk.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lockhostingframework.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lrwizdll.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mbaexmlparser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mfc42u.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msiso.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msvcp110\\_win.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netapi32.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netjoin.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\netprovfw.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\opcservices.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\pkeyhelper.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\playsndsrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\powrprof.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\prntvpt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\profapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\proximitycommon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\proximityservicepal.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rasdlg.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\security.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\sppcext.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\srmtrace.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\tpmcoreprovisioning.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\umpdc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\unattend.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\urlmon.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vdsutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\version.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winbio.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\windows.ui.immersive.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winscard.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\winsync.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wscapi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wsmsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\FxsCompose.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WfsR.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rpchttp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\storageusage.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\amsi.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\PrintIsolationProxy.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\msdtcVSp1res.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\rdpendp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dxilconv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\utcutil.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appraiser.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dsound.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\DispBroker.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\FXSRESM.DLL' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\cryptnet.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\COMRES.DLL' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igdumdim64.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igd10iumd64.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igd12umd64.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\igdusc64.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WLBSCTRL.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\TSMSISrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\TSVIPSrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wow64log.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WptsExtensions.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemcomn.dll' ESCAPE '\\') AND NOT (((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SystemTemp\\\\%' ESCAPE '\\')) OR (ImageLoaded LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\AppVPolicy.dll' ESCAPE '\\' AND Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (ImageLoaded LIKE 'C:\\\\Packages\\\\Plugins\\\\Microsoft.GuestConfiguration.ConfigurationforWindows\\\\%' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\DellInc.DellSupportAssistforPCs%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\backgroundTaskHost.exe%' ESCAPE '\\') AND ImageLoaded LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\DellInc.DellSupportAssistforPCs%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\cleanmgr.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\ssshim.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\$WINDOWS.~BT\\\\%' ESCAPE '\\')))"
         ],
         "filename": "image_load_side_load_from_non_system_location.yml"
     },
@@ -9388,6 +9409,28 @@
         "filename": "image_load_wmiprvse_wbemcomn_dll_hijack.yml"
     },
     {
+        "title": "Sideloading Of Non-Existent DLLs From System Folders",
+        "id": "6b98b92b-4f00-4f62-b4fe-4d1920215771",
+        "status": "experimental",
+        "description": "Detects DLL sideloading of system dlls that are not present on the system by default. Usualy to achieve techniques such as UAC bypass and privilege escalation",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WptsExtensions.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wbem\\\\wbemcomn.dll' ESCAPE '\\') AND NOT ((Signed = 'true' AND Signature = 'Microsoft Windows')))"
+        ],
+        "filename": "image_load_side_load_non_existent_dlls.yml"
+    },
+    {
         "title": "Active Directory Kerberos DLL Loaded Via Office Applications",
         "id": "7417e29e-c2e7-4cf6-a2e8-767228c64837",
         "status": "test",
@@ -9453,7 +9496,7 @@
         "title": "FoggyWeb Backdoor DLL Loading",
         "id": "640dc51c-7713-4faa-8a0e-e7c0d9d4654c",
         "status": "test",
-        "description": "Detects DLL image load activity as used by FoggyWeb backdoor loader",
+        "description": "Detects DLL hijacking technique used by NOBELIUM in their FoggyWeb backdoor. Which loads a malicious version of the expected \"version.dll\" dll",
         "author": "Florian Roth",
         "tags": [
             "attack.resource_development",
@@ -9464,7 +9507,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE 'C:\\\\Windows\\\\ADFS\\\\version.dll' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded LIKE 'C:\\\\Windows\\\\ADFS\\\\version.dll' ESCAPE '\\')"
         ],
         "filename": "image_load_foggyweb_nobelium.yml"
     },
@@ -12028,7 +12071,7 @@
         "filename": "proc_creation_win_susp_system_user_anomaly.yml"
     },
     {
-        "title": "Potential Credential Dumping Via Windows Error Reporting",
+        "title": "Potential Credential Dumping Via WER",
         "id": "9a4ccd1a-3526-4d99-b980-9f9c5d3a6ff3",
         "status": "experimental",
         "description": "Detects potential credential dumping via Windows Error Reporting LSASS Shtinkering technique which uses the Windows Error Reporting to dump lsass",
@@ -12922,10 +12965,10 @@
         "filename": "proc_creation_win_office_proxy_exec_wmic.yml"
     },
     {
-        "title": "False Sysinternals Suite Tools",
+        "title": "Potential Binary Impersonating Sysinternals Tools",
         "id": "7cce6fc8-a07f-4d84-a53e-96e1879843c9",
         "status": "experimental",
-        "description": "Rename as a legitimate Sysinternals Suite tool to evade detection",
+        "description": "Detects binaries that use the same name as legitimate sysinternals tools to evade detection",
         "author": "frack113",
         "tags": [
             "attack.execution",
@@ -18942,11 +18985,11 @@
         "filename": "proc_creation_win_wusa_susp_cap_extraction_from_susp_paths.yml"
     },
     {
-        "title": "Exchange PowerShell Snap-Ins Used by HAFNIUM",
+        "title": "Exchange PowerShell Snap-Ins Usage",
         "id": "25676e10-2121-446e-80a4-71ff8506af47",
         "status": "experimental",
-        "description": "Detects adding and using Exchange PowerShell snap-ins to export mailbox data by HAFNIUM",
-        "author": "FPT.EagleEye",
+        "description": "Detects adding and using Exchange PowerShell snap-ins to export mailbox data. As seen used by HAFNIUM and APT27",
+        "author": "FPT.EagleEye, Nasreddine Bencherchali",
         "tags": [
             "attack.execution",
             "attack.t1059.001",
@@ -18958,7 +19001,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND CommandLine LIKE '%add-pssnapin microsoft.exchange.powershell.snapin%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND CommandLine LIKE '%Add-PSSnapin%' ESCAPE '\\' AND (CommandLine LIKE '%Microsoft.Exchange.Powershell.Snapin%' ESCAPE '\\' OR CommandLine LIKE '%Microsoft.Exchange.Management.PowerShell.SnapIn%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_snapins_hafnium.yml"
     },
@@ -20490,10 +20533,10 @@
         "filename": "proc_creation_win_dns_serverlevelplugindll.yml"
     },
     {
-        "title": "COMPlus_ETWEnabled Command Line Arguments",
+        "title": "ETW Logging Tamper In .NET Processes",
         "id": "41421f44-58f9-455d-838a-c398859841d4",
         "status": "test",
-        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
+        "description": "Detects changes to environment variables related to ETW logging. This could indicate potential adversaries stopping ETW providers recording loaded .NET assemblies.",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.defense_evasion",
@@ -20504,7 +20547,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%COMPlus\\_ETWEnabled=0%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%COMPlus\\_ETWEnabled%' ESCAPE '\\' OR CommandLine LIKE '%COMPlus\\_ETWFlags%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_etw_modification_cmdline.yml"
     },
@@ -25274,7 +25317,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentImage LIKE '%\\\\wmiprvse.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\mmc.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\services.exe' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/Q%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%\\\\\\\\127.0.0.1\\\\%' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%svchost.exe -k netsvcs%' ESCAPE '\\' OR ParentCommandLine LIKE '%taskeng.exe%' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/C%' ESCAPE '\\' AND CommandLine LIKE '%Windows\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentImage LIKE '%\\\\wmiprvse.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\mmc.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\services.exe' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/Q%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%\\\\\\\\127.0.0.1\\\\\\*' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%svchost.exe -k netsvcs%' ESCAPE '\\' OR ParentCommandLine LIKE '%taskeng.exe%' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/C%' ESCAPE '\\' AND CommandLine LIKE '%Windows\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_impacket_lateralization.yml"
     },
@@ -26832,7 +26875,7 @@
         "filename": "proc_creation_win_lolbin_class_exec_xwizard.yml"
     },
     {
-        "title": "Renamed ProcDump",
+        "title": "Renamed ProcDump Execution",
         "id": "4a0b2c7e-7cb2-495d-8b63-5f268e7bfd67",
         "status": "test",
         "description": "Detects the execution of a renamed ProcDump executable often used by attackers or malware",
@@ -26843,7 +26886,7 @@
         ],
         "falsepositives": [
             "Procdump illegaly bundled with legitimate software",
-            "Weird admins who renamed binaries (and should be investigated)"
+            "Administrators who rename binaries (should be investigated)"
         ],
         "level": "high",
         "rule": [
@@ -34914,25 +34957,6 @@
         "filename": "file_event_win_susp_system_interactive_powershell.yml"
     },
     {
-        "title": "Mimikatz MemSSP Default Log File Creation",
-        "id": "034affe8-6170-11ec-844f-0f78aa0c4d66",
-        "status": "experimental",
-        "description": "Detects Mimikatz MemSSP default log file creation",
-        "author": "David ANDRE",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%mimilsa.log' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_mimimaktz_memssp_log_file.yml"
-    },
-    {
         "title": "Persistence Via Notepad++ Plugins",
         "id": "54127bd4-f541-4ac3-afdb-ea073f63f692",
         "status": "experimental",
@@ -34991,7 +35015,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\') AND NOT (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\') AND NOT (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_create_non_existent_dlls.yml"
     },
@@ -35295,6 +35319,25 @@
             "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.ocx' ESCAPE '\\' OR TargetFilename LIKE '%.com' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.sys' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.scr' ESCAPE '\\' OR TargetFilename LIKE '%.proj' ESCAPE '\\')) AND NOT ((TargetFilename LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\WebServiceCache\\\\AllUsers%' ESCAPE '\\' AND TargetFilename LIKE '%.com' ESCAPE '\\') OR (Image LIKE '%\\\\winword.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\webexdelta\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\')) OR (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\assembly\\\\tmp\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.dll' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_script_creation_by_office_using_file_ext.yml"
+    },
+    {
+        "title": "Mimikatz MemSSP Default Log File Creation",
+        "id": "034affe8-6170-11ec-844f-0f78aa0c4d66",
+        "status": "experimental",
+        "description": "Detects Mimikatz MemSSP default log file creation",
+        "author": "David ANDRE",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%mimilsa.log' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_mimikatz_memssp_log_file.yml"
     },
     {
         "title": "Malicious DLL File Dropped in the Teams or OneDrive Folder",

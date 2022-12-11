@@ -241,7 +241,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\WMI\\\\Autologger\\\\%' ESCAPE '\\' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\EventLog-%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Defender%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\Enabled' ESCAPE '\\' OR TargetObject LIKE '%\\\\Start' ESCAPE '\\') AND Details = 'DWORD (0x00000000)') AND NOT ((Image LIKE 'C:\\\\Windows\\\\system32\\\\wevtutil.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\WMI\\\\Autologger\\\\%' ESCAPE '\\' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\EventLog-%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Defender%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\Enable' ESCAPE '\\' OR TargetObject LIKE '%\\\\Start' ESCAPE '\\') AND Details = 'DWORD (0x00000000)') AND NOT ((Image LIKE 'C:\\\\Windows\\\\system32\\\\wevtutil.exe' ESCAPE '\\')))"
         ],
         "filename": "registry_set_disable_autologger_sessions.yml"
     },
@@ -918,6 +918,26 @@
         "filename": "registry_set_fax_dll_persistance.yml"
     },
     {
+        "title": "ETW Logging Disabled In .NET Processes - Sysmon Registry",
+        "id": "bf4fc428-dcc3-4bbd-99fe-2422aeee2544",
+        "status": "test",
+        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
+        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((EventType = 'SetValue' AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\.NETFramework\\\\ETWEnabled' ESCAPE '\\' AND Details = 'DWORD (0x00000000)') OR (EventType = 'SetValue' AND (TargetObject LIKE '%\\\\COMPlus\\_ETWEnabled' ESCAPE '\\' OR TargetObject LIKE '%\\\\COMPlus\\_ETWFlags' ESCAPE '\\') AND Details IN ('0', 'DWORD (0x00000000)'))))"
+        ],
+        "filename": "registry_set_dot_net_etw_tamper.yml"
+    },
+    {
         "title": "Modify User Shell Folders Startup Value",
         "id": "9c226817-8dc9-46c2-a58d-66655aafd7dc",
         "status": "experimental",
@@ -1224,25 +1244,6 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Windows\\\\CurrentVersion%' ESCAPE '\\' AND (Details LIKE '%vbscript:%' ESCAPE '\\' OR Details LIKE '%jscript:%' ESCAPE '\\' OR Details LIKE '%mshtml,%' ESCAPE '\\' OR Details LIKE '%RunHTMLApplication%' ESCAPE '\\' OR Details LIKE '%Execute(%' ESCAPE '\\' OR Details LIKE '%CreateObject%' ESCAPE '\\' OR Details LIKE '%window.close%' ESCAPE '\\')) AND NOT ((TargetObject LIKE '%Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\') OR (Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Installer\\\\UserData\\\\%' ESCAPE '\\' AND (Details LIKE '%\\\\Microsoft.NET\\\\Primary Interop Assemblies\\\\Microsoft.mshtml.dll%' ESCAPE '\\' OR Details LIKE '%<\\\\Microsoft.mshtml,fileVersion=%' ESCAPE '\\' OR Details LIKE '%\\_mshtml\\_dll\\_%' ESCAPE '\\' OR Details LIKE '%<\\\\Microsoft.mshtml,culture=%' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_vbs_payload_stored.yml"
-    },
-    {
-        "title": "COMPlus_ETWEnabled Registry Modification - Registry",
-        "id": "bf4fc428-dcc3-4bbd-99fe-2422aeee2544",
-        "status": "test",
-        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1112"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\.NETFramework\\\\ETWEnabled' ESCAPE '\\' AND Details = 'DWORD (0x00000000)')"
-        ],
-        "filename": "registry_set_etw_disabled.yml"
     },
     {
         "title": "Blue Mockingbird - Registry",
@@ -2650,6 +2651,26 @@
         "filename": "win_security_susp_opened_encrypted_zip_filename.yml"
     },
     {
+        "title": "ETW Logging Disabled In .NET Processes - Registry",
+        "id": "a4c90ea1-2634-4ca0-adbb-35eae169b6fc",
+        "status": "test",
+        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
+        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID = '4657' AND ObjectName LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\.NETFramework' ESCAPE '\\' AND ObjectValueName = 'ETWEnabled' AND NewValue = '0') OR (EventID = '4657' AND ObjectName LIKE '%\\\\Environment\\\\' ESCAPE '\\' AND (ObjectValueName LIKE 'COMPlus\\_ETWEnabled' ESCAPE '\\' OR ObjectValueName LIKE 'COMPlus\\_ETWFlags' ESCAPE '\\') AND NewValue = '0')))"
+        ],
+        "filename": "win_security_dot_net_etw_tamper.yml"
+    },
+    {
         "title": "SysKey Registry Keys Access",
         "id": "9a4ff3b8-6187-4fd2-8e8b-e0eae1129495",
         "status": "test",
@@ -2780,7 +2801,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID IN ('4699', '4701') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT (SubjectUserName LIKE '%$' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID IN ('4699', '4701') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT ((Task LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\AC Power Download%' ESCAPE '\\') OR (SubjectUserName LIKE '%$' ESCAPE '\\')))"
         ],
         "filename": "win_security_susp_scheduled_task_delete.yml"
     },
@@ -3690,25 +3711,6 @@
         "filename": "win_security_impacket_secretdump.yml"
     },
     {
-        "title": "COMPlus_ETWEnabled Registry Modification",
-        "id": "a4c90ea1-2634-4ca0-adbb-35eae169b6fc",
-        "status": "test",
-        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1112"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4657' AND ObjectName LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\.NETFramework' ESCAPE '\\' AND ObjectValueName = 'ETWEnabled' AND NewValue = '0')"
-        ],
-        "filename": "win_security_etw_modification.yml"
-    },
-    {
         "title": "Invoke-Obfuscation Via Use Clip - Security",
         "id": "1a0a2ff1-611b-4dac-8216-8a7b47c618a6",
         "status": "experimental",
@@ -4123,6 +4125,25 @@
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Bits-Client/Operational' AND EventID = '16403' AND (RemoteName LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%pastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR RemoteName LIKE '%mediafire.com%' ESCAPE '\\' OR RemoteName LIKE '%mega.nz%' ESCAPE '\\' OR RemoteName LIKE '%ddns.net%' ESCAPE '\\' OR RemoteName LIKE '%.paste.ee%' ESCAPE '\\' OR RemoteName LIKE '%.hastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%.ghostbin.co/%' ESCAPE '\\' OR RemoteName LIKE '%ufile.io%' ESCAPE '\\' OR RemoteName LIKE '%storage.googleapis.com%' ESCAPE '\\' OR RemoteName LIKE '%anonfiles.com%' ESCAPE '\\' OR RemoteName LIKE '%send.exploit.in%' ESCAPE '\\' OR RemoteName LIKE '%transfer.sh%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.net%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.com%' ESCAPE '\\' OR RemoteName LIKE '%sendspace.com%' ESCAPE '\\'))"
         ],
         "filename": "win_bits_client_susp_domain.yml"
+    },
+    {
+        "title": "Potential Credential Dumping Via WER - Application",
+        "id": "a18e0862-127b-43ca-be12-1a542c75c7c5",
+        "status": "experimental",
+        "description": "Detects windows error reporting event where the process that crashed is lsass. This could be the cause of an intentional crash by techniques such as Lsass-Shtinkering to dump credential",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Rare legitimate crashing of the lsass process"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Application Error' AND EventID = '1000' AND AppName = 'lsass.exe' AND ExceptionCode = 'c0000001')"
+        ],
+        "filename": "win_werfault_susp_lsass_credential_dump.yml"
     },
     {
         "title": "MSSQL Disable Audit Settings",
@@ -5803,7 +5824,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND (Image LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\word.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\dnx.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvcs.exe' ESCAPE '\\' OR Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR Image LIKE '%\\\\scriptrunner.exe' ESCAPE '\\')) OR ((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND Signed = 'FALSE')) AND NOT ((Image LIKE '%Visual Studio%' ESCAPE '\\' OR (CommandLine LIKE '%-k LocalSystemNetworkRestricted%' ESCAPE '\\' OR CommandLine LIKE '%-k UnistackSvcGroup -s WpnUserService%' ESCAPE '\\')) OR ((CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe -k netsvcs -p -s wuauserv' ESCAPE '\\' OR CommandLine LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe -k WerSvcGroup' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\WINDOWS\\\\winsxs\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\TiWorker.exe -Embedding' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND (Image LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\word.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\dnx.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvcs.exe' ESCAPE '\\' OR Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR Image LIKE '%\\\\scriptrunner.exe' ESCAPE '\\')) OR ((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND Signed = 'false')) AND NOT ((Image LIKE '%Visual Studio%' ESCAPE '\\' OR (CommandLine LIKE '%-k LocalSystemNetworkRestricted%' ESCAPE '\\' OR CommandLine LIKE '%-k UnistackSvcGroup -s WpnUserService%' ESCAPE '\\')) OR ((CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe -k netsvcs -p -s wuauserv' ESCAPE '\\' OR CommandLine LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe -k WerSvcGroup' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\WINDOWS\\\\winsxs\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\TiWorker.exe -Embedding' ESCAPE '\\')))"
         ],
         "filename": "image_load_susp_dbghelp_dbgcore_load.yml"
     },
@@ -6043,6 +6064,28 @@
         "filename": "image_load_wmiprvse_wbemcomn_dll_hijack.yml"
     },
     {
+        "title": "Sideloading Of Non-Existent DLLs From System Folders",
+        "id": "6b98b92b-4f00-4f62-b4fe-4d1920215771",
+        "status": "experimental",
+        "description": "Detects DLL sideloading of system dlls that are not present on the system by default. Usualy to achieve techniques such as UAC bypass and privilege escalation",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WptsExtensions.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wbem\\\\wbemcomn.dll' ESCAPE '\\') AND NOT ((Signed = 'true' AND Signature = 'Microsoft Windows')))"
+        ],
+        "filename": "image_load_side_load_non_existent_dlls.yml"
+    },
+    {
         "title": "Active Directory Kerberos DLL Loaded Via Office Applications",
         "id": "7417e29e-c2e7-4cf6-a2e8-767228c64837",
         "status": "test",
@@ -6086,7 +6129,7 @@
         "title": "FoggyWeb Backdoor DLL Loading",
         "id": "640dc51c-7713-4faa-8a0e-e7c0d9d4654c",
         "status": "test",
-        "description": "Detects DLL image load activity as used by FoggyWeb backdoor loader",
+        "description": "Detects DLL hijacking technique used by NOBELIUM in their FoggyWeb backdoor. Which loads a malicious version of the expected \"version.dll\" dll",
         "author": "Florian Roth",
         "tags": [
             "attack.resource_development",
@@ -6097,7 +6140,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE 'C:\\\\Windows\\\\ADFS\\\\version.dll' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded LIKE 'C:\\\\Windows\\\\ADFS\\\\version.dll' ESCAPE '\\')"
         ],
         "filename": "image_load_foggyweb_nobelium.yml"
     },
@@ -7927,7 +7970,7 @@
         "filename": "proc_creation_win_susp_system_user_anomaly.yml"
     },
     {
-        "title": "Potential Credential Dumping Via Windows Error Reporting",
+        "title": "Potential Credential Dumping Via WER",
         "id": "9a4ccd1a-3526-4d99-b980-9f9c5d3a6ff3",
         "status": "experimental",
         "description": "Detects potential credential dumping via Windows Error Reporting LSASS Shtinkering technique which uses the Windows Error Reporting to dump lsass",
@@ -12385,11 +12428,11 @@
         "filename": "proc_creation_win_wusa_susp_cap_extraction_from_susp_paths.yml"
     },
     {
-        "title": "Exchange PowerShell Snap-Ins Used by HAFNIUM",
+        "title": "Exchange PowerShell Snap-Ins Usage",
         "id": "25676e10-2121-446e-80a4-71ff8506af47",
         "status": "experimental",
-        "description": "Detects adding and using Exchange PowerShell snap-ins to export mailbox data by HAFNIUM",
-        "author": "FPT.EagleEye",
+        "description": "Detects adding and using Exchange PowerShell snap-ins to export mailbox data. As seen used by HAFNIUM and APT27",
+        "author": "FPT.EagleEye, Nasreddine Bencherchali",
         "tags": [
             "attack.execution",
             "attack.t1059.001",
@@ -12401,7 +12444,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND CommandLine LIKE '%add-pssnapin microsoft.exchange.powershell.snapin%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND CommandLine LIKE '%Add-PSSnapin%' ESCAPE '\\' AND (CommandLine LIKE '%Microsoft.Exchange.Powershell.Snapin%' ESCAPE '\\' OR CommandLine LIKE '%Microsoft.Exchange.Management.PowerShell.SnapIn%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_snapins_hafnium.yml"
     },
@@ -13295,10 +13338,10 @@
         "filename": "proc_creation_win_dns_serverlevelplugindll.yml"
     },
     {
-        "title": "COMPlus_ETWEnabled Command Line Arguments",
+        "title": "ETW Logging Tamper In .NET Processes",
         "id": "41421f44-58f9-455d-838a-c398859841d4",
         "status": "test",
-        "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
+        "description": "Detects changes to environment variables related to ETW logging. This could indicate potential adversaries stopping ETW providers recording loaded .NET assemblies.",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
             "attack.defense_evasion",
@@ -13309,7 +13352,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%COMPlus\\_ETWEnabled=0%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%COMPlus\\_ETWEnabled%' ESCAPE '\\' OR CommandLine LIKE '%COMPlus\\_ETWFlags%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_etw_modification_cmdline.yml"
     },
@@ -16346,7 +16389,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentImage LIKE '%\\\\wmiprvse.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\mmc.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\services.exe' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/Q%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%\\\\\\\\127.0.0.1\\\\%' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%svchost.exe -k netsvcs%' ESCAPE '\\' OR ParentCommandLine LIKE '%taskeng.exe%' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/C%' ESCAPE '\\' AND CommandLine LIKE '%Windows\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentImage LIKE '%\\\\wmiprvse.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\mmc.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\services.exe' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/Q%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%\\\\\\\\127.0.0.1\\\\\\*' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%svchost.exe -k netsvcs%' ESCAPE '\\' OR ParentCommandLine LIKE '%taskeng.exe%' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/C%' ESCAPE '\\' AND CommandLine LIKE '%Windows\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_impacket_lateralization.yml"
     },
@@ -17264,7 +17307,7 @@
         "filename": "proc_creation_win_uac_bypass_eventvwr.yml"
     },
     {
-        "title": "Renamed ProcDump",
+        "title": "Renamed ProcDump Execution",
         "id": "4a0b2c7e-7cb2-495d-8b63-5f268e7bfd67",
         "status": "test",
         "description": "Detects the execution of a renamed ProcDump executable often used by attackers or malware",
@@ -17275,7 +17318,7 @@
         ],
         "falsepositives": [
             "Procdump illegaly bundled with legitimate software",
-            "Weird admins who renamed binaries (and should be investigated)"
+            "Administrators who rename binaries (should be investigated)"
         ],
         "level": "high",
         "rule": [
@@ -22163,25 +22206,6 @@
         "filename": "file_event_win_susp_system_interactive_powershell.yml"
     },
     {
-        "title": "Mimikatz MemSSP Default Log File Creation",
-        "id": "034affe8-6170-11ec-844f-0f78aa0c4d66",
-        "status": "experimental",
-        "description": "Detects Mimikatz MemSSP default log file creation",
-        "author": "David ANDRE",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%mimilsa.log' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_mimimaktz_memssp_log_file.yml"
-    },
-    {
         "title": "CVE-2021-31979 CVE-2021-33771 Exploits by Sourgum",
         "id": "ad7085ac-92e4-4b76-8ce2-276d2c0e68ef",
         "status": "test",
@@ -22408,6 +22432,25 @@
             "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.ocx' ESCAPE '\\' OR TargetFilename LIKE '%.com' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.sys' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.scr' ESCAPE '\\' OR TargetFilename LIKE '%.proj' ESCAPE '\\')) AND NOT ((TargetFilename LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\WebServiceCache\\\\AllUsers%' ESCAPE '\\' AND TargetFilename LIKE '%.com' ESCAPE '\\') OR (Image LIKE '%\\\\winword.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\webexdelta\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\')) OR (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\assembly\\\\tmp\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.dll' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_script_creation_by_office_using_file_ext.yml"
+    },
+    {
+        "title": "Mimikatz MemSSP Default Log File Creation",
+        "id": "034affe8-6170-11ec-844f-0f78aa0c4d66",
+        "status": "experimental",
+        "description": "Detects Mimikatz MemSSP default log file creation",
+        "author": "David ANDRE",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%mimilsa.log' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_mimikatz_memssp_log_file.yml"
     },
     {
         "title": "Malicious DLL File Dropped in the Teams or OneDrive Folder",
