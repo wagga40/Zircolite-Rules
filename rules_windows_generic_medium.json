@@ -3330,6 +3330,25 @@
         "filename": "registry_event_office_test_regadd.yml"
     },
     {
+        "title": "Potential Ransomware Activity Using LegalNotice Message",
+        "id": "8b9606c9-28be-4a38-b146-0e313cc232c1",
+        "status": "experimental",
+        "description": "Detect changes to the \"LegalNoticeCaption\" or \"LegalNoticeText\" registry values where the message set contains keywords often used in ransomware ransom messages",
+        "author": "frack113",
+        "tags": [
+            "attack.impact",
+            "attack.t1491.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeCaption%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeText%' ESCAPE '\\') AND (NewValue LIKE '%encrypted%' ESCAPE '\\' OR NewValue LIKE '%Unlock-Password%' ESCAPE '\\' OR NewValue LIKE '%paying%' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_legalnotice_susp_message.yml"
+    },
+    {
         "title": "UAC Bypass Via Wsreset",
         "id": "6ea3bf32-9680-422d-9f50-e90716b12a66",
         "status": "test",
@@ -20706,6 +20725,25 @@
         "filename": "proc_creation_win_susp_compression_params.yml"
     },
     {
+        "title": "WMIC Tamper Windows Defender",
+        "id": "51cbac1e-eee3-4a90-b1b7-358efb81fa0a",
+        "status": "experimental",
+        "description": "Detects potential tampering with Windows Defender settings such as adding exclusion using wmic",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1546.008"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'wmic.exe' OR NewProcessName LIKE '%\\\\WMIC.exe' ESCAPE '\\') AND CommandLine LIKE '%/Namespace:\\\\\\\\root\\\\Microsoft\\\\Windows\\\\Defender%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_wmic_tamper_defender.yml"
+    },
+    {
         "title": "Lolbins Process Creation with WmiPrvse",
         "id": "8a582fe2-0882-4b89-a82a-da6b2dc32937",
         "status": "experimental",
@@ -21343,6 +21381,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND OriginalFileName = 'vmnat.exe' AND NOT ((NewProcessName LIKE '%vmnat.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\VMware\\\\VMware Workstation\\\\vmnat.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\vmnat.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_renamed_vmnat.yml"
+    },
+    {
+        "title": "Potential Privilege Escalation Using Symlink Between Osk and Cmd",
+        "id": "e9b61244-893f-427c-b287-3e708f321c6b",
+        "status": "experimental",
+        "description": "Detects the creation of a symbolic link between \"cmd.exe\" and the accessibility on-screen keyboard binary (osk.exe) using \"mklink\". This technique provides an elevated command prompt to the user from the login screen without the need to log in.",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1546.008"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.exe') AND (CommandLine LIKE '%mklink%' ESCAPE '\\' AND CommandLine LIKE '%\\\\osk.exe%' ESCAPE '\\' AND CommandLine LIKE '%\\\\cmd.exe%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_create_link_osk_cmd.yml"
     },
     {
         "title": "Suspicious Rundll32 Activity",
@@ -31594,6 +31651,25 @@
             "SELECT * FROM logs WHERE (EventID = '400' AND Channel = 'Windows PowerShell' AND HostApplication LIKE '%Net.WebClient%' ESCAPE '\\' AND (HostApplication LIKE '%.DownloadFile(%' ESCAPE '\\' OR HostApplication LIKE '%.DownloadString(%' ESCAPE '\\'))"
         ],
         "filename": "posh_pc_susp_download.yml"
+    },
+    {
+        "title": "Nslookup PowerShell Download Cradle",
+        "id": "999bff6d-dc15-44c9-9f5c-e1051bfc86e1",
+        "status": "experimental",
+        "description": "Detects suspicious powershell download cradle using nslookup. This cradle uses nslookup to extract payloads from DNS records",
+        "author": "Sai Prashanth Pulisetti @pulisettis",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '400' AND Channel = 'Windows PowerShell' AND HostApplication LIKE '%powershell%' ESCAPE '\\' AND HostApplication LIKE '%nslookup%' ESCAPE '\\' AND (HostApplication LIKE '%-q=txt%' ESCAPE '\\' OR HostApplication LIKE '%-querytype=txt%' ESCAPE '\\'))"
+        ],
+        "filename": "posh_pc_abuse_nslookup_with_dns_records.yml"
     },
     {
         "title": "Netcat The Powershell Version",
