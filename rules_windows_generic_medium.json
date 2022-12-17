@@ -28042,7 +28042,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((Description = 'Windows PowerShell' OR Product = 'PowerShell Core 6') AND (CommandLine LIKE '%bxor%' ESCAPE '\\' OR CommandLine LIKE '%-join %' ESCAPE '\\' OR CommandLine LIKE '%-join''%' ESCAPE '\\' OR CommandLine LIKE '%-join\"%' ESCAPE '\\' OR CommandLine LIKE '%-join`%' ESCAPE '\\' OR CommandLine LIKE '%char%' ESCAPE '\\')) AND NOT (ParentProcessName LIKE 'C:\\\\Program Files\\\\Amazon\\\\SSM\\\\ssm-document-worker.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll') OR Description = 'Windows PowerShell' OR Product = 'PowerShell Core 6') AND (CommandLine LIKE '%bxor%' ESCAPE '\\' OR CommandLine LIKE '%-join %' ESCAPE '\\' OR CommandLine LIKE '%-join''%' ESCAPE '\\' OR CommandLine LIKE '%-join\"%' ESCAPE '\\' OR CommandLine LIKE '%-join`%' ESCAPE '\\' OR CommandLine LIKE '%char%' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE 'C:\\\\Program Files\\\\Amazon\\\\SSM\\\\ssm-document-worker.exe' ESCAPE '\\') OR (CommandLine LIKE '%function Convert-GuidToCompressedGuid%' ESCAPE '\\' AND CommandLine LIKE '%ValueFromPipelineByPropertyName%' ESCAPE '\\' AND CommandLine LIKE '%::ParseExact(%' ESCAPE '\\' AND CommandLine LIKE '%KB[000000-999999]%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_xor_commandline.yml"
     },
@@ -28569,7 +28569,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\') AND NOT (CommandLine LIKE '%\\\\shell32.dll,OpenAs\\_RunDLL%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\') AND NOT (CommandLine LIKE '% C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_rundll32_parent_explorer.yml"
     },
