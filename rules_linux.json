@@ -564,7 +564,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM (SELECT *,count(*) AS agg FROM logs WHERE (((type = 'EXECVE' AND a0 = '/usr/bin/sudoedit') AND (a1 = '-s' OR a2 = '-s' OR a3 = '-s' OR a4 = '-s')) AND (a1 LIKE '\\\\' ESCAPE '\\' OR a2 LIKE '\\\\' ESCAPE '\\' OR a3 LIKE '\\\\' ESCAPE '\\' OR a4 LIKE '\\\\' ESCAPE '\\')) GROUP BY host) WHERE agg > 50"
+            "SELECT * FROM (SELECT *,count(*) AS agg FROM logs WHERE ((type = 'EXECVE' AND a0 = '/usr/bin/sudoedit') AND (a1 = '-s' OR a2 = '-s' OR a3 = '-s' OR a4 = '-s') AND (a1 LIKE '\\\\' ESCAPE '\\' OR a2 LIKE '\\\\' ESCAPE '\\' OR a3 LIKE '\\\\' ESCAPE '\\' OR a4 LIKE '\\\\' ESCAPE '\\')) GROUP BY host) WHERE agg > 50"
         ],
         "filename": "lnx_auditd_cve_2021_3156_sudo_buffer_overflow.yml"
     },
@@ -746,7 +746,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (((type = 'PATH' AND name IN ('/etc/pam.d/common-password', '/etc/security/pwquality.conf', '/etc/pam.d/system-auth', '/etc/login.defs')) OR (type = 'EXECVE' AND a0 = 'chage' AND a1 IN ('--list', '-l'))) OR (type = 'EXECVE' AND a0 = 'passwd' AND a1 IN ('-S', '--status')))"
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/pam.d/common-password', '/etc/security/pwquality.conf', '/etc/pam.d/system-auth', '/etc/login.defs')) OR (type = 'EXECVE' AND a0 = 'chage' AND a1 IN ('--list', '-l')) OR (type = 'EXECVE' AND a0 = 'passwd' AND a1 IN ('-S', '--status')))"
         ],
         "filename": "lnx_auditd_password_policy_discovery.yml"
     },
