@@ -856,6 +856,26 @@
         "filename": "file_event_win_creation_unquoted_service_path.yml"
     },
     {
+        "title": "Potential Privilege Escalation Attempt Via .Exe.Local Technique",
+        "id": "07a99744-56ac-40d2-97b7-2095967b0e03",
+        "status": "experimental",
+        "description": "Detects potential privilege escalation attempt via the creation of the \"*.Exe.Local\" folder inside the \"System32\" directory in order to sideload \"comctl32.dll\"",
+        "author": "Nasreddine Bencherchali, Subhash P (@pbssubhash)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\logonUI.exe.local%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\werFault.exe.local%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\consent.exe.local%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\narrator.exe.local%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\wermgr.exe.local%' ESCAPE '\\') AND TargetFilename LIKE '%\\\\comctl32.dll' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_system32_local_folder_privilege_escalation.yml"
+    },
+    {
         "title": "Inveigh Execution Artefacts",
         "id": "bb09dd3e-2b78-4819-8e35-a7c1b874e449",
         "status": "experimental",
@@ -1501,26 +1521,6 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Cache134.dat' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\ExplorerSync.db' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_mal_octopus_scanner.yml"
-    },
-    {
-        "title": "Potential Privilege Escalation Attempt Via Wermgr.Exe.Local",
-        "id": "07a99744-56ac-40d2-97b7-2095967b0e03",
-        "status": "experimental",
-        "description": "Detects potential privilege escalation attempt via the creation of the \"Wermgr.Exe.Local\" folder inside the \"System32\" directory in order to sideload \"comctl32.dll\"",
-        "author": "Nasreddine Bencherchali",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.persistence",
-            "attack.privilege_escalation"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\windows\\\\system32\\\\wermgr.exe.local\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\comctl32.dll' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_wermgr_local_privilege_escalation.yml"
     },
     {
         "title": "Wmiprvse Wbemcomn DLL Hijack - File",
@@ -2669,25 +2669,6 @@
             "SELECT * FROM logs WHERE ((EventID = '10' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetImage LIKE '%\\\\WINDOWS\\\\System32\\\\svchost.exe' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE '%UNKNOWN%' ESCAPE '\\') AND NOT ((SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND (CallTrace LIKE '%Microsoft.Build.ni.dll%' ESCAPE '\\' OR CallTrace LIKE '%System.ni.dll%' ESCAPE '\\'))))"
         ],
         "filename": "proc_access_win_invoke_phantom.yml"
-    },
-    {
-        "title": "Nslookup PowerShell Download Cradle",
-        "id": "999bff6d-dc15-44c9-9f5c-e1051bfc86e1",
-        "status": "experimental",
-        "description": "Detects suspicious powershell download cradle using nslookup. This cradle uses nslookup to extract payloads from DNS records",
-        "author": "Sai Prashanth Pulisetti @pulisettis",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '400' AND Channel = 'Windows PowerShell' AND HostApplication LIKE '%powershell%' ESCAPE '\\' AND HostApplication LIKE '%nslookup%' ESCAPE '\\' AND (HostApplication LIKE '%-q=txt%' ESCAPE '\\' OR HostApplication LIKE '%-querytype=txt%' ESCAPE '\\'))"
-        ],
-        "filename": "posh_pc_abuse_nslookup_with_dns_records.yml"
     },
     {
         "title": "Delete Volume Shadow Copies Via WMI With PowerShell",
@@ -20669,24 +20650,6 @@
         "filename": "proc_creation_win_susp_iis_module_registration.yml"
     },
     {
-        "title": "Nslookup PowerShell Download Cradle - ProcessCreation",
-        "id": "1b3b01c7-84e9-4072-86e5-fc285a41ff23",
-        "status": "experimental",
-        "description": "Detects suspicious powershell download cradle using nslookup. This cradle uses nslookup to extract payloads from DNS records",
-        "author": "Nasreddine Bencherchali",
-        "tags": [
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%powershell .%' ESCAPE '\\' AND CommandLine LIKE '%nslookup%' ESCAPE '\\' AND CommandLine LIKE '% -q=txt %' ESCAPE '\\') OR (ParentImage LIKE '%\\\\powershell.exe' ESCAPE '\\' AND Image LIKE '%\\\\nslookup.exe%' ESCAPE '\\' AND (CommandLine LIKE '% -q=txt %' ESCAPE '\\' OR CommandLine LIKE '% -querytype=txt %' ESCAPE '\\'))))"
-        ],
-        "filename": "proc_creation_win_nslookup_poweshell_download.yml"
-    },
-    {
         "title": "Cmd.exe CommandLine Path Traversal",
         "id": "087790e3-3287-436c-bccf-cbd0184a7db1",
         "status": "test",
@@ -22372,6 +22335,28 @@
         "filename": "image_load_susp_office_dsparse_dll_load.yml"
     },
     {
+        "title": "Potential DLL Sideloading Via comctl32.dll",
+        "id": "6360757a-d460-456c-8b13-74cf0e60cceb",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading using comctl32.dll to obtain system privileges",
+        "author": "Nasreddine Bencherchali, Subhash Popuri (@pbssubhash)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\logonUI.exe.local\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\werFault.exe.local\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\consent.exe.local\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\narrator.exe.local\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\windows\\\\system32\\\\wermgr.exe.local\\\\%' ESCAPE '\\') AND ImageLoaded LIKE '%\\\\comctl32.dll' ESCAPE '\\')"
+        ],
+        "filename": "image_load_side_load_comctl32.yml"
+    },
+    {
         "title": "CLR DLL Loaded Via Office Applications",
         "id": "d13c43f0-f66b-4279-8b2c-5912077c1780",
         "status": "test",
@@ -22467,28 +22452,6 @@
             "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\') AND (ImageLoaded LIKE '%\\\\clr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscoree.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscorlib.dll' ESCAPE '\\'))"
         ],
         "filename": "image_load_susp_script_dotnet_clr_dll_load.yml"
-    },
-    {
-        "title": "Potential DLL Sideloading Via comctl32.dll",
-        "id": "6360757a-d460-456c-8b13-74cf0e60cceb",
-        "status": "experimental",
-        "description": "Detects potential DLL sideloading using comctl32.dll via \"wermgr.exe\" to obtain system privileges",
-        "author": "Nasreddine Bencherchali",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.persistence",
-            "attack.privilege_escalation",
-            "attack.t1574.001",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded LIKE 'C:\\\\windows\\\\system32\\\\wermgr.exe.local\\\\%' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\comctl32.dll' ESCAPE '\\')"
-        ],
-        "filename": "image_load_side_load_wermgr_comctl32.yml"
     },
     {
         "title": "SILENTTRINITY Stager Execution - DLL",
