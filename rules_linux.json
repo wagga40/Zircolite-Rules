@@ -462,7 +462,7 @@
         "title": "Creation Of An User Account",
         "id": "759d0d51-bc99-4b5e-9add-8f5b2c8e7512",
         "description": "Detects the creation of a new user account. Such accounts may be used for persistence that do not require persistent remote access tools to be deployed on the system.",
-        "author": "Marie Euler",
+        "author": "Marie Euler, Pawel Mazur",
         "tags": [
             "attack.t1136.001",
             "attack.persistence"
@@ -472,7 +472,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND exe LIKE '%/useradd' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND exe LIKE '%/useradd' ESCAPE '\\') OR type LIKE 'ADD\\_USER' ESCAPE '\\')"
         ],
         "filename": "lnx_auditd_create_account.yml"
     },

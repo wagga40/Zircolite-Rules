@@ -28774,7 +28774,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Product = 'SQLite' OR Image LIKE '%\\\\sqlite.exe' ESCAPE '\\') AND CommandLine LIKE '%cookies.sqlite%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Product = 'SQLite' OR (Image LIKE '%\\\\sqlite.exe' ESCAPE '\\' OR Image LIKE '%\\\\sqlite3.exe' ESCAPE '\\')) AND CommandLine LIKE '%cookies.sqlite%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_sqlite_firefox_cookies.yml"
     },
@@ -35737,6 +35737,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%OgA6ACgAIgBMACIAKwAiAG8AYQBkACIAKQ%' ESCAPE '\\' OR CommandLine LIKE '%oAOgAoACIATAAiACsAIgBvAGEAZAAiACkA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoAKAAiAEwAIgArACIAbwBhAGQAIgApA%' ESCAPE '\\' OR CommandLine LIKE '%OgA6ACgAIgBMAG8AIgArACIAYQBkACIAKQ%' ESCAPE '\\' OR CommandLine LIKE '%oAOgAoACIATABvACIAKwAiAGEAZAAiACkA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoAKAAiAEwAbwAiACsAIgBhAGQAIgApA%' ESCAPE '\\' OR CommandLine LIKE '%OgA6ACgAIgBMAG8AYQAiACsAIgBkACIAKQ%' ESCAPE '\\' OR CommandLine LIKE '%oAOgAoACIATABvAGEAIgArACIAZAAiACkA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoAKAAiAEwAbwBhACIAKwAiAGQAIgApA%' ESCAPE '\\' OR CommandLine LIKE '%OgA6ACgAJwBMACcAKwAnAG8AYQBkACcAKQ%' ESCAPE '\\' OR CommandLine LIKE '%oAOgAoACcATAAnACsAJwBvAGEAZAAnACkA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoAKAAnAEwAJwArACcAbwBhAGQAJwApA%' ESCAPE '\\' OR CommandLine LIKE '%OgA6ACgAJwBMAG8AJwArACcAYQBkACcAKQ%' ESCAPE '\\' OR CommandLine LIKE '%oAOgAoACcATABvACcAKwAnAGEAZAAnACkA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoAKAAnAEwAbwAnACsAJwBhAGQAJwApA%' ESCAPE '\\' OR CommandLine LIKE '%OgA6ACgAJwBMAG8AYQAnACsAJwBkACcAKQ%' ESCAPE '\\' OR CommandLine LIKE '%oAOgAoACcATABvAGEAJwArACcAZAAnACkA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoAKAAnAEwAbwBhACcAKwAnAGQAJwApA%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_base64_load.yml"
+    },
+    {
+        "title": "SQLite Chrome Cookie DB Access",
+        "id": "24c77512-782b-448a-8950-eddb0785fc71",
+        "status": "experimental",
+        "description": "Detect use of sqlite binary to query the Chrome Cookies database and steal the cookie data contained within it",
+        "author": "TropChaud",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1539"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Product = 'SQLite' OR (Image LIKE '%\\\\sqlite.exe' ESCAPE '\\' OR Image LIKE '%\\\\sqlite3.exe' ESCAPE '\\')) AND (CommandLine LIKE '%\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Network\\\\Cookies%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Cookies%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_sqlite_chrome_cookies.yml"
     },
     {
         "title": "Wscript Shell Run In CommandLine",
