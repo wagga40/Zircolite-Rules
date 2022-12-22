@@ -1114,7 +1114,7 @@
             "attack.t1546.013"
         ],
         "falsepositives": [
-            "System administrator create Powershell profile manually"
+            "System administrator creating Powershell profile manually"
         ],
         "level": "high",
         "rule": [
@@ -2627,7 +2627,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((GrantedAccess IN ('0x147a', '0x1f3fff') AND CallTrace LIKE '%UNKNOWN%' ESCAPE '\\') AND NOT (((SourceImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\UpdateService\\\\ServiceShell.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\Explorer.EXE' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR ((SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\') AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Program Files\\\\Dell\\\\DellDataVault\\\\DDVDataCollector.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((GrantedAccess IN ('0x147a', '0x1f3fff') AND CallTrace LIKE '%UNKNOWN%' ESCAPE '\\') AND NOT (((SourceImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Dell\\\\%' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\%' ESCAPE '\\') AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\UpdateService\\\\ServiceShell.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\Explorer.EXE' ESCAPE '\\' AND GrantedAccess = '0x1F3FFF' AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR ((SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\PerfWatson2.exe' ESCAPE '\\') AND (TargetImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2019\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe' ESCAPE '\\') AND CallTrace LIKE 'C:\\\\Windows\\\\System32\\\\ntdll.dll%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Program Files\\\\Dell\\\\DellDataVault\\\\DDVDataCollector.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\Wbem\\\\Wmiprvse.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\system32\\\\lsass.exe' ESCAPE '\\' AND CallTrace LIKE 'C:\\\\Windows\\\\SYSTEM32\\\\ntdll.dll%' ESCAPE '\\' AND CallTrace LIKE '%\\\\System.ni.dll+%' ESCAPE '\\')))"
         ],
         "filename": "process_access_win_shellcode_inject_msf_empire.yml"
     },
@@ -5168,25 +5168,6 @@
         "filename": "registry_set_uac_bypass_winsat.yml"
     },
     {
-        "title": "SilentProcessExit Monitor Registration",
-        "id": "c81fe886-cac0-4913-a511-2822d72ff505",
-        "status": "experimental",
-        "description": "Detects changes to the Registry in which a monitor program gets registered to monitor the exit of another process",
-        "author": "Florian Roth",
-        "tags": [
-            "attack.persistence",
-            "attack.t1546.012"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%Microsoft\\\\Windows NT\\\\CurrentVersion\\\\SilentProcessExit%' ESCAPE '\\' AND NewValue LIKE '%MonitorProcess%' ESCAPE '\\')"
-        ],
-        "filename": "registry_set_silentprocessexit.yml"
-    },
-    {
         "title": "Disabled Windows Defender Eventlog",
         "id": "fcddca7c-b9c0-4ddf-98da-e1e2d18b0157",
         "status": "experimental",
@@ -5623,11 +5604,11 @@
         "filename": "registry_set_susp_printer_driver.yml"
     },
     {
-        "title": "Registry Persistence Mechanism via Windows Telemetry",
+        "title": "Potential Registry Persistence Attempt Via Windows Telemetry",
         "id": "73a883d0-0348-4be4-a8d8-51031c2564f8",
         "status": "test",
-        "description": "Detects persistence method using windows telemetry",
-        "author": "Lednyov Alexey, oscd.community",
+        "description": "Detects potential persistence behaviour using the windows telemetry registry key.\nWindows telemetry makes use of the binary CompatTelRunner.exe to run a variety of commands and perform the actual telemetry collections.\nThis binary was created to be easily extensible, and to that end, it relies on the registry to instruct on which commands to run.\nThe problem is, it will run any arbitrary command without restriction of location or type.\n",
+        "author": "Lednyov Alexey, oscd.community, Sreeman",
         "tags": [
             "attack.persistence",
             "attack.t1053.005"
@@ -5635,9 +5616,9 @@
         "falsepositives": [
             "Unknown"
         ],
-        "level": "critical",
+        "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\TelemetryController\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Command%' ESCAPE '\\' AND NewValue LIKE '%.exe%' ESCAPE '\\') AND NOT ((NewValue LIKE '%\\\\system32\\\\CompatTelRunner.exe%' ESCAPE '\\' OR NewValue LIKE '%\\\\system32\\\\DeviceCensus.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\TelemetryController\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Command' ESCAPE '\\' AND (NewValue LIKE '%.sh%' ESCAPE '\\' OR NewValue LIKE '%.exe%' ESCAPE '\\' OR NewValue LIKE '%.dll%' ESCAPE '\\' OR NewValue LIKE '%.bin%' ESCAPE '\\' OR NewValue LIKE '%.bat%' ESCAPE '\\' OR NewValue LIKE '%.cmd%' ESCAPE '\\' OR NewValue LIKE '%.js%' ESCAPE '\\' OR NewValue LIKE '%.ps%' ESCAPE '\\' OR NewValue LIKE '%.vb%' ESCAPE '\\' OR NewValue LIKE '%.jar%' ESCAPE '\\' OR NewValue LIKE '%.hta%' ESCAPE '\\' OR NewValue LIKE '%.msi%' ESCAPE '\\' OR NewValue LIKE '%.vbs%' ESCAPE '\\')) AND NOT ((NewValue LIKE '%\\\\system32\\\\CompatTelRunner.exe%' ESCAPE '\\' OR NewValue LIKE '%\\\\system32\\\\DeviceCensus.exe%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_telemetry_persistence.yml"
     },
@@ -5833,6 +5814,25 @@
         "filename": "registry_set_outlook_registry_webview.yml"
     },
     {
+        "title": "Suspicious Environment Variable Has Been Registered",
+        "id": "966315ef-c5e1-4767-ba25-fce9c8de3660",
+        "status": "test",
+        "description": "Detects the creation of user-specific or system-wide environement variables via the registry. Which contains suspicious commands and strings",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\Environment\\\\%' ESCAPE '\\') AND (NewValue IN ('powershell', 'pwsh') OR (NewValue LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewValue LIKE '%TVqQAAMAAAAEAAAA%' ESCAPE '\\' OR NewValue LIKE '%TVpQAAIAAAAEAA8A%' ESCAPE '\\' OR NewValue LIKE '%TVqAAAEAAAAEABAA%' ESCAPE '\\' OR NewValue LIKE '%TVoAAAAAAAAAAAAA%' ESCAPE '\\' OR NewValue LIKE '%TVpTAQEAAAAEAAAA%' ESCAPE '\\' OR NewValue LIKE '%SW52b2tlL%' ESCAPE '\\' OR NewValue LIKE '%ludm9rZS%' ESCAPE '\\' OR NewValue LIKE '%JbnZva2Ut%' ESCAPE '\\' OR NewValue LIKE '%SQBuAHYAbwBrAGUALQ%' ESCAPE '\\' OR NewValue LIKE '%kAbgB2AG8AawBlAC0A%' ESCAPE '\\' OR NewValue LIKE '%JAG4AdgBvAGsAZQAtA%' ESCAPE '\\') OR (NewValue LIKE 'SUVY%' ESCAPE '\\' OR NewValue LIKE 'SQBFAF%' ESCAPE '\\' OR NewValue LIKE 'SQBuAH%' ESCAPE '\\' OR NewValue LIKE 'cwBhA%' ESCAPE '\\' OR NewValue LIKE 'aWV4%' ESCAPE '\\' OR NewValue LIKE 'aQBlA%' ESCAPE '\\' OR NewValue LIKE 'R2V0%' ESCAPE '\\' OR NewValue LIKE 'dmFy%' ESCAPE '\\' OR NewValue LIKE 'dgBhA%' ESCAPE '\\' OR NewValue LIKE 'dXNpbm%' ESCAPE '\\' OR NewValue LIKE 'H4sIA%' ESCAPE '\\' OR NewValue LIKE 'Y21k%' ESCAPE '\\' OR NewValue LIKE 'cABhAH%' ESCAPE '\\' OR NewValue LIKE 'Qzpc%' ESCAPE '\\' OR NewValue LIKE 'Yzpc%' ESCAPE '\\')))"
+        ],
+        "filename": "registry_set_suspicious_env_variables.yml"
+    },
+    {
         "title": "CVE-2021-31979 CVE-2021-33771 Exploits",
         "id": "32b5db62-cb5f-4266-9639-0fa48376ac00",
         "status": "experimental",
@@ -6024,11 +6024,11 @@
         "filename": "registry_set_vbs_payload_stored.yml"
     },
     {
-        "title": "GlobalFlags Registry Persistence Mechanisms",
+        "title": "Potential GlobalFlags Registry Persistence Attempt",
         "id": "36803969-5421-41ec-b92f-8500f79c23b0",
         "status": "test",
-        "description": "Detects persistence using GlobalFlags in image file execution options",
-        "author": "Karneades, Jonhnathan Ribeiro",
+        "description": "Detects registry persistence technique using the GlobalFlags and SilentProcessExit keys",
+        "author": "Karneades, Jonhnathan Ribeiro, Florian Roth",
         "tags": [
             "attack.privilege_escalation",
             "attack.persistence",
@@ -6041,7 +6041,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\%' ESCAPE '\\' AND ((TargetObject LIKE '%\\\\Image File Execution Options\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\GlobalFlag%' ESCAPE '\\') OR (TargetObject LIKE '%SilentProcessExit\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\ReportingMode%' ESCAPE '\\') OR (TargetObject LIKE '%SilentProcessExit\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\MonitorProcess%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Image File Execution Options\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\GlobalFlag%' ESCAPE '\\' AND TargetObject LIKE '%\\\\SilentProcessExit\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\ReportingMode%' ESCAPE '\\' OR TargetObject LIKE '%\\\\MonitorProcess%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_globalflags_persistence.yml"
     },
@@ -6643,27 +6643,6 @@
         "filename": "registry_set_fax_dll_persistance.yml"
     },
     {
-        "title": "Abusing Windows Telemetry For Persistence - Registry",
-        "id": "4e8d5fd3-c959-441f-a941-f73d0cdcdca5",
-        "status": "experimental",
-        "description": "Windows telemetry makes use of the binary CompatTelRunner.exe to run a variety of commands and perform the actual telemetry collections.\nThis binary was created to be easily extensible, and to that end, it relies on the registry to instruct on which commands to run.\nThe problem is, it will run any arbitrary command without restriction of location or type.\n",
-        "author": "Sreeman",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.persistence",
-            "attack.t1112",
-            "attack.t1053"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\TelemetryController\\\\%' ESCAPE '\\' AND (NewValue LIKE '%.sh' ESCAPE '\\' OR NewValue LIKE '%.exe' ESCAPE '\\' OR NewValue LIKE '%.dll' ESCAPE '\\' OR NewValue LIKE '%.bin' ESCAPE '\\' OR NewValue LIKE '%.bat' ESCAPE '\\' OR NewValue LIKE '%.cmd' ESCAPE '\\' OR NewValue LIKE '%.js' ESCAPE '\\' OR NewValue LIKE '%.ps' ESCAPE '\\' OR NewValue LIKE '%.vb' ESCAPE '\\' OR NewValue LIKE '%.jar' ESCAPE '\\' OR NewValue LIKE '%.hta' ESCAPE '\\' OR NewValue LIKE '%.msi' ESCAPE '\\' OR NewValue LIKE '%.vbs' ESCAPE '\\'))"
-        ],
-        "filename": "registry_set_abusing_windows_telemetry_for_persistence.yml"
-    },
-    {
         "title": "Usage of Renamed Sysinternals Tools",
         "id": "f50f3c09-557d-492d-81db-9064a8d4e211",
         "status": "experimental",
@@ -6754,7 +6733,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'New registry value created' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'CreateKey' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\AMSI\\\\Providers\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\AMSI\\\\Providers\\\\%' ESCAPE '\\')) AND NOT (NewProcessName LIKE 'C:\\\\Program Files%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'New registry value created' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'CreateKey' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\AMSI\\\\Providers\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\AMSI\\\\Providers\\\\%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')))"
         ],
         "filename": "registry_add_amsi_providers_persistence.yml"
     },
@@ -7147,14 +7126,14 @@
         "filename": "registry_event_disable_wdigest_credential_guard.yml"
     },
     {
-        "title": "SilentProcessExit Monitor Registration for LSASS",
+        "title": "Potential Credential Dumping Via LSASS SilentProcessExit Technique",
         "id": "55e29995-75e7-451a-bef0-6225e2f13597",
         "status": "experimental",
         "description": "Detects changes to the Registry in which a monitor program gets registered to dump the memory of the lsass.exe process",
         "author": "Florian Roth",
         "tags": [
             "attack.credential_access",
-            "attack.t1003.007"
+            "attack.t1003.001"
         ],
         "falsepositives": [
             "Unlikely"
@@ -9220,7 +9199,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID = '4657' AND ObjectName LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\.NETFramework' ESCAPE '\\' AND ObjectValueName = 'ETWEnabled' AND NewValue = '0') OR (EventID = '4657' AND ObjectName LIKE '%\\\\Environment\\\\' ESCAPE '\\' AND (ObjectValueName LIKE 'COMPlus\\_ETWEnabled' ESCAPE '\\' OR ObjectValueName LIKE 'COMPlus\\_ETWFlags' ESCAPE '\\') AND NewValue = '0')))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID = '4657' AND ObjectName LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\.NETFramework' ESCAPE '\\' AND ObjectValueName = 'ETWEnabled' AND NewValue = '0') OR (EventID = '4657' AND ObjectName LIKE '%\\\\Environment%' ESCAPE '\\' AND (ObjectValueName LIKE 'COMPlus\\_ETWEnabled' ESCAPE '\\' OR ObjectValueName LIKE 'COMPlus\\_ETWFlags' ESCAPE '\\') AND NewValue = '0')))"
         ],
         "filename": "win_security_dot_net_etw_tamper.yml"
     },
@@ -14210,27 +14189,6 @@
         "filename": "proc_creation_win_msedge_minimized_download.yml"
     },
     {
-        "title": "Abusing Windows Telemetry For Persistence",
-        "id": "f548a603-c9f2-4c89-b511-b089f7e94549",
-        "status": "experimental",
-        "description": "Windows telemetry makes use of the binary CompatTelRunner.exe to run a variety of commands and perform the actual telemetry collections. This binary was created to be easily extensible, and to that end, it relies on the registry to instruct on which commands to run. The problem is, it will run any arbitrary command without restriction of location or type.",
-        "author": "Sreeman",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.persistence",
-            "attack.t1112",
-            "attack.t1053"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%schtasks%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Application Experience\\\\Microsoft Compatibility Appraiser%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_abusing_windows_telemetry_for_persistence.yml"
-    },
-    {
         "title": "Pingback Backdoor",
         "id": "b2400ffb-7680-47c0-b08a-098a7de7e7a9",
         "status": "test",
@@ -14561,6 +14519,24 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\SharpUp.exe' ESCAPE '\\' OR Description = 'SharpUp' OR (CommandLine LIKE '%HijackablePaths%' ESCAPE '\\' OR CommandLine LIKE '%UnquotedServicePath%' ESCAPE '\\' OR CommandLine LIKE '%ProcessDLLHijack%' ESCAPE '\\' OR CommandLine LIKE '%ModifiableServiceBinaries%' ESCAPE '\\' OR CommandLine LIKE '%ModifiableScheduledTask%' ESCAPE '\\' OR CommandLine LIKE '%DomainGPPPassword%' ESCAPE '\\' OR CommandLine LIKE '%CachedGPPPassword%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_sharpup.yml"
+    },
+    {
+        "title": "Renamed Office Binary Execution",
+        "id": "0b0cd537-fc77-4e6e-a973-e53495c1083d",
+        "status": "experimental",
+        "description": "Detects the execution of a renamed office binaries",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('Excel.exe', 'MSACCESS.EXE', 'OneNote.exe', 'POWERPNT.EXE', 'WinWord.exe') OR Description IN ('Microsoft Access', 'Microsoft Excel', 'Microsoft OneNote', 'Microsoft PowerPoint', 'Microsoft Word')) AND NOT ((NewProcessName LIKE '%\\\\EXCEL.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MSACCESS.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ONENOTE.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\POWERPNT.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINWORD.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_renamed_office_processes.yml"
     },
     {
         "title": "UAC Bypass Using PkgMgr and DISM",
@@ -18160,6 +18136,25 @@
         "filename": "proc_creation_win_tamper_defender_remove_mppreference.yml"
     },
     {
+        "title": "Potential Privilege Escalation Using Symlink Between Osk and Cmd",
+        "id": "e9b61244-893f-427c-b287-3e708f321c6b",
+        "status": "experimental",
+        "description": "Detects the creation of a symbolic link between \"cmd.exe\" and the accessibility on-screen keyboard binary (osk.exe) using \"mklink\". This technique provides an elevated command prompt to the user from the login screen without the need to log in.",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1546.008"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND (CommandLine LIKE '%mklink%' ESCAPE '\\' AND CommandLine LIKE '%\\\\osk.exe%' ESCAPE '\\' AND CommandLine LIKE '%\\\\cmd.exe%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_create_link_osk_cmd.yml"
+    },
+    {
         "title": "Regsvr32 Flags Anomaly",
         "id": "b236190c-1c61-41e9-84b3-3fe03f6d76b0",
         "status": "test",
@@ -20667,25 +20662,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((ParentCommandLine LIKE '%cmd%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') AND ((ParentCommandLine LIKE '%/c%' ESCAPE '\\' OR ParentCommandLine LIKE '%/k%' ESCAPE '\\' OR ParentCommandLine LIKE '%/r%' ESCAPE '\\') AND CommandLine LIKE '%/../../%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%\\\\Tasktop\\\\keycloak\\\\bin\\\\/../../jre\\\\bin\\\\java%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_commandline_path_traversal.yml"
-    },
-    {
-        "title": "Potential Privilege Escalation Using Symlink Between Osk and Cmd",
-        "id": "e9b61244-893f-427c-b287-3e708f321c6b",
-        "status": "experimental",
-        "description": "Detects the creation of a symbolic link between \"cmd.exe\" and the accessibility on-screen keyboard binary (osk.exe) using \"mklink\". This technique provides an elevated command prompt to the user from the login screen without the need to log in.",
-        "author": "frack113",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1546.008"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.exe') AND (CommandLine LIKE '%mklink%' ESCAPE '\\' AND CommandLine LIKE '%\\\\osk.exe%' ESCAPE '\\' AND CommandLine LIKE '%\\\\cmd.exe%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_create_link_osk_cmd.yml"
     },
     {
         "title": "DInject PowerShell Cradle CommandLine Flags",
