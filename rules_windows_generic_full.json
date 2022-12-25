@@ -19667,6 +19667,25 @@
         "filename": "proc_creation_win_malware_trickbot_wermgr.yml"
     },
     {
+        "title": "AgentExecutor PowerShell Execution",
+        "id": "7efd2c8d-8b18-45b7-947d-adfe9ed04f61",
+        "status": "experimental",
+        "description": "Detects execution of the AgentExecutor.exe binary. Which can be abused as a LOLBIN to execute powershell scripts with the ExecutionPolicy \"Bypass\" or any binary named \"powershell.exe\" located in the path provided by 6th postiional argument",
+        "author": "Nasreddine Bencherchali, memory-shards",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Legitimate use via Intune management. You exclude script paths and names to reduce FP rate"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '\\\\AgentExecutor.exe' ESCAPE '\\' OR OriginalFileName = 'AgentExecutor.exe') AND (CommandLine LIKE '% -powershell%' ESCAPE '\\' OR CommandLine LIKE '% -remediationScript%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_lolbin_agentexecutor.yml"
+    },
+    {
         "title": "DLL Execution via Rasautou.exe",
         "id": "cd3d1298-eb3b-476c-ac67-12847de55813",
         "status": "test",
@@ -30663,6 +30682,25 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%ShellExec\\_RunDLL%' ESCAPE '\\' AND (CommandLine LIKE '%regsvr32%' ESCAPE '\\' OR CommandLine LIKE '%msiexec%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%odbcconf%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temp\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_shellexec_rundll_usage.yml"
+    },
+    {
+        "title": "Suspicious AgentExecutor PowerShell Execution",
+        "id": "c0b40568-b1e9-4b03-8d6c-b096da6da9ab",
+        "status": "experimental",
+        "description": "Detects execution of the AgentExecutor.exe binary. Which can be abused as a LOLBIN to execute powershell scripts with the ExecutionPolicy \"Bypass\" or any binary named \"powershell.exe\" located in the path provided by 6th postiional argument",
+        "author": "Nasreddine Bencherchali, memory-shards",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\AgentExecutor.exe' ESCAPE '\\' OR OriginalFileName = 'AgentExecutor.exe') AND (CommandLine LIKE '% -powershell%' ESCAPE '\\' OR CommandLine LIKE '% -remediationScript%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_lolbin_agentexecutor_susp_usage.yml"
     },
     {
         "title": "Ke3chang Registry Key Modifications",
