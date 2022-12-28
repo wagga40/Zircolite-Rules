@@ -1168,6 +1168,24 @@
         "filename": "proc_creation_lnx_nohup.yml"
     },
     {
+        "title": "User Has Been Deleted Via Userdel",
+        "id": "08f26069-6f80-474b-8d1f-d971c6fedea0",
+        "description": "Detects execution of the \"userdel\" binary. Which is used to delete a user account and related files. This is sometimes abused by threat actors in order to cover their tracks",
+        "author": "Tuan Le (NCSGroup)",
+        "tags": [
+            "attack.impact",
+            "attack.t1531"
+        ],
+        "falsepositives": [
+            "Legitimate administrator activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Image LIKE '%/userdel' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_lnx_userdel.yml"
+    },
+    {
         "title": "Security Software Discovery - Linux",
         "id": "c9d8b7fd-78e4-44fe-88f6-599135d46d60",
         "description": "Detects usage of system utilities (only grep and egrep for now) to discover security software discovery",
@@ -1694,6 +1712,24 @@
             "SELECT * FROM logs WHERE (((ParentImage LIKE '%/httpd' ESCAPE '\\' OR ParentImage LIKE '%/lighttpd' ESCAPE '\\' OR ParentImage LIKE '%/nginx' ESCAPE '\\' OR ParentImage LIKE '%/apache2' ESCAPE '\\' OR ParentImage LIKE '%/node' ESCAPE '\\' OR ParentImage LIKE '%/caddy' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%tomcat%' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%websphere%' ESCAPE '\\')) AND (Image LIKE '%/whoami' ESCAPE '\\' OR Image LIKE '%/ifconfig' ESCAPE '\\' OR Image LIKE '%/usr/bin/ip' ESCAPE '\\' OR Image LIKE '%/usr/sbin/ip' ESCAPE '\\' OR Image LIKE '%/bin/uname' ESCAPE '\\' OR Image LIKE '%/bin/cat' ESCAPE '\\' OR Image LIKE '%/bin/crontab' ESCAPE '\\' OR Image LIKE '%/hostname' ESCAPE '\\' OR Image LIKE '%/iptables' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\' OR Image LIKE '%/pwd' ESCAPE '\\' OR Image LIKE '%/route' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_webshell_detection.yml"
+    },
+    {
+        "title": "Group Has Been Deleted Via Groupdel",
+        "id": "8a46f16c-8c4c-82d1-b121-0fdd3ba70a84",
+        "description": "Detects execution of the \"groupdel\" binary. Which is used to delete a group. This is sometimes abused by threat actors in order to cover their tracks",
+        "author": "Tuan Le (NCSGroup)",
+        "tags": [
+            "attack.impact",
+            "attack.t1531"
+        ],
+        "falsepositives": [
+            "Legitimate administrator activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Image LIKE '%/groupdel' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_lnx_groupdel.yml"
     },
     {
         "title": "Linux Base64 Encoded Pipe to Shell",
