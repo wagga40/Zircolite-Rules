@@ -1334,6 +1334,24 @@
         "filename": "proc_creation_lnx_services_stop_and_disable.yml"
     },
     {
+        "title": "Potential Discovery Activity Using Find - Linux",
+        "id": "8344c0e5-5783-47cc-9cf9-a0f7fd03e6cf",
+        "description": "Detects usage of \"find\" binary in a suspicious manner to perform discovery",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/find' ESCAPE '\\' AND (CommandLine LIKE '%-perm -4000%' ESCAPE '\\' OR CommandLine LIKE '%-perm -2000%' ESCAPE '\\' OR CommandLine LIKE '%-perm 0777%' ESCAPE '\\' OR CommandLine LIKE '%-perm -222%' ESCAPE '\\' OR CommandLine LIKE '%-perm -o w%' ESCAPE '\\' OR CommandLine LIKE '%-perm -o x%' ESCAPE '\\' OR CommandLine LIKE '%-perm -u=s%' ESCAPE '\\' OR CommandLine LIKE '%-perm -g=s%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_susp_find_execution.yml"
+    },
+    {
         "title": "Local Groups Discovery - Linux",
         "id": "676381a6-15ca-4d73-a9c8-6a22e970b90d",
         "description": "Detects enumeration of local system groups. Adversaries may attempt to find local system groups and permission settings",
@@ -1551,6 +1569,24 @@
         "filename": "proc_creation_lnx_susp_history_delete.yml"
     },
     {
+        "title": "Vim GTFOBin Abuse - Linux",
+        "id": "7ab8f73a-fcff-428b-84aa-6a5ff7877dea",
+        "description": "Detects usage of \"vim\" and it's sibilings as a GTFOBin to execute and proxy command and binary execution",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/vim' ESCAPE '\\' OR Image LIKE '%/rvim' ESCAPE '\\' OR Image LIKE '%/vimdiff' ESCAPE '\\') AND (CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% --cmd%' ESCAPE '\\') AND (CommandLine LIKE '%:!/%' ESCAPE '\\' OR CommandLine LIKE '%:py %' ESCAPE '\\' OR CommandLine LIKE '%:lua %' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_gtfobin_vim.yml"
+    },
+    {
         "title": "Clipboard Collection with Xclip Tool",
         "id": "ec127035-a636-4b9a-8555-0efd4e59f316",
         "description": "Detects attempts to collect data stored in the clipboard from users with the usage of xclip tool. Xclip has to be installed.\nHighly recommended using rule on servers, due to high usage of clipboard utilities on user workstations.\n",
@@ -1696,6 +1732,24 @@
         "filename": "proc_creation_lnx_susp_curl_useragent.yml"
     },
     {
+        "title": "Apt GTFOBin Abuse - Linux",
+        "id": "bb382fd5-b454-47ea-a264-1828e4c766d6",
+        "description": "Detects usage of \"apt\" and \"apt-get\" as a GTFOBin to execute and proxy command and binary execution",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND CommandLine LIKE '%APT::Update::Pre-Invoke::=%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_gtfobin_apt.yml"
+    },
+    {
         "title": "Linux Webshell Indicators",
         "id": "818f7b24-0fba-4c49-a073-8b755573b9c7",
         "description": "Detects suspicious sub processes of web server processes",
@@ -1709,7 +1763,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((ParentImage LIKE '%/httpd' ESCAPE '\\' OR ParentImage LIKE '%/lighttpd' ESCAPE '\\' OR ParentImage LIKE '%/nginx' ESCAPE '\\' OR ParentImage LIKE '%/apache2' ESCAPE '\\' OR ParentImage LIKE '%/node' ESCAPE '\\' OR ParentImage LIKE '%/caddy' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%tomcat%' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%websphere%' ESCAPE '\\')) AND (Image LIKE '%/whoami' ESCAPE '\\' OR Image LIKE '%/ifconfig' ESCAPE '\\' OR Image LIKE '%/usr/bin/ip' ESCAPE '\\' OR Image LIKE '%/usr/sbin/ip' ESCAPE '\\' OR Image LIKE '%/bin/uname' ESCAPE '\\' OR Image LIKE '%/bin/cat' ESCAPE '\\' OR Image LIKE '%/bin/crontab' ESCAPE '\\' OR Image LIKE '%/hostname' ESCAPE '\\' OR Image LIKE '%/iptables' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\' OR Image LIKE '%/pwd' ESCAPE '\\' OR Image LIKE '%/route' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (((ParentImage LIKE '%/httpd' ESCAPE '\\' OR ParentImage LIKE '%/lighttpd' ESCAPE '\\' OR ParentImage LIKE '%/nginx' ESCAPE '\\' OR ParentImage LIKE '%/apache2' ESCAPE '\\' OR ParentImage LIKE '%/node' ESCAPE '\\' OR ParentImage LIKE '%/caddy' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%tomcat%' ESCAPE '\\') OR (ParentCommandLine LIKE '%/bin/java%' ESCAPE '\\' AND ParentCommandLine LIKE '%websphere%' ESCAPE '\\')) AND (Image LIKE '%/whoami' ESCAPE '\\' OR Image LIKE '%/ifconfig' ESCAPE '\\' OR Image LIKE '%/ip' ESCAPE '\\' OR Image LIKE '%/bin/uname' ESCAPE '\\' OR Image LIKE '%/bin/cat' ESCAPE '\\' OR Image LIKE '%/bin/crontab' ESCAPE '\\' OR Image LIKE '%/hostname' ESCAPE '\\' OR Image LIKE '%/iptables' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\' OR Image LIKE '%/pwd' ESCAPE '\\' OR Image LIKE '%/route' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_webshell_detection.yml"
     },
@@ -1730,6 +1784,24 @@
             "SELECT * FROM logs WHERE Image LIKE '%/groupdel' ESCAPE '\\'"
         ],
         "filename": "proc_creation_lnx_groupdel.yml"
+    },
+    {
+        "title": "Capabilities Discovery - Linux",
+        "id": "d8d97d51-122d-4cdd-9e2f-01b4b4933530",
+        "description": "Detects usage of \"getcap\" binary. This is often used during recon activity to determine potential binaries that can be abused as GTFOBins or other.",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/getcap' ESCAPE '\\' AND (CommandLine LIKE '% /r %' ESCAPE '\\' OR CommandLine LIKE '% -r %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_capa_discovery.yml"
     },
     {
         "title": "Linux Base64 Encoded Pipe to Shell",
