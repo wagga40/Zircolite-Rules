@@ -19,6 +19,24 @@
         "filename": "lnx_auditd_dd_delete_file.yml"
     },
     {
+        "title": "Use Of Hidden Paths Or Files",
+        "id": "9e1bef8d-0fff-46f6-8465-9aa54e128c1e",
+        "description": "Detects calls to hidden files or files located in hidden directories in NIX systems.",
+        "author": "David Burkett, @signalblur",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1574.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name LIKE '%/.%' ESCAPE '\\') AND NOT ((name LIKE '%/.cache/%' ESCAPE '\\' OR name LIKE '%/.config/%' ESCAPE '\\' OR name LIKE '%/.pyenv/%' ESCAPE '\\' OR name LIKE '%/.rustup/toolchains%' ESCAPE '\\')))"
+        ],
+        "filename": "lnx_auditd_hidden_binary_execution.yml"
+    },
+    {
         "title": "Loading of Kernel Module via Insmod",
         "id": "106d7cbd-80ff-4985-b682-a7043e5acb72",
         "description": "Detects loading of kernel modules with insmod command.\nLoadable Kernel Modules (LKMs) are pieces of code that can be loaded and unloaded into the kernel upon demand.\nAdversaries may use LKMs to obtain persistence within the system or elevate the privileges.\n",
@@ -930,6 +948,96 @@
             "SELECT * FROM logs WHERE (DestinationHostname LIKE '%tunnel.us.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.eu.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.ap.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.au.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.sa.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.jp.ngrok.com%' ESCAPE '\\' OR DestinationHostname LIKE '%tunnel.in.ngrok.com%' ESCAPE '\\')"
         ],
         "filename": "net_connection_lnx_ngrok_tunnel.yml"
+    },
+    {
+        "title": "Triple Cross eBPF Rootkit Default LockFile",
+        "id": "c0239255-822c-4630-b7f1-35362bcb8f44",
+        "description": "Detects the creation of the file \"rootlog\" which is used by the TripleCross rootkit as a way to check if the backdoor is already running.",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename = '/tmp/rootlog'"
+        ],
+        "filename": "file_event_lnx_triple_cross_rootkit_lock_file.yml"
+    },
+    {
+        "title": "Persistence Via Cron Files",
+        "id": "6c4e2f43-d94d-4ead-b64d-97e53fa2bd05",
+        "description": "Detects creation of cron file or files in Cron directories which could indicates potential persistence.",
+        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC",
+        "tags": [
+            "attack.persistence",
+            "attack.t1053.003"
+        ],
+        "falsepositives": [
+            "Any legitimate cron file."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE '/etc/cron.d/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.daily/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.hourly/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.monthly/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.weekly/%' ESCAPE '\\' OR TargetFilename LIKE '/var/spool/cron/crontabs/%' ESCAPE '\\') OR (TargetFilename LIKE '%/etc/cron.allow%' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.deny%' ESCAPE '\\' OR TargetFilename LIKE '%/etc/crontab%' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_lnx_persistence_cron_files.yml"
+    },
+    {
+        "title": "Triple Cross eBPF Rootkit Default Persistence",
+        "id": "1a2ea919-d11d-4d1e-8535-06cda13be20f",
+        "description": "Detects the creation of \"ebpfbackdoor\" files in both \"cron.d\" and \"sudoers.d\" directories. Which both are related to the TripleCross persistence method",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.persistence",
+            "attack.defense_evasion",
+            "attack.t1053.003"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%ebpfbackdoor' ESCAPE '\\'"
+        ],
+        "filename": "file_event_lnx_triple_cross_rootkit_persistence.yml"
+    },
+    {
+        "title": "Persistence Via Sudoers Files",
+        "id": "ddb26b76-4447-4807-871f-1b035b2bfa5d",
+        "description": "Detects creation of sudoers file or files in \"sudoers.d\" directory which can be used a potential method to persiste privileges for a specific user.",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.persistence",
+            "attack.t1053.003"
+        ],
+        "falsepositives": [
+            "Creation of legitimate files in sudoers.d folder part of administrator work"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '/etc/sudoers.d/%' ESCAPE '\\'"
+        ],
+        "filename": "file_event_lnx_persistence_sudoers_files.yml"
+    },
+    {
+        "title": "Linux Doas Conf File Creation",
+        "id": "00eee2a5-fdb0-4746-a21d-e43fbdea5681",
+        "description": "Detects the creation of doas.conf file in linux host platform.",
+        "author": "Sittikorn S, Teoderick Contreras",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.t1548"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%/etc/doas.conf' ESCAPE '\\'"
+        ],
+        "filename": "file_event_lnx_doas_conf_creation.yml"
     },
     {
         "title": "PwnKit Local Privilege Escalation",
@@ -2144,95 +2252,5 @@
             "SELECT * FROM logs WHERE (ParentImage LIKE '%/java' ESCAPE '\\' AND (CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%bash%' ESCAPE '\\' OR CommandLine LIKE '%dash%' ESCAPE '\\' OR CommandLine LIKE '%ksh%' ESCAPE '\\' OR CommandLine LIKE '%zsh%' ESCAPE '\\' OR CommandLine LIKE '%csh%' ESCAPE '\\' OR CommandLine LIKE '%fish%' ESCAPE '\\' OR CommandLine LIKE '%curl%' ESCAPE '\\' OR CommandLine LIKE '%wget%' ESCAPE '\\' OR CommandLine LIKE '%python%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_susp_java_children.yml"
-    },
-    {
-        "title": "Triple Cross eBPF Rootkit Default LockFile",
-        "id": "c0239255-822c-4630-b7f1-35362bcb8f44",
-        "description": "Detects the creation of the file \"rootlog\" which is used by the TripleCross rootkit as a way to check if the backdoor is already running.",
-        "author": "Nasreddine Bencherchali",
-        "tags": [
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE TargetFilename = '/tmp/rootlog'"
-        ],
-        "filename": "file_create_lnx_triple_cross_rootkit_lock_file.yml"
-    },
-    {
-        "title": "Linux Doas Conf File Creation",
-        "id": "00eee2a5-fdb0-4746-a21d-e43fbdea5681",
-        "description": "Detects the creation of doas.conf file in linux host platform.",
-        "author": "Sittikorn S, Teoderick Contreras",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.t1548"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE TargetFilename LIKE '%/etc/doas.conf' ESCAPE '\\'"
-        ],
-        "filename": "file_create_lnx_doas_conf_creation.yml"
-    },
-    {
-        "title": "Persistence Via Sudoers Files",
-        "id": "ddb26b76-4447-4807-871f-1b035b2bfa5d",
-        "description": "Detects creation of sudoers file or files in \"sudoers.d\" directory which can be used a potential method to persiste privileges for a specific user.",
-        "author": "Nasreddine Bencherchali",
-        "tags": [
-            "attack.persistence",
-            "attack.t1053.003"
-        ],
-        "falsepositives": [
-            "Creation of legitimate files in sudoers.d folder part of administrator work"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE TargetFilename LIKE '/etc/sudoers.d/%' ESCAPE '\\'"
-        ],
-        "filename": "file_create_lnx_persistence_sudoers_files.yml"
-    },
-    {
-        "title": "Triple Cross eBPF Rootkit Default Persistence",
-        "id": "1a2ea919-d11d-4d1e-8535-06cda13be20f",
-        "description": "Detects the creation of \"ebpfbackdoor\" files in both \"cron.d\" and \"sudoers.d\" directories. Which both are related to the TripleCross persistence method",
-        "author": "Nasreddine Bencherchali",
-        "tags": [
-            "attack.persistence",
-            "attack.defense_evasion",
-            "attack.t1053.003"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE TargetFilename LIKE '%ebpfbackdoor' ESCAPE '\\'"
-        ],
-        "filename": "file_create_lnx_triple_cross_rootkit_persistence.yml"
-    },
-    {
-        "title": "Persistence Via Cron Files",
-        "id": "6c4e2f43-d94d-4ead-b64d-97e53fa2bd05",
-        "description": "Detects creation of cron file or files in Cron directories which could indicates potential persistence.",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC",
-        "tags": [
-            "attack.persistence",
-            "attack.t1053.003"
-        ],
-        "falsepositives": [
-            "Any legitimate cron file."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((TargetFilename LIKE '/etc/cron.d/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.daily/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.hourly/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.monthly/%' ESCAPE '\\' OR TargetFilename LIKE '/etc/cron.weekly/%' ESCAPE '\\' OR TargetFilename LIKE '/var/spool/cron/crontabs/%' ESCAPE '\\') OR (TargetFilename LIKE '%/etc/cron.allow%' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.deny%' ESCAPE '\\' OR TargetFilename LIKE '%/etc/crontab%' ESCAPE '\\'))"
-        ],
-        "filename": "file_create_lnx_persistence_cron_files.yml"
     }
 ]
