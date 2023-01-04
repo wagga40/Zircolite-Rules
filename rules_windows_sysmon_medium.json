@@ -3103,7 +3103,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '25' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Type = 'Image is replaced' AND NOT ((Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)%' ESCAPE '\\') AND (Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\opera.exe' ESCAPE '\\' OR Image LIKE '%\\\\firefox.exe' ESCAPE '\\' OR Image LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '25' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Type = 'Image is replaced' AND NOT ((Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)%' ESCAPE '\\') AND (Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\opera.exe' ESCAPE '\\' OR Image LIKE '%\\\\firefox.exe' ESCAPE '\\' OR Image LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR Image LIKE '%\\\\WMIADAP.exe' ESCAPE '\\')))"
         ],
         "filename": "sysmon_process_hollowing.yml"
     },
@@ -4180,7 +4180,7 @@
         "id": "313fbb0a-a341-4682-848d-6d6f8c4fab7c",
         "status": "test",
         "description": "Adversaries may use hidden windows to conceal malicious activity from the plain sight of users.\nIn some cases, windows that would typically be displayed when an application carries out an operation can be hidden\n",
-        "author": "frack113",
+        "author": "frack113, Tim Shelton (fp AWS)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1564.003"
@@ -4190,7 +4190,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%powershell%' ESCAPE '\\' AND ScriptBlockText LIKE '%WindowStyle%' ESCAPE '\\' AND ScriptBlockText LIKE '%Hidden%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText LIKE '%powershell%' ESCAPE '\\' AND ScriptBlockText LIKE '%WindowStyle%' ESCAPE '\\' AND ScriptBlockText LIKE '%Hidden%' ESCAPE '\\') AND NOT (ScriptBlockText LIKE '%:\\\\Program Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\%' ESCAPE '\\' AND ScriptBlockText LIKE '%$PSScriptRoot\\\\Module\\\\WorkspaceScriptModule\\\\WorkspaceScriptModule%' ESCAPE '\\'))"
         ],
         "filename": "posh_ps_susp_windowstyle.yml"
     },
@@ -4881,7 +4881,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '% -enc %' ESCAPE '\\' OR ScriptBlockText LIKE '% -EncodedCommand %' ESCAPE '\\') AND (ScriptBlockText LIKE '% -w hidden %' ESCAPE '\\' OR ScriptBlockText LIKE '% -window hidden %' ESCAPE '\\' OR ScriptBlockText LIKE '% -windowstyle hidden %' ESCAPE '\\') AND (ScriptBlockText LIKE '% -noni %' ESCAPE '\\' OR ScriptBlockText LIKE '% -noninteractive %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '% -enc %' ESCAPE '\\' OR ScriptBlockText LIKE '% -EncodedCommand %' ESCAPE '\\' OR ScriptBlockText LIKE '% -ec %' ESCAPE '\\') AND (ScriptBlockText LIKE '% -w hidden %' ESCAPE '\\' OR ScriptBlockText LIKE '% -window hidden %' ESCAPE '\\' OR ScriptBlockText LIKE '% -windowstyle hidden %' ESCAPE '\\' OR ScriptBlockText LIKE '% -w 1 %' ESCAPE '\\') AND (ScriptBlockText LIKE '% -noni %' ESCAPE '\\' OR ScriptBlockText LIKE '% -noninteractive %' ESCAPE '\\'))"
         ],
         "filename": "posh_ps_susp_invocation_generic.yml"
     },
@@ -6530,7 +6530,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ContextInfo LIKE '% -enc %' ESCAPE '\\' OR ContextInfo LIKE '% -EncodedCommand %' ESCAPE '\\') AND (ContextInfo LIKE '% -w hidden %' ESCAPE '\\' OR ContextInfo LIKE '% -window hidden %' ESCAPE '\\' OR ContextInfo LIKE '% -windowstyle hidden %' ESCAPE '\\') AND (ContextInfo LIKE '% -noni %' ESCAPE '\\' OR ContextInfo LIKE '% -noninteractive %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ContextInfo LIKE '% -enc %' ESCAPE '\\' OR ContextInfo LIKE '% -EncodedCommand %' ESCAPE '\\' OR ContextInfo LIKE '% -ec %' ESCAPE '\\') AND (ContextInfo LIKE '% -w hidden %' ESCAPE '\\' OR ContextInfo LIKE '% -window hidden %' ESCAPE '\\' OR ContextInfo LIKE '% -windowstyle hidden %' ESCAPE '\\' OR ContextInfo LIKE '% -w 1 %' ESCAPE '\\') AND (ContextInfo LIKE '% -noni %' ESCAPE '\\' OR ContextInfo LIKE '% -noninteractive %' ESCAPE '\\'))"
         ],
         "filename": "posh_pm_susp_invocation_generic.yml"
     },
@@ -27217,10 +27217,11 @@
         "id": "cc36992a-4671-4f21-a91d-6c2b72a2edf5",
         "status": "stable",
         "description": "Detects clearing or configuration of eventlogs using wevtutil, powershell and wmic. Might be used by ransomwares during the attack (seen by NotPetya and others).",
-        "author": "Ecco, Daniil Yugoslavskiy, oscd.community",
+        "author": "Ecco, Daniil Yugoslavskiy, oscd.community, D3F7A5105",
         "tags": [
             "attack.defense_evasion",
             "attack.t1070.001",
+            "attack.t1562.002",
             "car.2016-04-002"
         ],
         "falsepositives": [
@@ -27229,7 +27230,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\wevtutil.exe' ESCAPE '\\' AND (CommandLine LIKE '%clear-log %' ESCAPE '\\' OR CommandLine LIKE '% cl %' ESCAPE '\\' OR CommandLine LIKE '%set-log %' ESCAPE '\\' OR CommandLine LIKE '% sl %' ESCAPE '\\')) OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%Clear-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Remove-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Limit-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Clear-WinEvent %' ESCAPE '\\')) OR (Image LIKE '%\\\\wmic.exe' ESCAPE '\\' AND CommandLine LIKE '% ClearEventLog %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\wevtutil.exe' ESCAPE '\\' AND (CommandLine LIKE '%clear-log %' ESCAPE '\\' OR CommandLine LIKE '% cl %' ESCAPE '\\' OR CommandLine LIKE '%set-log %' ESCAPE '\\' OR CommandLine LIKE '% sl %' ESCAPE '\\' OR CommandLine LIKE '%lfn:%' ESCAPE '\\')) OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%Clear-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Remove-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Limit-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Clear-WinEvent %' ESCAPE '\\')) OR (Image LIKE '%\\\\wmic.exe' ESCAPE '\\' AND CommandLine LIKE '% ClearEventLog %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_eventlog_clear.yml"
     },
