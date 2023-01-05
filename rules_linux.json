@@ -1204,6 +1204,41 @@
         "filename": "lnx_susp_jexboss.yml"
     },
     {
+        "title": "HackTool Execution",
+        "id": "a015e032-146d-4717-8944-7a1884122111",
+        "description": "Detects known hacktool execution based on image name",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/sqlmap' ESCAPE '\\' OR Image LIKE '%/teamserver' ESCAPE '\\' OR Image LIKE '%/aircrack-ng' ESCAPE '\\' OR Image LIKE '%/john' ESCAPE '\\' OR Image LIKE '%/setoolkit' ESCAPE '\\' OR Image LIKE '%/wpscan' ESCAPE '\\' OR Image LIKE '%/hydra' ESCAPE '\\' OR Image LIKE '%/nikto' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_hack_tools.yml"
+    },
+    {
+        "title": "Suspicious Git Clone - Linux",
+        "id": "cfec9d29-64ec-4a0f-9ffe-0fdb856d5446",
+        "description": "Detects execution of \"git\" in order to clone a remote repository that contain suspicious keywords which might be suspicious",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.reconnaissance",
+            "attack.t1593.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/git.exe' ESCAPE '\\' AND CommandLine LIKE '% clone %' ESCAPE '\\' AND (CommandLine LIKE '%exploit%' ESCAPE '\\' OR CommandLine LIKE '%Vulns%' ESCAPE '\\' OR CommandLine LIKE '%vulnerability%' ESCAPE '\\' OR CommandLine LIKE '%RCE%' ESCAPE '\\' OR CommandLine LIKE '%RemoteCodeExecution%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%CVE-%' ESCAPE '\\' OR CommandLine LIKE '%poc-%' ESCAPE '\\' OR CommandLine LIKE '%ProofOfConcept%' ESCAPE '\\' OR CommandLine LIKE '%proxyshell%' ESCAPE '\\' OR CommandLine LIKE '%log4shell%' ESCAPE '\\' OR CommandLine LIKE '%eternalblue%' ESCAPE '\\' OR CommandLine LIKE '%eternal-blue%' ESCAPE '\\' OR CommandLine LIKE '%MS17-%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_susp_git_clone.yml"
+    },
+    {
         "title": "OMIGOD SCX RunAsProvider ExecuteShellCommand",
         "id": "21541900-27a9-4454-9c4c-3f0a4240344a",
         "description": "Rule to detect the use of the SCX RunAsProvider Invoke_ExecuteShellCommand to execute any UNIX/Linux command using the /bin/sh shell.\nSCXcore, started as the Microsoft Operations Manager UNIX/Linux Agent, is now used in a host of products including\nMicrosoft Operations Manager, Microsoft Azure, and Microsoft Operations Management Suite.\n",
@@ -1765,6 +1800,24 @@
             "SELECT * FROM logs WHERE ((Image LIKE '%/arp' ESCAPE '\\' AND CommandLine LIKE '%-a%' ESCAPE '\\') OR (Image LIKE '%/ping' ESCAPE '\\' AND (CommandLine LIKE '% 10.%' ESCAPE '\\' OR CommandLine LIKE '% 192.168.%' ESCAPE '\\' OR CommandLine LIKE '% 172.16.%' ESCAPE '\\' OR CommandLine LIKE '% 172.17.%' ESCAPE '\\' OR CommandLine LIKE '% 172.18.%' ESCAPE '\\' OR CommandLine LIKE '% 172.19.%' ESCAPE '\\' OR CommandLine LIKE '% 172.20.%' ESCAPE '\\' OR CommandLine LIKE '% 172.21.%' ESCAPE '\\' OR CommandLine LIKE '% 172.22.%' ESCAPE '\\' OR CommandLine LIKE '% 172.23.%' ESCAPE '\\' OR CommandLine LIKE '% 172.24.%' ESCAPE '\\' OR CommandLine LIKE '% 172.25.%' ESCAPE '\\' OR CommandLine LIKE '% 172.26.%' ESCAPE '\\' OR CommandLine LIKE '% 172.27.%' ESCAPE '\\' OR CommandLine LIKE '% 172.28.%' ESCAPE '\\' OR CommandLine LIKE '% 172.29.%' ESCAPE '\\' OR CommandLine LIKE '% 172.30.%' ESCAPE '\\' OR CommandLine LIKE '% 172.31.%' ESCAPE '\\' OR CommandLine LIKE '% 127.%' ESCAPE '\\' OR CommandLine LIKE '% 169.254.%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_remote_system_discovery.yml"
+    },
+    {
+        "title": "Suspicious Package Installed - Linux",
+        "id": "700fb7e8-2981-401c-8430-be58e189e741",
+        "description": "Detects installation of suspicious packages using system installation utilities",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1553.004"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND CommandLine LIKE '%install%' ESCAPE '\\') OR (Image LIKE '%/yum' ESCAPE '\\' AND (CommandLine LIKE '%localinstall%' ESCAPE '\\' OR CommandLine LIKE '%install%' ESCAPE '\\')) OR (Image LIKE '%/rpm' ESCAPE '\\' AND CommandLine LIKE '%-i%' ESCAPE '\\') OR (Image LIKE '%/dpkg' ESCAPE '\\' AND (CommandLine LIKE '%--install%' ESCAPE '\\' OR CommandLine LIKE '%-i%' ESCAPE '\\'))) AND (CommandLine LIKE '%nmap%' ESCAPE '\\' OR CommandLine LIKE '% nc%' ESCAPE '\\' OR CommandLine LIKE '%netcat%' ESCAPE '\\' OR CommandLine LIKE '%wireshark%' ESCAPE '\\' OR CommandLine LIKE '%tshark%' ESCAPE '\\' OR CommandLine LIKE '%openconnect%' ESCAPE '\\' OR CommandLine LIKE '%proxychains%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_install_suspicioua_packages.yml"
     },
     {
         "title": "Python Spawning Pretty TTY",
