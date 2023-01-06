@@ -824,80 +824,6 @@
         "filename": "lnx_auditd_systemd_service_creation.yml"
     },
     {
-        "title": "Disabling Security Tools - Builtin",
-        "id": "49f5dfc1-f92e-4d34-96fa-feba3f6acf36",
-        "description": "Detects disabling security tools",
-        "author": "Ömer Günal, Alejandro Ortuno, oscd.community",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1562.004"
-        ],
-        "falsepositives": [
-            "Legitimate administration activities"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (logs MATCH ('\"stopping iptables\" OR \"stopping ip6tables\" OR \"stopping firewalld\" OR \"stopping cbdaemon\" OR \"stopping falcon-sensor\"'))"
-        ],
-        "filename": "lnx_security_tools_disabling_syslog.yml"
-    },
-    {
-        "title": "Suspicious Named Error",
-        "id": "c8e35e96-19ce-4f16-aeb6-fd5588dc5365",
-        "description": "Detects suspicious DNS error messages that indicate a fatal or suspicious error that could be caused by exploiting attempts",
-        "author": "Florian Roth",
-        "tags": [
-            "attack.initial_access",
-            "attack.t1190"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (logs MATCH ('\" dropping source port zero packet from \" OR \" denied AXFR from \" OR \" exiting (due to fatal error)\"'))"
-        ],
-        "filename": "lnx_susp_named.yml"
-    },
-    {
-        "title": "Guacamole Two Users Sharing Session Anomaly",
-        "id": "1edd77db-0669-4fef-9598-165bda82826d",
-        "description": "Detects suspicious session with two users present",
-        "author": "Florian Roth",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1212"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE logs MATCH ('\"(2 users now present)\"')"
-        ],
-        "filename": "lnx_susp_guacamole.yml"
-    },
-    {
-        "title": "Failed Logins with Different Accounts from Single Source - Linux",
-        "id": "fc947f8e-ea81-4b14-9a7b-13f888f94e18",
-        "description": "Detects suspicious failed logins with different user accounts from a single source system",
-        "author": "Florian Roth",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1110"
-        ],
-        "falsepositives": [
-            "Terminal servers",
-            "Jump servers",
-            "Workstations with frequently changing users"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM (SELECT *,count(pam_user) AS agg FROM logs WHERE (pam_message = 'authentication failure' AND pam_user LIKE '%' ESCAPE '\\' AND pam_rhost LIKE '%' ESCAPE '\\') GROUP BY pam_rhost) WHERE agg > 3"
-        ],
-        "filename": "lnx_susp_failed_logons_single_source.yml"
-    },
-    {
         "title": "Linux Crypto Mining Pool Connections",
         "id": "a46c93b7-55ed-4d27-a41b-c259456c4746",
         "description": "Detects process connections to a Monero crypto mining pool",
@@ -1040,24 +966,6 @@
         "filename": "file_event_lnx_doas_conf_creation.yml"
     },
     {
-        "title": "PwnKit Local Privilege Escalation",
-        "id": "0506a799-698b-43b4-85a1-ac4c84c720e9",
-        "description": "Detects potential PwnKit exploitation CVE-2021-4034 in auth logs",
-        "author": "Sreeman",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.t1548.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (logs MATCH ('\"pkexec\" AND \"The value for environment variable XAUTHORITY contains suscipious content\" AND \"[USER=root] [TTY=/dev/pts/0]\"'))"
-        ],
-        "filename": "lnx_pwnkit_local_privilege_escalation.yml"
-    },
-    {
         "title": "Shellshock Expression",
         "id": "c67e0c98-4d39-46ee-8f6b-437ebf6b950e",
         "description": "Detects shellshock expressions in log files",
@@ -1076,6 +984,44 @@
         "filename": "lnx_shellshock.yml"
     },
     {
+        "title": "PwnKit Local Privilege Escalation",
+        "id": "0506a799-698b-43b4-85a1-ac4c84c720e9",
+        "description": "Detects potential PwnKit exploitation CVE-2021-4034 in auth logs",
+        "author": "Sreeman",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.t1548.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (logs MATCH ('\"pkexec\" AND \"The value for environment variable XAUTHORITY contains suscipious content\" AND \"[USER=root] [TTY=/dev/pts/0]\"'))"
+        ],
+        "filename": "lnx_pwnkit_local_privilege_escalation.yml"
+    },
+    {
+        "title": "Failed Logins with Different Accounts from Single Source - Linux",
+        "id": "fc947f8e-ea81-4b14-9a7b-13f888f94e18",
+        "description": "Detects suspicious failed logins with different user accounts from a single source system",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1110"
+        ],
+        "falsepositives": [
+            "Terminal servers",
+            "Jump servers",
+            "Workstations with frequently changing users"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM (SELECT *,count(pam_user) AS agg FROM logs WHERE (pam_message = 'authentication failure' AND pam_user LIKE '%' ESCAPE '\\' AND pam_rhost LIKE '%' ESCAPE '\\') GROUP BY pam_rhost) WHERE agg > 3"
+        ],
+        "filename": "lnx_susp_failed_logons_single_source.yml"
+    },
+    {
         "title": "Symlink Etc Passwd",
         "id": "c67fc22a-0be5-4b4f-aad5-2b32c4b69523",
         "description": "Detects suspicious command lines that look as if they would create symbolic links to /etc/passwd",
@@ -1092,24 +1038,6 @@
             "SELECT * FROM logs WHERE (logs MATCH ('\"ln -s -f /etc/passwd\" OR \"ln -s /etc/passwd\"'))"
         ],
         "filename": "lnx_symlink_etc_passwd.yml"
-    },
-    {
-        "title": "Modifying Crontab",
-        "id": "af202fd3-7bff-4212-a25a-fb34606cfcbe",
-        "description": "Detects suspicious modification of crontab file.",
-        "author": "Pawel Mazur",
-        "tags": [
-            "attack.persistence",
-            "attack.t1053.003"
-        ],
-        "falsepositives": [
-            "Legitimate modification of crontab"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE logs MATCH ('\"REPLACE\"')"
-        ],
-        "filename": "lnx_crontab_file_modification.yml"
     },
     {
         "title": "Sudo Privilege Escalation CVE-2019-14287 - Builtin",
@@ -1132,6 +1060,60 @@
         "filename": "lnx_sudo_cve_2019_14287_user.yml"
     },
     {
+        "title": "Disabling Security Tools - Builtin",
+        "id": "49f5dfc1-f92e-4d34-96fa-feba3f6acf36",
+        "description": "Detects disabling security tools",
+        "author": "Ömer Günal, Alejandro Ortuno, oscd.community",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (logs MATCH ('\"stopping iptables\" OR \"stopping ip6tables\" OR \"stopping firewalld\" OR \"stopping cbdaemon\" OR \"stopping falcon-sensor\"'))"
+        ],
+        "filename": "lnx_security_tools_disabling_syslog.yml"
+    },
+    {
+        "title": "Suspicious Named Error",
+        "id": "c8e35e96-19ce-4f16-aeb6-fd5588dc5365",
+        "description": "Detects suspicious DNS error messages that indicate a fatal or suspicious error that could be caused by exploiting attempts",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (logs MATCH ('\" dropping source port zero packet from \" OR \" denied AXFR from \" OR \" exiting (due to fatal error)\"'))"
+        ],
+        "filename": "lnx_susp_named.yml"
+    },
+    {
+        "title": "Guacamole Two Users Sharing Session Anomaly",
+        "id": "1edd77db-0669-4fef-9598-165bda82826d",
+        "description": "Detects suspicious session with two users present",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1212"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE logs MATCH ('\"(2 users now present)\"')"
+        ],
+        "filename": "lnx_susp_guacamole.yml"
+    },
+    {
         "title": "Suspicious Log Entries",
         "id": "f64b6e9a-5d9d-48a5-8289-e1dd2b3876e1",
         "description": "Detects suspicious log entries in Linux log files",
@@ -1147,6 +1129,24 @@
             "SELECT * FROM logs WHERE (logs MATCH ('\"entered promiscuous mode\" OR \"Deactivating service\" OR \"Oversized packet received from\" OR \"imuxsock begins to drop messages\"'))"
         ],
         "filename": "lnx_shell_susp_log_entries.yml"
+    },
+    {
+        "title": "Modifying Crontab",
+        "id": "af202fd3-7bff-4212-a25a-fb34606cfcbe",
+        "description": "Detects suspicious modification of crontab file.",
+        "author": "Pawel Mazur",
+        "tags": [
+            "attack.persistence",
+            "attack.t1053.003"
+        ],
+        "falsepositives": [
+            "Legitimate modification of crontab"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE logs MATCH ('\"REPLACE\"')"
+        ],
+        "filename": "lnx_crontab_file_modification.yml"
     },
     {
         "title": "Nimbuspwn Exploitation",
@@ -1234,7 +1234,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/git.exe' ESCAPE '\\' AND CommandLine LIKE '% clone %' ESCAPE '\\' AND (CommandLine LIKE '%exploit%' ESCAPE '\\' OR CommandLine LIKE '%Vulns%' ESCAPE '\\' OR CommandLine LIKE '%vulnerability%' ESCAPE '\\' OR CommandLine LIKE '%RCE%' ESCAPE '\\' OR CommandLine LIKE '%RemoteCodeExecution%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%CVE-%' ESCAPE '\\' OR CommandLine LIKE '%poc-%' ESCAPE '\\' OR CommandLine LIKE '%ProofOfConcept%' ESCAPE '\\' OR CommandLine LIKE '%proxyshell%' ESCAPE '\\' OR CommandLine LIKE '%log4shell%' ESCAPE '\\' OR CommandLine LIKE '%eternalblue%' ESCAPE '\\' OR CommandLine LIKE '%eternal-blue%' ESCAPE '\\' OR CommandLine LIKE '%MS17-%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Image LIKE '%/git' ESCAPE '\\' AND CommandLine LIKE '% clone %' ESCAPE '\\' AND (CommandLine LIKE '%exploit%' ESCAPE '\\' OR CommandLine LIKE '%Vulns%' ESCAPE '\\' OR CommandLine LIKE '%vulnerability%' ESCAPE '\\' OR CommandLine LIKE '%RCE%' ESCAPE '\\' OR CommandLine LIKE '%RemoteCodeExecution%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%CVE-%' ESCAPE '\\' OR CommandLine LIKE '%poc-%' ESCAPE '\\' OR CommandLine LIKE '%ProofOfConcept%' ESCAPE '\\' OR CommandLine LIKE '%proxyshell%' ESCAPE '\\' OR CommandLine LIKE '%log4shell%' ESCAPE '\\' OR CommandLine LIKE '%eternalblue%' ESCAPE '\\' OR CommandLine LIKE '%eternal-blue%' ESCAPE '\\' OR CommandLine LIKE '%MS17-%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_susp_git_clone.yml"
     },
