@@ -984,24 +984,6 @@
         "filename": "lnx_shellshock.yml"
     },
     {
-        "title": "PwnKit Local Privilege Escalation",
-        "id": "0506a799-698b-43b4-85a1-ac4c84c720e9",
-        "description": "Detects potential PwnKit exploitation CVE-2021-4034 in auth logs",
-        "author": "Sreeman",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.t1548.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (logs MATCH ('\"pkexec\" AND \"The value for environment variable XAUTHORITY contains suscipious content\" AND \"[USER=root] [TTY=/dev/pts/0]\"'))"
-        ],
-        "filename": "lnx_pwnkit_local_privilege_escalation.yml"
-    },
-    {
         "title": "Failed Logins with Different Accounts from Single Source - Linux",
         "id": "fc947f8e-ea81-4b14-9a7b-13f888f94e18",
         "description": "Detects suspicious failed logins with different user accounts from a single source system",
@@ -1019,7 +1001,25 @@
         "rule": [
             "SELECT * FROM (SELECT *,count(pam_user) AS agg FROM logs WHERE (pam_message = 'authentication failure' AND pam_user LIKE '%' ESCAPE '\\' AND pam_rhost LIKE '%' ESCAPE '\\') GROUP BY pam_rhost) WHERE agg > 3"
         ],
-        "filename": "lnx_susp_failed_logons_single_source.yml"
+        "filename": "lnx_auth_susp_failed_logons_single_source.yml"
+    },
+    {
+        "title": "PwnKit Local Privilege Escalation",
+        "id": "0506a799-698b-43b4-85a1-ac4c84c720e9",
+        "description": "Detects potential PwnKit exploitation CVE-2021-4034 in auth logs",
+        "author": "Sreeman",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.t1548.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (logs MATCH ('\"pkexec\" AND \"The value for environment variable XAUTHORITY contains suscipious content\" AND \"[USER=root] [TTY=/dev/pts/0]\"'))"
+        ],
+        "filename": "lnx_auth_pwnkit_local_privilege_escalation.yml"
     },
     {
         "title": "Symlink Etc Passwd",
@@ -1075,7 +1075,7 @@
         "rule": [
             "SELECT * FROM logs WHERE (logs MATCH ('\"stopping iptables\" OR \"stopping ip6tables\" OR \"stopping firewalld\" OR \"stopping cbdaemon\" OR \"stopping falcon-sensor\"'))"
         ],
-        "filename": "lnx_security_tools_disabling_syslog.yml"
+        "filename": "lnx_syslog_security_tools_disabling_syslog.yml"
     },
     {
         "title": "Suspicious Named Error",
@@ -1093,7 +1093,7 @@
         "rule": [
             "SELECT * FROM logs WHERE (logs MATCH ('\" dropping source port zero packet from \" OR \" denied AXFR from \" OR \" exiting (due to fatal error)\"'))"
         ],
-        "filename": "lnx_susp_named.yml"
+        "filename": "lnx_syslog_susp_named.yml"
     },
     {
         "title": "Guacamole Two Users Sharing Session Anomaly",
@@ -1111,7 +1111,7 @@
         "rule": [
             "SELECT * FROM logs WHERE logs MATCH ('\"(2 users now present)\"')"
         ],
-        "filename": "lnx_susp_guacamole.yml"
+        "filename": "lnx_guacamole_susp_guacamole.yml"
     },
     {
         "title": "Suspicious Log Entries",
@@ -1146,7 +1146,7 @@
         "rule": [
             "SELECT * FROM logs WHERE logs MATCH ('\"REPLACE\"')"
         ],
-        "filename": "lnx_crontab_file_modification.yml"
+        "filename": "lnx_cron_crontab_file_modification.yml"
     },
     {
         "title": "Nimbuspwn Exploitation",

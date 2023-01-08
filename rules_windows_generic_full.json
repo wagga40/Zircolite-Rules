@@ -3690,6 +3690,25 @@
         "filename": "proc_access_win_hack_sysmonente.yml"
     },
     {
+        "title": "Potential NT API Stub Patching",
+        "id": "b916cba1-b38a-42da-9223-17114d846fd6",
+        "status": "experimental",
+        "description": "Detects potential NT API stub patching as seen used by the project PatchingAPI",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (GrantedAccess = '0x1FFFFF' AND CallTrace LIKE 'C:\\\\Windows\\\\SYSTEM32\\\\ntdll.dll+%' ESCAPE '\\' AND CallTrace LIKE '%|UNKNOWN(%' ESCAPE '\\' AND CallTrace LIKE '%)' ESCAPE '\\')"
+        ],
+        "filename": "proc_access_win_invoke_patchingapi.yml"
+    },
+    {
         "title": "Suspicious LSASS Access Via MalSecLogon",
         "id": "472159c5-31b9-4f56-b794-b766faa8b0a7",
         "status": "experimental",
@@ -15292,7 +15311,7 @@
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'DNS Server' AND EventID IN ('150', '770'))"
         ],
-        "filename": "win_susp_dns_config.yml"
+        "filename": "win_dns_server_susp_dns_config.yml"
     },
     {
         "title": "Suspicious LDAP-Attributes Used",
