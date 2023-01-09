@@ -6152,6 +6152,27 @@
         "filename": "posh_ps_cor_profiler.yml"
     },
     {
+        "title": "Potential PowerShell Obfuscation Using Alias Cmdlets",
+        "id": "96cd126d-f970-49c4-848a-da3a09f55c55",
+        "status": "experimental",
+        "description": "Detects Set-Alias or New-Alias cmdlet usage. Which can be use as a mean to obfuscate PowerShell scripts",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1027",
+            "attack.t1059.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '%Set-Alias %' ESCAPE '\\' OR ScriptBlockText LIKE '%New-Alias %' ESCAPE '\\'))"
+        ],
+        "filename": "posh_ps_susp_set_alias.yml"
+    },
+    {
         "title": "Malicious PowerShell Keywords",
         "id": "f62176f3-8128-4faa-bf6c-83261322e5eb",
         "status": "test",
