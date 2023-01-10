@@ -5545,7 +5545,7 @@
         "id": "89819aa4-bbd6-46bc-88ec-c7f7fe30efa6",
         "status": "test",
         "description": "Detects Commandlet names from well-known PowerShell exploitation frameworks",
-        "author": "Sean Metcalf (source), Florian Roth (rule), Bartlomiej Czyz @bczyz1 (update), oscd.community (update), Nasreddine Bencherchali (update), Tim Shelton (fp), Mustafa Kaan Demir (update), Georg Lauenstein (update), Max Altgelt (update), Tobias Michalski (update), Austin Songer (@austinsonger) (update)",
+        "author": "Sean Metcalf, Florian Roth, Bartlomiej Czyz @bczyz1, oscd.community, Nasreddine Bencherchali, Tim Shelton, Mustafa Kaan Demir, Georg Lauenstein, Max Altgelt, Tobias Michalski, Austin Songer",
         "tags": [
             "attack.execution",
             "attack.discovery",
@@ -20460,7 +20460,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\tracker.exe' ESCAPE '\\' OR Description = 'Tracker') AND (CommandLine LIKE '% /d %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% /ERRORREPORT:PROMPT %' ESCAPE '\\') OR (ParentImage LIKE '%\\\\Msbuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\VC\\\\Tools\\\\MSVC\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\bin\\\\HostX86\\\\x64\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\tracker.exe' ESCAPE '\\' OR Description = 'Tracker') AND (CommandLine LIKE '% /d %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% /ERRORREPORT:PROMPT %' ESCAPE '\\') OR ((ParentImage LIKE '%\\\\Msbuild\\\\Current\\\\Bin\\\\MSBuild.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\Msbuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe' ESCAPE '\\') AND CommandLine LIKE '%\\\\VC\\\\Tools\\\\MSVC\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\bin\\\\HostX86\\\\x64\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_tracker_execution.yml"
     },
