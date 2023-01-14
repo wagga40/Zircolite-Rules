@@ -556,6 +556,25 @@
         "filename": "create_stream_hash_susp_domain_ext_combo.yml"
     },
     {
+        "title": "Suspicious Security Scheduled Tasks Deleted",
+        "id": "9e3cb244-bdb8-4632-8c90-6079c8f4f16d",
+        "status": "experimental",
+        "description": "Detects when adversaries stop services or processes by deleting their respective scheduled tasks in order to conduct data destructive activities",
+        "author": "frack113",
+        "tags": [
+            "attack.impact",
+            "attack.t1489"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '141' AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT ((UserName LIKE '%AUTHORI%' ESCAPE '\\' OR UserName LIKE '%AUTORI%' ESCAPE '\\')))"
+        ],
+        "filename": "win_taskscheduler_susp_schtasks_delete.yml"
+    },
+    {
         "title": "Possible Exploitation of Exchange RCE CVE-2021-42321",
         "id": "c92f1896-d1d2-43c3-92d5-7a5b35c217bb",
         "status": "experimental",
@@ -610,6 +629,25 @@
             "SELECT * FROM logs WHERE (EventID = '101' AND PackagePath LIKE '%\\\\\\\\\\*' ESCAPE '\\')"
         ],
         "filename": "win_diagnosis_scripted_load_remote_diagcab.yml"
+    },
+    {
+        "title": "Standard User In High Privileged Group",
+        "id": "7ac407cc-0f48-4328-aede-de1d2e6fef41",
+        "status": "experimental",
+        "description": "Detect standard users login that are part of high privileged groups such as the Administrator group",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Standard domain users who are part of the administrator group. These users shouldn't have these right. But in the case where it's necessary. They should be filtered out using the \"TargetUserName\" field"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-LSA/Operational' AND (EventID = '300' AND TargetUserSid LIKE 'S-1-5-21-%' ESCAPE '\\' AND (SidList LIKE '%S-1-5-32-544%' ESCAPE '\\' OR SidList LIKE '%-500}%' ESCAPE '\\' OR SidList LIKE '%-518}%' ESCAPE '\\' OR SidList LIKE '%-519}%' ESCAPE '\\')) AND NOT ((TargetUserSid LIKE '%-500' ESCAPE '\\' OR TargetUserSid LIKE '%-518' ESCAPE '\\' OR TargetUserSid LIKE '%-519' ESCAPE '\\')))"
+        ],
+        "filename": "win_lsa_server_normal_user_admin.yml"
     },
     {
         "title": "Download with BITS to Suspicious Folder",
@@ -5727,6 +5765,25 @@
             "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Winlogon\\\\SpecialAccounts\\\\Userlist\\\\%' ESCAPE '\\' AND TargetObject LIKE '%$' ESCAPE '\\' AND Details = 'DWORD (0x00000000)')"
         ],
         "filename": "registry_set_add_hidden_user.yml"
+    },
+    {
+        "title": "Disabled RestrictedAdminMode For RDS",
+        "id": "d6ce7ebd-260b-4323-9768-a9631c8d4db2",
+        "status": "experimental",
+        "description": "Detect activation of DisableRestrictedAdmin to desable RestrictedAdmin mode.\nRestrictedAdmin mode prevents the transmission of reusable credentials to the remote system to which you connect using Remote Desktop.\nThis prevents your credentials from being harvested during the initial connection process if the remote server has been compromise\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%System\\\\CurrentControlSet\\\\Control\\\\Lsa\\\\DisableRestrictedAdmin' ESCAPE '\\' AND Details = 'DWORD (0x00000001)')"
+        ],
+        "filename": "registry_set_lsa_disablerestrictedadmin.yml"
     },
     {
         "title": "Usage of Renamed Sysinternals Tools - RegistrySet",
@@ -20703,6 +20760,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\SharpChisel.exe' ESCAPE '\\' OR Product = 'SharpChisel'))"
         ],
         "filename": "proc_creation_win_sharp_chisel_usage.yml"
+    },
+    {
+        "title": "Disabled RestrictedAdminMode For RDS - ProcCreation",
+        "id": "28ac00d6-22d9-4a3c-927f-bbd770104573",
+        "status": "experimental",
+        "description": "Detect activation of DisableRestrictedAdmin to desable RestrictedAdmin mode.\nRestrictedAdmin mode prevents the transmission of reusable credentials to the remote system to which you connect using Remote Desktop.\nThis prevents your credentials from being harvested during the initial connection process if the remote server has been compromise\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\Lsa\\\\%' ESCAPE '\\' AND CommandLine LIKE '%DisableRestrictedAdmin%' ESCAPE '\\' AND CommandLine LIKE '% 1%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_lsa_disablerestrictedadmin.yml"
     },
     {
         "title": "Suspicious Shells Spawn by Java Utility Keytool",
