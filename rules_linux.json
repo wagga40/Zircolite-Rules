@@ -2177,7 +2177,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/who' ESCAPE '\\' OR Image LIKE '%/w' ESCAPE '\\' OR Image LIKE '%/last' ESCAPE '\\' OR Image LIKE '%/lsof' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\') AND NOT (ParentCommandLine LIKE '%/usr/bin/python%' ESCAPE '\\' AND ParentCommandLine LIKE '%/usr/bin/landscape-sysinfo%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/who' ESCAPE '\\' OR Image LIKE '%/w' ESCAPE '\\' OR Image LIKE '%/last' ESCAPE '\\' OR Image LIKE '%/lsof' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\') AND NOT ((ParentCommandLine LIKE '%/usr/bin/landscape-sysinfo%' ESCAPE '\\' AND Image LIKE '%/who' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_system_network_connections_discovery.yml"
     },
