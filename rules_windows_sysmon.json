@@ -12194,6 +12194,21 @@
         "filename": "proc_creation_win_susp_radmin.yml"
     },
     {
+        "title": "Potential Exploitation Attempt Of Undocumented WindowsServer RCE",
+        "id": "6d5b8176-d87d-4402-8af4-53aee9db7b5d",
+        "status": "experimental",
+        "description": "Detects potential exploitation attempt of undocumented Windows Server Pre Auth Remote Code Execution (RCE)",
+        "author": "Florian Roth, Nasreddine Bencherchali",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\svchost.exe' ESCAPE '\\' AND Image LIKE '%\\\\svchost.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%-k DHCPServer%' ESCAPE '\\' AND CommandLine LIKE '%-k DHCPServer%' ESCAPE '\\' AND (User LIKE '%NETWORK SERVICE%' ESCAPE '\\' OR User LIKE '%NETZWERKDIENST%' ESCAPE '\\' OR User LIKE '%SERVIZIO DI RETE%' ESCAPE '\\' OR User LIKE '%SERVICIO DE RED%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_win_server_undocumented_rce.yml"
+    },
+    {
         "title": "Conhost.exe CommandLine Path Traversal",
         "id": "ee5e119b-1f75-4b34-add8-3be976961e39",
         "status": "experimental",
