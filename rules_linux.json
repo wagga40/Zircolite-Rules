@@ -1682,7 +1682,25 @@
         "filename": "proc_creation_lnx_susp_curl_useragent.yml"
     },
     {
-        "title": "HackTool Execution",
+        "title": "Enable BPF Kprobes Tracing",
+        "id": "7692f583-bd30-4008-8615-75dab3f08a99",
+        "description": "Detects common command used to enable bpf kprobes tracing",
+        "author": "Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (CommandLine LIKE '%echo 1 >%' ESCAPE '\\' AND CommandLine LIKE '%/sys/kernel/debug/tracing/events/kprobes/%' ESCAPE '\\' AND (CommandLine LIKE '%/myprobe/enable%' ESCAPE '\\' OR CommandLine LIKE '%/myretprobe/enable%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_bpf_kprob_tracing_enabled.yml"
+    },
+    {
+        "title": "Linux HackTool Execution",
         "id": "a015e032-146d-4717-8944-7a1884122111",
         "description": "Detects known hacktool execution based on image name",
         "author": "Nasreddine Bencherchali",
@@ -1690,11 +1708,11 @@
             "attack.execution"
         ],
         "falsepositives": [
-            "Unknown"
+            "Unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/sqlmap' ESCAPE '\\' OR Image LIKE '%/teamserver' ESCAPE '\\' OR Image LIKE '%/aircrack-ng' ESCAPE '\\' OR Image LIKE '%/john' ESCAPE '\\' OR Image LIKE '%/setoolkit' ESCAPE '\\' OR Image LIKE '%/wpscan' ESCAPE '\\' OR Image LIKE '%/hydra' ESCAPE '\\' OR Image LIKE '%/nikto' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Image LIKE '%/sqlmap' ESCAPE '\\' OR Image LIKE '%/teamserver' ESCAPE '\\' OR Image LIKE '%/aircrack-ng' ESCAPE '\\' OR Image LIKE '%/john' ESCAPE '\\' OR Image LIKE '%/setoolkit' ESCAPE '\\' OR Image LIKE '%/wpscan' ESCAPE '\\' OR Image LIKE '%/hydra' ESCAPE '\\' OR Image LIKE '%/nikto' ESCAPE '\\' OR Image LIKE '%/ebpfkit' ESCAPE '\\' OR Image LIKE '%/bpfdos' ESCAPE '\\' OR Image LIKE '%/exechijack' ESCAPE '\\' OR Image LIKE '%/pidhide' ESCAPE '\\' OR Image LIKE '%/writeblocker' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_hack_tools.yml"
     },
