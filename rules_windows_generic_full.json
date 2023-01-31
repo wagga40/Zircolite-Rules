@@ -4556,25 +4556,6 @@
         "filename": "registry_set_disable_macroruntimescanscope.yml"
     },
     {
-        "title": "Potential Persistence Via Excel Add-in - Registry",
-        "id": "961e33d1-4f86-4fcf-80ab-930a708b2f82",
-        "status": "experimental",
-        "description": "Detect potential persistence via the creation of an excel add-in (XLL) file to make it run automatically when Excel is started.",
-        "author": "frack113",
-        "tags": [
-            "attack.persistence",
-            "attack.t1137.006"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Excel\\\\Options' ESCAPE '\\' AND NewValue LIKE '/R %' ESCAPE '\\' AND NewValue LIKE '%.xll' ESCAPE '\\')"
-        ],
-        "filename": "registry_set_persistance_xll.yml"
-    },
-    {
         "title": "CurrentControlSet Autorun Keys Modification",
         "id": "f674e36a-4b91-431e-8aef-f8a96c2aca35",
         "status": "experimental",
@@ -5667,6 +5648,25 @@
             "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft-Windows-Windows Defender/Operational\\\\Enabled%' ESCAPE '\\' AND NewValue = 'DWORD (0x00000000)')"
         ],
         "filename": "registry_set_disabled_microsoft_defender_eventlog.yml"
+    },
+    {
+        "title": "Potential Persistence Via Excel Add-in - Registry",
+        "id": "961e33d1-4f86-4fcf-80ab-930a708b2f82",
+        "status": "experimental",
+        "description": "Detect potential persistence via the creation of an excel add-in (XLL) file to make it run automatically when Excel is started.",
+        "author": "frack113",
+        "tags": [
+            "attack.persistence",
+            "attack.t1137.006"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Excel\\\\Options' ESCAPE '\\' AND NewValue LIKE '/R %' ESCAPE '\\' AND NewValue LIKE '%.xll' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_persistence_xll.yml"
     },
     {
         "title": "Potential Signing Bypass Via Windows Developer Features - Registry",
@@ -9148,7 +9148,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WptsExtensions.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wbem\\\\wbemcomn.dll' ESCAPE '\\') AND NOT ((Signed = 'true' AND Signature = 'Microsoft Windows')))"
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\WptsExtensions.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\wbem\\\\wbemcomn.dll' ESCAPE '\\') AND NOT ((Signed = 'true' AND Signature = 'Microsoft Windows')))"
         ],
         "filename": "image_load_side_load_non_existent_dlls.yml"
     },
@@ -9316,10 +9316,10 @@
         "filename": "image_load_uipromptforcreds_dlls.yml"
     },
     {
-        "title": "Antivirus Software DLL Sideloading",
+        "title": "Potential Antivirus Software DLL Sideloading",
         "id": "552b6b65-df37-4d3e-a258-f2fc4771ae54",
         "status": "experimental",
-        "description": "Detects DLL sideloading of DLLs that are part of antivirus software suchas McAfee, Symantec...etc",
+        "description": "Detects potential DLL sideloading of DLLs that are part of antivirus software suchas McAfee, Symantec...etc",
         "author": "Nasreddine Bencherchali, Wietze Beukema (project and research)",
         "tags": [
             "attack.defense_evasion",
@@ -9335,7 +9335,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((((ImageLoaded LIKE '%\\\\log.dll' ESCAPE '\\' AND NOT (((ImageLoaded LIKE 'C:\\\\Program Files\\\\Bitdefender Antivirus Free\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Bitdefender Antivirus Free\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\Dell\\\\SARemediation\\\\audit\\\\TelemetryUtility.exe' ESCAPE '\\' AND (ImageLoaded LIKE 'C:\\\\Program Files\\\\Dell\\\\SARemediation\\\\plugin\\\\log.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Dell\\\\SARemediation\\\\audit\\\\log.dll' ESCAPE '\\')) OR (ImageLoaded LIKE 'C:\\\\Program Files\\\\Canon\\\\MyPrinter\\\\%' ESCAPE '\\'))) OR (ImageLoaded LIKE '%\\\\qrt.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\F-Secure\\\\Anti-Virus\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\F-Secure\\\\Anti-Virus\\\\%' ESCAPE '\\')))) OR ((ImageLoaded LIKE '%\\\\ashldres.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lockdown.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vsodscpl.dll' ESCAPE '\\') AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\McAfee\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\McAfee\\\\%' ESCAPE '\\')))) OR (ImageLoaded LIKE '%\\\\vftrace.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\CyberArk\\\\Endpoint Privilege Manager\\\\Agent\\\\x32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\CyberArk\\\\Endpoint Privilege Manager\\\\Agent\\\\x32\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((((((ImageLoaded LIKE '%\\\\log.dll' ESCAPE '\\' AND NOT (((ImageLoaded LIKE 'C:\\\\Program Files\\\\Bitdefender Antivirus Free\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Bitdefender Antivirus Free\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\Dell\\\\SARemediation\\\\audit\\\\TelemetryUtility.exe' ESCAPE '\\' AND (ImageLoaded LIKE 'C:\\\\Program Files\\\\Dell\\\\SARemediation\\\\plugin\\\\log.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Dell\\\\SARemediation\\\\audit\\\\log.dll' ESCAPE '\\')) OR (ImageLoaded LIKE 'C:\\\\Program Files\\\\Canon\\\\MyPrinter\\\\%' ESCAPE '\\'))) OR (ImageLoaded LIKE '%\\\\qrt.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\F-Secure\\\\Anti-Virus\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\F-Secure\\\\Anti-Virus\\\\%' ESCAPE '\\')))) OR ((ImageLoaded LIKE '%\\\\ashldres.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\lockdown.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vsodscpl.dll' ESCAPE '\\') AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\McAfee\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\McAfee\\\\%' ESCAPE '\\')))) OR (ImageLoaded LIKE '%\\\\vftrace.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\CyberArk\\\\Endpoint Privilege Manager\\\\Agent\\\\x32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\CyberArk\\\\Endpoint Privilege Manager\\\\Agent\\\\x32\\\\%' ESCAPE '\\')))) OR (ImageLoaded LIKE '%\\\\wsc.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\program Files\\\\AVAST Software\\\\Avast\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\program Files (x86)\\\\AVAST Software\\\\Avast\\\\%' ESCAPE '\\')))) OR (ImageLoaded LIKE '%\\\\tmdbglog.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\program Files\\\\Trend Micro\\\\Titanium\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\program Files (x86)\\\\Trend Micro\\\\Titanium\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "image_load_side_load_antivirus.yml"
     },
@@ -18544,7 +18544,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\CreateMiniDump.exe%' ESCAPE '\\' OR Imphash = '4a07f944a83e8a7c2525efa35dd30e2f' OR Hashes LIKE '%IMPHASH=4a07f944a83e8a7c2525efa35dd30e2f%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\CreateMiniDump.exe' ESCAPE '\\' OR Imphash = '4a07f944a83e8a7c2525efa35dd30e2f' OR Hashes LIKE '%IMPHASH=4a07f944a83e8a7c2525efa35dd30e2f%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hktl_createminidump.yml"
     },
@@ -29466,7 +29466,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '%copy%' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\' OR CommandLine LIKE '%move%' ESCAPE '\\' OR CommandLine LIKE '%move-item%' ESCAPE '\\' OR CommandLine LIKE '% mi %' ESCAPE '\\' OR CommandLine LIKE '% mv %' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\xcopy.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\robocopy.exe' ESCAPE '\\') OR OriginalFileName IN ('XCOPY.EXE', 'robocopy.exe')) AND (CommandLine LIKE '%\\\\Opera Software\\\\Opera Stable\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Mozilla\\\\Firefox\\\\Profiles%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Microsoft\\\\Edge\\\\User Data\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Google\\\\Chrome\\\\User Data\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '%copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\' OR CommandLine LIKE '%move %' ESCAPE '\\' OR CommandLine LIKE '%move-item%' ESCAPE '\\' OR CommandLine LIKE '% mi %' ESCAPE '\\' OR CommandLine LIKE '% mv %' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\xcopy.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\robocopy.exe' ESCAPE '\\') OR OriginalFileName IN ('XCOPY.EXE', 'robocopy.exe')) AND (CommandLine LIKE '%\\\\Opera Software\\\\Opera Stable\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Mozilla\\\\Firefox\\\\Profiles%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Microsoft\\\\Edge\\\\User Data\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Google\\\\Chrome\\\\User Data\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_copy_browser_data.yml"
     },

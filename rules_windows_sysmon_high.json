@@ -1931,25 +1931,6 @@
         "filename": "registry_set_disable_macroruntimescanscope.yml"
     },
     {
-        "title": "Potential Persistence Via Excel Add-in - Registry",
-        "id": "961e33d1-4f86-4fcf-80ab-930a708b2f82",
-        "status": "experimental",
-        "description": "Detect potential persistence via the creation of an excel add-in (XLL) file to make it run automatically when Excel is started.",
-        "author": "frack113",
-        "tags": [
-            "attack.persistence",
-            "attack.t1137.006"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Excel\\\\Options' ESCAPE '\\' AND Details LIKE '/R %' ESCAPE '\\' AND Details LIKE '%.xll' ESCAPE '\\')"
-        ],
-        "filename": "registry_set_persistance_xll.yml"
-    },
-    {
         "title": "Execution DLL of Choice Using WAB.EXE",
         "id": "fc014922-5def-4da9-a0fc-28c973f41bfb",
         "status": "test",
@@ -2559,6 +2540,25 @@
             "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft-Windows-Windows Defender/Operational\\\\Enabled%' ESCAPE '\\' AND Details = 'DWORD (0x00000000)')"
         ],
         "filename": "registry_set_disabled_microsoft_defender_eventlog.yml"
+    },
+    {
+        "title": "Potential Persistence Via Excel Add-in - Registry",
+        "id": "961e33d1-4f86-4fcf-80ab-930a708b2f82",
+        "status": "experimental",
+        "description": "Detect potential persistence via the creation of an excel add-in (XLL) file to make it run automatically when Excel is started.",
+        "author": "frack113",
+        "tags": [
+            "attack.persistence",
+            "attack.t1137.006"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Excel\\\\Options' ESCAPE '\\' AND Details LIKE '/R %' ESCAPE '\\' AND Details LIKE '%.xll' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_persistence_xll.yml"
     },
     {
         "title": "Potential Signing Bypass Via Windows Developer Features - Registry",
@@ -4581,7 +4581,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\WptsExtensions.dll' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Windows\\\\System32\\\\wbem\\\\wbemcomn.dll' ESCAPE '\\') AND NOT ((Signed = 'true' AND Signature = 'Microsoft Windows')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\WptsExtensions.dll' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\wbem\\\\wbemcomn.dll' ESCAPE '\\') AND NOT ((Signed = 'true' AND Signature = 'Microsoft Windows')))"
         ],
         "filename": "image_load_side_load_non_existent_dlls.yml"
     },
@@ -10423,7 +10423,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\CreateMiniDump.exe%' ESCAPE '\\' OR Imphash = '4a07f944a83e8a7c2525efa35dd30e2f' OR Hashes LIKE '%IMPHASH=4a07f944a83e8a7c2525efa35dd30e2f%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\CreateMiniDump.exe' ESCAPE '\\' OR Imphash = '4a07f944a83e8a7c2525efa35dd30e2f' OR Hashes LIKE '%IMPHASH=4a07f944a83e8a7c2525efa35dd30e2f%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hktl_createminidump.yml"
     },
