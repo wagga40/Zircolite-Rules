@@ -1042,6 +1042,24 @@
         "filename": "proc_creation_lnx_schedule_task_job_cron.yml"
     },
     {
+        "title": "Mount Execution With Hidepid Parameter",
+        "id": "ec52985a-d024-41e3-8ff6-14169039a0b3",
+        "description": "Detects execution of the \"mount\" command with \"hidepid\" parameter to make invisible processes to other users from the system",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1564"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/mount' ESCAPE '\\' AND CommandLine LIKE '%hidepid=2%' ESCAPE '\\' AND CommandLine LIKE '% -o %' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_mount_hidepid.yml"
+    },
+    {
         "title": "Disable Or Stop Services",
         "id": "de25eeb8-3655-4643-ac3a-b662d3f26b6b",
         "description": "Detects the usage of utilities such as 'systemctl', 'service'...etc to stop or disable tools and services",
@@ -1241,6 +1259,24 @@
         "filename": "proc_creation_lnx_remote_system_discovery.yml"
     },
     {
+        "title": "Flush Iptables Ufw Chain",
+        "id": "3be619f4-d9ec-4ea8-a173-18fdd01996ab",
+        "description": "Detect use of iptables to flush all firewall rules, tables and chains and allow all network traffic",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
+        "falsepositives": [
+            "Network administrators"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/iptables' ESCAPE '\\' OR Image LIKE '%/xtables-legacy-multi' ESCAPE '\\' OR Image LIKE '%/iptables-legacy-multi' ESCAPE '\\' OR Image LIKE '%/ip6tables' ESCAPE '\\' OR Image LIKE '%/ip6tables-legacy-multi' ESCAPE '\\') AND (CommandLine LIKE '%-F%' ESCAPE '\\' OR CommandLine LIKE '%-Z%' ESCAPE '\\' OR CommandLine LIKE '%-X%' ESCAPE '\\') AND (CommandLine LIKE '%ufw-logging-deny%' ESCAPE '\\' OR CommandLine LIKE '%ufw-logging-allow%' ESCAPE '\\' OR CommandLine LIKE '%ufw6-logging-deny%' ESCAPE '\\' OR CommandLine LIKE '%ufw6-logging-allow%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_iptables_flush_ufw.yml"
+    },
+    {
         "title": "Linux Network Service Scanning",
         "id": "3e102cd9-a70d-4a7a-9508-403963092f31",
         "description": "Detects enumeration of local or remote network services.",
@@ -1291,6 +1327,24 @@
         "filename": "proc_creation_lnx_susp_interactive_bash.yml"
     },
     {
+        "title": "Copy Passwd Or Shadow From TMP Path",
+        "id": "fa4aaed5-4fe0-498d-bbc0-08e3346387ba",
+        "description": "Detects when the file \"passwd\" or \"shadow\" is copied from tmp path",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1552.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/cp' ESCAPE '\\' AND CommandLine LIKE '%/tmp/%' ESCAPE '\\' AND (CommandLine LIKE '%passwd%' ESCAPE '\\' OR CommandLine LIKE '%shadow%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_cp_passwd_or_shadow_tmp.yml"
+    },
+    {
         "title": "Nohup Execution",
         "id": "e4ffe466-6ff8-48d4-94bd-e32d1a6061e2",
         "description": "Detects usage of nohup which could be leveraged by an attacker to keep a process running or break out from restricted environments",
@@ -1303,6 +1357,24 @@
             "SELECT * FROM logs WHERE Image LIKE '%/nohup' ESCAPE '\\'"
         ],
         "filename": "proc_creation_lnx_nohup.yml"
+    },
+    {
+        "title": "Ufw Force Stop Using Ufw-Init",
+        "id": "84c9e83c-599a-458a-a0cb-0ecce44e807a",
+        "description": "Detects attempts to force stop the ufw using ufw-init",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
+        "falsepositives": [
+            "Network administrators"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((CommandLine LIKE '%-ufw-init%' ESCAPE '\\' AND CommandLine LIKE '%force-stop%' ESCAPE '\\') OR (CommandLine LIKE '%ufw%' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_disable_ufw.yml"
     },
     {
         "title": "Curl Usage on Linux",
@@ -1645,6 +1717,24 @@
         "filename": "proc_creation_lnx_bpftrace_unsafe_option_usage.yml"
     },
     {
+        "title": "Touch Suspicious Service File",
+        "id": "31545105-3444-4584-bebf-c466353230d2",
+        "description": "Detects usage of the \"touch\" process in service file.",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070.006"
+        ],
+        "falsepositives": [
+            "Admin changing date of files."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/touch' ESCAPE '\\' AND CommandLine LIKE '% -t %' ESCAPE '\\' AND CommandLine LIKE '%.service' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_touch_susp.yml"
+    },
+    {
         "title": "Security Software Discovery - Linux",
         "id": "c9d8b7fd-78e4-44fe-88f6-599135d46d60",
         "description": "Detects usage of system utilities (only grep and egrep for now) to discover security software discovery",
@@ -1712,7 +1802,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/sqlmap' ESCAPE '\\' OR Image LIKE '%/teamserver' ESCAPE '\\' OR Image LIKE '%/aircrack-ng' ESCAPE '\\' OR Image LIKE '%/john' ESCAPE '\\' OR Image LIKE '%/setoolkit' ESCAPE '\\' OR Image LIKE '%/wpscan' ESCAPE '\\' OR Image LIKE '%/hydra' ESCAPE '\\' OR Image LIKE '%/nikto' ESCAPE '\\' OR Image LIKE '%/ebpfkit' ESCAPE '\\' OR Image LIKE '%/bpfdos' ESCAPE '\\' OR Image LIKE '%/exechijack' ESCAPE '\\' OR Image LIKE '%/pidhide' ESCAPE '\\' OR Image LIKE '%/writeblocker' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/sqlmap' ESCAPE '\\' OR Image LIKE '%/teamserver' ESCAPE '\\' OR Image LIKE '%/aircrack-ng' ESCAPE '\\' OR Image LIKE '%/john' ESCAPE '\\' OR Image LIKE '%/setoolkit' ESCAPE '\\' OR Image LIKE '%/wpscan' ESCAPE '\\' OR Image LIKE '%/hydra' ESCAPE '\\' OR Image LIKE '%/nikto' ESCAPE '\\' OR Image LIKE '%/ebpfkit' ESCAPE '\\' OR Image LIKE '%/bpfdos' ESCAPE '\\' OR Image LIKE '%/exechijack' ESCAPE '\\' OR Image LIKE '%/pidhide' ESCAPE '\\' OR Image LIKE '%/writeblocker' ESCAPE '\\') OR Image LIKE '%/linpeas%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_hack_tools.yml"
     },
