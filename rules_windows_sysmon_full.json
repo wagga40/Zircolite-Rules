@@ -11593,11 +11593,11 @@
         "filename": "file_event_win_startup_folder_file_write.yml"
     },
     {
-        "title": "Creation Of Non-Existent DLLs In System Folders",
+        "title": "Creation Of Non-Existent System DLL",
         "id": "df6ecb8b-7822-4f4b-b412-08f524b4576c",
         "status": "experimental",
         "description": "Detects the creation of system dlls that are not present on the system. Usually to achieve dll hijacking",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "author": "Nasreddine Bencherchali (Nextron Systems), fornotes",
         "tags": [
             "attack.defense_evasion",
             "attack.persistence",
@@ -11610,7 +11610,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\') AND NOT (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\WLBSCTRL.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSMSISrv.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\TSVIPSrv.dll' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\wow64log.dll' ESCAPE '\\') OR TargetFilename LIKE '%\\\\SprintCSP.dll' ESCAPE '\\') AND NOT (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_create_non_existent_dlls.yml"
     },
@@ -20224,6 +20224,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '\\\\AgentExecutor.exe' ESCAPE '\\' OR OriginalFileName = 'AgentExecutor.exe') AND (CommandLine LIKE '% -powershell%' ESCAPE '\\' OR CommandLine LIKE '% -remediationScript%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_lolbin_agentexecutor.yml"
+    },
+    {
+        "title": "HackTool - LocalPotato Execution",
+        "id": "6bd75993-9888-4f91-9404-e1e4e4e34b77",
+        "status": "experimental",
+        "description": "Detects the execution of the LocalPotato POC based on basic PE metadata information and default CLI examples",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "cve.2023.21746"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\LocalPotato.exe' ESCAPE '\\' OR (CommandLine LIKE '%.exe -i C:\\\\%' ESCAPE '\\' AND CommandLine LIKE '%-o Windows\\\\%' ESCAPE '\\') OR (Hashes LIKE '%IMPHASH=E1742EE971D6549E8D4D81115F88F1FC%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=DD82066EFBA94D7556EF582F247C8BB5%' ESCAPE '\\') OR Imphash IN ('E1742EE971D6549E8D4D81115F88F1FC', 'DD82066EFBA94D7556EF582F247C8BB5')))"
+        ],
+        "filename": "proc_creation_win_hktl_localpotato.yml"
     },
     {
         "title": "Suspicious Network Command",
