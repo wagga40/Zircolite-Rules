@@ -6540,6 +6540,27 @@
         "filename": "proc_creation_win_pua_iox.yml"
     },
     {
+        "title": "PowerShell Base64 Encoded FromBase64String Keyword",
+        "id": "fdb62a13-9a81-4e5c-a38f-ea93a16f6d7c",
+        "status": "test",
+        "description": "Detects usage of a base64 encoded \"FromBase64String\" cmdlet in a process command line",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1140",
+            "attack.execution",
+            "attack.t1059.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE ('%OjpGcm9tQmFzZTY0U3RyaW5n%' OR '%o6RnJvbUJhc2U2NFN0cmluZ%' OR '%6OkZyb21CYXNlNjRTdHJpbm%') ESCAPE '\\' OR (CommandLine LIKE '%OgA6AEYAcgBvAG0AQgBhAHMAZQA2ADQAUwB0AHIAaQBuAGcA%' ESCAPE '\\' OR CommandLine LIKE '%oAOgBGAHIAbwBtAEIAYQBzAGUANgA0AFMAdAByAGkAbgBnA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoARgByAG8AbQBCAGEAcwBlADYANABTAHQAcgBpAG4AZw%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_powershell_base64_frombase64string.yml"
+    },
+    {
         "title": "HackTool - winPEAS Execution",
         "id": "98b53e78-ebaf-46f8-be06-421aafd176d9",
         "status": "experimental",
@@ -19456,6 +19477,29 @@
         "filename": "win_security_overpass_the_hash.yml"
     },
     {
+        "title": "CobaltStrike Service Installations - Security",
+        "id": "d7a95147-145f-4678-b85d-d1ff4a3bb3f6",
+        "status": "test",
+        "description": "Detects known malicious service installs that appear in cases in which a Cobalt Strike beacon elevates privileges or lateral movement",
+        "author": "Florian Roth (Nextron Systems), Wojciech Lesicki",
+        "tags": [
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.lateral_movement",
+            "attack.t1021.002",
+            "attack.t1543.003",
+            "attack.t1569.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ((ServiceFileName LIKE '%ADMIN$%' ESCAPE '\\' AND ServiceFileName LIKE '%.exe%' ESCAPE '\\') OR (ServiceFileName LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' AND ServiceFileName LIKE '%start%' ESCAPE '\\' AND ServiceFileName LIKE '%powershell%' ESCAPE '\\') OR ServiceFileName LIKE '%powershell -nop -w hidden -encodedcommand%' ESCAPE '\\' OR ServiceFileName LIKE ('%SUVYIChOZXctT2JqZWN0IE5ldC5XZWJjbGllbnQpLkRvd25sb2FkU3RyaW5nKCdodHRwOi8vMTI3LjAuMC4xO%' OR '%lFWCAoTmV3LU9iamVjdCBOZXQuV2ViY2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovLzEyNy4wLjAuMT%' OR '%JRVggKE5ldy1PYmplY3QgTmV0LldlYmNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHA6Ly8xMjcuMC4wLjE6%') ESCAPE '\\'))"
+        ],
+        "filename": "win_security_cobaltstrike_service_installs.yml"
+    },
+    {
         "title": "HybridConnectionManager Service Installation",
         "id": "0ee4d8a5-4e67-4faf-acfa-62a78457d1f2",
         "status": "test",
@@ -21392,6 +21436,29 @@
         "filename": "win_system_invoke_obfuscation_obfuscated_iex_services.yml"
     },
     {
+        "title": "CobaltStrike Service Installations - System",
+        "id": "5a105d34-05fc-401e-8553-272b45c1522d",
+        "status": "test",
+        "description": "Detects known malicious service installs that appear in cases in which a Cobalt Strike beacon elevates privileges or lateral movement",
+        "author": "Florian Roth (Nextron Systems), Wojciech Lesicki",
+        "tags": [
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.lateral_movement",
+            "attack.t1021.002",
+            "attack.t1543.003",
+            "attack.t1569.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND ((ImagePath LIKE '%ADMIN$%' ESCAPE '\\' AND ImagePath LIKE '%.exe%' ESCAPE '\\') OR (ImagePath LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' AND ImagePath LIKE '%start%' ESCAPE '\\' AND ImagePath LIKE '%powershell%' ESCAPE '\\') OR ImagePath LIKE '%powershell -nop -w hidden -encodedcommand%' ESCAPE '\\' OR ImagePath LIKE ('%SUVYIChOZXctT2JqZWN0IE5ldC5XZWJjbGllbnQpLkRvd25sb2FkU3RyaW5nKCdodHRwOi8vMTI3LjAuMC4xO%' OR '%lFWCAoTmV3LU9iamVjdCBOZXQuV2ViY2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovLzEyNy4wLjAuMT%' OR '%JRVggKE5ldy1PYmplY3QgTmV0LldlYmNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHA6Ly8xMjcuMC4wLjE6%') ESCAPE '\\'))"
+        ],
+        "filename": "win_system_cobaltstrike_service_installs.yml"
+    },
+    {
         "title": "smbexec.py Service Installation",
         "id": "52a85084-6989-40c3-8f32-091e12e13f09",
         "status": "test",
@@ -22316,7 +22383,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText REGEXP '\\w+`(\\w+|-|.)`[\\w+|\\s]' OR ScriptBlockText REGEXP '\"(\\{\\d\\}){2,}\"\\s*-f' OR ScriptBlockText REGEXP '\\$\\{((e|n|v)*`(e|n|v)*)+:path\\}|\\$\\{((e|n|v)*`(e|n|v)*)+:((p|a|t|h)*`(p|a|t|h)*)+\\}|\\$\\{env:((p|a|t|h)*`(p|a|t|h)*)+\\}') AND NOT (ScriptBlockText LIKE '%it will return true or false instead%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText REGEXP '\\w+`(\\w+|-|.)`[\\w+|\\s]' OR ScriptBlockText REGEXP '\"(\\{\\d\\}){2,}\"\\s*-f' OR ScriptBlockText REGEXP '\\$\\{((e|n|v)*`(e|n|v)*)+:path\\}|\\$\\{((e|n|v)*`(e|n|v)*)+:((p|a|t|h)*`(p|a|t|h)*)+\\}|\\$\\{env:((p|a|t|h)*`(p|a|t|h)*)+\\}') AND NOT ((ScriptBlockText LIKE '%it will return true or false instead%' ESCAPE '\\' OR ScriptBlockText LIKE '%The function also prevents `Get-ItemProperty` from failing%' ESCAPE '\\')))"
         ],
         "filename": "posh_ps_token_obfuscation.yml"
     },
