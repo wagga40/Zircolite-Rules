@@ -538,10 +538,10 @@
         "filename": "image_load_dll_vssapi_susp_load.yml"
     },
     {
-        "title": "CLR DLL Loaded Via Scripting Applications",
+        "title": "DotNet CLR DLL Loaded By Scripting Applications",
         "id": "4508a70e-97ef-4300-b62b-ff27992990ea",
         "status": "test",
-        "description": "Detects .NET CLR DLLs being loaded by scripting applications such as wscript or cscript",
+        "description": "Detects .NET CLR DLLs being loaded by scripting applications such as wscript or cscript. This could be an indication of potential suspicious execution.",
         "author": "omkar72, oscd.community",
         "tags": [
             "attack.execution",
@@ -553,7 +553,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\') AND (ImageLoaded LIKE '%\\\\clr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscoree.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscorlib.dll' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') AND (ImageLoaded LIKE '%\\\\clr.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscoree.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\mscorlib.dll' ESCAPE '\\'))"
         ],
         "filename": "image_load_susp_script_dotnet_clr_dll_load.yml"
     },
@@ -10652,28 +10652,6 @@
         "filename": "proc_creation_win_powershell_malicious_cmdlets.yml"
     },
     {
-        "title": "DNSCat2 Powershell Implementation Detection Via Process Creation",
-        "id": "b11d75d6-d7c1-11ea-87d0-0242ac130003",
-        "status": "test",
-        "description": "The PowerShell implementation of DNSCat2 calls nslookup to craft queries. Counting nslookup processes spawned by PowerShell will show hundreds or thousands of instances if PS DNSCat2 is active locally.",
-        "author": "Cian Heasley",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1071",
-            "attack.t1071.004",
-            "attack.t1001.003",
-            "attack.t1041"
-        ],
-        "falsepositives": [
-            "Other powershell scripts that call nslookup.exe"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM (SELECT *,count(NewProcessName) AS agg FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND NewProcessName LIKE '%\\\\nslookup.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\nslookup.exe' ESCAPE '\\') GROUP BY ParentProcessName) WHERE agg > 100"
-        ],
-        "filename": "proc_creation_win_correlation_dnscat2_powershell_implementation.yml"
-    },
-    {
         "title": "Non-privileged Usage of Reg or Powershell",
         "id": "8f02c935-effe-45b3-8fc9-ef8696a9e41d",
         "status": "test",
@@ -16408,26 +16386,6 @@
         "filename": "file_event_win_uac_bypass_winsat.yml"
     },
     {
-        "title": "MSDT.exe Creates Files in Autorun Directory",
-        "id": "318557a5-150c-4c8d-b70e-a9910e199857",
-        "status": "experimental",
-        "description": "Detects msdt.exe creating files in suspicious directories",
-        "author": "Vadim Varganov, Florian Roth",
-        "tags": [
-            "attack.persistence",
-            "attack.t1547.001",
-            "cve.2022.30190"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\PerfLogs\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\'))"
-        ],
-        "filename": "file_event_win_msdt_autorun.yml"
-    },
-    {
         "title": "Malicious PowerShell Scripts - FileCreation",
         "id": "f331aa1f-8c53-4fc3-b083-cc159bc971cb",
         "status": "test",
@@ -16584,25 +16542,6 @@
         "filename": "file_event_win_hktl_safetykatz.yml"
     },
     {
-        "title": "Outlook Form Installation",
-        "id": "c3edc6a5-d9d4-48d8-930e-aab518390917",
-        "status": "experimental",
-        "description": "Detects the creation of new Outlook form which can contain malicious code",
-        "author": "Tobias Michalski (Nextron Systems)",
-        "tags": [
-            "attack.persistence",
-            "attack.t1137.003"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\appdata\\\\local\\\\microsoft\\\\FORMS\\\\%' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_outlook_newform.yml"
-    },
-    {
         "title": "InstallerFileTakeOver LPE CVE-2021-41379 File Create Event",
         "id": "3be82d5d-09fe-4d6a-a275-0d40d234d324",
         "status": "test",
@@ -16668,6 +16607,25 @@
         "filename": "file_event_win_cve_2021_26858_msexchange.yml"
     },
     {
+        "title": "Office Macro File Creation From Suspicious Process",
+        "id": "b1c50487-1967-4315-a026-6491686d860e",
+        "status": "experimental",
+        "description": "Detects the creation of a office macro file from a a suspicious process",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1566.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (ParentProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')) AND (TargetFilename LIKE '%.docm' ESCAPE '\\' OR TargetFilename LIKE '%.dotm' ESCAPE '\\' OR TargetFilename LIKE '%.xlsm' ESCAPE '\\' OR TargetFilename LIKE '%.xltm' ESCAPE '\\' OR TargetFilename LIKE '%.potm' ESCAPE '\\' OR TargetFilename LIKE '%.pptm' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_office_macro_files_from_susp_process.yml"
+    },
+    {
         "title": "Suspicious Startup Folder Persistence",
         "id": "28208707-fe31-437f-9a7f-4b1108b94d2e",
         "status": "experimental",
@@ -16723,7 +16681,7 @@
         "filename": "file_event_win_susp_system_interactive_powershell.yml"
     },
     {
-        "title": "NET CLR Binary Execution Usage Log Artifact",
+        "title": "Suspicious DotNET CLR Usage Log Artifact",
         "id": "e0b06658-7d1d-4cd3-bf15-03467507ff7c",
         "status": "experimental",
         "description": "Detects the creation of Usage Log files by the CLR (clr.dll). These files are named after the executing process once the assembly is finished executing for the first time in the (user) session context.",
@@ -16737,15 +16695,34 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\UsageLogs\\\\cmstp.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\cscript.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\mshta.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\msxsl.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\regsvr32.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\rundll32.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\svchost.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\wscript.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\wmic.exe.log' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\UsageLogs\\\\cmstp.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\cscript.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\mshta.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\msxsl.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\regsvr32.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\rundll32.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\svchost.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\wscript.exe.log' ESCAPE '\\' OR TargetFilename LIKE '%\\\\UsageLogs\\\\wmic.exe.log' ESCAPE '\\') AND NOT ((ParentProcessName LIKE '%\\\\MsiExec.exe' ESCAPE '\\' AND ParentCommandLine LIKE '% -Embedding%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND CommandLine LIKE '%Temp%' ESCAPE '\\' AND CommandLine LIKE '%zzzzInvokeManagedCustomActionOutOfProc%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_net_cli_artefact.yml"
     },
     {
-        "title": "Potential PSEXEC Remote Execution - FileCreation",
+        "title": "Potential Persistence Via Microsoft Office Add-In",
+        "id": "8e1cb247-6cf6-42fa-b440-3f27d57e9936",
+        "status": "test",
+        "description": "Detects potential persistence activity via startup add-ins that load when Microsoft Office starts (.wll/.xll are simply .dll fit for Word or Excel).",
+        "author": "NVISO",
+        "tags": [
+            "attack.persistence",
+            "attack.t1137.006"
+        ],
+        "falsepositives": [
+            "Legitimate add-ins"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\Microsoft\\\\Word\\\\Startup\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.wll' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\Excel\\\\Startup\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.xll' ESCAPE '\\') OR (TargetFilename LIKE '%Microsoft\\\\Excel\\\\XLSTART\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.xlam' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\Addins\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.xlam' ESCAPE '\\' OR TargetFilename LIKE '%.xla' ESCAPE '\\' OR TargetFilename LIKE '%.ppam' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_office_addin_persistence.yml"
+    },
+    {
+        "title": "PSEXEC Remote Execution File Artefact",
         "id": "304afd73-55a5-4bb9-8c21-0b1fc84ea9e4",
         "status": "experimental",
-        "description": "Detects creation of the PSEXEC key file. Which is created anytime a PsExec command is executed and gets written to the file system and will be recorded in the USN Journal on the target system",
+        "description": "Detects creation of the PSEXEC key file. Which is created anytime a PsExec command is executed. It gets written to the file system and will be recorded in the USN Journal on the target system",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.lateral_movement",
@@ -17257,7 +17234,26 @@
         "filename": "file_event_win_wmiexec_default_filename.yml"
     },
     {
-        "title": "Creation Suspicious File In Uncommon AppData Folder",
+        "title": "Potential Persistence Via Outlook Form",
+        "id": "c3edc6a5-d9d4-48d8-930e-aab518390917",
+        "status": "experimental",
+        "description": "Detects the creation of a new Outlook form which can contain malicious code",
+        "author": "Tobias Michalski (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1137.003"
+        ],
+        "falsepositives": [
+            "Legitimate use of outlook forms"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\FORMS\\\\IPM%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Local Settings\\\\Application Data\\\\Microsoft\\\\Forms%' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_office_outlook_newform.yml"
+    },
+    {
+        "title": "Suspicious File Creation In Uncommon AppData Folder",
         "id": "d7b50671-d1ad-4871-aa60-5aa5b331fe04",
         "status": "experimental",
         "description": "Detects the creation of suspicious files and folders inside the user's AppData folder but not inside any of the common and well known directories (Local, Romaing, LocalLow). This method could be used as a method to bypass detection who exclude the AppData folder in fear of FPs",
@@ -17271,7 +17267,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\AppData\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.msi' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.psm1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.cpl' ESCAPE '\\' OR TargetFilename LIKE '%.scr' ESCAPE '\\')) AND NOT ((TargetFilename LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\LocalLow\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\' OR TargetFilename LIKE '%.cpl' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.msi' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.psm1' ESCAPE '\\' OR TargetFilename LIKE '%.scr' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\')) AND NOT (TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\LocalLow\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_new_files_in_uncommon_appdata_folder.yml"
     },
@@ -17297,8 +17293,8 @@
     {
         "title": "Suspicious NTDS.DIT Creation",
         "id": "4e7050dd-e548-483f-b7d6-527ab4fa784d",
-        "status": "experimental",
-        "description": "Detects suspicious creations of a file named ntds.dit, e.g. by a PowerShell parent or in a suspicious directory or a suspicious one liner",
+        "status": "test",
+        "description": "Detects suspicious creations of a file named \"ntds.dit\" (Active Directory Database) by suspicious parent process, directory or a suspicious one liner",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.credential_access",
@@ -17312,6 +17308,26 @@
             "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\ntds.dit' ESCAPE '\\' AND ((ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\w3wp.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\php-cgi.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\nginx.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\httpd.exe' ESCAPE '\\') OR (ParentProcessName LIKE '%\\\\apache%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\tomcat%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Public\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_ntds_dit.yml"
+    },
+    {
+        "title": "File Creation In Suspicious Directory By Msdt.EXE",
+        "id": "318557a5-150c-4c8d-b70e-a9910e199857",
+        "status": "experimental",
+        "description": "Detects msdt.exe creating files in suspicious directories which could be a sign of exploitation of either Follina or Dogwalk vulnerabilities",
+        "author": "Vadim Varganov, Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1547.001",
+            "cve.2022.30190"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\PerfLogs\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_msdt_susp_directories.yml"
     },
     {
         "title": "PCRE.NET Package Temp Files",
@@ -17354,17 +17370,16 @@
         "filename": "file_event_win_hktl_powerup_dllhijacking.yml"
     },
     {
-        "title": "PowerShell Writing Startup Shortcuts",
+        "title": "Potential Startup Shortcut Persistence Via PowerShell.EXE",
         "id": "92fa78e7-4d39-45f1-91a3-8b23f3f1088d",
         "status": "experimental",
-        "description": "Attempts to detect PowerShell writing startup shortcuts.\nThis procedure was highlighted in Red Canary Intel Insights Oct. 2021, \"We frequently observe adversaries using PowerShell to write malicious .lnk files into the startup directory to establish persistence.\nAccordingly, this detection opportunity is likely to identify persistence mechanisms in multiple threats.\nIn the context of Yellow Cockatoo, this persistence mechanism eventually launches the command-line script that leads to the installation of a malicious DLL\"\n",
+        "description": "Detects PowerShell writing startup shortcuts.\nThis procedure was highlighted in Red Canary Intel Insights Oct. 2021, \"We frequently observe adversaries using PowerShell to write malicious .lnk files into the startup directory to establish persistence.\nAccordingly, this detection opportunity is likely to identify persistence mechanisms in multiple threats.\nIn the context of Yellow Cockatoo, this persistence mechanism eventually launches the command-line script that leads to the installation of a malicious DLL\"\n",
         "author": "Christopher Peacock '@securepeacock', SCYTHE",
         "tags": [
             "attack.persistence",
             "attack.t1547.001"
         ],
         "falsepositives": [
-            "Unknown",
             "Depending on your environment accepted applications may leverage this at times. It is recommended to search for anomalies inidicative of malware."
         ],
         "level": "high",
@@ -17848,25 +17863,6 @@
             "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\Windows\\\\System32\\\\Tasks%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\PerfLogs%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\System32\\\\config\\\\systemprofile%' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_susp_task_write.yml"
-    },
-    {
-        "title": "Potential Persistence Via Microsoft Office Add-In",
-        "id": "8e1cb247-6cf6-42fa-b440-3f27d57e9936",
-        "status": "test",
-        "description": "Detects potential persistence activity via startup add-ins that load when Microsoft Office starts (.wll/.xll are simply .dll fit for Word or Excel).",
-        "author": "NVISO",
-        "tags": [
-            "attack.persistence",
-            "attack.t1137.006"
-        ],
-        "falsepositives": [
-            "Legitimate add-ins"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\Microsoft\\\\Word\\\\Startup\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.wll' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\Excel\\\\Startup\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.xll' ESCAPE '\\') OR (TargetFilename LIKE '%Microsoft\\\\Excel\\\\XLSTART\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.xlam' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\Microsoft\\\\Addins\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.xlam' ESCAPE '\\' OR TargetFilename LIKE '%.xla' ESCAPE '\\' OR TargetFilename LIKE '%.ppam' ESCAPE '\\')))"
-        ],
-        "filename": "file_event_win_persistence_office_addin.yml"
     },
     {
         "title": "Suspicious Creation with Colorcpl",
@@ -22013,25 +22009,6 @@
         "filename": "posh_ps_invoke_obfuscation_via_use_clip.yml"
     },
     {
-        "title": "Execution via CL_Invocation.ps1 (2 Lines)",
-        "id": "f588e69b-0750-46bb-8f87-0e9320d57536",
-        "status": "test",
-        "description": "Detects Execution via SyncInvoke in CL_Invocation.ps1 module",
-        "author": "oscd.community, Natalia Shornikova",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1216"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM (SELECT *,count(ScriptBlockText) AS agg FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '%CL\\_Invocation.ps1%' ESCAPE '\\' OR ScriptBlockText LIKE '%SyncInvoke%' ESCAPE '\\')) GROUP BY Computer) WHERE agg > 2"
-        ],
-        "filename": "posh_ps_cl_invocation_lolscript_count.yml"
-    },
-    {
         "title": "Clearing Windows Console History",
         "id": "bde47d4b-9987-405c-94c7-b080410e8ea7",
         "status": "test",
@@ -22585,25 +22562,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText LIKE '%AddSecurityPackage%' ESCAPE '\\' OR ScriptBlockText LIKE '%AdjustTokenPrivileges%' ESCAPE '\\' OR ScriptBlockText LIKE '%Advapi32%' ESCAPE '\\' OR ScriptBlockText LIKE '%CloseHandle%' ESCAPE '\\' OR ScriptBlockText LIKE '%CreateProcessWithToken%' ESCAPE '\\' OR ScriptBlockText LIKE '%CreateRemoteThread%' ESCAPE '\\' OR ScriptBlockText LIKE '%CreateThread%' ESCAPE '\\' OR ScriptBlockText LIKE '%CreateUserThread%' ESCAPE '\\' OR ScriptBlockText LIKE '%DangerousGetHandle%' ESCAPE '\\' OR ScriptBlockText LIKE '%DuplicateTokenEx%' ESCAPE '\\' OR ScriptBlockText LIKE '%EnumerateSecurityPackages%' ESCAPE '\\' OR ScriptBlockText LIKE '%FreeLibrary%' ESCAPE '\\' OR ScriptBlockText LIKE '%GetDelegateForFunctionPointer%' ESCAPE '\\' OR ScriptBlockText LIKE '%GetLogonSessionData%' ESCAPE '\\' OR ScriptBlockText LIKE '%GetModuleHandle%' ESCAPE '\\' OR ScriptBlockText LIKE '%GetProcAddress%' ESCAPE '\\' OR ScriptBlockText LIKE '%GetProcessHandle%' ESCAPE '\\' OR ScriptBlockText LIKE '%GetTokenInformation%' ESCAPE '\\' OR ScriptBlockText LIKE '%ImpersonateLoggedOnUser%' ESCAPE '\\' OR ScriptBlockText LIKE '%kernel32%' ESCAPE '\\' OR ScriptBlockText LIKE '%LoadLibrary%' ESCAPE '\\' OR ScriptBlockText LIKE '%memcpy%' ESCAPE '\\' OR ScriptBlockText LIKE '%MiniDumpWriteDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%msvcrt%' ESCAPE '\\' OR ScriptBlockText LIKE '%ntdll%' ESCAPE '\\' OR ScriptBlockText LIKE '%OpenDesktop%' ESCAPE '\\' OR ScriptBlockText LIKE '%OpenProcess%' ESCAPE '\\' OR ScriptBlockText LIKE '%OpenProcessToken%' ESCAPE '\\' OR ScriptBlockText LIKE '%OpenThreadToken%' ESCAPE '\\' OR ScriptBlockText LIKE '%OpenWindowStation%' ESCAPE '\\' OR ScriptBlockText LIKE '%QueueUserApc%' ESCAPE '\\' OR ScriptBlockText LIKE '%ReadProcessMemory%' ESCAPE '\\' OR ScriptBlockText LIKE '%RevertToSelf%' ESCAPE '\\' OR ScriptBlockText LIKE '%RtlCreateUserThread%' ESCAPE '\\' OR ScriptBlockText LIKE '%secur32%' ESCAPE '\\' OR ScriptBlockText LIKE '%SetThreadToken%' ESCAPE '\\' OR ScriptBlockText LIKE '%VirtualAlloc%' ESCAPE '\\' OR ScriptBlockText LIKE '%VirtualFree%' ESCAPE '\\' OR ScriptBlockText LIKE '%VirtualProtect%' ESCAPE '\\' OR ScriptBlockText LIKE '%WaitForSingleObject%' ESCAPE '\\' OR ScriptBlockText LIKE '%WriteInt32%' ESCAPE '\\' OR ScriptBlockText LIKE '%WriteProcessMemory%' ESCAPE '\\' OR ScriptBlockText LIKE '%ZeroFreeGlobalAllocUnicode%' ESCAPE '\\') AND NOT ((ScriptBlockText LIKE '# Copyright 2016 Amazon.com, Inc. or its affiliates.%' ESCAPE '\\' AND ScriptBlockText LIKE '%function Import-SerialPortUtil %' ESCAPE '\\')))"
         ],
         "filename": "posh_ps_accessing_win_api.yml"
-    },
-    {
-        "title": "Execution via CL_Mutexverifiers.ps1 (2 Lines)",
-        "id": "6609c444-9670-4eab-9636-fe4755a851ce",
-        "status": "test",
-        "description": "Detects Execution via runAfterCancelProcess in CL_Mutexverifiers.ps1 module",
-        "author": "oscd.community, Natalia Shornikova",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1216"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM (SELECT *,count(ScriptBlockText) AS agg FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '%CL\\_Mutexverifiers.ps1%' ESCAPE '\\' OR ScriptBlockText LIKE '%runAfterCancelProcess%' ESCAPE '\\')) GROUP BY Computer) WHERE agg > 2"
-        ],
-        "filename": "posh_ps_cl_mutexverifiers_lolscript_count.yml"
     },
     {
         "title": "WMImplant Hack Tool",
