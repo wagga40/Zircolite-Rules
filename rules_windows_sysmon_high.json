@@ -4520,46 +4520,6 @@
         "filename": "proc_creation_win_pua_frp.yml"
     },
     {
-        "title": "Suspicious Service DACL Modification",
-        "id": "99cf1e02-00fb-4c0d-8375-563f978dfd37",
-        "status": "test",
-        "description": "Detects suspicious DACL modifications that can  be used to hide services or make them unstopable",
-        "author": "Jonhnathan Ribeiro, oscd.community",
-        "tags": [
-            "attack.persistence",
-            "attack.t1543.003"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%D;;%' ESCAPE '\\' AND (CommandLine LIKE '%;;;IU%' ESCAPE '\\' OR CommandLine LIKE '%;;;SU%' ESCAPE '\\' OR CommandLine LIKE '%;;;BA%' ESCAPE '\\' OR CommandLine LIKE '%;;;SY%' ESCAPE '\\' OR CommandLine LIKE '%;;;WD%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_sc_service_dacl_modification.yml"
-    },
-    {
-        "title": "Abuse of Service Permissions to Hide Services in Tools",
-        "id": "a537cfc3-4297-4789-92b5-345bfd845ad0",
-        "status": "experimental",
-        "description": "Detection of sc.exe utility adding a new service with special permission which hides that service.",
-        "author": "Andreas Hunkeler (@Karneades)",
-        "tags": [
-            "attack.persistence",
-            "attack.defense_evasion",
-            "attack.privilege_escalation",
-            "attack.t1574.011"
-        ],
-        "falsepositives": [
-            "Rare intended use of hidden services"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%DCLCWPDTSD%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_sc_hide_sevices.yml"
-    },
-    {
         "title": "Suspicious Binary In User Directory Spawned From Office Application",
         "id": "aa3a6f94-890e-4e22-b634-ffdfd54792cc",
         "status": "experimental",
@@ -4916,6 +4876,29 @@
         "filename": "proc_creation_win_apt_ke3chang_regadd.yml"
     },
     {
+        "title": "Potential LSASS Process Dump Via Procdump",
+        "id": "5afee48e-67dd-4e03-a783-f74259dcf998",
+        "status": "stable",
+        "description": "Detects suspicious uses of the SysInternals Procdump utility by using a special command line parameter in combination with the lsass.exe process. This way we're also able to catch cases in which the attacker has renamed the procdump executable.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036",
+            "attack.credential_access",
+            "attack.t1003.001",
+            "car.2013-05-009"
+        ],
+        "falsepositives": [
+            "Unlikely, because no one should dump an lsass process memory",
+            "Another tool that uses the command line switches of Procdump"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\') AND CommandLine LIKE '% ls%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_sysinternals_procdump_lsass.yml"
+    },
+    {
         "title": "PowerShell Web Download and Execution",
         "id": "85b0b087-eddf-4a2b-b033-d771fa2b9775",
         "status": "experimental",
@@ -4935,23 +4918,23 @@
         "filename": "proc_creation_win_powershell_download_iex.yml"
     },
     {
-        "title": "Renamed Sysinternals Sdelete Execution",
-        "id": "c1d867fe-8d95-4487-aab4-e53f2d339f90",
+        "title": "Allow Service Access Using Security Descriptor Tampering Via Sc.EXE",
+        "id": "6c8fbee5-dee8-49bc-851d-c3142d02aa47",
         "status": "experimental",
-        "description": "Detects the use of a renamed SysInternals Sdelete, which is something an administrator shouldn't do (the renaming)",
-        "author": "Florian Roth (Nextron Systems)",
+        "description": "Detects suspicious DACL modifications to allow access to a service from a suspicious trustee. This can be used to override access restrictions set by previous ACLs.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.impact",
-            "attack.t1485"
+            "attack.persistence",
+            "attack.t1543.003"
         ],
         "falsepositives": [
-            "System administrator usage"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND OriginalFileName = 'sdelete.exe' AND NOT ((Image LIKE '%\\\\sdelete.exe' ESCAPE '\\' OR Image LIKE '%\\\\sdelete64.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%A;%' ESCAPE '\\') AND (CommandLine LIKE '%;IU%' ESCAPE '\\' OR CommandLine LIKE '%;SU%' ESCAPE '\\' OR CommandLine LIKE '%;BA%' ESCAPE '\\' OR CommandLine LIKE '%;SY%' ESCAPE '\\' OR CommandLine LIKE '%;WD%' ESCAPE '\\'))"
         ],
-        "filename": "proc_creation_win_renamed_sdelete.yml"
+        "filename": "proc_creation_win_sc_sdset_allow_service_changes.yml"
     },
     {
         "title": "HackTool - Impacket Tools Execution",
@@ -5240,25 +5223,6 @@
         "filename": "proc_creation_win_html_help_spawn.yml"
     },
     {
-        "title": "Tamper Windows Defender Remove-MpPreference",
-        "id": "07e3cb2c-0608-410d-be4b-1511cb1a0448",
-        "status": "experimental",
-        "description": "Detects attempts to remove windows defender configuration using the 'MpPreference' cmdlet",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1562.001"
-        ],
-        "falsepositives": [
-            "Legitimate PowerShell scripts"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%Remove-MpPreference%' ESCAPE '\\' AND (CommandLine LIKE '%-ControlledFolderAccessProtectedFolders %' ESCAPE '\\' OR CommandLine LIKE '%-AttackSurfaceReductionRules\\_Ids %' ESCAPE '\\' OR CommandLine LIKE '%-AttackSurfaceReductionRules\\_Actions %' ESCAPE '\\' OR CommandLine LIKE '%-CheckForSignaturesBeforeRunningScan %' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_tamper_defender_remove_mppreference.yml"
-    },
-    {
         "title": "DNS Exfiltration and Tunneling Tools Execution",
         "id": "98a96a5a-64a0-4c42-92c5-489da3866cb0",
         "status": "test",
@@ -5298,26 +5262,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%System.Management.Automation.AmsiUtils%' ESCAPE '\\' OR CommandLine LIKE '%amsiInitFailed%' ESCAPE '\\') OR (CommandLine LIKE '%[Ref].Assembly.GetType%' ESCAPE '\\' AND CommandLine LIKE '%SetValue($null,$true)%' ESCAPE '\\' AND CommandLine LIKE '%NonPublic,Static%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_amsi_init_failed_bypass.yml"
-    },
-    {
-        "title": "Run Whoami as Privileged User",
-        "id": "79ce34ca-af29-4d0e-b832-fc1b377020db",
-        "status": "experimental",
-        "description": "Detects a whoami.exe executed by privileged accounts that are often misused by threat actors",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.discovery",
-            "attack.t1033"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND User LIKE '%TrustedInstaller%' ESCAPE '\\' AND (OriginalFileName = 'whoami.exe' OR Image LIKE '%\\\\whoami.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_whoami_as_priv_user.yml"
     },
     {
         "title": "Potential Credential Dumping Attempt Using New NetworkProvider - CLI",
@@ -5575,25 +5519,6 @@
         "filename": "proc_creation_win_rundll32_by_ordinal.yml"
     },
     {
-        "title": "Suspicious Double File Extension in ParentCommandLine",
-        "id": "5e6a80c8-2d45-4633-9ef4-fa2671a39c5c",
-        "status": "experimental",
-        "description": "Detect execution of suspicious double extension files in ParentCommandLine",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036.007"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (ParentCommandLine LIKE '%.doc.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.docx.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.xls.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.xlsx.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.ppt.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.pptx.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.rtf.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.pdf.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.txt.lnk%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_susp_double_ext_parent.yml"
-    },
-    {
         "title": "Exploit for CVE-2015-1641",
         "id": "7993792c-5ce2-4475-a3db-a3a5539827ef",
         "status": "stable",
@@ -5648,6 +5573,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\gmer.exe' ESCAPE '\\' OR (Hashes LIKE '%MD5=E9DC058440D321AA17D0600B3CA0AB04%' ESCAPE '\\' OR Hashes LIKE '%SHA1=539C228B6B332F5AA523E5CE358C16647D8BBE57%' ESCAPE '\\' OR Hashes LIKE '%SHA256=E8A3E804A96C716A3E9B69195DB6FFB0D33E2433AF871E4D4E1EAB3097237173%' ESCAPE '\\') OR md5 = 'e9dc058440d321aa17d0600b3ca0ab04' OR sha1 = '539c228b6b332f5aa523e5ce358c16647d8bbe57' OR sha256 = 'e8a3e804a96c716a3e9b69195db6ffb0d33e2433af871e4d4e1eab3097237173'))"
         ],
         "filename": "proc_creation_win_hktl_gmer.yml"
+    },
+    {
+        "title": "Potential File Overwrite Via Sysinternals SDelete",
+        "id": "a4824fca-976f-4964-b334-0621379e84c4",
+        "status": "experimental",
+        "description": "Detects the use of SDelete to erase a file not the free space",
+        "author": "frack113",
+        "tags": [
+            "attack.impact",
+            "attack.t1485"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND OriginalFileName = 'sdelete.exe' AND NOT ((CommandLine LIKE '% -h%' ESCAPE '\\' OR CommandLine LIKE '% -c%' ESCAPE '\\' OR CommandLine LIKE '% -z%' ESCAPE '\\' OR CommandLine LIKE '% /\\?%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_sysinternals_sdelete.yml"
     },
     {
         "title": "Operator Bloopers Cobalt Strike Commands",
@@ -6685,6 +6629,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%\\\\ShellIds\\\\Microsoft.PowerShell\\\\ExecutionPolicy%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Policies\\\\Microsoft\\\\Windows\\\\PowerShell\\\\ExecutionPolicy%' ESCAPE '\\') AND (CommandLine LIKE '%Bypass%' ESCAPE '\\' OR CommandLine LIKE '%RemoteSigned%' ESCAPE '\\' OR CommandLine LIKE '%Unrestricted%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_set_unsecure_powershell_policy.yml"
+    },
+    {
+        "title": "Suspicious Parent Double Extension File Execution",
+        "id": "5e6a80c8-2d45-4633-9ef4-fa2671a39c5c",
+        "status": "experimental",
+        "description": "Detect execution of suspicious double extension files in ParentCommandLine",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036.007"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE '%.doc.lnk' ESCAPE '\\' OR ParentImage LIKE '%.docx.lnk' ESCAPE '\\' OR ParentImage LIKE '%.xls.lnk' ESCAPE '\\' OR ParentImage LIKE '%.xlsx.lnk' ESCAPE '\\' OR ParentImage LIKE '%.ppt.lnk' ESCAPE '\\' OR ParentImage LIKE '%.pptx.lnk' ESCAPE '\\' OR ParentImage LIKE '%.rtf.lnk' ESCAPE '\\' OR ParentImage LIKE '%.pdf.lnk' ESCAPE '\\' OR ParentImage LIKE '%.txt.lnk' ESCAPE '\\' OR ParentImage LIKE '%.doc.js' ESCAPE '\\' OR ParentImage LIKE '%.docx.js' ESCAPE '\\' OR ParentImage LIKE '%.xls.js' ESCAPE '\\' OR ParentImage LIKE '%.xlsx.js' ESCAPE '\\' OR ParentImage LIKE '%.ppt.js' ESCAPE '\\' OR ParentImage LIKE '%.pptx.js' ESCAPE '\\' OR ParentImage LIKE '%.rtf.js' ESCAPE '\\' OR ParentImage LIKE '%.pdf.js' ESCAPE '\\' OR ParentImage LIKE '%.txt.js' ESCAPE '\\') OR (ParentCommandLine LIKE '%.doc.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.docx.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.xls.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.xlsx.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.ppt.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.pptx.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.rtf.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.pdf.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.txt.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.doc.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.docx.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.xls.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.xlsx.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.ppt.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.pptx.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.rtf.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.pdf.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.txt.js%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_susp_double_extension_parent.yml"
     },
     {
         "title": "Visual Basic Command Line Compiler Usage",
@@ -7761,6 +7724,24 @@
         "filename": "proc_creation_win_uac_bypass_wsreset.yml"
     },
     {
+        "title": "PsExec Service Child Process Execution as LOCAL SYSTEM",
+        "id": "7c0dcd3d-acf8-4f71-9570-f448b0034f94",
+        "status": "experimental",
+        "description": "Detects suspicious launch of the PSEXESVC service on this system and a sub process run as LOCAL_SYSTEM (-s), which means that someone remotely started a command on this system running it with highest privileges and not only the privileges of the login user account (e.g. the administrator account)",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Users that debug Microsoft Intune issues using the commands mentioned in the official documentation; see https://learn.microsoft.com/en-us/mem/intune/apps/intune-management-extension"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE 'C:\\\\Windows\\\\PSEXESVC.exe' ESCAPE '\\' AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_sysinternals_psexesvc_as_system.yml"
+    },
+    {
         "title": "Suspicious Mshta.EXE Execution Patterns",
         "id": "e32f92d1-523e-49c3-9374-bdb13b46a3ba",
         "status": "experimental",
@@ -7837,29 +7818,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\sc.exe' ESCAPE '\\' AND CommandLine LIKE '%create%' ESCAPE '\\' AND CommandLine LIKE '%binPath=%' ESCAPE '\\') OR (CommandLine LIKE '%New-Service%' ESCAPE '\\' AND CommandLine LIKE '%-BinaryPathName%' ESCAPE '\\')) AND (CommandLine LIKE '%powershell%' ESCAPE '\\' OR CommandLine LIKE '%mshta%' ESCAPE '\\' OR CommandLine LIKE '%wscript%' ESCAPE '\\' OR CommandLine LIKE '%cscript%' ESCAPE '\\' OR CommandLine LIKE '%svchost%' ESCAPE '\\' OR CommandLine LIKE '%dllhost%' ESCAPE '\\' OR CommandLine LIKE '%cmd %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r%' ESCAPE '\\' OR CommandLine LIKE '%rundll32%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Users\\\\Public%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_new_service_creation.yml"
-    },
-    {
-        "title": "Suspicious Use of Procdump on LSASS",
-        "id": "5afee48e-67dd-4e03-a783-f74259dcf998",
-        "status": "stable",
-        "description": "Detects suspicious uses of the SysInternals Procdump utility by using a special command line parameter in combination with the lsass.exe process. This way we're also able to catch cases in which the attacker has renamed the procdump executable.",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036",
-            "attack.credential_access",
-            "attack.t1003.001",
-            "car.2013-05-009"
-        ],
-        "falsepositives": [
-            "Unlikely, because no one should dump an lsass process memory",
-            "Another tool that uses the command line switches of Procdump"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\') AND CommandLine LIKE '% ls%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_susp_procdump_lsass.yml"
     },
     {
         "title": "SQLite Firefox Profile Data DB Access",
@@ -8252,26 +8210,6 @@
         "filename": "proc_creation_win_csc_susp_parent.yml"
     },
     {
-        "title": "Run Whoami as SYSTEM",
-        "id": "80167ada-7a12-41ed-b8e9-aa47195c66a1",
-        "status": "experimental",
-        "description": "Detects a whoami.exe executed by LOCAL SYSTEM. This may be a sign of a successful local privilege escalation.",
-        "author": "Teymur Kheirkhabarov, Florian Roth",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.discovery",
-            "attack.t1033"
-        ],
-        "falsepositives": [
-            "Possible name overlap with NT AUHTORITY substring to cover all languages"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND (OriginalFileName = 'whoami.exe' OR Image LIKE '%\\\\whoami.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_whoami_as_system.yml"
-    },
-    {
         "title": "Exchange Exploitation Activity",
         "id": "bbb2dedd-a0e3-46ab-ba6c-6c82ae7a9aa7",
         "status": "test",
@@ -8391,25 +8329,6 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\crackmapexec.exe' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_apt_dragonfly.yml"
-    },
-    {
-        "title": "Renamed SysInternals DebugView Execution",
-        "id": "cd764533-2e07-40d6-a718-cfeec7f2da7f",
-        "status": "test",
-        "description": "Detects suspicious renamed SysInternals DebugView execution",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.resource_development",
-            "attack.t1588.002"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Product = 'Sysinternals DebugView' AND NOT (OriginalFileName = 'Dbgview.exe' AND Image LIKE '%\\\\Dbgview.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_renamed_debugview.yml"
     },
     {
         "title": "Suspicious PowerShell Mailbox Export to Share",
@@ -8536,6 +8455,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\winlogon.exe' ESCAPE '\\' AND Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (CommandLine LIKE '%sethc.exe%' ESCAPE '\\' OR CommandLine LIKE '%utilman.exe%' ESCAPE '\\' OR CommandLine LIKE '%osk.exe%' ESCAPE '\\' OR CommandLine LIKE '%Magnify.exe%' ESCAPE '\\' OR CommandLine LIKE '%Narrator.exe%' ESCAPE '\\' OR CommandLine LIKE '%DisplaySwitch.exe%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_stickykey_like_backdoor.yml"
+    },
+    {
+        "title": "Tamper Windows Defender Remove-MpPreference",
+        "id": "07e3cb2c-0608-410d-be4b-1511cb1a0448",
+        "status": "experimental",
+        "description": "Detects attempts to remove windows defender configuration using the 'MpPreference' cmdlet",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Legitimate PowerShell scripts"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%Remove-MpPreference%' ESCAPE '\\' AND (CommandLine LIKE '%-ControlledFolderAccessProtectedFolders %' ESCAPE '\\' OR CommandLine LIKE '%-AttackSurfaceReductionRules\\_Ids %' ESCAPE '\\' OR CommandLine LIKE '%-AttackSurfaceReductionRules\\_Actions %' ESCAPE '\\' OR CommandLine LIKE '%-CheckForSignaturesBeforeRunningScan %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_tamper_defender_remove_mppreference.yml"
     },
     {
         "title": "Run PowerShell Script from Redirected Input Stream",
@@ -8858,26 +8796,6 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\scrcons.exe' ESCAPE '\\' AND (Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\msbuild.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_script_event_consumer_spawn.yml"
-    },
-    {
-        "title": "Renamed ProcDump Execution",
-        "id": "4a0b2c7e-7cb2-495d-8b63-5f268e7bfd67",
-        "status": "test",
-        "description": "Detects the execution of a renamed ProcDump executable often used by attackers or malware",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036.003"
-        ],
-        "falsepositives": [
-            "Procdump illegaly bundled with legitimate software",
-            "Administrators who rename binaries (should be investigated)"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'procdump' OR ((CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\') AND (CommandLine LIKE '% -accepteula %' ESCAPE '\\' OR CommandLine LIKE '% /accepteula %' ESCAPE '\\'))) AND NOT ((Image LIKE '%\\\\procdump.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump64.exe' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_renamed_procdump.yml"
     },
     {
         "title": "CHCP CodePage Locale Lookup",
@@ -9322,6 +9240,26 @@
         "filename": "proc_creation_win_lolbin_susp_atbroker.yml"
     },
     {
+        "title": "PsExec/PAExec Escalation to LOCAL SYSTEM",
+        "id": "8834e2f7-6b4b-4f09-8906-d2276470ee23",
+        "status": "experimental",
+        "description": "Detects suspicious commandline flags used by PsExec and PAExec to escalate a command line to LOCAL_SYSTEM rights",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.resource_development",
+            "attack.t1587.001"
+        ],
+        "falsepositives": [
+            "Admins that use PsExec or PAExec to escalate to the SYSTEM account for maintenance purposes (rare)",
+            "Users that debug Microsoft Intune issues using the commands mentioned in the official documentation; see https://learn.microsoft.com/en-us/mem/intune/apps/intune-management-extension"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\') AND (CommandLine LIKE '%psexec%' ESCAPE '\\' OR CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%accepteula%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_sysinternals_psexec_paexec_escalate_system.yml"
+    },
+    {
         "title": "Execution of Powershell Script in Public Folder",
         "id": "fb9d3ff7-7348-46ab-af8c-b55f5fbf39b4",
         "status": "experimental",
@@ -9578,6 +9516,26 @@
         "filename": "proc_creation_win_renamed_adfind.yml"
     },
     {
+        "title": "Potential Privilege Escalation To LOCAL SYSTEM",
+        "id": "207b0396-3689-42d9-8399-4222658efc99",
+        "status": "experimental",
+        "description": "Detects unknown program using commandline flags usually used by tools such as PsExec and PAExec to start programs with SYSTEM Privileges",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.resource_development",
+            "attack.t1587.001"
+        ],
+        "falsepositives": [
+            "Weird admins that rename their tools",
+            "Software companies that bundle PsExec/PAExec with their software and rename it, so that it is less embarrassing"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\') AND NOT ((CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%PsExec%' ESCAPE '\\' OR CommandLine LIKE '%accepteula%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_sysinternals_susp_psexec_paexec_flags_.yml"
+    },
+    {
         "title": "Suspicious Regsvr32 Execution From Remote Share",
         "id": "88a87a10-384b-4ad7-8871-2f9bf9259ce5",
         "status": "experimental",
@@ -9634,24 +9592,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%AddSecurityPackage%' ESCAPE '\\' OR CommandLine LIKE '%AdjustTokenPrivileges%' ESCAPE '\\' OR CommandLine LIKE '%Advapi32%' ESCAPE '\\' OR CommandLine LIKE '%CloseHandle%' ESCAPE '\\' OR CommandLine LIKE '%CreateProcessWithToken%' ESCAPE '\\' OR CommandLine LIKE '%CreatePseudoConsole%' ESCAPE '\\' OR CommandLine LIKE '%CreateRemoteThread%' ESCAPE '\\' OR CommandLine LIKE '%CreateThread%' ESCAPE '\\' OR CommandLine LIKE '%CreateUserThread%' ESCAPE '\\' OR CommandLine LIKE '%DangerousGetHandle%' ESCAPE '\\' OR CommandLine LIKE '%DuplicateTokenEx%' ESCAPE '\\' OR CommandLine LIKE '%EnumerateSecurityPackages%' ESCAPE '\\' OR CommandLine LIKE '%FreeHGlobal%' ESCAPE '\\' OR CommandLine LIKE '%FreeLibrary%' ESCAPE '\\' OR CommandLine LIKE '%GetDelegateForFunctionPointer%' ESCAPE '\\' OR CommandLine LIKE '%GetLogonSessionData%' ESCAPE '\\' OR CommandLine LIKE '%GetModuleHandle%' ESCAPE '\\' OR CommandLine LIKE '%GetProcAddress%' ESCAPE '\\' OR CommandLine LIKE '%GetProcessHandle%' ESCAPE '\\' OR CommandLine LIKE '%GetTokenInformation%' ESCAPE '\\' OR CommandLine LIKE '%ImpersonateLoggedOnUser%' ESCAPE '\\' OR CommandLine LIKE '%kernel32%' ESCAPE '\\' OR CommandLine LIKE '%LoadLibrary%' ESCAPE '\\' OR CommandLine LIKE '%memcpy%' ESCAPE '\\' OR CommandLine LIKE '%MiniDumpWriteDump%' ESCAPE '\\' OR CommandLine LIKE '%ntdll%' ESCAPE '\\' OR CommandLine LIKE '%OpenDesktop%' ESCAPE '\\' OR CommandLine LIKE '%OpenProcess%' ESCAPE '\\' OR CommandLine LIKE '%OpenProcessToken%' ESCAPE '\\' OR CommandLine LIKE '%OpenThreadToken%' ESCAPE '\\' OR CommandLine LIKE '%OpenWindowStation%' ESCAPE '\\' OR CommandLine LIKE '%PtrToString%' ESCAPE '\\' OR CommandLine LIKE '%QueueUserApc%' ESCAPE '\\' OR CommandLine LIKE '%ReadProcessMemory%' ESCAPE '\\' OR CommandLine LIKE '%RevertToSelf%' ESCAPE '\\' OR CommandLine LIKE '%RtlCreateUserThread%' ESCAPE '\\' OR CommandLine LIKE '%secur32%' ESCAPE '\\' OR CommandLine LIKE '%SetThreadToken%' ESCAPE '\\' OR CommandLine LIKE '%VirtualAlloc%' ESCAPE '\\' OR CommandLine LIKE '%VirtualFree%' ESCAPE '\\' OR CommandLine LIKE '%VirtualProtect%' ESCAPE '\\' OR CommandLine LIKE '%WaitForSingleObject%' ESCAPE '\\' OR CommandLine LIKE '%WriteInt32%' ESCAPE '\\' OR CommandLine LIKE '%WriteProcessMemory%' ESCAPE '\\' OR CommandLine LIKE '%ZeroFreeGlobalAllocUnicode%' ESCAPE '\\') AND NOT ((Image LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' AND CommandLine LIKE '%GetLoadLibraryWAddress32%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_inline_win_api_access.yml"
-    },
-    {
-        "title": "PsExec Service Execution as LOCAL SYSTEM",
-        "id": "7c0dcd3d-acf8-4f71-9570-f448b0034f94",
-        "status": "experimental",
-        "description": "Detects suspicious launch of the PSEXESVC service on this system and a sub process run as LOCAL_SYSTEM (-s), which means that someone remotely started a command on this system running it with highest privileges and not only the privileges of the login user account (e.g. the administrator account)",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Legitimate administrative tasks"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE 'C:\\\\Windows\\\\PSEXESVC.exe' ESCAPE '\\' AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_susp_psexesvc_as_system.yml"
     },
     {
         "title": "UAC Bypass WSReset",
@@ -9793,28 +9733,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR OriginalFileName = 'CMSTP.EXE') AND (CommandLine LIKE '%/s%' ESCAPE '\\' OR CommandLine LIKE '%-s%' ESCAPE '\\' OR CommandLine LIKE '%/au%' ESCAPE '\\' OR CommandLine LIKE '%-au%' ESCAPE '\\' OR CommandLine LIKE '%/ni%' ESCAPE '\\' OR CommandLine LIKE '%-ni%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_uac_bypass_cmstp.yml"
-    },
-    {
-        "title": "Whoami Execution Anomaly",
-        "id": "8de1cbe8-d6f5-496d-8237-5f44a721c7a0",
-        "status": "experimental",
-        "description": "Detects the execution of whoami with suspicious parents or parameters",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.discovery",
-            "attack.t1033",
-            "car.2016-03-001"
-        ],
-        "falsepositives": [
-            "Admin activity",
-            "Scripts and administrative tools used in the monitored environment",
-            "Monitoring activity"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR OriginalFileName = 'whoami.exe') AND NOT (((ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\')) OR ((ParentImage LIKE 'C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe' ESCAPE '\\' OR ParentImage LIKE '' ESCAPE '\\')) OR (ParentImage = ''))) OR (CommandLine LIKE '%whoami -all%' ESCAPE '\\' OR CommandLine LIKE '%whoami /all%' ESCAPE '\\' OR CommandLine LIKE '%whoami.exe -all%' ESCAPE '\\' OR CommandLine LIKE '%whoami.exe /all%' ESCAPE '\\' OR CommandLine LIKE '%whoami.exe >%' ESCAPE '\\' OR CommandLine LIKE '%whoami >%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_susp_whoami_anomaly.yml"
     },
     {
         "title": "Suspicious Desktopimgdownldr Command",
@@ -10151,6 +10069,25 @@
         "filename": "proc_creation_win_hktl_sharp_impersonation.yml"
     },
     {
+        "title": "Potential PsExec Remote Execution",
+        "id": "ea011323-7045-460b-b2d7-0f7442ea6b38",
+        "status": "experimental",
+        "description": "Detects potential psexec command that initiate execution on a remote systems via common commandline flags used by the utility",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.resource_development",
+            "attack.t1587.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%accepteula%' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\' AND CommandLine LIKE '% \\\\\\\\\\*' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_sysinternals_psexec_remote_execution.yml"
+    },
+    {
         "title": "Suspicious GrpConv Execution",
         "id": "f14e169e-9978-4c69-acb3-1cff8200bc36",
         "status": "experimental",
@@ -10312,7 +10249,7 @@
         "id": "3ef5605c-9eb9-47b0-9a71-b727e6aa5c3b",
         "status": "experimental",
         "description": "Detect use of the Windows 8.3 short name. Which could be used as a method to avoid Image based detection",
-        "author": "frack113, Nasreddine Bencherchali",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1564.004"
@@ -10467,26 +10404,6 @@
         "filename": "proc_creation_win_susp_parents.yml"
     },
     {
-        "title": "Procdump Evasion",
-        "id": "79b06761-465f-4f88-9ef2-150e24d3d737",
-        "status": "test",
-        "description": "Detects uses of the SysInternals Procdump utility in which procdump or its output get renamed or a dump file is moved ot copied to a different name",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036",
-            "attack.t1003.001"
-        ],
-        "falsepositives": [
-            "Cases in which procdump just gets copied to a different directory without any renaming"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%copy procdump%' ESCAPE '\\' OR CommandLine LIKE '%move procdump%' ESCAPE '\\') OR (CommandLine LIKE '%copy %' ESCAPE '\\' AND CommandLine LIKE '%.dmp %' ESCAPE '\\' AND (CommandLine LIKE '%2.dmp%' ESCAPE '\\' OR CommandLine LIKE '%lsass%' ESCAPE '\\' OR CommandLine LIKE '%out.dmp%' ESCAPE '\\')) OR (CommandLine LIKE '%copy lsass.exe\\_%' ESCAPE '\\' OR CommandLine LIKE '%move lsass.exe\\_%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_procdump_evasion.yml"
-    },
-    {
         "title": "Blue Mockingbird",
         "id": "c3198a27-23a0-4c2c-af19-e5328d49680e",
         "status": "test",
@@ -10534,7 +10451,7 @@
         "id": "00d49ed5-4491-4271-a8db-650a4ef6f8c1",
         "status": "experimental",
         "description": "Detects suspicious ways to download files from Microsoft domains that are used to store attachments in Emails or OneNote documents",
-        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "falsepositives": [
             "Scripts or tools that download attachments from these domains (OneNote, Outlook 365)"
         ],
@@ -10650,6 +10567,24 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%Add-Exfiltration%' ESCAPE '\\' OR CommandLine LIKE '%Add-Persistence%' ESCAPE '\\' OR CommandLine LIKE '%Add-RegBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Add-RemoteRegBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Add-ScrnSaveBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Check-VM%' ESCAPE '\\' OR CommandLine LIKE '%ConvertTo-Rc4ByteStream%' ESCAPE '\\' OR CommandLine LIKE '%Decrypt-Hash%' ESCAPE '\\' OR CommandLine LIKE '%Do-Exfiltration%' ESCAPE '\\' OR CommandLine LIKE '%Enabled-DuplicateToken%' ESCAPE '\\' OR CommandLine LIKE '%Exploit-Jboss%' ESCAPE '\\' OR CommandLine LIKE '%Find-Fruit%' ESCAPE '\\' OR CommandLine LIKE '%Find-GPOLocation%' ESCAPE '\\' OR CommandLine LIKE '%Find-TrustedDocuments%' ESCAPE '\\' OR CommandLine LIKE '%Get-ApplicationHost%' ESCAPE '\\' OR CommandLine LIKE '%Get-ChromeDump%' ESCAPE '\\' OR CommandLine LIKE '%Get-ClipboardContents%' ESCAPE '\\' OR CommandLine LIKE '%Get-FoxDump%' ESCAPE '\\' OR CommandLine LIKE '%Get-GPPPassword%' ESCAPE '\\' OR CommandLine LIKE '%Get-IndexedItem%' ESCAPE '\\' OR CommandLine LIKE '%Get-Keystrokes%' ESCAPE '\\' OR CommandLine LIKE '%Get-LSASecret%' ESCAPE '\\' OR CommandLine LIKE '%Get-PassHashes%' ESCAPE '\\' OR CommandLine LIKE '%Get-RegAlwaysInstallElevated%' ESCAPE '\\' OR CommandLine LIKE '%Get-RegAutoLogon%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteBootKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteCachedCredential%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteLocalAccountHash%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteLSAKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteMachineAccountHash%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteNLKMKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RickAstley%' ESCAPE '\\' OR CommandLine LIKE '%Get-Screenshot%' ESCAPE '\\' OR CommandLine LIKE '%Get-SecurityPackages%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServiceFilePermission%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServicePermission%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServiceUnquoted%' ESCAPE '\\' OR CommandLine LIKE '%Get-SiteListPassword%' ESCAPE '\\' OR CommandLine LIKE '%Get-System%' ESCAPE '\\' OR CommandLine LIKE '%Get-TimedScreenshot%' ESCAPE '\\' OR CommandLine LIKE '%Get-UnattendedInstallFile%' ESCAPE '\\' OR CommandLine LIKE '%Get-Unconstrained%' ESCAPE '\\' OR CommandLine LIKE '%Get-USBKeystrokes%' ESCAPE '\\' OR CommandLine LIKE '%Get-VaultCredential%' ESCAPE '\\' OR CommandLine LIKE '%Get-VulnAutoRun%' ESCAPE '\\' OR CommandLine LIKE '%Get-VulnSchTask%' ESCAPE '\\' OR CommandLine LIKE '%Gupt-Backdoor%' ESCAPE '\\' OR CommandLine LIKE '%HTTP-Login%' ESCAPE '\\' OR CommandLine LIKE '%Install-ServiceBinary%' ESCAPE '\\' OR CommandLine LIKE '%Install-SSP%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ACLScanner%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ADSBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AllChecks%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ARPScan%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AzureHound%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BackdoorLNK%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BadPotato%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BetterSafetyKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BypassUAC%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Carbuncle%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Certify%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ConPtyShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-CredentialInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DAFT%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DCSync%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DinvokeKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DllInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DomainPasswordSpray%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DowngradeAccount%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-EgressCheck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Eyewitness%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-FakeLogonScreen%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Farmer%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Get-RBCD-Threaded%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Gopher%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Grouper%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-HandleKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ImpersonatedProcess%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ImpersonateSystem%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-InteractiveSystemPowerShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Internalmonologue%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Inveigh%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-InveighRelay%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-KrbRelay%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-LdapSignCheck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Lockless%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-MalSCCM%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Mimikatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Mimikittenz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-MITM6%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NanoDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NetRipper%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NinjaCopy%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-OfficeScrape%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-OxidResolver%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-P0wnedshell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Paranoia%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PortScan%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PoshRatHttp%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PostExfil%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerShellTCP%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerShellWMI%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PPLDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PsExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PSInject%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PsUaCme%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ReflectivePEInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ReverseDNSLookup%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Rubeus%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-RunAs%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SafetyKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SauronEye%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SCShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Seatbelt%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ServiceAbuse%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ShadowSpray%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Sharp%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Shellcode%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SMBScanner%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Snaffler%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Spoolsample%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SpraySinglePassword%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SSHCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-StandIn%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-StickyNotesExtract%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SystemCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tasksbackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tater%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Thunderfox%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ThunderStruck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-TokenManipulation%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tokenvator%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-TotalExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-UrbanBishop%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-VoiceTroll%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Whisker%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WinEnum%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-winPEAS%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WireTap%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WmiCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WScriptBypassUAC%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Zerologon%' ESCAPE '\\' OR CommandLine LIKE '%MailRaider%' ESCAPE '\\' OR CommandLine LIKE '%New-HoneyHash%' ESCAPE '\\' OR CommandLine LIKE '%New-InMemoryModule%' ESCAPE '\\' OR CommandLine LIKE '%Out-Minidump%' ESCAPE '\\' OR CommandLine LIKE '%Port-Scan%' ESCAPE '\\' OR CommandLine LIKE '%PowerBreach%' ESCAPE '\\' OR CommandLine LIKE '%powercat %' ESCAPE '\\' OR CommandLine LIKE '%PowerUp%' ESCAPE '\\' OR CommandLine LIKE '%PowerView%' ESCAPE '\\' OR CommandLine LIKE '%Remove-Update%' ESCAPE '\\' OR CommandLine LIKE '%Set-MacAttribute%' ESCAPE '\\' OR CommandLine LIKE '%Set-Wallpaper%' ESCAPE '\\' OR CommandLine LIKE '%Show-TargetScreen%' ESCAPE '\\' OR CommandLine LIKE '%Start-CaptureServer%' ESCAPE '\\' OR CommandLine LIKE '%Start-WebcamRecorder%' ESCAPE '\\' OR CommandLine LIKE '%VolumeShadowCopyTools%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_malicious_cmdlets.yml"
+    },
+    {
+        "title": "Renamed PsExec Service Execution",
+        "id": "51ae86a2-e2e1-4097-ad85-c46cb6851de4",
+        "status": "experimental",
+        "description": "Detects suspicious launch of a renamed version of the PSEXESVC service with, which is not often used by legitimate administrators",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate administrative tasks"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND OriginalFileName = 'psexesvc.exe' AND NOT (Image LIKE 'C:\\\\Windows\\\\PSEXESVC.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_renamed_sysinternals_psexec_service.yml"
     },
     {
         "title": "Non-privileged Usage of Reg or Powershell",
@@ -11634,6 +11569,47 @@
         "filename": "proc_creation_win_public_folder_parent.yml"
     },
     {
+        "title": "Service DACL Abuse To Hide Services Via Sc.EXE",
+        "id": "a537cfc3-4297-4789-92b5-345bfd845ad0",
+        "status": "experimental",
+        "description": "Detects usage of the \"sc.exe\" utility adding a new service with special permission seen used by threat actors which makes the service hidden and unremovable.",
+        "author": "Andreas Hunkeler (@Karneades)",
+        "tags": [
+            "attack.persistence",
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%DCLCWPDTSD%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_sc_sdset_hide_sevices.yml"
+    },
+    {
+        "title": "Potential Procdump Evasion",
+        "id": "79b06761-465f-4f88-9ef2-150e24d3d737",
+        "status": "test",
+        "description": "Detects uses of the SysInternals Procdump utility in which procdump or its output get renamed or a dump file is moved ot copied to a different name",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Cases in which procdump just gets copied to a different directory without any renaming"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%copy procdump%' ESCAPE '\\' OR CommandLine LIKE '%move procdump%' ESCAPE '\\') OR (CommandLine LIKE '%copy %' ESCAPE '\\' AND CommandLine LIKE '%.dmp %' ESCAPE '\\' AND (CommandLine LIKE '%2.dmp%' ESCAPE '\\' OR CommandLine LIKE '%lsass%' ESCAPE '\\' OR CommandLine LIKE '%out.dmp%' ESCAPE '\\')) OR (CommandLine LIKE '%copy lsass.exe\\_%' ESCAPE '\\' OR CommandLine LIKE '%move lsass.exe\\_%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_sysinternals_procdump_evasion.yml"
+    },
+    {
         "title": "Invoke-Obfuscation Obfuscated IEX Invocation",
         "id": "4bf943c6-5146-4273-98dd-e958fd1e3abf",
         "status": "test",
@@ -12264,26 +12240,6 @@
         "filename": "proc_creation_win_redmimicry_winnti_proc.yml"
     },
     {
-        "title": "Run Whoami Showing Privileges",
-        "id": "97a80ec7-0e2f-4d05-9ef4-65760e634f6b",
-        "status": "experimental",
-        "description": "Detects a whoami.exe executed with the /priv command line flag instructing the tool to show all current user privieleges. This is often used after a privilege escalation attempt.",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.discovery",
-            "attack.t1033"
-        ],
-        "falsepositives": [
-            "Administrative activity (rare lookups on current privileges)"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR OriginalFileName = 'whoami.exe') AND CommandLine LIKE '%/priv%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_whoami_priv.yml"
-    },
-    {
         "title": "Suspicious Compression Tool Parameters",
         "id": "27a72a60-7e5e-47b1-9d17-909c9abafdcd",
         "status": "test",
@@ -12758,6 +12714,9 @@
         "status": "experimental",
         "description": "Detects suspicious Unicode characters in the command line, which could be a sign of obfuscation or defense evasion",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -12788,6 +12747,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentCommandLine LIKE '%\\\\svchost.exe%' ESCAPE '\\' AND ParentCommandLine LIKE '%termsvcs%' ESCAPE '\\') AND NOT (((Image LIKE '%\\\\rdpclip.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\csrss.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\wininit.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\')) OR (Image = '')))"
         ],
         "filename": "proc_creation_win_termserv_proc_spawn.yml"
+    },
+    {
+        "title": "Suspicious Whoami.EXE Execution",
+        "id": "c30fb093-1109-4dc8-88a8-b30d11c95a5d",
+        "status": "experimental",
+        "description": "Detects the execution of \"whoami.exe\" with the \"/all\" flag or with redirection options to export the results to a file for later use.",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1033",
+            "car.2016-03-001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR OriginalFileName = 'whoami.exe') AND (CommandLine LIKE '% -all%' ESCAPE '\\' OR CommandLine LIKE '% /all%' ESCAPE '\\' OR CommandLine LIKE '% /FO CSV%' ESCAPE '\\' OR CommandLine LIKE '% -FO CSV%' ESCAPE '\\')) OR (CommandLine LIKE '%whoami%' ESCAPE '\\' AND CommandLine LIKE '%>%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_whoami_susp_flags.yml"
     },
     {
         "title": "Interactive AT Job",
@@ -13259,7 +13238,7 @@
         "filename": "proc_creation_win_c3_load_by_rundll32.yml"
     },
     {
-        "title": "Rundll32 Without Parameters",
+        "title": "Rundll32 Execution Without Parameters",
         "id": "5bb68627-3198-40ca-b458-49f973db8752",
         "status": "test",
         "description": "Detects rundll32 execution without parameters as observed when running Metasploit windows/smb/psexec exploit module",
@@ -13276,7 +13255,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine = 'rundll32.exe')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine IN ('rundll32.exe', 'rundll32'))"
         ],
         "filename": "proc_creation_win_rundll32_without_parameters.yml"
     },
@@ -13580,6 +13559,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\KrbRelay.exe' ESCAPE '\\' OR OriginalFileName = 'KrbRelay.exe') OR (CommandLine LIKE '% -spn %' ESCAPE '\\' AND CommandLine LIKE '% -clsid %' ESCAPE '\\' AND CommandLine LIKE '% -rbcd %' ESCAPE '\\') OR (CommandLine LIKE '%shadowcred%' ESCAPE '\\' AND CommandLine LIKE '%clsid%' ESCAPE '\\' AND CommandLine LIKE '%spn%' ESCAPE '\\') OR (CommandLine LIKE '%spn %' ESCAPE '\\' AND CommandLine LIKE '%session %' ESCAPE '\\' AND CommandLine LIKE '%clsid %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_krbrelay.yml"
+    },
+    {
+        "title": "Security Privileges Enumeration Via Whoami.EXE",
+        "id": "97a80ec7-0e2f-4d05-9ef4-65760e634f6b",
+        "status": "experimental",
+        "description": "Detects a whoami.exe executed with the /priv command line flag instructing the tool to show all current user privileges. This is often used after a privilege escalation attempt.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.discovery",
+            "attack.t1033"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR OriginalFileName = 'whoami.exe') AND (CommandLine LIKE '% /priv%' ESCAPE '\\' OR CommandLine LIKE '% -priv%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_whoami_priv_discovery.yml"
     },
     {
         "title": "Chopper Webshell Process Pattern",
@@ -14003,7 +14002,7 @@
         "title": "ImagingDevices Unusual Parent/Child Processes",
         "id": "f11f2808-adb4-46c0-802a-8660db50fa99",
         "status": "experimental",
-        "description": "Detects unusual parent or children of the ImagingDevices.exe (Windows Contacts) and Wabmig.exe (Microsoft Address Book Import Tool) processes as seen being used with bumblebee activity",
+        "description": "Detects unusual parent or children of the ImagingDevices.exe (Windows Contacts) process as seen being used with Bumblebee activity",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -14074,25 +14073,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND CommandLine LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\SafeBoot%' ESCAPE '\\' AND (CommandLine LIKE '% copy %' ESCAPE '\\' OR CommandLine LIKE '% add %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_reg_add_safeboot.yml"
-    },
-    {
-        "title": "Uninstall Sysinternals Sysmon",
-        "id": "6a5f68d1-c4b5-46b9-94ee-5324892ea939",
-        "status": "test",
-        "description": "Detects the uninstallation of Sysinternals Sysmon, which could be the result of legitimate administration or a manipulation for defense evasion",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1562.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Sysmon.exe' ESCAPE '\\') AND CommandLine LIKE '%-u%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_uninstall_sysmon.yml"
     },
     {
         "title": "Suspicious Greedy Compression Using Rar.EXE",
@@ -14413,6 +14393,48 @@
         "filename": "proc_creation_win_apt_gallium_sha1.yml"
     },
     {
+        "title": "Renamed ProcDump Execution",
+        "id": "4a0b2c7e-7cb2-495d-8b63-5f268e7bfd67",
+        "status": "test",
+        "description": "Detects the execution of a renamed ProcDump executable often used by attackers or malware",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036.003"
+        ],
+        "falsepositives": [
+            "Procdump illegaly bundled with legitimate software",
+            "Administrators who rename binaries (should be investigated)"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'procdump' OR ((CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\') AND (CommandLine LIKE '% -accepteula %' ESCAPE '\\' OR CommandLine LIKE '% /accepteula %' ESCAPE '\\'))) AND NOT ((Image LIKE '%\\\\procdump.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump64.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_renamed_sysinternals_procdump.yml"
+    },
+    {
+        "title": "Whoami.EXE Execution Anomaly",
+        "id": "8de1cbe8-d6f5-496d-8237-5f44a721c7a0",
+        "status": "experimental",
+        "description": "Detects the execution of whoami.exe with suspicious parent processes.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1033",
+            "car.2016-03-001"
+        ],
+        "falsepositives": [
+            "Admin activity",
+            "Scripts and administrative tools used in the monitored environment",
+            "Monitoring activity"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR OriginalFileName = 'whoami.exe') AND NOT (((ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\')) OR (ParentImage LIKE 'C:\\\\Program Files\\\\Microsoft Monitoring Agent\\\\Agent\\\\MonitoringHost.exe' ESCAPE '\\') OR (ParentImage = '') OR (ParentImage = '')))"
+        ],
+        "filename": "proc_creation_win_whoami_parent_anomaly.yml"
+    },
+    {
         "title": "Potential MsiExec Masquerading",
         "id": "e22a6eb2-f8a5-44b5-8b44-a2dbd47b1144",
         "status": "test",
@@ -14490,11 +14512,11 @@
         "filename": "proc_creation_win_hktl_covenant.yml"
     },
     {
-        "title": "Suspicious Double Extension",
+        "title": "Suspicious Double Extension File Execution",
         "id": "1cdd9a09-06c9-4769-99ff-626e2b3991b8",
         "status": "stable",
         "description": "Detects suspicious use of an .exe extension after a non-executable file extension like .pdf.exe, a set of spaces or underlines to cloak the executable file in spear phishing campaigns",
-        "author": "Florian Roth (Nextron Systems), @blu3_team (idea)",
+        "author": "Florian Roth (Nextron Systems), @blu3_team (idea), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.initial_access",
             "attack.t1566.001"
@@ -14504,7 +14526,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%.doc.exe' ESCAPE '\\' OR Image LIKE '%.docx.exe' ESCAPE '\\' OR Image LIKE '%.xls.exe' ESCAPE '\\' OR Image LIKE '%.xlsx.exe' ESCAPE '\\' OR Image LIKE '%.ppt.exe' ESCAPE '\\' OR Image LIKE '%.pptx.exe' ESCAPE '\\' OR Image LIKE '%.rtf.exe' ESCAPE '\\' OR Image LIKE '%.pdf.exe' ESCAPE '\\' OR Image LIKE '%.txt.exe' ESCAPE '\\' OR Image LIKE '%      .exe' ESCAPE '\\' OR Image LIKE '%\\_\\_\\_\\_\\_\\_.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%.doc.exe' ESCAPE '\\' OR Image LIKE '%.docx.exe' ESCAPE '\\' OR Image LIKE '%.xls.exe' ESCAPE '\\' OR Image LIKE '%.xlsx.exe' ESCAPE '\\' OR Image LIKE '%.ppt.exe' ESCAPE '\\' OR Image LIKE '%.pptx.exe' ESCAPE '\\' OR Image LIKE '%.rtf.exe' ESCAPE '\\' OR Image LIKE '%.pdf.exe' ESCAPE '\\' OR Image LIKE '%.txt.exe' ESCAPE '\\' OR Image LIKE '%      .exe' ESCAPE '\\' OR Image LIKE '%\\_\\_\\_\\_\\_\\_.exe' ESCAPE '\\' OR Image LIKE '%.doc.js' ESCAPE '\\' OR Image LIKE '%.docx.js' ESCAPE '\\' OR Image LIKE '%.xls.js' ESCAPE '\\' OR Image LIKE '%.xlsx.js' ESCAPE '\\' OR Image LIKE '%.ppt.js' ESCAPE '\\' OR Image LIKE '%.pptx.js' ESCAPE '\\' OR Image LIKE '%.rtf.js' ESCAPE '\\' OR Image LIKE '%.pdf.js' ESCAPE '\\' OR Image LIKE '%.txt.js' ESCAPE '\\') AND (CommandLine LIKE '%.doc.exe%' ESCAPE '\\' OR CommandLine LIKE '%.docx.exe%' ESCAPE '\\' OR CommandLine LIKE '%.xls.exe%' ESCAPE '\\' OR CommandLine LIKE '%.xlsx.exe%' ESCAPE '\\' OR CommandLine LIKE '%.ppt.exe%' ESCAPE '\\' OR CommandLine LIKE '%.pptx.exe%' ESCAPE '\\' OR CommandLine LIKE '%.rtf.exe%' ESCAPE '\\' OR CommandLine LIKE '%.pdf.exe%' ESCAPE '\\' OR CommandLine LIKE '%.txt.exe%' ESCAPE '\\' OR CommandLine LIKE '%      .exe%' ESCAPE '\\' OR CommandLine LIKE '%\\_\\_\\_\\_\\_\\_.exe%' ESCAPE '\\' OR CommandLine LIKE '%.doc.js%' ESCAPE '\\' OR CommandLine LIKE '%.docx.js%' ESCAPE '\\' OR CommandLine LIKE '%.xls.js%' ESCAPE '\\' OR CommandLine LIKE '%.xlsx.js%' ESCAPE '\\' OR CommandLine LIKE '%.ppt.js%' ESCAPE '\\' OR CommandLine LIKE '%.pptx.js%' ESCAPE '\\' OR CommandLine LIKE '%.rtf.js%' ESCAPE '\\' OR CommandLine LIKE '%.pdf.js%' ESCAPE '\\' OR CommandLine LIKE '%.txt.js%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_double_extension.yml"
     },
@@ -14673,6 +14695,25 @@
         "filename": "proc_creation_win_hktl_hashcat.yml"
     },
     {
+        "title": "Renamed Sysinternals Sdelete Execution",
+        "id": "c1d867fe-8d95-4487-aab4-e53f2d339f90",
+        "status": "experimental",
+        "description": "Detects the use of a renamed SysInternals Sdelete, which is something an administrator shouldn't do (the renaming)",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1485"
+        ],
+        "falsepositives": [
+            "System administrator usage"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND OriginalFileName = 'sdelete.exe' AND NOT ((Image LIKE '%\\\\sdelete.exe' ESCAPE '\\' OR Image LIKE '%\\\\sdelete64.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_renamed_sysinternals_sdelete.yml"
+    },
+    {
         "title": "Suspicious Hacktool Execution - PE Metadata",
         "id": "37c1333a-a0db-48be-b64b-7393b2386e3b",
         "status": "experimental",
@@ -14776,6 +14817,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND Image LIKE '%\\\\explorer.exe' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_regsvr32_spawn_explorer.yml"
+    },
+    {
+        "title": "Renamed SysInternals DebugView Execution",
+        "id": "cd764533-2e07-40d6-a718-cfeec7f2da7f",
+        "status": "test",
+        "description": "Detects suspicious renamed SysInternals DebugView execution",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.resource_development",
+            "attack.t1588.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Product = 'Sysinternals DebugView' AND NOT (OriginalFileName = 'Dbgview.exe' AND Image LIKE '%\\\\Dbgview.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_renamed_sysinternals_debugview.yml"
     },
     {
         "title": "Renamed Mavinject.EXE Execution",
@@ -14936,7 +14996,8 @@
             "car.2013-05-009"
         ],
         "falsepositives": [
-            "Custom applications use renamed binaries adding slight change to binary name. Typically this is easy to spot and add to whitelist"
+            "Custom applications use renamed binaries adding slight change to binary name. Typically this is easy to spot and add to whitelist",
+            "PsExec installed via Windows Store doesn't contain original filename field (False negative)"
         ],
         "level": "high",
         "rule": [
@@ -15001,25 +15062,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\ProcessHacker\\_%' ESCAPE '\\' OR (Image LIKE '%\\\\SystemInformer.exe' ESCAPE '\\' OR Image LIKE '%\\\\ProcessHacker.exe' ESCAPE '\\') OR OriginalFileName IN ('ProcessHacker.exe', 'Process Hacker', 'SystemInformer.exe') OR Description IN ('Process Hacker', 'System Informer') OR Product = 'Process Hacker' OR (Hashes LIKE '%MD5=68F9B52895F4D34E74112F3129B3B00D%' ESCAPE '\\' OR Hashes LIKE '%SHA1=C5E2018BF7C0F314FED4FD7FE7E69FA2E648359E%' ESCAPE '\\' OR Hashes LIKE '%SHA256=D4A0FE56316A2C45B9BA9AC1005363309A3EDC7ACF9E4DF64D326A0FF273E80F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=04DE0AD9C37EB7BD52043D2ECAC958DF%' ESCAPE '\\' OR Hashes LIKE '%MD5=B365AF317AE730A67C936F21432B9C71%' ESCAPE '\\' OR Hashes LIKE '%SHA1=A0BDFAC3CE1880B32FF9B696458327CE352E3B1D%' ESCAPE '\\' OR Hashes LIKE '%SHA256=BD2C2CF0631D881ED382817AFCCE2B093F4E412FFB170A719E2762F250ABFEA4%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3695333C60DEDECDCAFF1590409AA462%' ESCAPE '\\') OR md5 IN ('68f9b52895f4d34e74112f3129b3b00d', 'b365af317ae730a67c936f21432b9c71') OR sha1 IN ('c5e2018bf7c0f314fed4fd7fe7e69fa2e648359e', 'a0bdfac3ce1880b32ff9b696458327ce352e3b1d') OR sha256 IN ('d4a0fe56316a2c45b9ba9ac1005363309a3edc7acf9e4df64d326a0ff273e80f', 'bd2c2cf0631d881ed382817afcce2b093f4e412ffb170a719e2762f250abfea4') OR Imphash IN ('04de0ad9c37eb7bd52043d2ecac958df', '3695333c60dedecdcaff1590409aa462')))"
         ],
         "filename": "proc_creation_win_pua_process_hacker.yml"
-    },
-    {
-        "title": "Sysinternals SDelete Delete File",
-        "id": "a4824fca-976f-4964-b334-0621379e84c4",
-        "status": "experimental",
-        "description": "Detects the use of SDelete to erase a file not the free space",
-        "author": "frack113",
-        "tags": [
-            "attack.impact",
-            "attack.t1485"
-        ],
-        "falsepositives": [
-            "System administrator usage"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND OriginalFileName = 'sdelete.exe' AND NOT ((CommandLine LIKE '% -h%' ESCAPE '\\' OR CommandLine LIKE '% -c%' ESCAPE '\\' OR CommandLine LIKE '% -z%' ESCAPE '\\' OR CommandLine LIKE '% /\\?%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_sdelete.yml"
     },
     {
         "title": "WmiPrvSE Spawned PowerShell",
@@ -15235,6 +15277,25 @@
         "filename": "proc_creation_win_wmi_backdoor_exchange_transport_agent.yml"
     },
     {
+        "title": "Uninstall Sysinternals Sysmon",
+        "id": "6a5f68d1-c4b5-46b9-94ee-5324892ea939",
+        "status": "test",
+        "description": "Detects the uninstallation of Sysinternals Sysmon, which could be the result of legitimate administration or a manipulation for defense evasion",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Sysmon.exe' ESCAPE '\\') AND CommandLine LIKE '%-u%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_uninstall_sysinternals_sysmon.yml"
+    },
+    {
         "title": "PUA - DIT Snapshot Viewer",
         "id": "d3b70aad-097e-409c-9df2-450f80dc476b",
         "status": "test",
@@ -15427,6 +15488,26 @@
         "filename": "proc_creation_win_inline_base64_mz_header.yml"
     },
     {
+        "title": "Suspicious Whoami.EXE Execution From Privileged Process",
+        "id": "79ce34ca-af29-4d0e-b832-fc1b377020db",
+        "status": "experimental",
+        "description": "Detects the execution of \"whoami.exe\" by privileged accounts that are often abused by threat actors",
+        "author": "Florian Roth (Nextron Systems), Teymur Kheirkhabarov",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.discovery",
+            "attack.t1033"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'whoami.exe' OR Image LIKE '%\\\\whoami.exe' ESCAPE '\\') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\' OR User LIKE '%TrustedInstaller%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_whoami_execution_from_high_priv_process.yml"
+    },
+    {
         "title": "Potential Data Exfiltration Activity Via CommandLine Tools",
         "id": "7d1aaf3d-4304-425c-b7c3-162055e0b3ab",
         "status": "experimental",
@@ -15485,26 +15566,6 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%SQBuAHYAbwBrAGUALQ%' ESCAPE '\\' OR CommandLine LIKE '%kAbgB2AG8AawBlAC0A%' ESCAPE '\\' OR CommandLine LIKE '%JAG4AdgBvAGsAZQAtA%' ESCAPE '\\' OR CommandLine LIKE '%SW52b2tlL%' ESCAPE '\\' OR CommandLine LIKE '%ludm9rZS%' ESCAPE '\\' OR CommandLine LIKE '%JbnZva2Ut%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_base64_invoke.yml"
-    },
-    {
-        "title": "PsExec/PAExec Escalation to LOCAL SYSTEM",
-        "id": "8834e2f7-6b4b-4f09-8906-d2276470ee23",
-        "status": "experimental",
-        "description": "Detects suspicious flags used by PsExec and PAExec to escalate a command line to LOCAL_SYSTEM rights",
-        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali",
-        "tags": [
-            "attack.resource_development",
-            "attack.t1587.001"
-        ],
-        "falsepositives": [
-            "Admins that use PsExec or PAExec to escalate to the SYSTEM account for maintenance purposes (rare)",
-            "Users that debug Microsoft Intune issues using the commands mentioned in the official documentation; see https://learn.microsoft.com/en-us/mem/intune/apps/intune-management-extension"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\') AND (CommandLine LIKE '%psexec%' ESCAPE '\\' OR CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%accepteula%' ESCAPE '\\' OR CommandLine LIKE '%cmd /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd /r %' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_susp_psexex_paexec_escalate_system.yml"
     },
     {
         "title": "Suspicious Schtasks Schedule Types",
@@ -15718,24 +15779,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('Cmd.Exe', 'PowerShell.EXE', 'pwsh.dll')) AND (ParentImage LIKE '%\\\\elevation\\_service.exe' ESCAPE '\\' AND IntegrityLevel = 'System'))"
         ],
         "filename": "proc_creation_win_exploit_cve_2021_41379.yml"
-    },
-    {
-        "title": "Renamed PsExec Service Execution",
-        "id": "51ae86a2-e2e1-4097-ad85-c46cb6851de4",
-        "status": "experimental",
-        "description": "Detects suspicious launch of a renamed version of the PSEXESVC service with, which is not often used by legitimate administrators",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Legitimate administrative tasks"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND OriginalFileName = 'psexesvc.exe' AND NOT (Image LIKE 'C:\\\\Windows\\\\PSEXESVC.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_susp_psexesvc_renamed.yml"
     },
     {
         "title": "PUA - RunXCmd Execution",
@@ -16153,26 +16196,6 @@
         "filename": "proc_creation_win_task_folder_evasion.yml"
     },
     {
-        "title": "PsExec/PAExec Flags",
-        "id": "207b0396-3689-42d9-8399-4222658efc99",
-        "status": "experimental",
-        "description": "Detects suspicious flags used by PsExec and PAExec but no usual program name in command line",
-        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali",
-        "tags": [
-            "attack.resource_development",
-            "attack.t1587.001"
-        ],
-        "falsepositives": [
-            "Weird admins that rename their tools",
-            "Software companies that bundle PsExec/PAExec with their software and rename it, so that it is less embarrassing"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\') OR (CommandLine LIKE '%accepteula%' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\' AND CommandLine LIKE '% \\\\\\*' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%PsExec%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_susp_psexex_paexec_flags.yml"
-    },
-    {
         "title": "PUA - Ngrok Execution",
         "id": "ee37eb7c-a4e7-4cd5-8fa4-efa27f1c3f31",
         "status": "test",
@@ -16230,6 +16253,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%â%' ESCAPE '\\' OR CommandLine LIKE '%€%' ESCAPE '\\' OR CommandLine LIKE '%£%' ESCAPE '\\' OR CommandLine LIKE '%¯%' ESCAPE '\\' OR CommandLine LIKE '%®%' ESCAPE '\\' OR CommandLine LIKE '%µ%' ESCAPE '\\' OR CommandLine LIKE '%¶%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_char_in_cmd.yml"
+    },
+    {
+        "title": "Deny Service Access Using Security Descriptor Tampering Via Sc.EXE",
+        "id": "99cf1e02-00fb-4c0d-8375-563f978dfd37",
+        "status": "test",
+        "description": "Detects suspicious DACL modifications to deny access to a service that affects critical trustees. This can be used to hide services or make them unstoppable.",
+        "author": "Jonhnathan Ribeiro, oscd.community",
+        "tags": [
+            "attack.persistence",
+            "attack.t1543.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%D;%' ESCAPE '\\') AND (CommandLine LIKE '%;IU%' ESCAPE '\\' OR CommandLine LIKE '%;SU%' ESCAPE '\\' OR CommandLine LIKE '%;BA%' ESCAPE '\\' OR CommandLine LIKE '%;SY%' ESCAPE '\\' OR CommandLine LIKE '%;WD%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_sc_sdset_deny_service_access.yml"
     },
     {
         "title": "Suspicious File Downloaded From Direct IP Via Certutil.EXE",
@@ -17547,11 +17589,12 @@
             "attack.defense_evasion"
         ],
         "falsepositives": [
-            "Unknown"
+            "False positives should be very low with the extensions list cited. Especially if you don't heavily utilize OneNote.",
+            "Occasional FPs might occur if OneNote is used internally to share different embedded documents"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\onenote.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenotem.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenoteim.exe' ESCAPE '\\') AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\OneNote\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Exported\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.htm' ESCAPE '\\' OR TargetFilename LIKE '%.html' ESCAPE '\\' OR TargetFilename LIKE '%.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\onenote.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenotem.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenoteim.exe' ESCAPE '\\') AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\OneNote\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.chm' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.htm' ESCAPE '\\' OR TargetFilename LIKE '%.html' ESCAPE '\\' OR TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.wsf' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_office_onenote_susp_dropped_files.yml"
     },
