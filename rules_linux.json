@@ -540,6 +540,24 @@
         "filename": "proc_creation_lnx_nohup.yml"
     },
     {
+        "title": "Linux Package Uninstall",
+        "id": "95d61234-7f56-465c-6f2d-b562c6fedbc4",
+        "description": "Detects linux package removal using builtin tools such as \"yum\", \"apt\", \"apt-get\" or \"dpkg\".",
+        "author": "Tuan Le (NCSGroup), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070"
+        ],
+        "falsepositives": [
+            "Administrator or administrator scripts might delete packages for several reasons (debugging, troubleshooting)."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/yum' ESCAPE '\\' AND (CommandLine LIKE '%erase%' ESCAPE '\\' OR CommandLine LIKE '%remove%' ESCAPE '\\')) OR ((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND (CommandLine LIKE '%remove%' ESCAPE '\\' OR CommandLine LIKE '%purge%' ESCAPE '\\')) OR (Image LIKE '%/dpkg' ESCAPE '\\' AND (CommandLine LIKE '%--remove %' ESCAPE '\\' OR CommandLine LIKE '% -r %' ESCAPE '\\')) OR (Image LIKE '%/rpm' ESCAPE '\\' AND CommandLine LIKE '% -e %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_remove_package.yml"
+    },
+    {
         "title": "Linux Base64 Encoded Shebang In CLI",
         "id": "fe2f9663-41cb-47e2-b954-8a228f3b9dff",
         "description": "Detects the presence of a base64 version of the shebang in the commandline, which could indicate a malicious payload about to be decoded",

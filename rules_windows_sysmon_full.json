@@ -30270,6 +30270,26 @@
         "filename": "image_load_usp_svchost_clfsw32.yml"
     },
     {
+        "title": "Amsi.DLL Load By Uncommon Process",
+        "id": "facd1549-e416-48e0-b8c4-41d7215eedc8",
+        "status": "experimental",
+        "description": "Detects loading of Amsi.dll by uncommon processes",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.impact",
+            "attack.t1490"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\amsi.dll' ESCAPE '\\' AND NOT (((Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\Sysmon64.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (Image LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\ngentask.exe' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_dll_amsi_uncommon_process.yml"
+    },
+    {
         "title": "Suspicious Load of Advapi31.dll",
         "id": "d813d662-785b-42ca-8b4a-f7457d78d5a9",
         "status": "test",
