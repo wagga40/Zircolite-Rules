@@ -1654,6 +1654,26 @@
         "filename": "win_security_alert_enable_weak_encryption.yml"
     },
     {
+        "title": "CVE-2023-23397 Exploitation Attempt",
+        "id": "73c59189-6a6d-4b9f-a748-8f6f9bbed75c",
+        "status": "experimental",
+        "description": "Detects outlook initiating connection to a WebDAV or SMB share, which could be a sign of CVE-2023-23397 exploitation.",
+        "author": "Robert Lee @quantum_cookie",
+        "tags": [
+            "attack.credential_access",
+            "attack.initial_access",
+            "cve.2023.23397"
+        ],
+        "falsepositives": [
+            "Searchprotocolhost.exe likes to query these registry keys. To avoid false postives, it's better to filter out those events before they reach the SIEM"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4656', '4663') AND ProcessName LIKE '%\\\\OUTLOOK.EXE' ESCAPE '\\' AND Accesses LIKE '%Query key value%' ESCAPE '\\' AND ObjectName LIKE '%\\\\REGISTRY\\\\MACHINE\\\\SYSTEM%' ESCAPE '\\' AND ObjectName LIKE '%Services\\\\%' ESCAPE '\\' AND (ObjectName LIKE '%WebClient\\\\NetworkProvider' ESCAPE '\\' OR ObjectName LIKE '%LanmanWorkstation\\\\NetworkProvider' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_exploit_cve_2023_23397_outlook_remote_file_query.yml"
+    },
+    {
         "title": "Active Directory User Backdoors",
         "id": "300bac00-e041-4ee2-9c36-e262656a6ecc",
         "status": "test",
@@ -10990,6 +11010,25 @@
         "filename": "proc_creation_win_sc_sdset_hide_sevices.yml"
     },
     {
+        "title": "Suspicious Rundll32 Execution With Image Extension",
+        "id": "4aa6040b-3f28-44e3-a769-9208e5feb5ec",
+        "status": "experimental",
+        "description": "Detects the execution of Rundll32.exe with DLL files masquerading as image files",
+        "author": "Hieu Tran",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.exe') AND (CommandLine LIKE '%.bmp%' ESCAPE '\\' OR CommandLine LIKE '%.cr2%' ESCAPE '\\' OR CommandLine LIKE '%.eps%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.ico%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.nef%' ESCAPE '\\' OR CommandLine LIKE '%.orf%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.raw%' ESCAPE '\\' OR CommandLine LIKE '%.sr2%' ESCAPE '\\' OR CommandLine LIKE '%.tif%' ESCAPE '\\' OR CommandLine LIKE '%.tiff%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_rundll32_susp_execution_with_image_extension.yml"
+    },
+    {
         "title": "HackTool - XORDump Execution",
         "id": "66e563f9-1cbd-4a22-a957-d8b7c0f44372",
         "status": "test",
@@ -12359,7 +12398,7 @@
         "title": "Suspicious Regsvr32 Execution With Image Extension",
         "id": "089fc3d2-71e8-4763-a8a5-c97fbb0a403e",
         "status": "experimental",
-        "description": "Detects execution of REGSVR32.exe with DLL masquerading as image files",
+        "description": "Detects the execution of REGSVR32.exe with DLL files masquerading as image files",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
@@ -12370,7 +12409,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\REGSVR32.EXE' ESCAPE '\\') AND (CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\REGSVR32.EXE' ESCAPE '\\') AND (CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_regsvr32_image.yml"
     },
@@ -13274,7 +13313,7 @@
         "filename": "proc_creation_win_ping_hex_ip.yml"
     },
     {
-        "title": "Potential ACTINIUM Persistence Activiy",
+        "title": "Potential ACTINIUM Persistence Activity",
         "id": "e1118a8f-82f5-44b3-bb6b-8a284e5df602",
         "status": "test",
         "description": "Detects specific process parameters as used by ACTINIUM scheduled task persistence creation.",
@@ -20958,6 +20997,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND ((TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{804423C2-F490-4ac3-BFA5-13DEDE63A71A}' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{A5124AF5-DF23-49bf-B0ED-A18ED3DEA027}' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\HARDWARE\\\\{2DB80286-1784-48b5-A751-B6ED1F490303}' ESCAPE '\\') OR TargetObject LIKE 'HKLM\\\\SYSTEM\\\\Setup\\\\PrintResponsor\\\\%' ESCAPE '\\'))"
         ],
         "filename": "registry_event_mal_flowcloud.yml"
+    },
+    {
+        "title": "Potential Qakbot Registry Activity",
+        "id": "1c8e96cd-2bed-487d-9de0-b46c90cade56",
+        "status": "experimental",
+        "description": "Detects a registry key used by IceID in a campaign that distributes malicious OneNote files",
+        "author": "Hieu Tran",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Software\\\\firm\\\\soft\\\\Name' ESCAPE '\\')"
+        ],
+        "filename": "registry_event_malware_qakbot_registry.yml"
     },
     {
         "title": "Esentutl Volume Shadow Copy Service Keys",

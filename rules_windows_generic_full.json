@@ -2556,6 +2556,26 @@
         "filename": "win_security_not_allowed_rdp_access.yml"
     },
     {
+        "title": "CVE-2023-23397 Exploitation Attempt",
+        "id": "73c59189-6a6d-4b9f-a748-8f6f9bbed75c",
+        "status": "experimental",
+        "description": "Detects outlook initiating connection to a WebDAV or SMB share, which could be a sign of CVE-2023-23397 exploitation.",
+        "author": "Robert Lee @quantum_cookie",
+        "tags": [
+            "attack.credential_access",
+            "attack.initial_access",
+            "cve.2023.23397"
+        ],
+        "falsepositives": [
+            "Searchprotocolhost.exe likes to query these registry keys. To avoid false postives, it's better to filter out those events before they reach the SIEM"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4656', '4663') AND ProcessName LIKE '%\\\\OUTLOOK.EXE' ESCAPE '\\' AND Accesses LIKE '%Query key value%' ESCAPE '\\' AND ObjectName LIKE '%\\\\REGISTRY\\\\MACHINE\\\\SYSTEM%' ESCAPE '\\' AND ObjectName LIKE '%Services\\\\%' ESCAPE '\\' AND (ObjectName LIKE '%WebClient\\\\NetworkProvider' ESCAPE '\\' OR ObjectName LIKE '%LanmanWorkstation\\\\NetworkProvider' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_exploit_cve_2023_23397_outlook_remote_file_query.yml"
+    },
+    {
         "title": "DPAPI Domain Master Key Backup Attempt",
         "id": "39a94fd1-8c9a-4ff6-bf22-c058762f8014",
         "status": "test",
@@ -16750,6 +16770,21 @@
         "filename": "proc_creation_win_susp_lolbin_non_c_drive.yml"
     },
     {
+        "title": "Potential DLL File Download Via PowerShell Invoke-WebRequest",
+        "id": "0f0450f3-8b47-441e-a31b-15a91dc243e2",
+        "status": "experimental",
+        "description": "Detects potential DLL files being downloaded using the PowerShell Invoke-WebRequest cmdlet",
+        "author": "Florian Roth (Nextron Systems), Hieu Tran",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%Invoke-WebRequest %' ESCAPE '\\' OR CommandLine LIKE '%IWR %' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\' AND CommandLine LIKE '%OutFile%' ESCAPE '\\' AND CommandLine LIKE '%.dll%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_powershell_download_dll.yml"
+    },
+    {
         "title": "Potential Renamed Rundll32 Execution",
         "id": "2569ed8c-1147-498a-9b8c-2ad3656b10ed",
         "status": "experimental",
@@ -18768,6 +18803,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%DCLCWPDTSD%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_sc_sdset_hide_sevices.yml"
+    },
+    {
+        "title": "Suspicious Rundll32 Execution With Image Extension",
+        "id": "4aa6040b-3f28-44e3-a769-9208e5feb5ec",
+        "status": "experimental",
+        "description": "Detects the execution of Rundll32.exe with DLL files masquerading as image files",
+        "author": "Hieu Tran",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.exe') AND (CommandLine LIKE '%.bmp%' ESCAPE '\\' OR CommandLine LIKE '%.cr2%' ESCAPE '\\' OR CommandLine LIKE '%.eps%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.ico%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.nef%' ESCAPE '\\' OR CommandLine LIKE '%.orf%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.raw%' ESCAPE '\\' OR CommandLine LIKE '%.sr2%' ESCAPE '\\' OR CommandLine LIKE '%.tif%' ESCAPE '\\' OR CommandLine LIKE '%.tiff%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_rundll32_susp_execution_with_image_extension.yml"
     },
     {
         "title": "Remote Access Tool - GoToAssist Execution",
@@ -21218,7 +21272,7 @@
         "title": "Suspicious Regsvr32 Execution With Image Extension",
         "id": "089fc3d2-71e8-4763-a8a5-c97fbb0a403e",
         "status": "experimental",
-        "description": "Detects execution of REGSVR32.exe with DLL masquerading as image files",
+        "description": "Detects the execution of REGSVR32.exe with DLL files masquerading as image files",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
@@ -21229,7 +21283,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\REGSVR32.EXE' ESCAPE '\\') AND (CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\REGSVR32.EXE' ESCAPE '\\') AND (CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_regsvr32_image.yml"
     },
@@ -22604,7 +22658,7 @@
         "filename": "proc_creation_win_ping_hex_ip.yml"
     },
     {
-        "title": "Potential ACTINIUM Persistence Activiy",
+        "title": "Potential ACTINIUM Persistence Activity",
         "id": "e1118a8f-82f5-44b3-bb6b-8a284e5df602",
         "status": "test",
         "description": "Detects specific process parameters as used by ACTINIUM scheduled task persistence creation.",
@@ -26169,6 +26223,21 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' AND CommandLine REGEXP '\\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\\}')"
         ],
         "filename": "proc_creation_win_lolbin_class_exec_xwizard.yml"
+    },
+    {
+        "title": "Gzip Archive Decode Via PowerShell",
+        "id": "98767d61-b2e8-4d71-b661-e36783ee24c1",
+        "status": "experimental",
+        "description": "Detects attempts of decoding encoded Gzip archives via PowerShell.",
+        "author": "Hieu Tran",
+        "falsepositives": [
+            "Legitimate administrative scripts may use this functionality. Use \"ParentImage\" in combination with the script names and allowed users and applications to filter legitimate executions"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%GZipStream%' ESCAPE '\\' AND CommandLine LIKE '%::Decompress%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_powershell_decode_gzip.yml"
     },
     {
         "title": "Detect Virtualbox Driver Installation OR Starting Of VMs",
@@ -36001,6 +36070,25 @@
         "filename": "registry_event_mal_flowcloud.yml"
     },
     {
+        "title": "Potential Qakbot Registry Activity",
+        "id": "1c8e96cd-2bed-487d-9de0-b46c90cade56",
+        "status": "experimental",
+        "description": "Detects a registry key used by IceID in a campaign that distributes malicious OneNote files",
+        "author": "Hieu Tran",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Software\\\\firm\\\\soft\\\\Name' ESCAPE '\\')"
+        ],
+        "filename": "registry_event_malware_qakbot_registry.yml"
+    },
+    {
         "title": "Esentutl Volume Shadow Copy Service Keys",
         "id": "5aad0995-46ab-41bd-a9ff-724f41114971",
         "status": "test",
@@ -38336,6 +38424,24 @@
             "SELECT * FROM logs WHERE ((TargetFilename LIKE '%.iso.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.img.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.vhd.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.vhdx.lnk' ESCAPE '\\') AND TargetFilename LIKE '%\\\\Microsoft\\\\Windows\\\\Recent\\\\%' ESCAPE '\\')"
         ],
         "filename": "file_event_win_iso_file_recent.yml"
+    },
+    {
+        "title": "Potential Binary Or Script Dropper Via PowerShell.EXE",
+        "id": "7047d730-036f-4f40-b9d8-1c63e36d5e62",
+        "status": "experimental",
+        "description": "Detects PowerShell creating a binary executable or script file.",
+        "author": "frack113",
+        "tags": [
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Depending on your environment accepted applications may leverage this at times. It is recommended to search for anomalies inidicative of malware."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.com' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.ocx' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.scr' ESCAPE '\\' OR TargetFilename LIKE '%.sys' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\')) AND NOT ((TargetFilename LIKE '%\\_\\_PSScriptPolicyTest\\_%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_powershell_drop_binary.yml"
     },
     {
         "title": "Suspicious Process Writes Ntds.dit",
