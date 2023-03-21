@@ -1784,6 +1784,24 @@
         "filename": "proc_creation_lnx_webshell_detection.yml"
     },
     {
+        "title": "Terminate Linux Process Via Kill",
+        "id": "64c41342-6b27-523b-5d3f-c265f3efcdb3",
+        "description": "Detects usage of command line tools such as \"kill\", \"pkill\" or \"killall\" to terminate or signal a running process.",
+        "author": "Tuan Le (NCSGroup)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/kill' ESCAPE '\\' OR Image LIKE '%/pkill' ESCAPE '\\' OR Image LIKE '%/killall' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_kill_process.yml"
+    },
+    {
         "title": "Touch Suspicious Service File",
         "id": "31545105-3444-4584-bebf-c466353230d2",
         "description": "Detects usage of the \"touch\" process in service file.",
