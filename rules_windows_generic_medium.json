@@ -2280,7 +2280,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4656', '4663') AND ProcessName LIKE '%\\\\OUTLOOK.EXE' ESCAPE '\\' AND Accesses LIKE '%Query key value%' ESCAPE '\\' AND ObjectName LIKE '%\\\\REGISTRY\\\\MACHINE\\\\SYSTEM%' ESCAPE '\\' AND ObjectName LIKE '%Services\\\\%' ESCAPE '\\' AND (ObjectName LIKE '%WebClient\\\\NetworkProvider' ESCAPE '\\' OR ObjectName LIKE '%LanmanWorkstation\\\\NetworkProvider' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4656', '4663') AND ProcessName LIKE '%\\\\OUTLOOK.EXE' ESCAPE '\\' AND ObjectName LIKE '%\\\\REGISTRY\\\\MACHINE\\\\SYSTEM%' ESCAPE '\\' AND ObjectName LIKE '%Services\\\\%' ESCAPE '\\' AND (ObjectName LIKE '%WebClient\\\\NetworkProvider' ESCAPE '\\' OR ObjectName LIKE '%LanmanWorkstation\\\\NetworkProvider' ESCAPE '\\') AND AccessList LIKE '%\\%\\%4416%' ESCAPE '\\')"
         ],
         "filename": "win_security_exploit_cve_2023_23397_outlook_remote_file_query.yml"
     },
@@ -9575,6 +9575,27 @@
             "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\coregen.exe' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Microsoft Silverlight\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Silverlight\\\\%' ESCAPE '\\')))"
         ],
         "filename": "image_load_side_load_coregen.yml"
+    },
+    {
+        "title": "Potential Iviewers.DLL Sideloading",
+        "id": "4c21b805-4dd7-469f-b47d-7383a8fcb437",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"iviewers.dll\" (OLE/COM Object Interface Viewer)",
+        "author": "X__Junior",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\iviewers.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Windows Kits\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Windows Kits\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_side_load_iviewers.yml"
     },
     {
         "title": "Load Of Dbghelp/Dbgcore DLL From Suspicious Process",
