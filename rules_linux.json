@@ -598,11 +598,11 @@
             "attack.t1082"
         ],
         "falsepositives": [
-            "Legitimate administrative activity"
+            "Likely"
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/lsb-release', '/etc/redhat-release', '/etc/issue')) OR (type = 'EXECVE' AND a0 IN ('uname', 'uptime')))"
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/lsb-release', '/etc/redhat-release', '/etc/issue')) OR (type = 'EXECVE' AND a0 IN ('uname', 'uptime', 'lsmod', 'hostname', 'env')) OR (type = 'EXECVE' AND a0 = 'grep' AND (a1 LIKE '%vbox%' ESCAPE '\\' OR a1 LIKE '%vm%' ESCAPE '\\' OR a1 LIKE '%xen%' ESCAPE '\\' OR a1 LIKE '%virtio%' ESCAPE '\\' OR a1 LIKE '%hv%' ESCAPE '\\')) OR (type = 'EXECVE' AND a0 = 'kmod' AND a1 = 'list'))"
         ],
         "filename": "lnx_auditd_system_info_discovery.yml"
     },
@@ -717,6 +717,24 @@
             "SELECT * FROM (SELECT *,count(*) AS agg FROM logs WHERE (type = 'SYSCALL' AND exe = '/usr/bin/sudoedit') GROUP BY host) WHERE agg > 50"
         ],
         "filename": "lnx_auditd_cve_2021_3156_sudo_buffer_overflow_brutforce.yml"
+    },
+    {
+        "title": "Modify System Firewall",
+        "id": "323ff3f5-0013-4847-bbd4-250b5edb62cc",
+        "description": "Detects the removal of system firewall rules. Adversaries may only delete or modify a specific system firewall rule to bypass controls limiting network usage or access.\nDetection rules that match only on the disabling of firewalls will miss this.\n",
+        "author": "IAI",
+        "tags": [
+            "attack.t1562.004",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Legitimate admin activity"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'EXECVE' AND a0 = 'iptables' AND a1 LIKE '%DROP%' ESCAPE '\\') OR (type = 'EXECVE' AND a0 = 'firewall-cmd' AND a1 LIKE '%remove%' ESCAPE '\\') OR (type = 'EXECVE' AND a0 = 'ufw' AND a1 LIKE '%delete%' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_modify_system_firewall.yml"
     },
     {
         "title": "Auditing Configuration Changes on Linux Host",
@@ -954,6 +972,24 @@
         "filename": "lnx_auditd_screencaputre_xwd.yml"
     },
     {
+        "title": "Unix Shell Configuration Modification",
+        "id": "a94cdd87-6c54-4678-a6cc-2814ffe5a13d",
+        "description": "Detect unix shell configuration modification. Adversaries may establish persistence through executing malicious commands triggered when a new shell is opened.",
+        "author": "Peter Matkovski, IAI",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546.004"
+        ],
+        "falsepositives": [
+            "Admin or User activity are expected to generate some false positives"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/etc/shells' ESCAPE '\\' OR name LIKE '/etc/profile' ESCAPE '\\' OR name LIKE '/etc/profile.d/%' ESCAPE '\\' OR name LIKE '/etc/bash.bashrc' ESCAPE '\\' OR name LIKE '/etc/bashrc' ESCAPE '\\' OR name LIKE '/etc/zsh/zprofile' ESCAPE '\\' OR name LIKE '/etc/zsh/zshrc' ESCAPE '\\' OR name LIKE '/etc/zsh/zlogin' ESCAPE '\\' OR name LIKE '/etc/zsh/zlogout' ESCAPE '\\' OR name LIKE '/etc/csh.cshrc' ESCAPE '\\' OR name LIKE '/etc/csh.login' ESCAPE '\\' OR name LIKE '/root/.bashrc' ESCAPE '\\' OR name LIKE '/root/.bash\\_profile' ESCAPE '\\' OR name LIKE '/root/.profile' ESCAPE '\\' OR name LIKE '/root/.zshrc' ESCAPE '\\' OR name LIKE '/root/.zprofile' ESCAPE '\\' OR name LIKE '/home/%/.bashrc' ESCAPE '\\' OR name LIKE '/home/%/.zshrc' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_profile' ESCAPE '\\' OR name LIKE '/home/%/.zprofile' ESCAPE '\\' OR name LIKE '/home/%/.profile' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_login' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_logout' ESCAPE '\\' OR name LIKE '/home/%/.zlogin' ESCAPE '\\' OR name LIKE '/home/%/.zlogout' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_unix_shell_configuration_modification.yml"
+    },
+    {
         "title": "Systemd Service Creation",
         "id": "1bac86ba-41aa-4f62-9d6b-405eac99b485",
         "description": "Detects a creation of systemd services which could be used by adversaries to execute malicious code.",
@@ -988,25 +1024,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 = 'steghide' AND a1 = 'extract' AND a2 = '-sf' AND (a3 LIKE '%.jpg' ESCAPE '\\' OR a3 LIKE '%.png' ESCAPE '\\'))"
         ],
         "filename": "lnx_auditd_steghide_extract_steganography.yml"
-    },
-    {
-        "title": "Edit of .bash_profile and .bashrc",
-        "id": "e74e15cc-c4b6-4c80-b7eb-dfe49feb7fe9",
-        "description": "Detects change of user environment. Adversaries can insert code into these files to gain persistence each time a user logs in or opens a new shell.",
-        "author": "Peter Matkovski",
-        "tags": [
-            "attack.s0003",
-            "attack.persistence",
-            "attack.t1546.004"
-        ],
-        "falsepositives": [
-            "Admin or User activity"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/root/.bashrc' ESCAPE '\\' OR name LIKE '/root/.bash\\_profile' ESCAPE '\\' OR name LIKE '/root/.profile' ESCAPE '\\' OR name LIKE '/home/%/.bashrc' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_profile' ESCAPE '\\' OR name LIKE '/home/%/.profile' ESCAPE '\\' OR name LIKE '/etc/profile' ESCAPE '\\' OR name LIKE '/etc/shells' ESCAPE '\\' OR name LIKE '/etc/bashrc' ESCAPE '\\' OR name LIKE '/etc/csh.cshrc' ESCAPE '\\' OR name LIKE '/etc/csh.login' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_alter_bash_profile.yml"
     },
     {
         "title": "Suspicious C2 Activities",
