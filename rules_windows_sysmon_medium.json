@@ -1449,7 +1449,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ((ServiceFileName LIKE '%ADMIN$%' ESCAPE '\\' AND ServiceFileName LIKE '%.exe%' ESCAPE '\\') OR (ServiceFileName LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' AND ServiceFileName LIKE '%start%' ESCAPE '\\' AND ServiceFileName LIKE '%powershell%' ESCAPE '\\') OR ServiceFileName LIKE '%powershell -nop -w hidden -encodedcommand%' ESCAPE '\\' OR ServiceFileName LIKE ('%SUVYIChOZXctT2JqZWN0IE5ldC5XZWJjbGllbnQpLkRvd25sb2FkU3RyaW5nKCdodHRwOi8vMTI3LjAuMC4xO%' OR '%lFWCAoTmV3LU9iamVjdCBOZXQuV2ViY2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovLzEyNy4wLjAuMT%' OR '%JRVggKE5ldy1PYmplY3QgTmV0LldlYmNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHA6Ly8xMjcuMC4wLjE6%') ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ((ServiceFileName LIKE '%ADMIN$%' ESCAPE '\\' AND ServiceFileName LIKE '%.exe%' ESCAPE '\\') OR (ServiceFileName LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' AND ServiceFileName LIKE '%start%' ESCAPE '\\' AND ServiceFileName LIKE '%powershell%' ESCAPE '\\') OR ServiceFileName LIKE '%powershell -nop -w hidden -encodedcommand%' ESCAPE '\\' OR (ServiceFileName LIKE '%SUVYIChOZXctT2JqZWN0IE5ldC5XZWJjbGllbnQpLkRvd25sb2FkU3RyaW5nKCdodHRwOi8vMTI3LjAuMC4xO%' ESCAPE '\\' OR ServiceFileName LIKE '%lFWCAoTmV3LU9iamVjdCBOZXQuV2ViY2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovLzEyNy4wLjAuMT%' ESCAPE '\\' OR ServiceFileName LIKE '%JRVggKE5ldy1PYmplY3QgTmV0LldlYmNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHA6Ly8xMjcuMC4wLjE6%' ESCAPE '\\')))"
         ],
         "filename": "win_security_cobaltstrike_service_installs.yml"
     },
@@ -3177,7 +3177,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND ((ImagePath LIKE '%ADMIN$%' ESCAPE '\\' AND ImagePath LIKE '%.exe%' ESCAPE '\\') OR (ImagePath LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' AND ImagePath LIKE '%start%' ESCAPE '\\' AND ImagePath LIKE '%powershell%' ESCAPE '\\') OR ImagePath LIKE '%powershell -nop -w hidden -encodedcommand%' ESCAPE '\\' OR ImagePath LIKE ('%SUVYIChOZXctT2JqZWN0IE5ldC5XZWJjbGllbnQpLkRvd25sb2FkU3RyaW5nKCdodHRwOi8vMTI3LjAuMC4xO%' OR '%lFWCAoTmV3LU9iamVjdCBOZXQuV2ViY2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovLzEyNy4wLjAuMT%' OR '%JRVggKE5ldy1PYmplY3QgTmV0LldlYmNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHA6Ly8xMjcuMC4wLjE6%') ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND ((ImagePath LIKE '%ADMIN$%' ESCAPE '\\' AND ImagePath LIKE '%.exe%' ESCAPE '\\') OR (ImagePath LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' AND ImagePath LIKE '%start%' ESCAPE '\\' AND ImagePath LIKE '%powershell%' ESCAPE '\\') OR ImagePath LIKE '%powershell -nop -w hidden -encodedcommand%' ESCAPE '\\' OR ImagePath LIKE '%SUVYIChOZXctT2JqZWN0IE5ldC5XZWJjbGllbnQpLkRvd25sb2FkU3RyaW5nKCdodHRwOi8vMTI3LjAuMC4xO%' ESCAPE '\\' OR ImagePath LIKE '%lFWCAoTmV3LU9iamVjdCBOZXQuV2ViY2xpZW50KS5Eb3dubG9hZFN0cmluZygnaHR0cDovLzEyNy4wLjAuMT%' ESCAPE '\\' OR ImagePath LIKE '%JRVggKE5ldy1PYmplY3QgTmV0LldlYmNsaWVudCkuRG93bmxvYWRTdHJpbmcoJ2h0dHA6Ly8xMjcuMC4wLjE6%' ESCAPE '\\'))"
         ],
         "filename": "win_system_cobaltstrike_service_installs.yml"
     },
@@ -10035,7 +10035,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\vsstrace.dll' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\Temp\\\\{%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\vsstrace.dll' ESCAPE '\\' AND NOT (((Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\Temp\\\\{%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "image_load_dll_vsstrace_susp_load.yml"
     },
@@ -10297,7 +10297,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR Image LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR Image LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR Image LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR Image LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\')))"
         ],
         "filename": "image_load_dll_vss_ps_susp_load.yml"
     },
@@ -13134,7 +13134,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE ('%OjpGcm9tQmFzZTY0U3RyaW5n%' OR '%o6RnJvbUJhc2U2NFN0cmluZ%' OR '%6OkZyb21CYXNlNjRTdHJpbm%') ESCAPE '\\' OR (CommandLine LIKE '%OgA6AEYAcgBvAG0AQgBhAHMAZQA2ADQAUwB0AHIAaQBuAGcA%' ESCAPE '\\' OR CommandLine LIKE '%oAOgBGAHIAbwBtAEIAYQBzAGUANgA0AFMAdAByAGkAbgBnA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoARgByAG8AbQBCAGEAcwBlADYANABTAHQAcgBpAG4AZw%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%OjpGcm9tQmFzZTY0U3RyaW5n%' ESCAPE '\\' OR CommandLine LIKE '%o6RnJvbUJhc2U2NFN0cmluZ%' ESCAPE '\\' OR CommandLine LIKE '%6OkZyb21CYXNlNjRTdHJpbm%' ESCAPE '\\' OR (CommandLine LIKE '%OgA6AEYAcgBvAG0AQgBhAHMAZQA2ADQAUwB0AHIAaQBuAGcA%' ESCAPE '\\' OR CommandLine LIKE '%oAOgBGAHIAbwBtAEIAYQBzAGUANgA0AFMAdAByAGkAbgBnA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoARgByAG8AbQBCAGEAcwBlADYANABTAHQAcgBpAG4AZw%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_base64_frombase64string.yml"
     },
