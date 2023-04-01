@@ -5775,6 +5775,24 @@
         "filename": "image_load_pcre_net_load.yml"
     },
     {
+        "title": "Malicious DLL Load By Compromised 3CXDesktopApp",
+        "id": "d0b65ad3-e945-435e-a7a9-438e62dd48e9",
+        "status": "experimental",
+        "description": "Detects DLL load activity of known compromised DLLs used in by the compromised 3CXDesktopApp",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Hashes LIKE '%SHA256=7986BBAEE8940DA11CE089383521AB420C443AB7B15ED42AED91FD31CE833896%' ESCAPE '\\' OR Hashes LIKE '%SHA1=BF939C9C261D27EE7BB92325CC588624FCA75429%' ESCAPE '\\' OR Hashes LIKE '%MD5=74BC2D0B6680FAA1A5A76B27E5479CBC%' ESCAPE '\\' OR Hashes LIKE '%SHA256=11BE1803E2E307B647A8A7E02D128335C448FF741BF06BF52B332E0BBF423B03%' ESCAPE '\\' OR Hashes LIKE '%SHA1=20D554A80D759C50D6537DD7097FED84DD258B3E%' ESCAPE '\\' OR Hashes LIKE '%MD5=82187AD3F0C6C225E2FBA0C867280CC9%' ESCAPE '\\' OR Hashes LIKE '%SHA256=F79C3B0ADB6EC7BCC8BC9AE955A1571AAED6755A28C8B17B1D7595EE86840952%' ESCAPE '\\' OR Hashes LIKE '%SHA1=894E7D4FFD764BB458809C7F0643694B036EAD30%' ESCAPE '\\' OR Hashes LIKE '%MD5=11BC82A9BD8297BD0823BCE5D6202082%' ESCAPE '\\' OR Hashes LIKE '%SHA256=8AB3A5EAAF8C296080FADF56B265194681D7DA5DA7C02562953A4CB60E147423%' ESCAPE '\\' OR Hashes LIKE '%SHA1=3B3E778B647371262120A523EB873C20BB82BEAF%' ESCAPE '\\' OR Hashes LIKE '%MD5=7FAEA2B01796B80D180399040BB69835%' ESCAPE '\\') OR sha256 IN ('7986BBAEE8940DA11CE089383521AB420C443AB7B15ED42AED91FD31CE833896', '11BE1803E2E307B647A8A7E02D128335C448FF741BF06BF52B332E0BBF423B03', 'F79C3B0ADB6EC7BCC8BC9AE955A1571AAED6755A28C8B17B1D7595EE86840952', '8AB3A5EAAF8C296080FADF56B265194681D7DA5DA7C02562953A4CB60E147423') OR sha1 IN ('BF939C9C261D27EE7BB92325CC588624FCA75429', '20D554A80D759C50D6537DD7097FED84DD258B3E', '894E7D4FFD764BB458809C7F0643694B036EAD30', '3B3E778B647371262120A523EB873C20BB82BEAF') OR md5 IN ('74BC2D0B6680FAA1A5A76B27E5479CBC', '82187AD3F0C6C225E2FBA0C867280CC9', '11BC82A9BD8297BD0823BCE5D6202082', '7FAEA2B01796B80D180399040BB69835'))"
+        ],
+        "filename": "image_load_malware_3cx_compromise_susp_dll.yml"
+    },
+    {
         "title": "UAC Bypass Using Iscsicpl - ImageLoad",
         "id": "9ed5959a-c43c-4c59-84e3-d28628429456",
         "status": "experimental",
@@ -6715,6 +6733,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Description = 'Radmin Viewer' OR Product = 'Radmin Viewer' OR OriginalFileName = 'Radmin.exe'))"
         ],
         "filename": "proc_creation_win_pua_radmin.yml"
+    },
+    {
+        "title": "Potential Compromised 3CXDesktopApp Execution",
+        "id": "93bbde78-dc86-4e73-9ffc-ff8a384ca89c",
+        "status": "experimental",
+        "description": "Detects execution of known compromised version of 3CXDesktopApp",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate usage of 3CXDesktopApp"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((OriginalFileName = '3CXDesktopApp.exe' OR NewProcessName LIKE '%\\\\3CXDesktopApp.exe' ESCAPE '\\' OR Product = '3CX Desktop App') AND FileVersion LIKE '%18.12.%' ESCAPE '\\') OR ((Hashes LIKE '%SHA256=DDE03348075512796241389DFEA5560C20A3D2A2EAC95C894E7BBED5E85A0ACC%' ESCAPE '\\' OR Hashes LIKE '%SHA256=54004DFAA48CA5FA91E3304FB99559A2395301C570026450882D6AAD89132A02%' ESCAPE '\\' OR Hashes LIKE '%SHA256=D45674F941BE3CCA2FBC1AF42778043CC18CD86D95A2ECB9E6F0E212ED4C74AE%' ESCAPE '\\' OR Hashes LIKE '%SHA1=480DC408EF50BE69EBCF84B95750F7E93A8A1859%' ESCAPE '\\' OR Hashes LIKE '%SHA1=3B43A5D8B83C637D00D769660D01333E88F5A187%' ESCAPE '\\' OR Hashes LIKE '%SHA1=6285FFB5F98D35CD98E78D48B63A05AF6E4E4DEA%' ESCAPE '\\' OR Hashes LIKE '%MD5=BB915073385DD16A846DFA318AFA3C19%' ESCAPE '\\' OR Hashes LIKE '%MD5=08D79E1FFFA244CC0DC61F7D2036ACA9%' ESCAPE '\\' OR Hashes LIKE '%MD5=4965EDF659753E3C05D800C6C8A23A7A%' ESCAPE '\\' OR Hashes LIKE '%SHA256=FAD482DED2E25CE9E1DD3D3ECC3227AF714BDFBBDE04347DBC1B21D6A3670405%' ESCAPE '\\' OR Hashes LIKE '%SHA256=5D99EFA36F34AA6B43CD81E77544961C5C8D692C96059FEF92C2DF2624550734%' ESCAPE '\\' OR Hashes LIKE '%SHA256=A60A61BF844BC181D4540C9FAC53203250A982E7C3AD6153869F01E19CC36203%' ESCAPE '\\' OR Hashes LIKE '%SHA1=E272715737B51C01DC2BED0F0AEE2BF6FEEF25F1%' ESCAPE '\\' OR Hashes LIKE '%SHA1=8433A94AEDB6380AC8D4610AF643FB0E5220C5CB%' ESCAPE '\\' OR Hashes LIKE '%SHA1=413D9CBFCBF8D1E8304EAB0AA5484F5EEC5185F5%' ESCAPE '\\' OR Hashes LIKE '%MD5=9833A4779B69B38E3E51F04E395674C6%' ESCAPE '\\' OR Hashes LIKE '%MD5=704DB9184700481A56E5100FB56496CE%' ESCAPE '\\' OR Hashes LIKE '%MD5=8EE6802F085F7A9DF7E0303E65722DC0%' ESCAPE '\\' OR Hashes LIKE '%SHA256=AA124A4B4DF12B34E74EE7F6C683B2EBEC4CE9A8EDCF9BE345823B4FDCF5D868%' ESCAPE '\\' OR Hashes LIKE '%SHA256=59E1EDF4D82FAE4978E97512B0331B7EB21DD4B838B850BA46794D9C7A2C0983%' ESCAPE '\\' OR Hashes LIKE '%SHA1=BEA77D1E59CF18DCE22AD9A2FAD52948FD7A9EFA%' ESCAPE '\\' OR Hashes LIKE '%SHA1=BFECB8CE89A312D2EF4AFC64A63847AE11C6F69E%' ESCAPE '\\' OR Hashes LIKE '%MD5=F3D4144860CA10BA60F7EF4D176CC736%' ESCAPE '\\' OR Hashes LIKE '%MD5=0EEB1C0133EB4D571178B2D9D14CE3E9%' ESCAPE '\\') OR sha256 IN ('DDE03348075512796241389DFEA5560C20A3D2A2EAC95C894E7BBED5E85A0ACC', '54004DFAA48CA5FA91E3304FB99559A2395301C570026450882D6AAD89132A02', 'D45674F941BE3CCA2FBC1AF42778043CC18CD86D95A2ECB9E6F0E212ED4C74AE', 'FAD482DED2E25CE9E1DD3D3ECC3227AF714BDFBBDE04347DBC1B21D6A3670405', '5D99EFA36F34AA6B43CD81E77544961C5C8D692C96059FEF92C2DF2624550734', 'A60A61BF844BC181D4540C9FAC53203250A982E7C3AD6153869F01E19CC36203', 'AA124A4B4DF12B34E74EE7F6C683B2EBEC4CE9A8EDCF9BE345823B4FDCF5D868', '59E1EDF4D82FAE4978E97512B0331B7EB21DD4B838B850BA46794D9C7A2C0983') OR sha1 IN ('480DC408EF50BE69EBCF84B95750F7E93A8A1859', '3B43A5D8B83C637D00D769660D01333E88F5A187', '6285FFB5F98D35CD98E78D48B63A05AF6E4E4DEA', 'E272715737B51C01DC2BED0F0AEE2BF6FEEF25F1', '8433A94AEDB6380AC8D4610AF643FB0E5220C5CB', '413D9CBFCBF8D1E8304EAB0AA5484F5EEC5185F5', 'BEA77D1E59CF18DCE22AD9A2FAD52948FD7A9EFA', 'BFECB8CE89A312D2EF4AFC64A63847AE11C6F69E') OR md5 IN ('BB915073385DD16A846DFA318AFA3C19', '08D79E1FFFA244CC0DC61F7D2036ACA9', '4965EDF659753E3C05D800C6C8A23A7A', '9833A4779B69B38E3E51F04E395674C6', '704DB9184700481A56E5100FB56496CE', '8EE6802F085F7A9DF7E0303E65722DC0', 'F3D4144860CA10BA60F7EF4D176CC736', '0EEB1C0133EB4D571178B2D9D14CE3E9'))))"
+        ],
+        "filename": "proc_creation_win_malware_3cx_compromise_execution.yml"
     },
     {
         "title": "SafeBoot Registry Key Deleted Via Reg.EXE",
@@ -12941,6 +12979,26 @@
         "filename": "proc_creation_win_lolbin_cl_invocation.yml"
     },
     {
+        "title": "Potential Compromised 3CXDesktopApp Update Activity",
+        "id": "e7581747-1e44-4d4b-85a6-0db0b4a00f2a",
+        "status": "experimental",
+        "description": "Detects the 3CXDesktopApp updater downloading a known compromised version of the 3CXDesktopApp software",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\3CXDesktopApp\\\\app\\\\update.exe' ESCAPE '\\' AND CommandLine LIKE '%--update%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\' AND CommandLine LIKE '%/electron/update/win32/18.12%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_malware_3cx_compromise_susp_update.yml"
+    },
+    {
         "title": "Bypass UAC via WSReset.exe",
         "id": "d797268e-28a9-49a7-b9a8-2f5039011c5c",
         "status": "test",
@@ -16766,26 +16824,6 @@
         "filename": "proc_creation_win_hktl_wce.yml"
     },
     {
-        "title": "Potential Compromised 3CXDesktopApp Activity",
-        "id": "93bbde78-dc86-4e73-9ffc-ff8a384ca89c",
-        "status": "experimental",
-        "description": "Detects execution of known compromised version of 3CXDesktopApp",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Legitimate usage of 3CXDesktopApp"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((OriginalFileName = '3CXDesktopApp.exe' OR NewProcessName LIKE '%\\\\3CXDesktopApp.exe' ESCAPE '\\' OR Product = '3CX Desktop App') AND (FileVersion LIKE '%18.12.407%' ESCAPE '\\' OR FileVersion LIKE '%18.12.416%' ESCAPE '\\')) OR ((Hashes LIKE '%SHA256=DDE03348075512796241389DFEA5560C20A3D2A2EAC95C894E7BBED5E85A0ACC%' ESCAPE '\\' OR Hashes LIKE '%SHA256=FAD482DED2E25CE9E1DD3D3ECC3227AF714BDFBBDE04347DBC1B21D6A3670405%' ESCAPE '\\' OR Hashes LIKE '%SHA256=AA124A4B4DF12B34E74EE7F6C683B2EBEC4CE9A8EDCF9BE345823B4FDCF5D868%' ESCAPE '\\' OR Hashes LIKE '%SHA256=59E1EDF4D82FAE4978E97512B0331B7EB21DD4B838B850BA46794D9C7A2C0983%' ESCAPE '\\' OR Hashes LIKE '%SHA1=6285FFB5F98D35CD98E78D48B63A05AF6E4E4DEA%' ESCAPE '\\' OR Hashes LIKE '%SHA1=8433A94AEDB6380AC8D4610AF643FB0E5220C5CB%' ESCAPE '\\' OR Hashes LIKE '%SHA1=BEA77D1E59CF18DCE22AD9A2FAD52948FD7A9EFA%' ESCAPE '\\' OR Hashes LIKE '%SHA1=BFECB8CE89A312D2EF4AFC64A63847AE11C6F69E%' ESCAPE '\\') OR sha256 IN ('DDE03348075512796241389DFEA5560C20A3D2A2EAC95C894E7BBED5E85A0ACC', 'FAD482DED2E25CE9E1DD3D3ECC3227AF714BDFBBDE04347DBC1B21D6A3670405', 'AA124A4B4DF12B34E74EE7F6C683B2EBEC4CE9A8EDCF9BE345823B4FDCF5D868', '59E1EDF4D82FAE4978E97512B0331B7EB21DD4B838B850BA46794D9C7A2C0983') OR sha1 IN ('6285FFB5F98D35CD98E78D48B63A05AF6E4E4DEA', '8433A94AEDB6380AC8D4610AF643FB0E5220C5CB', 'BEA77D1E59CF18DCE22AD9A2FAD52948FD7A9EFA', 'BFECB8CE89A312D2EF4AFC64A63847AE11C6F69E'))))"
-        ],
-        "filename": "proc_creation_win_malware_3cx_compromise.yml"
-    },
-    {
         "title": "Suspicious IIS Module Registration",
         "id": "043c4b8b-3a54-4780-9682-081cb6b8185c",
         "status": "test",
@@ -18746,24 +18784,6 @@
         "filename": "net_connection_win_remote_powershell_session_network.yml"
     },
     {
-        "title": "Potential 3CX 3CXDesktopApp Compromise Beaconing Activity",
-        "id": "51eecf75-d069-43c7-9ea2-63f75499edd4",
-        "status": "experimental",
-        "description": "Detects potential beaconing activity to domains related to 3CX 3CXDesktopApp compromise",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\3CXDesktopApp.exe' ESCAPE '\\' AND DestinationHostname IN ('akamaicontainer.com', 'akamaitechcloudservices.com', 'azuredeploystore.com', 'azureonlinecloud.com', 'azureonlinestorage.com', 'dunamistrd.com', 'glcloudservice.com', 'journalide.org', 'msedgepackageinfo.com', 'msedgeupdate.net', 'msstorageazure.com', 'msstorageboxes.com', 'officeaddons.com', 'officestoragebox.com', 'pbxcloudeservices.com', 'pbxphonenetwork.com', 'pbxsources.com', 'qwepoi123098.com', 'sbmsa.wiki', 'sourceslabs.com', 'visualstudiofactory.com', 'zacharryblogs.com'))"
-        ],
-        "filename": "net_connection_win_malware_3cx_compromise.yml"
-    },
-    {
         "title": "Download a File with IMEWDBLD.exe",
         "id": "8d7e392e-9b28-49e1-831d-5949c6281228",
         "status": "test",
@@ -19013,6 +19033,24 @@
             "SELECT * FROM logs WHERE ((Initiated = 'true' AND (NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\')) AND NOT (((DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '172.%' ESCAPE '\\' OR DestinationIp LIKE '192.%' ESCAPE '\\' OR DestinationIp LIKE '169.254.%' ESCAPE '\\' OR DestinationIp LIKE '20.%' ESCAPE '\\')) OR ((DestinationIp LIKE '::1%' ESCAPE '\\' OR DestinationIp LIKE '0:0:0:0:0:0:0:1%' ESCAPE '\\' OR DestinationIp LIKE 'fe80:%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\'))))"
         ],
         "filename": "net_connection_win_script_wan.yml"
+    },
+    {
+        "title": "Potential Compromised 3CXDesktopApp Beaconing Activity - Netcon",
+        "id": "51eecf75-d069-43c7-9ea2-63f75499edd4",
+        "status": "experimental",
+        "description": "Detects potential beaconing activity to domains related to 3CX 3CXDesktopApp compromise",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\3CXDesktopApp.exe' ESCAPE '\\' AND (DestinationHostname LIKE '%akamaicontainer.com%' ESCAPE '\\' OR DestinationHostname LIKE '%akamaitechcloudservices.com%' ESCAPE '\\' OR DestinationHostname LIKE '%azuredeploystore.com%' ESCAPE '\\' OR DestinationHostname LIKE '%azureonlinecloud.com%' ESCAPE '\\' OR DestinationHostname LIKE '%azureonlinestorage.com%' ESCAPE '\\' OR DestinationHostname LIKE '%dunamistrd.com%' ESCAPE '\\' OR DestinationHostname LIKE '%glcloudservice.com%' ESCAPE '\\' OR DestinationHostname LIKE '%journalide.org%' ESCAPE '\\' OR DestinationHostname LIKE '%msedgepackageinfo.com%' ESCAPE '\\' OR DestinationHostname LIKE '%msstorageazure.com%' ESCAPE '\\' OR DestinationHostname LIKE '%msstorageboxes.com%' ESCAPE '\\' OR DestinationHostname LIKE '%officeaddons.com%' ESCAPE '\\' OR DestinationHostname LIKE '%officestoragebox.com%' ESCAPE '\\' OR DestinationHostname LIKE '%pbxcloudeservices.com%' ESCAPE '\\' OR DestinationHostname LIKE '%pbxphonenetwork.com%' ESCAPE '\\' OR DestinationHostname LIKE '%pbxsources.com%' ESCAPE '\\' OR DestinationHostname LIKE '%qwepoi123098.com%' ESCAPE '\\' OR DestinationHostname LIKE '%sbmsa.wiki%' ESCAPE '\\' OR DestinationHostname LIKE '%sourceslabs.com%' ESCAPE '\\' OR DestinationHostname LIKE '%visualstudiofactory.com%' ESCAPE '\\' OR DestinationHostname LIKE '%zacharryblogs.com%' ESCAPE '\\'))"
+        ],
+        "filename": "net_connection_win_malware_3cx_compromise_beaconing_activity.yml"
     },
     {
         "title": "Regsvr32 Network Activity",
@@ -21989,7 +22027,7 @@
         "filename": "dns_query_win_regsvr32_network_activity.yml"
     },
     {
-        "title": "Potential 3CX 3CXDesktopApp Compromise Beaconing Activity - DNS",
+        "title": "Potential Compromised 3CXDesktopApp Beaconing Activity - DNS",
         "id": "bd03a0dc-5d93-49eb-b2e8-2dfd268600f8",
         "status": "experimental",
         "description": "Detects potential beaconing activity to domains related to 3CX 3CXDesktopApp compromise",
