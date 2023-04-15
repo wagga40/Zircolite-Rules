@@ -29,10 +29,7 @@ jobs:
           git submodule update --remote --recursive
       - name: Install Dependencies
         run: |
-          rm pyproject.toml pdm.lock Pipfile*
-          cp ./legacy-sigmatools/Pipfile ./Pipfile
-          pdm import Pipfile
-          pdm install
+          pdm add requests urllib3 progressbar2 pymisp PyYAML "ruamel.yaml" termcolor
       - name: Generate Zircolite rules
         shell: bash
         continue-on-error: true
