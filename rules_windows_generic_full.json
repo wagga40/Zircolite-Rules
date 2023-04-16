@@ -2131,6 +2131,26 @@
         "filename": "win_security_susp_outbound_kerberos_connection.yml"
     },
     {
+        "title": "Windows Pcap Drivers",
+        "id": "7b687634-ab20-11ea-bb37-0242ac130002",
+        "status": "test",
+        "description": "Detects Windows Pcap driver installation based on a list of associated .sys files.",
+        "author": "Cian Heasley",
+        "tags": [
+            "attack.discovery",
+            "attack.credential_access",
+            "attack.t1040"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND (ServiceFileName LIKE '%pcap%' ESCAPE '\\' OR ServiceFileName LIKE '%npcap%' ESCAPE '\\' OR ServiceFileName LIKE '%npf%' ESCAPE '\\' OR ServiceFileName LIKE '%nm3%' ESCAPE '\\' OR ServiceFileName LIKE '%ndiscap%' ESCAPE '\\' OR ServiceFileName LIKE '%nmnt%' ESCAPE '\\' OR ServiceFileName LIKE '%windivert%' ESCAPE '\\' OR ServiceFileName LIKE '%USBPcap%' ESCAPE '\\' OR ServiceFileName LIKE '%pktmon%' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_pcap_drivers.yml"
+    },
+    {
         "title": "Scheduled Task Deletion",
         "id": "4f86b304-3e02-40e3-aa5d-e88a167c9617",
         "status": "experimental",
@@ -4081,59 +4101,62 @@
         "filename": "win_taskscheduler_lolbin_execution_via_task_scheduler.yml"
     },
     {
-        "title": "Ntdsutil Abuse",
-        "id": "e6e88853-5f20-4c4a-8d26-cd469fd8d31f",
+        "title": "Microsoft Malware Protection Engine Crash",
+        "id": "545a5da6-f103-4919-a519-e9aec1026ee4",
         "status": "experimental",
-        "description": "Detects potential abuse of ntdsutil to dump ntds.dit database",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "description": "This rule detects a suspicious crash of the Microsoft Malware Protection Engine",
+        "author": "Florian Roth (Nextron Systems)",
         "tags": [
-            "attack.execution"
+            "attack.defense_evasion",
+            "attack.t1211",
+            "attack.t1562.001"
         ],
         "falsepositives": [
-            "Legitimate backup operation/creating shadow copies"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'ESENT' AND EventID IN ('216', '325', '326', '327') AND Data LIKE '%ntds.dit%' ESCAPE '\\')"
-        ],
-        "filename": "win_esent_ntdsutil_abuse.yml"
-    },
-    {
-        "title": "Dump Ntds.dit To Suspicious Location",
-        "id": "94dc4390-6b7c-4784-8ffc-335334404650",
-        "status": "experimental",
-        "description": "Detects potential abuse of ntdsutil to dump ntds.dit database to a suspicious location",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Legitimate backup operation/creating shadow copies"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'ESENT' AND EventID = '325' AND Data LIKE '%ntds.dit%' ESCAPE '\\' AND (Data LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Perflogs\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Appdata\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Data LIKE '%C:\\\\ntds.dit%' ESCAPE '\\'))"
-        ],
-        "filename": "win_esent_ntdsutil_abuse_susp_location.yml"
-    },
-    {
-        "title": "MSSQL Extended Stored Procedure Backdoor Maggie",
-        "id": "711ab2fe-c9ba-4746-8840-5228a58c3cb8",
-        "status": "experimental",
-        "description": "This rule detects the execution of the extended storage procedure backdoor named Maggie in the context of Microsoft SQL server",
-        "author": "Denis Szadkowski, DIRT / DCSO CyTec",
-        "tags": [
-            "attack.persistence",
-            "attack.t1546"
-        ],
-        "falsepositives": [
-            "Legitimate extended stored procedures named maggie"
+            "MsMpEng might crash if the \"C:\\\" partition is full"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '8128' AND Message LIKE '%maggie%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Application Error' AND EventID = '1000' AND Data LIKE '%MsMpEng.exe%' ESCAPE '\\' AND Data LIKE '%mpengine.dll%' ESCAPE '\\')"
         ],
-        "filename": "win_mssql_sp_maggie.yml"
+        "filename": "win_application_msmpeng_crash_error.yml"
+    },
+    {
+        "title": "Potential Credential Dumping Via WER - Application",
+        "id": "a18e0862-127b-43ca-be12-1a542c75c7c5",
+        "status": "experimental",
+        "description": "Detects windows error reporting event where the process that crashed is lsass. This could be the cause of an intentional crash by techniques such as Lsass-Shtinkering to dump credential",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Rare legitimate crashing of the lsass process"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Application Error' AND EventID = '1000' AND AppName = 'lsass.exe' AND ExceptionCode = 'c0000001')"
+        ],
+        "filename": "win_werfault_susp_lsass_credential_dump.yml"
+    },
+    {
+        "title": "Restricted Software Access By SRP",
+        "id": "b4c8da4a-1c12-46b0-8a2b-0a8521d03442",
+        "status": "experimental",
+        "description": "Detects restricted access to applications by the Software Restriction Policies (SRP) policy",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1072"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Microsoft-Windows-SoftwareRestrictionPolicies' AND EventID IN ('865', '866', '867', '868', '882'))"
+        ],
+        "filename": "win_software_restriction_policies_block.yml"
     },
     {
         "title": "MSI Installation From Suspicious Locations",
@@ -4154,24 +4177,6 @@
         "filename": "win_msi_install_from_susp_locations.yml"
     },
     {
-        "title": "MSSQL XPCmdshell Suspicious Execution",
-        "id": "7f103213-a04e-4d59-8261-213dddf22314",
-        "status": "experimental",
-        "description": "Detects when the MSSQL \"xp_cmdshell\" stored procedure is used to execute commands",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '33205' AND Data LIKE '%object\\_name:xp\\_cmdshell%' ESCAPE '\\' AND Data LIKE '%statement:EXEC%' ESCAPE '\\')"
-        ],
-        "filename": "win_mssql_xp_cmdshell_audit_log.yml"
-    },
-    {
         "title": "LPE InstallerFileTakeOver PoC CVE-2021-41379",
         "id": "7dbb86de-a0cc-494c-8aa8-b2996c9ef3c8",
         "status": "experimental",
@@ -4189,82 +4194,6 @@
             "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '1033' AND Provider_Name = 'MsiInstaller' AND Data LIKE '%test pkg%' ESCAPE '\\')"
         ],
         "filename": "win_vul_cve_2021_41379.yml"
-    },
-    {
-        "title": "MSSQL XPCmdshell Option Change",
-        "id": "d08dd86f-681e-4a00-a92c-1db218754417",
-        "status": "experimental",
-        "description": "Detects when the MSSQL \"xp_cmdshell\" stored procedure setting is changed",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Legitimate enable/disable of the setting",
-            "Note that since the event contain the change for both values. This means that this will trigger on both enable and disable"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '15457' AND Data LIKE '%xp\\_cmdshell%' ESCAPE '\\')"
-        ],
-        "filename": "win_mssql_xp_cmdshell_change.yml"
-    },
-    {
-        "title": "Backup Catalog Deleted",
-        "id": "9703792d-fd9a-456d-a672-ff92efe4806a",
-        "status": "test",
-        "description": "Detects backup catalog deletions",
-        "author": "Florian Roth (Nextron Systems), Tom U. @c_APT_ure (collection)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1070.004"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '524' AND Provider_Name = 'Microsoft-Windows-Backup')"
-        ],
-        "filename": "win_susp_backup_delete.yml"
-    },
-    {
-        "title": "MSSQL SPProcoption Set",
-        "id": "b3d57a5c-c92e-4b48-9a79-5f124b7cf964",
-        "status": "experimental",
-        "description": "Detects when the a stored procedure is set or cleared for automatic execution in MSSQL. A stored procedure that is set to automatic execution runs every time an instance of SQL Server is started",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.persistence"
-        ],
-        "falsepositives": [
-            "Legitimate use of the feature by administrators (rare)"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '33205' AND Data LIKE '%object\\_name:sp\\_procoption%' ESCAPE '\\' AND Data LIKE '%statement:EXEC%' ESCAPE '\\')"
-        ],
-        "filename": "win_mssql_sp_procoption_set.yml"
-    },
-    {
-        "title": "Microsoft Malware Protection Engine Crash",
-        "id": "6c82cf5c-090d-4d57-9188-533577631108",
-        "status": "experimental",
-        "description": "This rule detects a suspicious crash of the Microsoft Malware Protection Engine",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1211",
-            "attack.t1562.001"
-        ],
-        "falsepositives": [
-            "MsMpEng.exe can crash when C:\\ is full"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND ((Provider_Name = 'Application Error' AND EventID = '1000') OR (Provider_Name = 'Windows Error Reporting' AND EventID = '1001')) AND (Data LIKE '%MsMpEng.exe%' ESCAPE '\\' AND Data LIKE '%mpengine.dll%' ESCAPE '\\'))"
-        ],
-        "filename": "win_susp_msmpeng_crash.yml"
     },
     {
         "title": "MSI Installation From Web",
@@ -4306,6 +4235,202 @@
         "filename": "win_builtin_remove_application.yml"
     },
     {
+        "title": "Atera Agent Installation",
+        "id": "87261fb2-69d0-42fe-b9de-88c6b5f65a43",
+        "status": "test",
+        "description": "Detects successful installation of Atera Remote Monitoring & Management (RMM) agent as recently found to be used by Conti operators",
+        "author": "Bhabesh Raj",
+        "tags": [
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Legitimate Atera agent installation"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '1033' AND Provider_Name = 'MsiInstaller' AND Message LIKE '%AteraAgent%' ESCAPE '\\')"
+        ],
+        "filename": "win_software_atera_rmm_agent_install.yml"
+    },
+    {
+        "title": "Backup Catalog Deleted",
+        "id": "9703792d-fd9a-456d-a672-ff92efe4806a",
+        "status": "test",
+        "description": "Detects backup catalog deletions",
+        "author": "Florian Roth (Nextron Systems), Tom U. @c_APT_ure (collection)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070.004"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '524' AND Provider_Name = 'Microsoft-Windows-Backup')"
+        ],
+        "filename": "win_susp_backup_delete.yml"
+    },
+    {
+        "title": "Audit CVE Event",
+        "id": "48d91a3a-2363-43ba-a456-ca71ac3da5c2",
+        "status": "experimental",
+        "description": "Detects events generated by user-mode applications when they call the CveEventWrite API when a known vulnerability is trying to be exploited.\nMS started using this log in Jan. 2020 with CVE-2020-0601 (a Windows CryptoAPI vulnerability.\nUnfortunately, that is about the only instance of CVEs being written to this log.\n",
+        "author": "Florian Roth (Nextron Systems), Zach Mathis",
+        "tags": [
+            "attack.execution",
+            "attack.t1203",
+            "attack.privilege_escalation",
+            "attack.t1068",
+            "attack.defense_evasion",
+            "attack.t1211",
+            "attack.credential_access",
+            "attack.t1212",
+            "attack.lateral_movement",
+            "attack.t1210",
+            "attack.impact",
+            "attack.t1499.004"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name IN ('Microsoft-Windows-Audit-CVE', 'Audit-CVE') AND EventID = '1')"
+        ],
+        "filename": "win_audit_cve.yml"
+    },
+    {
+        "title": "Ntdsutil Abuse",
+        "id": "e6e88853-5f20-4c4a-8d26-cd469fd8d31f",
+        "status": "experimental",
+        "description": "Detects potential abuse of ntdsutil to dump ntds.dit database",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate backup operation/creating shadow copies"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'ESENT' AND EventID IN ('216', '325', '326', '327') AND Data LIKE '%ntds.dit%' ESCAPE '\\')"
+        ],
+        "filename": "win_esent_ntdsutil_abuse.yml"
+    },
+    {
+        "title": "Dump Ntds.dit To Suspicious Location",
+        "id": "94dc4390-6b7c-4784-8ffc-335334404650",
+        "status": "experimental",
+        "description": "Detects potential abuse of ntdsutil to dump ntds.dit database to a suspicious location",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate backup operation/creating shadow copies"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'ESENT' AND EventID = '325' AND Data LIKE '%ntds.dit%' ESCAPE '\\' AND (Data LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Perflogs\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Appdata\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Data LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Data LIKE '%C:\\\\ntds.dit%' ESCAPE '\\'))"
+        ],
+        "filename": "win_esent_ntdsutil_abuse_susp_location.yml"
+    },
+    {
+        "title": "Microsoft Malware Protection Engine Crash - WER",
+        "id": "6c82cf5c-090d-4d57-9188-533577631108",
+        "status": "experimental",
+        "description": "This rule detects a suspicious crash of the Microsoft Malware Protection Engine",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1211",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "MsMpEng might crash if the \"C:\\\" partition is full"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Windows Error Reporting' AND EventID = '1001' AND Data LIKE '%MsMpEng.exe%' ESCAPE '\\' AND Data LIKE '%mpengine.dll%' ESCAPE '\\')"
+        ],
+        "filename": "win_application_msmpeng_crash_wer.yml"
+    },
+    {
+        "title": "MSSQL Extended Stored Procedure Backdoor Maggie",
+        "id": "711ab2fe-c9ba-4746-8840-5228a58c3cb8",
+        "status": "experimental",
+        "description": "This rule detects the execution of the extended storage procedure backdoor named Maggie in the context of Microsoft SQL server",
+        "author": "Denis Szadkowski, DIRT / DCSO CyTec",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546"
+        ],
+        "falsepositives": [
+            "Legitimate extended stored procedures named maggie"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '8128' AND Message LIKE '%maggie%' ESCAPE '\\')"
+        ],
+        "filename": "win_mssql_sp_maggie.yml"
+    },
+    {
+        "title": "MSSQL XPCmdshell Suspicious Execution",
+        "id": "7f103213-a04e-4d59-8261-213dddf22314",
+        "status": "experimental",
+        "description": "Detects when the MSSQL \"xp_cmdshell\" stored procedure is used to execute commands",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '33205' AND Data LIKE '%object\\_name:xp\\_cmdshell%' ESCAPE '\\' AND Data LIKE '%statement:EXEC%' ESCAPE '\\')"
+        ],
+        "filename": "win_mssql_xp_cmdshell_audit_log.yml"
+    },
+    {
+        "title": "MSSQL XPCmdshell Option Change",
+        "id": "d08dd86f-681e-4a00-a92c-1db218754417",
+        "status": "experimental",
+        "description": "Detects when the MSSQL \"xp_cmdshell\" stored procedure setting is changed",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate enable/disable of the setting",
+            "Note that since the event contain the change for both values. This means that this will trigger on both enable and disable"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '15457' AND Data LIKE '%xp\\_cmdshell%' ESCAPE '\\')"
+        ],
+        "filename": "win_mssql_xp_cmdshell_change.yml"
+    },
+    {
+        "title": "MSSQL SPProcoption Set",
+        "id": "b3d57a5c-c92e-4b48-9a79-5f124b7cf964",
+        "status": "experimental",
+        "description": "Detects when the a stored procedure is set or cleared for automatic execution in MSSQL. A stored procedure that is set to automatic execution runs every time an instance of SQL Server is started",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Legitimate use of the feature by administrators (rare)"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '33205' AND Data LIKE '%object\\_name:sp\\_procoption%' ESCAPE '\\' AND Data LIKE '%statement:EXEC%' ESCAPE '\\')"
+        ],
+        "filename": "win_mssql_sp_procoption_set.yml"
+    },
+    {
         "title": "MSSQL Disable Audit Settings",
         "id": "350dfb37-3706-4cdc-9e2e-5e24bc3a46df",
         "status": "experimental",
@@ -4340,91 +4465,6 @@
             "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'MSSQLSERVER' AND EventID = '33205' AND Data LIKE '%object\\_name:sysadmin%' ESCAPE '\\' AND Data LIKE '%statement:alter server role [sysadmin] add member %' ESCAPE '\\')"
         ],
         "filename": "win_mssql_add_sysadmin_account.yml"
-    },
-    {
-        "title": "Potential Credential Dumping Via WER - Application",
-        "id": "a18e0862-127b-43ca-be12-1a542c75c7c5",
-        "status": "experimental",
-        "description": "Detects windows error reporting event where the process that crashed is lsass. This could be the cause of an intentional crash by techniques such as Lsass-Shtinkering to dump credential",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003.001"
-        ],
-        "falsepositives": [
-            "Rare legitimate crashing of the lsass process"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Application Error' AND EventID = '1000' AND AppName = 'lsass.exe' AND ExceptionCode = 'c0000001')"
-        ],
-        "filename": "win_werfault_susp_lsass_credential_dump.yml"
-    },
-    {
-        "title": "Audit CVE Event",
-        "id": "48d91a3a-2363-43ba-a456-ca71ac3da5c2",
-        "status": "experimental",
-        "description": "Detects events generated by user-mode applications when they call the CveEventWrite API when a known vulnerability is trying to be exploited.\nMS started using this log in Jan. 2020 with CVE-2020-0601 (a Windows CryptoAPI vulnerability.\nUnfortunately, that is about the only instance of CVEs being written to this log.\n",
-        "author": "Florian Roth (Nextron Systems), Zach Mathis",
-        "tags": [
-            "attack.execution",
-            "attack.t1203",
-            "attack.privilege_escalation",
-            "attack.t1068",
-            "attack.defense_evasion",
-            "attack.t1211",
-            "attack.credential_access",
-            "attack.t1212",
-            "attack.lateral_movement",
-            "attack.t1210",
-            "attack.impact",
-            "attack.t1499.004"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name IN ('Microsoft-Windows-Audit-CVE', 'Audit-CVE') AND EventID = '1')"
-        ],
-        "filename": "win_audit_cve.yml"
-    },
-    {
-        "title": "Atera Agent Installation",
-        "id": "87261fb2-69d0-42fe-b9de-88c6b5f65a43",
-        "status": "test",
-        "description": "Detects successful installation of Atera Remote Monitoring & Management (RMM) agent as recently found to be used by Conti operators",
-        "author": "Bhabesh Raj",
-        "tags": [
-            "attack.t1219"
-        ],
-        "falsepositives": [
-            "Legitimate Atera agent installation"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '1033' AND Provider_Name = 'MsiInstaller' AND Message LIKE '%AteraAgent%' ESCAPE '\\')"
-        ],
-        "filename": "win_software_atera_rmm_agent_install.yml"
-    },
-    {
-        "title": "Restricted Software Access By SRP",
-        "id": "b4c8da4a-1c12-46b0-8a2b-0a8521d03442",
-        "status": "experimental",
-        "description": "Detects restricted access to applications by the Software Restriction Policies (SRP) policy",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1072"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Microsoft-Windows-SoftwareRestrictionPolicies' AND EventID IN ('865', '866', '867', '868', '882'))"
-        ],
-        "filename": "win_software_restriction_policies_block.yml"
     },
     {
         "title": "File Was Not Allowed To Run",
@@ -5303,6 +5343,201 @@
         "filename": "win_defender_exploit_guard_tamper.yml"
     },
     {
+        "title": "DHCP Server Loaded the CallOut DLL",
+        "id": "13fc89a9-971e-4ca6-b9dc-aa53a445bf40",
+        "status": "test",
+        "description": "This rule detects a DHCP server in which a specified Callout DLL (in registry) was loaded",
+        "author": "Dimitrios Slamaris",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '1033' AND Provider_Name = 'Microsoft-Windows-DHCP-Server')"
+        ],
+        "filename": "win_system_susp_dhcp_config.yml"
+    },
+    {
+        "title": "DHCP Server Error Failed Loading the CallOut DLL",
+        "id": "75edd3fd-7146-48e5-9848-3013d7f0282c",
+        "status": "test",
+        "description": "This rule detects a DHCP server error in which a specified Callout DLL (in registry) could not be loaded",
+        "author": "Dimitrios Slamaris, @atc_project (fix)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID IN ('1031', '1032', '1034') AND Provider_Name = 'Microsoft-Windows-DHCP-Server')"
+        ],
+        "filename": "win_system_susp_dhcp_config_failed.yml"
+    },
+    {
+        "title": "Eventlog Cleared",
+        "id": "a62b37e0-45d3-48d9-a517-90c1a1b0186b",
+        "status": "experimental",
+        "description": "One of the Windows Eventlogs has been cleared. e.g. caused by \"wevtutil cl\" command execution",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070.001",
+            "car.2016-04-002"
+        ],
+        "falsepositives": [
+            "Rollout of log collection agents (the setup routine often includes a reset of the local Eventlog)",
+            "System provisioning (system reset before the golden image creation)"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog') AND NOT (Channel IN ('System', 'Security', 'Application')))"
+        ],
+        "filename": "win_system_eventlog_cleared.yml"
+    },
+    {
+        "title": "Important Windows Eventlog Cleared",
+        "id": "100ef69e-3327-481c-8e5c-6d80d9507556",
+        "status": "experimental",
+        "description": "Detects the clearing of one of the Windows Core Eventlogs. e.g. caused by \"wevtutil cl\" command execution",
+        "author": "Florian Roth (Nextron Systems), Tim Shelton",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070.001",
+            "car.2016-04-002"
+        ],
+        "falsepositives": [
+            "Rollout of log collection agents (the setup routine often includes a reset of the local Eventlog)",
+            "System provisioning (system reset before the golden image creation)"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog' AND Channel IN ('System', 'Security', 'Application'))"
+        ],
+        "filename": "win_system_susp_eventlog_cleared.yml"
+    },
+    {
+        "title": "KDC RC4-HMAC Downgrade CVE-2022-37966",
+        "id": "e6f81941-b1cd-4766-87db-9fc156f658ee",
+        "status": "experimental",
+        "description": "Detects the exploitation of a security bypass and elevation of privilege vulnerability with Authentication Negotiation by using weak RC4-HMAC negotiation",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '42' AND Provider_Name = 'Kerberos-Key-Distribution-Center' AND Level = '2')"
+        ],
+        "filename": "win_system_kdcsvc_rc4_downgrade.yml"
+    },
+    {
+        "title": "Potential CVE-2021-42287 Exploitation Attempt",
+        "id": "e80a0fee-1a62-4419-b31e-0d0db6e6013a",
+        "status": "test",
+        "description": "The attacker creates a computer object using those permissions with a password known to her.\nAfter that she clears the attribute ServicePrincipalName on the computer object.\nBecause she created the object (CREATOR OWNER), she gets granted additional permissions and can do many changes to the object.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1558.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Microsoft-Windows-Directory-Services-SAM' AND EventID IN ('16990', '16991'))"
+        ],
+        "filename": "win_system_exploit_cve_2021_42287.yml"
+    },
+    {
+        "title": "NTLMv1 Logon Between Client and Server",
+        "id": "e9d4ab66-a532-4ef7-a502-66a9e4a34f5d",
+        "status": "experimental",
+        "description": "Detects the reporting of NTLMv1 being used between a client and server",
+        "author": "Tim Shelton",
+        "tags": [
+            "attack.execution",
+            "attack.t1550.002",
+            "attack.s0363"
+        ],
+        "falsepositives": [
+            "Environments that use NTLMv1"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'LsaSrv' AND EventID = '6038')"
+        ],
+        "filename": "win_system_lsasrv_ntlmv1.yml"
+    },
+    {
+        "title": "Volume Shadow Copy Mount",
+        "id": "f512acbf-e662-4903-843e-97ce4652b740",
+        "status": "test",
+        "description": "Detects volume shadow copy mount via windows event log",
+        "author": "Roberto Rodriguez @Cyb3rWard0g, Open Threat Research (OTR)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.002"
+        ],
+        "falsepositives": [
+            "Legitimate use of volume shadow copy mounts (backups maybe)."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Microsoft-Windows-Ntfs' AND EventID = '98' AND DeviceName LIKE '%HarddiskVolumeShadowCopy%' ESCAPE '\\')"
+        ],
+        "filename": "win_system_volume_shadow_copy_mount.yml"
+    },
+    {
+        "title": "Windows Update Error",
+        "id": "13cfeb75-9e33-4d04-b0f7-ab8faaa95a59",
+        "status": "test",
+        "description": "Windows Update get some error Check if need a 0-days KB",
+        "author": "frack113",
+        "tags": [
+            "attack.impact",
+            "attack.resource_development",
+            "attack.t1584"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Microsoft-Windows-WindowsUpdateClient' AND EventID IN ('16', '20', '24', '213', '217'))"
+        ],
+        "filename": "win_system_susp_system_update_error.yml"
+    },
+    {
+        "title": "Sysmon Crash",
+        "id": "4d7f1827-1637-4def-8d8a-fd254f9454df",
+        "status": "experimental",
+        "description": "Detects application popup reporting a failure of the Sysmon service",
+        "author": "Tim Shelton",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Application Popup' AND EventID = '26' AND Caption = 'sysmon64.exe - Application Error')"
+        ],
+        "filename": "win_system_application_sysmon_crash.yml"
+    },
+    {
         "title": "Invoke-Obfuscation VAR+ Launcher - System",
         "id": "8ca7004b-e620-4ecb-870e-86129b5b8e75",
         "status": "experimental",
@@ -5500,27 +5735,6 @@
         "filename": "win_system_service_install_remote_access_software.yml"
     },
     {
-        "title": "Eventlog Cleared",
-        "id": "a62b37e0-45d3-48d9-a517-90c1a1b0186b",
-        "status": "experimental",
-        "description": "One of the Windows Eventlogs has been cleared. e.g. caused by \"wevtutil cl\" command execution",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1070.001",
-            "car.2016-04-002"
-        ],
-        "falsepositives": [
-            "Rollout of log collection agents (the setup routine often includes a reset of the local Eventlog)",
-            "System provisioning (system reset before the golden image creation)"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND (EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog') AND NOT (Channel IN ('System', 'Security', 'Application')))"
-        ],
-        "filename": "win_system_eventlog_cleared.yml"
-    },
-    {
         "title": "Service Installation in Suspicious Folder",
         "id": "5e993621-67d4-488a-b9ae-b420d08b96cb",
         "status": "experimental",
@@ -5540,25 +5754,6 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045' AND (ImagePath LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR ImagePath LIKE '%\\\\\\\\127.0.0.1%' ESCAPE '\\' OR ImagePath LIKE '%\\\\\\\\localhost%' ESCAPE '\\')) AND NOT ((ServiceName = 'Zoom Sharing Service' AND ImagePath LIKE '\"C:\\\\Program Files\\\\Common Files\\\\Zoom\\\\Support\\\\CptService.exe%' ESCAPE '\\')))"
         ],
         "filename": "win_system_susp_service_installation_folder.yml"
-    },
-    {
-        "title": "Sysmon Crash",
-        "id": "4d7f1827-1637-4def-8d8a-fd254f9454df",
-        "status": "experimental",
-        "description": "Detects application popup reporting a failure of the Sysmon service",
-        "author": "Tim Shelton",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1562"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Application Popup' AND EventID = '26' AND Caption = 'sysmon64.exe - Application Error')"
-        ],
-        "filename": "win_system_application_sysmon_crash.yml"
     },
     {
         "title": "Suspicious Service Installation Script",
@@ -5662,26 +5857,6 @@
         "filename": "win_system_invoke_obfuscation_via_stdin_services.yml"
     },
     {
-        "title": "Potential RDP Exploit CVE-2019-0708",
-        "id": "aaa5b30d-f418-420b-83a0-299cb6024885",
-        "status": "test",
-        "description": "Detect suspicious error on protocol RDP, potential CVE-2019-0708",
-        "author": "Lionel PRAT, Christophe BROCAS, @atc_project (improvements)",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.t1210",
-            "car.2013-07-002"
-        ],
-        "falsepositives": [
-            "Bad connections or network interruptions"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID IN ('56', '50') AND Provider_Name = 'TermDD')"
-        ],
-        "filename": "win_system_rdp_potential_cve_2019_0708.yml"
-    },
-    {
         "title": "Invoke-Obfuscation Via Use MSHTA - System",
         "id": "7e9c7999-0f9b-4d4a-a6ed-af6d553d4af4",
         "status": "experimental",
@@ -5701,22 +5876,6 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ImagePath LIKE '%mshta%' ESCAPE '\\' AND ImagePath LIKE '%vbscript:createobject%' ESCAPE '\\')"
         ],
         "filename": "win_system_invoke_obfuscation_via_use_mshta_services.yml"
-    },
-    {
-        "title": "Zerologon Exploitation Using Well-known Tools",
-        "id": "18f37338-b9bd-4117-a039-280c81f7a596",
-        "status": "stable",
-        "description": "This rule is designed to detect attempts to exploit Zerologon (CVE-2020-1472) vulnerability using mimikatz zerologon module or other exploits from machine with \"kali\" hostname.",
-        "author": "Demyan Sokolin @_drd0c, Teymur Kheirkhabarov @HeirhabarovT, oscd.community",
-        "tags": [
-            "attack.t1210",
-            "attack.lateral_movement"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID IN ('5805', '5723') AND (logs MATCH ('\"kali\" OR \"mimikatz\"')))"
-        ],
-        "filename": "win_system_possible_zerologon_exploitation_using_wellknown_tools.yml"
     },
     {
         "title": "Invoke-Obfuscation Via Use Rundll32 - System",
@@ -5821,24 +5980,6 @@
         "filename": "win_system_service_install_anydesk.yml"
     },
     {
-        "title": "KDC RC4-HMAC Downgrade CVE-2022-37966",
-        "id": "e6f81941-b1cd-4766-87db-9fc156f658ee",
-        "status": "experimental",
-        "description": "Detects the exploitation of a security bypass and elevation of privilege vulnerability with Authentication Negotiation by using weak RC4-HMAC negotiation",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.privilege_escalation"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '42' AND Provider_Name = 'Kerberos-Key-Distribution-Center' AND Level = '2')"
-        ],
-        "filename": "win_system_kdcsvc_rc4_downgrade.yml"
-    },
-    {
         "title": "PAExec Service Installation",
         "id": "de7ce410-b3fb-4e8a-b38c-3b999e2c3420",
         "status": "experimental",
@@ -5898,25 +6039,6 @@
         "filename": "win_system_hack_smbexec.yml"
     },
     {
-        "title": "Local Privilege Escalation Indicator TabTip",
-        "id": "bc2e25ed-b92b-4daa-b074-b502bdd1982b",
-        "status": "experimental",
-        "description": "Detects the invocation of TabTip via CLSID as seen when JuicyPotatoNG is used on a system in brute force mode",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.execution",
-            "attack.t1557.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '10001' AND param1 LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ink\\\\TabTip.exe' ESCAPE '\\' AND param2 = '2147943140' AND param3 = '{054AAE20-4BEA-4347-8A35-64A533254A9D}')"
-        ],
-        "filename": "win_system_lpe_indicators_tabtip.yml"
-    },
-    {
         "title": "Remote Utilities Host Service Install",
         "id": "85cce894-dd8b-4427-a958-5cc47a4dc9b9",
         "status": "experimental",
@@ -5974,25 +6096,6 @@
         "filename": "win_system_meterpreter_or_cobaltstrike_getsystem_service_installation.yml"
     },
     {
-        "title": "NTFS Vulnerability Exploitation",
-        "id": "f14719ce-d3ab-4e25-9ce6-2899092260b0",
-        "status": "test",
-        "description": "This the exploitation of a NTFS vulnerability as reported without many details via Twitter",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.impact",
-            "attack.t1499.001"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Ntfs' AND EventID = '55' AND Origin = 'File System Driver' AND Description LIKE '%contains a corrupted file record%' ESCAPE '\\' AND Description LIKE '%The name of the file is \"\\\\\"%' ESCAPE '\\')"
-        ],
-        "filename": "win_system_ntfs_vuln_exploit.yml"
-    },
-    {
         "title": "Moriya Rootkit - System",
         "id": "25b9c01c-350d-4b95-bed1-836d04a4f324",
         "status": "experimental",
@@ -6011,45 +6114,6 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND ServiceName = 'ZzNetSvc')"
         ],
         "filename": "win_system_moriya_rootkit.yml"
-    },
-    {
-        "title": "DHCP Server Loaded the CallOut DLL",
-        "id": "13fc89a9-971e-4ca6-b9dc-aa53a445bf40",
-        "status": "test",
-        "description": "This rule detects a DHCP server in which a specified Callout DLL (in registry) was loaded",
-        "author": "Dimitrios Slamaris",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '1033' AND Provider_Name = 'Microsoft-Windows-DHCP-Server')"
-        ],
-        "filename": "win_system_susp_dhcp_config.yml"
-    },
-    {
-        "title": "Windows Pcap Drivers",
-        "id": "7b687634-ab20-11ea-bb37-0242ac130002",
-        "status": "test",
-        "description": "Detects Windows Pcap driver installation based on a list of associated .sys files.",
-        "author": "Cian Heasley",
-        "tags": [
-            "attack.discovery",
-            "attack.credential_access",
-            "attack.t1040"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '4697' AND (ServiceFileName LIKE '%pcap%' ESCAPE '\\' OR ServiceFileName LIKE '%npcap%' ESCAPE '\\' OR ServiceFileName LIKE '%npf%' ESCAPE '\\' OR ServiceFileName LIKE '%nm3%' ESCAPE '\\' OR ServiceFileName LIKE '%ndiscap%' ESCAPE '\\' OR ServiceFileName LIKE '%nmnt%' ESCAPE '\\' OR ServiceFileName LIKE '%windivert%' ESCAPE '\\' OR ServiceFileName LIKE '%USBPcap%' ESCAPE '\\' OR ServiceFileName LIKE '%pktmon%' ESCAPE '\\'))"
-        ],
-        "filename": "win_system_pcap_drivers.yml"
     },
     {
         "title": "ProcessHacker Privilege Elevation",
@@ -6204,65 +6268,6 @@
         "filename": "win_system_tap_driver_installation.yml"
     },
     {
-        "title": "Windows Update Error",
-        "id": "13cfeb75-9e33-4d04-b0f7-ab8faaa95a59",
-        "status": "test",
-        "description": "Windows Update get some error Check if need a 0-days KB",
-        "author": "frack113",
-        "tags": [
-            "attack.impact",
-            "attack.resource_development",
-            "attack.t1584"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Microsoft-Windows-WindowsUpdateClient' AND EventID IN ('16', '20', '24', '213', '217'))"
-        ],
-        "filename": "win_system_susp_system_update_error.yml"
-    },
-    {
-        "title": "Vulnerable Netlogon Secure Channel Connection Allowed",
-        "id": "a0cb7110-edf0-47a4-9177-541a4083128a",
-        "status": "test",
-        "description": "Detects that a vulnerable Netlogon secure channel connection was allowed, which could be an indicator of CVE-2020-1472.",
-        "author": "NVISO",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.t1548"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'NetLogon' AND EventID = '5829')"
-        ],
-        "filename": "win_system_vul_cve_2020_1472.yml"
-    },
-    {
-        "title": "NTLMv1 Logon Between Client and Server",
-        "id": "e9d4ab66-a532-4ef7-a502-66a9e4a34f5d",
-        "status": "experimental",
-        "description": "Detects the reporting of NTLMv1 being used between a client and server",
-        "author": "Tim Shelton",
-        "tags": [
-            "attack.execution",
-            "attack.t1550.002",
-            "attack.s0363"
-        ],
-        "falsepositives": [
-            "Environments that use NTLMv1"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'LsaSrv' AND EventID = '6038')"
-        ],
-        "filename": "win_system_lsasrv_ntlmv1.yml"
-    },
-    {
         "title": "CobaltStrike Service Installations - System",
         "id": "5a105d34-05fc-401e-8553-272b45c1522d",
         "status": "test",
@@ -6303,45 +6308,6 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND (ImagePath LIKE '%PDQDeployRunner-%' ESCAPE '\\' OR ServiceName LIKE 'PDQDeployRunner-%' ESCAPE '\\'))"
         ],
         "filename": "win_system_service_install_pdqdeploy_runner.yml"
-    },
-    {
-        "title": "Suspicious Usage of CVE_2021_34484 or CVE 2022_21919",
-        "id": "52a85084-6989-40c3-8f32-091e12e17692",
-        "status": "experimental",
-        "description": "During exploitation of this vuln, two logs (providername:Microsoft-Windows-User Profiles Service) with eventid 1511 and 1515 (maybe lot of false positives with this event) are created. Moreover, it appears the directory \\Users\\TEMP is created may be created during the exploitation.Viewed on 2008 Server",
-        "author": "Cybex",
-        "tags": [
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '1511' AND Provider_Name = 'Microsoft-Windows-User Profiles Service')"
-        ],
-        "filename": "win_system_susp_vuln_cve_2022_21919_or_cve_2021_34484.yml"
-    },
-    {
-        "title": "Important Windows Eventlog Cleared",
-        "id": "100ef69e-3327-481c-8e5c-6d80d9507556",
-        "status": "experimental",
-        "description": "Detects the clearing of one of the Windows Core Eventlogs. e.g. caused by \"wevtutil cl\" command execution",
-        "author": "Florian Roth (Nextron Systems), Tim Shelton",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1070.001",
-            "car.2016-04-002"
-        ],
-        "falsepositives": [
-            "Rollout of log collection agents (the setup routine often includes a reset of the local Eventlog)",
-            "System provisioning (system reset before the golden image creation)"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog' AND Channel IN ('System', 'Security', 'Application'))"
-        ],
-        "filename": "win_system_susp_eventlog_cleared.yml"
     },
     {
         "title": "Invoke-Obfuscation RUNDLL LAUNCHER - System",
@@ -6406,44 +6372,6 @@
         "filename": "win_system_apt_stonedrill.yml"
     },
     {
-        "title": "Exploit SamAccountName Spoofing with Kerberos",
-        "id": "44bbff3e-4ca3-452d-a49a-6efa4cafa06f",
-        "status": "test",
-        "description": "The attacker creates a computer object using those permissions with a password known to her.\nAfter that she clears the attribute ServicePrincipalName on the computer object.\nBecause she created the object (CREATOR OWNER), she gets granted additional permissions and can do many changes to the object.\n",
-        "author": "frack113",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1558.003"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND ((Provider_Name = 'Microsoft-Windows-Kerberos-Key-Distribution-Center' AND EventID IN ('35', '36', '37', '38')) OR (Provider_Name = 'Microsoft-Windows-Directory-Services-SAM' AND EventID IN ('16990', '16991'))))"
-        ],
-        "filename": "win_system_vul_cve_2021_42278_or_cve_2021_42287.yml"
-    },
-    {
-        "title": "DHCP Server Error Failed Loading the CallOut DLL",
-        "id": "75edd3fd-7146-48e5-9848-3013d7f0282c",
-        "status": "test",
-        "description": "This rule detects a DHCP server error in which a specified Callout DLL (in registry) could not be loaded",
-        "author": "Dimitrios Slamaris, @atc_project (fix)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID IN ('1031', '1032', '1034') AND Provider_Name = 'Microsoft-Windows-DHCP-Server')"
-        ],
-        "filename": "win_system_susp_dhcp_config_failed.yml"
-    },
-    {
         "title": "Windows Defender Threat Detection Disabled - Service",
         "id": "6c0a7755-6d31-44fa-80e1-133e57752680",
         "status": "stable",
@@ -6462,25 +6390,6 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '7036' AND Provider_Name = 'Service Control Manager' AND param1 IN ('Windows Defender Antivirus Service', 'Service antivirus Microsoft Defender') AND param2 = 'stopped')"
         ],
         "filename": "win_system_defender_disabled.yml"
-    },
-    {
-        "title": "Volume Shadow Copy Mount",
-        "id": "f512acbf-e662-4903-843e-97ce4652b740",
-        "status": "test",
-        "description": "Detects volume shadow copy mount via windows event log",
-        "author": "Roberto Rodriguez @Cyb3rWard0g, Open Threat Research (OTR)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003.002"
-        ],
-        "falsepositives": [
-            "Legitimate use of volume shadow copy mounts (backups maybe)."
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Microsoft-Windows-Ntfs' AND EventID = '98' AND DeviceName LIKE '%HarddiskVolumeShadowCopy%' ESCAPE '\\')"
-        ],
-        "filename": "win_system_volume_shadow_copy_mount.yml"
     },
     {
         "title": "Invoke-Obfuscation CLIP+ Launcher - System",
@@ -6504,6 +6413,79 @@
         "filename": "win_system_invoke_obfuscation_clip_services.yml"
     },
     {
+        "title": "NetSupport Manager Service Install",
+        "id": "2d510d8d-912b-45c5-b1df-36faa3d8c3f4",
+        "status": "experimental",
+        "description": "Detects NetSupport Manager service installation on the target system.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Legitimate use of the tool"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND (ImagePath LIKE '%\\\\NetSupport Manager\\\\client32.exe%' ESCAPE '\\' OR ServiceName = 'Client32'))"
+        ],
+        "filename": "win_system_service_install_netsupport_manager.yml"
+    },
+    {
+        "title": "Potential RDP Exploit CVE-2019-0708",
+        "id": "aaa5b30d-f418-420b-83a0-299cb6024885",
+        "status": "test",
+        "description": "Detect suspicious error on protocol RDP, potential CVE-2019-0708",
+        "author": "Lionel PRAT, Christophe BROCAS, @atc_project (improvements)",
+        "tags": [
+            "attack.lateral_movement",
+            "attack.t1210",
+            "car.2013-07-002"
+        ],
+        "falsepositives": [
+            "Bad connections or network interruptions"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID IN ('56', '50') AND Provider_Name = 'TermDD')"
+        ],
+        "filename": "win_system_rdp_potential_cve_2019_0708.yml"
+    },
+    {
+        "title": "Zerologon Exploitation Using Well-known Tools",
+        "id": "18f37338-b9bd-4117-a039-280c81f7a596",
+        "status": "stable",
+        "description": "This rule is designed to detect attempts to exploit Zerologon (CVE-2020-1472) vulnerability using mimikatz zerologon module or other exploits from machine with \"kali\" hostname.",
+        "author": "Demyan Sokolin @_drd0c, Teymur Kheirkhabarov @HeirhabarovT, oscd.community",
+        "tags": [
+            "attack.t1210",
+            "attack.lateral_movement"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID IN ('5805', '5723') AND (logs MATCH ('\"kali\" OR \"mimikatz\"')))"
+        ],
+        "filename": "win_system_possible_zerologon_exploitation_using_wellknown_tools.yml"
+    },
+    {
+        "title": "Vulnerable Netlogon Secure Channel Connection Allowed",
+        "id": "a0cb7110-edf0-47a4-9177-541a4083128a",
+        "status": "test",
+        "description": "Detects that a vulnerable Netlogon secure channel connection was allowed, which could be an indicator of CVE-2020-1472.",
+        "author": "NVISO",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.t1548"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'NetLogon' AND EventID = '5829')"
+        ],
+        "filename": "win_system_vul_cve_2020_1472.yml"
+    },
+    {
         "title": "QuarksPwDump Clearing Access History",
         "id": "39f919f3-980b-4e6f-a975-8af7e507ef2b",
         "status": "test",
@@ -6523,22 +6505,79 @@
         "filename": "win_system_quarkspwdump_clearing_hive_access_history.yml"
     },
     {
-        "title": "NetSupport Manager Service Install",
-        "id": "2d510d8d-912b-45c5-b1df-36faa3d8c3f4",
-        "status": "experimental",
-        "description": "Detects NetSupport Manager service installation on the target system.",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "title": "NTFS Vulnerability Exploitation",
+        "id": "f14719ce-d3ab-4e25-9ce6-2899092260b0",
+        "status": "test",
+        "description": "This the exploitation of a NTFS vulnerability as reported without many details via Twitter",
+        "author": "Florian Roth (Nextron Systems)",
         "tags": [
-            "attack.persistence"
+            "attack.impact",
+            "attack.t1499.001"
         ],
         "falsepositives": [
-            "Legitimate use of the tool"
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Ntfs' AND EventID = '55' AND Origin = 'File System Driver' AND Description LIKE '%contains a corrupted file record%' ESCAPE '\\' AND Description LIKE '%The name of the file is \"\\\\\"%' ESCAPE '\\')"
+        ],
+        "filename": "win_system_ntfs_vuln_exploit.yml"
+    },
+    {
+        "title": "Potential CVE-2021-42278 Exploitation Attempt",
+        "id": "44bbff3e-4ca3-452d-a49a-6efa4cafa06f",
+        "status": "test",
+        "description": "The attacker creates a computer object using those permissions with a password known to her.\nAfter that she clears the attribute ServicePrincipalName on the computer object.\nBecause she created the object (CREATOR OWNER), she gets granted additional permissions and can do many changes to the object.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1558.003"
+        ],
+        "falsepositives": [
+            "Unknown"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND (ImagePath LIKE '%\\\\NetSupport Manager\\\\client32.exe%' ESCAPE '\\' OR ServiceName = 'Client32'))"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Microsoft-Windows-Kerberos-Key-Distribution-Center' AND EventID IN ('35', '36', '37', '38'))"
         ],
-        "filename": "win_system_service_install_netsupport_manager.yml"
+        "filename": "win_system_exploit_cve_2021_42278.yml"
+    },
+    {
+        "title": "Local Privilege Escalation Indicator TabTip",
+        "id": "bc2e25ed-b92b-4daa-b074-b502bdd1982b",
+        "status": "experimental",
+        "description": "Detects the invocation of TabTip via CLSID as seen when JuicyPotatoNG is used on a system in brute force mode",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1557.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Microsoft-Windows-DistributedCOM' AND EventID = '10001' AND param1 LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ink\\\\TabTip.exe' ESCAPE '\\' AND param2 = '2147943140' AND param3 = '{054AAE20-4BEA-4347-8A35-64A533254A9D}')"
+        ],
+        "filename": "win_system_lpe_indicators_tabtip.yml"
+    },
+    {
+        "title": "Suspicious Usage of CVE_2021_34484 or CVE 2022_21919",
+        "id": "52a85084-6989-40c3-8f32-091e12e17692",
+        "status": "experimental",
+        "description": "During exploitation of this vuln, two logs (providername:Microsoft-Windows-User Profiles Service) with eventid 1511 and 1515 (maybe lot of false positives with this event) are created. Moreover, it appears the directory \\Users\\TEMP is created may be created during the exploitation.Viewed on 2008 Server",
+        "author": "Cybex",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '1511' AND Provider_Name = 'Microsoft-Windows-User Profiles Service')"
+        ],
+        "filename": "win_system_susp_vuln_cve_2022_21919_or_cve_2021_34484.yml"
     },
     {
         "title": "Suspicious Digital Signature Of AppX Package",
