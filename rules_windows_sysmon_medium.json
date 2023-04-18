@@ -14418,6 +14418,28 @@
         "filename": "image_load_side_load_ualapi.yml"
     },
     {
+        "title": "Potential Libvlc.DLL Sideloading",
+        "id": "bf9808c4-d24f-44a2-8398-b65227d406b6",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"libvlc.dll\", a DLL that is legitimately used by \"VLC.exe\"",
+        "author": "X__Junior",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "False positives are expected if VLC is installed in non-default locations"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\libvlc.dll' ESCAPE '\\' AND NOT (((ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\VideoLAN\\\\VLC\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_libvlc.yml"
+    },
+    {
         "title": "Active Directory Kerberos DLL Loaded Via Office Application",
         "id": "7417e29e-c2e7-4cf6-a2e8-767228c64837",
         "status": "test",
