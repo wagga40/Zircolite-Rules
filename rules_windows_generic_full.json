@@ -899,6 +899,25 @@
         "filename": "create_stream_hash_ads_executable.yml"
     },
     {
+        "title": "Potential Suspicious Winget Package Installation",
+        "id": "a3f5c081-e75b-43a0-9f5b-51f26fe5dba2",
+        "status": "experimental",
+        "description": "Detects potential suspicious winget package installation from a suspicious source.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Contents LIKE '[ZoneTransfer]  ZoneId=3%' ESCAPE '\\' AND (Contents LIKE '%://1%' ESCAPE '\\' OR Contents LIKE '%://2%' ESCAPE '\\' OR Contents LIKE '%://3%' ESCAPE '\\' OR Contents LIKE '%://4%' ESCAPE '\\' OR Contents LIKE '%://5%' ESCAPE '\\' OR Contents LIKE '%://6%' ESCAPE '\\' OR Contents LIKE '%://7%' ESCAPE '\\' OR Contents LIKE '%://8%' ESCAPE '\\' OR Contents LIKE '%://9%' ESCAPE '\\') AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\WinGet\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "create_stream_hash_winget_susp_package_source.yml"
+    },
+    {
         "title": "Creation Of a Suspicious ADS File Outside a Browser Download",
         "id": "573df571-a223-43bc-846e-3f98da481eca",
         "status": "experimental",
@@ -913,7 +932,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((Contents LIKE '[ZoneTransfer]  ZoneId=3%' ESCAPE '\\' AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND (TargetFilename LIKE '%.exe%' ESCAPE '\\' OR TargetFilename LIKE '%.scr%' ESCAPE '\\' OR TargetFilename LIKE '%.bat%' ESCAPE '\\' OR TargetFilename LIKE '%.cmd%' ESCAPE '\\' OR TargetFilename LIKE '%.docx%' ESCAPE '\\' OR TargetFilename LIKE '%.hta%' ESCAPE '\\' OR TargetFilename LIKE '%.jse%' ESCAPE '\\' OR TargetFilename LIKE '%.lnk%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx%' ESCAPE '\\' OR TargetFilename LIKE '%.ps%' ESCAPE '\\' OR TargetFilename LIKE '%.reg%' ESCAPE '\\' OR TargetFilename LIKE '%.sct%' ESCAPE '\\' OR TargetFilename LIKE '%.vb%' ESCAPE '\\' OR TargetFilename LIKE '%.wsc%' ESCAPE '\\' OR TargetFilename LIKE '%.wsf%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((Contents LIKE '[ZoneTransfer]  ZoneId=3%' ESCAPE '\\' AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND (TargetFilename LIKE '%.exe%' ESCAPE '\\' OR TargetFilename LIKE '%.scr%' ESCAPE '\\' OR TargetFilename LIKE '%.bat%' ESCAPE '\\' OR TargetFilename LIKE '%.cmd%' ESCAPE '\\' OR TargetFilename LIKE '%.docx%' ESCAPE '\\' OR TargetFilename LIKE '%.hta%' ESCAPE '\\' OR TargetFilename LIKE '%.jse%' ESCAPE '\\' OR TargetFilename LIKE '%.lnk%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx%' ESCAPE '\\' OR TargetFilename LIKE '%.ps%' ESCAPE '\\' OR TargetFilename LIKE '%.reg%' ESCAPE '\\' OR TargetFilename LIKE '%.sct%' ESCAPE '\\' OR TargetFilename LIKE '%.vb%' ESCAPE '\\' OR TargetFilename LIKE '%.wsc%' ESCAPE '\\' OR TargetFilename LIKE '%.wsf%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\')))"
         ],
         "filename": "create_stream_hash_creation_internet_file.yml"
     },
@@ -5538,6 +5557,24 @@
         "filename": "win_system_application_sysmon_crash.yml"
     },
     {
+        "title": "Important Windows Service Terminated With Error",
+        "id": "d6b5520d-3934-48b4-928c-2aa3f92d6963",
+        "status": "experimental",
+        "description": "Detects important or interesting windows services that got terminated for whatever reason",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Rare false positives could occur since service termination could happen due to multiple reasons"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7023') AND ((param1 LIKE '% Antivirus%' ESCAPE '\\' OR param1 LIKE '% Firewall%' ESCAPE '\\' OR param1 LIKE '%Application Guard%' ESCAPE '\\' OR param1 LIKE '%BitLocker Drive Encryption Service%' ESCAPE '\\' OR param1 LIKE '%Encrypting File System%' ESCAPE '\\' OR param1 LIKE '%Microsoft Defender%' ESCAPE '\\' OR param1 LIKE '%Threat Protection%' ESCAPE '\\' OR param1 LIKE '%Windows Event Log%' ESCAPE '\\') OR (Binary LIKE '%770069006e0064006500660065006e006400%' ESCAPE '\\' OR Binary LIKE '%4500760065006e0074004c006f006700%' ESCAPE '\\' OR Binary LIKE '%6d0070007300730076006300%' ESCAPE '\\' OR Binary LIKE '%530065006e0073006500%' ESCAPE '\\' OR Binary LIKE '%450046005300%' ESCAPE '\\' OR Binary LIKE '%420044004500530056004300%' ESCAPE '\\')))"
+        ],
+        "filename": "win_system_service_terminated_error_important.yml"
+    },
+    {
         "title": "Invoke-Obfuscation VAR+ Launcher - System",
         "id": "8ca7004b-e620-4ecb-870e-86129b5b8e75",
         "status": "experimental",
@@ -6202,6 +6239,24 @@
         "filename": "win_system_apt_carbonpaper_turla.yml"
     },
     {
+        "title": "Windows Service Terminated With Error",
+        "id": "acfa2210-0d71-4eeb-b477-afab494d596c",
+        "status": "experimental",
+        "description": "Detects windows services that got terminated for whatever reason",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "False positives could occur since service termination could happen due to multiple reasons"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7023')"
+        ],
+        "filename": "win_system_service_terminated_error_generic.yml"
+    },
+    {
         "title": "Credential Dumping Tools Service Execution - System",
         "id": "4976aa50-8f41-45c6-8b15-ab3fc10e79ed",
         "status": "experimental",
@@ -6647,11 +6702,11 @@
             "attack.t1219"
         ],
         "falsepositives": [
-            "Legitimate usage of the software mentioned above"
+            "Likely with other browser software"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((QueryName LIKE '%.getgo.com' ESCAPE '\\' OR QueryName LIKE '%.logmein.com' ESCAPE '\\' OR QueryName LIKE '%.ammyy.com' ESCAPE '\\' OR QueryName LIKE '%.netsupportsoftware.com' ESCAPE '\\' OR QueryName LIKE '%remoteutilities.com' ESCAPE '\\' OR QueryName LIKE '%.net.anydesk.com' ESCAPE '\\' OR QueryName LIKE '%api.playanext.com' ESCAPE '\\' OR QueryName LIKE '%.relay.splashtop.com' ESCAPE '\\' OR QueryName LIKE '%.api.splashtop.com' ESCAPE '\\' OR QueryName LIKE '%app.atera.com' ESCAPE '\\' OR QueryName LIKE '%.agentreporting.atera.com' ESCAPE '\\' OR QueryName LIKE '%.pubsub.atera.com' ESCAPE '\\' OR QueryName LIKE '%logmeincdn.http.internapcdn.net' ESCAPE '\\' OR QueryName LIKE '%logmein-gateway.com' ESCAPE '\\' OR QueryName LIKE '%client.teamviewer.com' ESCAPE '\\' OR QueryName LIKE '%integratedchat.teamviewer.com' ESCAPE '\\' OR QueryName LIKE '%static.remotepc.com' ESCAPE '\\' OR QueryName LIKE '%.n-able.com' ESCAPE '\\' OR QueryName LIKE '%comserver.corporate.beanywhere.com' ESCAPE '\\' OR QueryName LIKE '%.swi-rc.com' ESCAPE '\\' OR QueryName LIKE '%.swi-tc.com' ESCAPE '\\' OR QueryName LIKE '%telemetry.servers.qetqo.com' ESCAPE '\\' OR QueryName LIKE '%relay.screenconnect.com' ESCAPE '\\' OR QueryName LIKE '%control.connectwise.com' ESCAPE '\\' OR QueryName LIKE '%express.gotoassist.com' ESCAPE '\\' OR QueryName LIKE '%authentication.logmeininc.com' ESCAPE '\\' OR QueryName LIKE '%.services.vnc.com' ESCAPE '\\' OR QueryName LIKE '%.tmate.io' ESCAPE '\\' OR QueryName LIKE '%api.parsec.app' ESCAPE '\\' OR QueryName LIKE '%parsecusercontent.com' ESCAPE '\\' OR QueryName LIKE '%remotedesktop-pa.googleapis.com' ESCAPE '\\' OR QueryName LIKE '%.logmein-gateway.com' ESCAPE '\\' OR QueryName LIKE '%secure.logmeinrescue.com' ESCAPE '\\' OR QueryName LIKE '%join.zoho.com' ESCAPE '\\' OR QueryName LIKE '%assist.zoho.com' ESCAPE '\\' OR QueryName LIKE '%.zohoassist.com' ESCAPE '\\' OR QueryName LIKE '%downloads.zohocdn.com' ESCAPE '\\' OR QueryName LIKE '%agent.jumpcloud.com' ESCAPE '\\' OR QueryName LIKE '%kickstart.jumpcloud.com' ESCAPE '\\' OR QueryName LIKE '%cdn.kaseya.net' ESCAPE '\\' OR QueryName LIKE '%relay.kaseya.net' ESCAPE '\\' OR QueryName LIKE '%license.bomgar.com' ESCAPE '\\' OR QueryName LIKE '%.beyondtrustcloud.com' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((QueryName LIKE '%.getgo.com' ESCAPE '\\' OR QueryName LIKE '%.logmein.com' ESCAPE '\\' OR QueryName LIKE '%.ammyy.com' ESCAPE '\\' OR QueryName LIKE '%.netsupportsoftware.com' ESCAPE '\\' OR QueryName LIKE '%remoteutilities.com' ESCAPE '\\' OR QueryName LIKE '%.net.anydesk.com' ESCAPE '\\' OR QueryName LIKE '%api.playanext.com' ESCAPE '\\' OR QueryName LIKE '%.relay.splashtop.com' ESCAPE '\\' OR QueryName LIKE '%.api.splashtop.com' ESCAPE '\\' OR QueryName LIKE '%app.atera.com' ESCAPE '\\' OR QueryName LIKE '%.agentreporting.atera.com' ESCAPE '\\' OR QueryName LIKE '%.pubsub.atera.com' ESCAPE '\\' OR QueryName LIKE '%logmeincdn.http.internapcdn.net' ESCAPE '\\' OR QueryName LIKE '%logmein-gateway.com' ESCAPE '\\' OR QueryName LIKE '%client.teamviewer.com' ESCAPE '\\' OR QueryName LIKE '%integratedchat.teamviewer.com' ESCAPE '\\' OR QueryName LIKE '%static.remotepc.com' ESCAPE '\\' OR QueryName LIKE '%.n-able.com' ESCAPE '\\' OR QueryName LIKE '%comserver.corporate.beanywhere.com' ESCAPE '\\' OR QueryName LIKE '%.swi-rc.com' ESCAPE '\\' OR QueryName LIKE '%.swi-tc.com' ESCAPE '\\' OR QueryName LIKE '%telemetry.servers.qetqo.com' ESCAPE '\\' OR QueryName LIKE '%relay.screenconnect.com' ESCAPE '\\' OR QueryName LIKE '%control.connectwise.com' ESCAPE '\\' OR QueryName LIKE '%express.gotoassist.com' ESCAPE '\\' OR QueryName LIKE '%authentication.logmeininc.com' ESCAPE '\\' OR QueryName LIKE '%.services.vnc.com' ESCAPE '\\' OR QueryName LIKE '%.tmate.io' ESCAPE '\\' OR QueryName LIKE '%api.parsec.app' ESCAPE '\\' OR QueryName LIKE '%parsecusercontent.com' ESCAPE '\\' OR QueryName LIKE '%remotedesktop-pa.googleapis.com' ESCAPE '\\' OR QueryName LIKE '%.logmein-gateway.com' ESCAPE '\\' OR QueryName LIKE '%secure.logmeinrescue.com' ESCAPE '\\' OR QueryName LIKE '%join.zoho.com' ESCAPE '\\' OR QueryName LIKE '%assist.zoho.com' ESCAPE '\\' OR QueryName LIKE '%.zohoassist.com' ESCAPE '\\' OR QueryName LIKE '%downloads.zohocdn.com' ESCAPE '\\' OR QueryName LIKE '%agent.jumpcloud.com' ESCAPE '\\' OR QueryName LIKE '%kickstart.jumpcloud.com' ESCAPE '\\' OR QueryName LIKE '%cdn.kaseya.net' ESCAPE '\\' OR QueryName LIKE '%relay.kaseya.net' ESCAPE '\\' OR QueryName LIKE '%license.bomgar.com' ESCAPE '\\' OR QueryName LIKE '%.beyondtrustcloud.com' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\')))"
         ],
         "filename": "dns_query_win_remote_access_software_domains.yml"
     },
@@ -6755,18 +6810,18 @@
         "title": "Suspicious DNS Query for IP Lookup Service APIs",
         "id": "ec82e2a5-81ea-4211-a1f8-37a0286df2c2",
         "status": "test",
-        "description": "Detects DNS queries for ip lookup services such as api.ipify.org not originating from a non browser process.",
+        "description": "Detects DNS queries for IP lookup services such as \"api.ipify.org\" originating from a non browser process.",
         "author": "Brandon George (blog post), Thomas Patzke (rule)",
         "tags": [
             "attack.reconnaissance",
             "attack.t1590"
         ],
         "falsepositives": [
-            "Legitimate usage of ip lookup services such as ipify API"
+            "Legitimate usage of IP lookup services such as ipify API"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (QueryName IN ('canireachthe.net', 'ipv4.icanhazip.com', 'ip.anysrc.net', 'edns.ip-api.com', 'wtfismyip.com', 'checkip.dyndns.org', 'api.2ip.ua', 'icanhazip.com', 'api.ipify.org', 'ip-api.com', 'checkip.amazonaws.com', 'ipecho.net', 'ipinfo.io', 'ipv4bot.whatismyipaddress.com', 'freegeoip.app', 'ifconfig.me', 'ipwho.is') AND NOT ((NewProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (QueryName IN ('canireachthe.net', 'ipv4.icanhazip.com', 'ip.anysrc.net', 'edns.ip-api.com', 'wtfismyip.com', 'checkip.dyndns.org', 'api.2ip.ua', 'icanhazip.com', 'api.ipify.org', 'ip-api.com', 'checkip.amazonaws.com', 'ipecho.net', 'ipinfo.io', 'ipv4bot.whatismyipaddress.com', 'freegeoip.app', 'ifconfig.me', 'ipwho.is') AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\')))"
         ],
         "filename": "dns_query_win_susp_ipify.yml"
     },
@@ -7677,6 +7732,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\Session Manager%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\SetupExecute%' ESCAPE '\\' OR TargetObject LIKE '%\\\\S0InitialCommand%' ESCAPE '\\' OR TargetObject LIKE '%\\\\KnownDlls%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Execute%' ESCAPE '\\' OR TargetObject LIKE '%\\\\BootExecute%' ESCAPE '\\' OR TargetObject LIKE '%\\\\AppCertDlls%' ESCAPE '\\')) AND NOT (NewValue = '(Empty)'))"
         ],
         "filename": "registry_set_asep_reg_keys_modification_session_manager.yml"
+    },
+    {
+        "title": "Enable Local Manifest Installation With Winget",
+        "id": "fa277e82-9b78-42dd-b05c-05555c7b6015",
+        "status": "experimental",
+        "description": "Detects changes to the AppInstaller (winget) policy. Specifically the activation of the local manifest installation, which allows a user to install new packages via custom manifests.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Administrators or developers might enable this for testing purposes or to install custom private packages"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\AppInstaller\\\\EnableLocalManifestFiles' ESCAPE '\\' AND NewValue = 'DWORD (0x00000001)')"
+        ],
+        "filename": "registry_set_winget_enable_local_manifest.yml"
     },
     {
         "title": "Potential Persistence Via Scrobj.dll COM Hijacking",
@@ -8887,6 +8961,25 @@
             "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%Software\\\\Wow6432Node\\\\Google\\\\Chrome\\\\Extensions%' ESCAPE '\\' AND TargetObject LIKE '%update\\_url' ESCAPE '\\' AND EventType = 'SetValue' AND (TargetObject LIKE '%fdcgdnkidjaadafnichfpabhfomcebme%' ESCAPE '\\' OR TargetObject LIKE '%fcfhplploccackoneaefokcmbjfbkenj%' ESCAPE '\\' OR TargetObject LIKE '%bihmplhobchoageeokmgbdihknkjbknd%' ESCAPE '\\' OR TargetObject LIKE '%gkojfkhlekighikafcpjkiklfbnlmeio%' ESCAPE '\\' OR TargetObject LIKE '%jajilbjjinjmgcibalaakngmkilboobh%' ESCAPE '\\' OR TargetObject LIKE '%gjknjjomckknofjidppipffbpoekiipm%' ESCAPE '\\' OR TargetObject LIKE '%nabbmpekekjknlbkgpodfndbodhijjem%' ESCAPE '\\' OR TargetObject LIKE '%kpiecbcckbofpmkkkdibbllpinceiihk%' ESCAPE '\\' OR TargetObject LIKE '%nlbejmccbhkncgokjcmghpfloaajcffj%' ESCAPE '\\' OR TargetObject LIKE '%omghfjlpggmjjaagoclmmobgdodcjboh%' ESCAPE '\\' OR TargetObject LIKE '%bibjcjfmgapbfoljiojpipaooddpkpai%' ESCAPE '\\' OR TargetObject LIKE '%mpcaainmfjjigeicjnlkdfajbioopjko%' ESCAPE '\\' OR TargetObject LIKE '%jljopmgdobloagejpohpldgkiellmfnc%' ESCAPE '\\' OR TargetObject LIKE '%lochiccbgeohimldjooaakjllnafhaid%' ESCAPE '\\' OR TargetObject LIKE '%nhnfcgpcbfclhfafjlooihdfghaeinfc%' ESCAPE '\\' OR TargetObject LIKE '%ookhnhpkphagefgdiemllfajmkdkcaim%' ESCAPE '\\' OR TargetObject LIKE '%namfblliamklmeodpcelkokjbffgmeoo%' ESCAPE '\\' OR TargetObject LIKE '%nbcojefnccbanplpoffopkoepjmhgdgh%' ESCAPE '\\' OR TargetObject LIKE '%majdfhpaihoncoakbjgbdhglocklcgno%' ESCAPE '\\' OR TargetObject LIKE '%lnfdmdhmfbimhhpaeocncdlhiodoblbd%' ESCAPE '\\' OR TargetObject LIKE '%eppiocemhmnlbhjplcgkofciiegomcon%' ESCAPE '\\' OR TargetObject LIKE '%cocfojppfigjeefejbpfmedgjbpchcng%' ESCAPE '\\' OR TargetObject LIKE '%foiopecknacmiihiocgdjgbjokkpkohc%' ESCAPE '\\' OR TargetObject LIKE '%hhdobjgopfphlmjbmnpglhfcgppchgje%' ESCAPE '\\' OR TargetObject LIKE '%jgbaghohigdbgbolncodkdlpenhcmcge%' ESCAPE '\\' OR TargetObject LIKE '%inligpkjkhbpifecbdjhmdpcfhnlelja%' ESCAPE '\\' OR TargetObject LIKE '%higioemojdadgdbhbbbkfbebbdlfjbip%' ESCAPE '\\' OR TargetObject LIKE '%hipncndjamdcmphkgngojegjblibadbe%' ESCAPE '\\' OR TargetObject LIKE '%iolonopooapdagdemdoaihahlfkncfgg%' ESCAPE '\\' OR TargetObject LIKE '%nhfjkakglbnnpkpldhjmpmmfefifedcj%' ESCAPE '\\' OR TargetObject LIKE '%jpgljfpmoofbmlieejglhonfofmahini%' ESCAPE '\\' OR TargetObject LIKE '%fgddmllnllkalaagkghckoinaemmogpe%' ESCAPE '\\' OR TargetObject LIKE '%ejkaocphofnobjdedneohbbiilggdlbi%' ESCAPE '\\' OR TargetObject LIKE '%keodbianoliadkoelloecbhllnpiocoi%' ESCAPE '\\' OR TargetObject LIKE '%hoapmlpnmpaehilehggglehfdlnoegck%' ESCAPE '\\' OR TargetObject LIKE '%poeojclicodamonabcabmapamjkkmnnk%' ESCAPE '\\' OR TargetObject LIKE '%dfkdflfgjdajbhocmfjolpjbebdkcjog%' ESCAPE '\\' OR TargetObject LIKE '%kcdahmgmaagjhocpipbodaokikjkampi%' ESCAPE '\\' OR TargetObject LIKE '%klnkiajpmpkkkgpgbogmcgfjhdoljacg%' ESCAPE '\\' OR TargetObject LIKE '%lneaocagcijjdpkcabeanfpdbmapcjjg%' ESCAPE '\\' OR TargetObject LIKE '%pgfpignfckbloagkfnamnolkeaecfgfh%' ESCAPE '\\' OR TargetObject LIKE '%jplnlifepflhkbkgonidnobkakhmpnmh%' ESCAPE '\\' OR TargetObject LIKE '%jliodmnojccaloajphkingdnpljdhdok%' ESCAPE '\\' OR TargetObject LIKE '%hnmpcagpplmpfojmgmnngilcnanddlhb%' ESCAPE '\\' OR TargetObject LIKE '%ffbkglfijbcbgblgflchnbphjdllaogb%' ESCAPE '\\' OR TargetObject LIKE '%kcndmbbelllkmioekdagahekgimemejo%' ESCAPE '\\' OR TargetObject LIKE '%jdgilggpfmjpbodmhndmhojklgfdlhob%' ESCAPE '\\' OR TargetObject LIKE '%bihhflimonbpcfagfadcnbbdngpopnjb%' ESCAPE '\\' OR TargetObject LIKE '%ppajinakbfocjfnijggfndbdmjggcmde%' ESCAPE '\\' OR TargetObject LIKE '%oofgbpoabipfcfjapgnbbjjaenockbdp%' ESCAPE '\\' OR TargetObject LIKE '%bhnhkdgoefpmekcgnccpnhjfdgicfebm%' ESCAPE '\\' OR TargetObject LIKE '%knmmpciebaoojcpjjoeonlcjacjopcpf%' ESCAPE '\\' OR TargetObject LIKE '%dhadilbmmjiooceioladdphemaliiobo%' ESCAPE '\\' OR TargetObject LIKE '%jedieiamjmoflcknjdjhpieklepfglin%' ESCAPE '\\' OR TargetObject LIKE '%mhngpdlhojliikfknhfaglpnddniijfh%' ESCAPE '\\' OR TargetObject LIKE '%omdakjcmkglenbhjadbccaookpfjihpa%' ESCAPE '\\' OR TargetObject LIKE '%npgimkapccfidfkfoklhpkgmhgfejhbj%' ESCAPE '\\' OR TargetObject LIKE '%akeehkgglkmpapdnanoochpfmeghfdln%' ESCAPE '\\' OR TargetObject LIKE '%gbmdmipapolaohpinhblmcnpmmlgfgje%' ESCAPE '\\' OR TargetObject LIKE '%aigmfoeogfnljhnofglledbhhfegannp%' ESCAPE '\\' OR TargetObject LIKE '%cgojmfochfikphincbhokimmmjenhhgk%' ESCAPE '\\' OR TargetObject LIKE '%ficajfeojakddincjafebjmfiefcmanc%' ESCAPE '\\' OR TargetObject LIKE '%ifnaibldjfdmaipaddffmgcmekjhiloa%' ESCAPE '\\' OR TargetObject LIKE '%jbnmpdkcfkochpanomnkhnafobppmccn%' ESCAPE '\\' OR TargetObject LIKE '%apcfdffemoinopelidncddjbhkiblecc%' ESCAPE '\\' OR TargetObject LIKE '%mjolnodfokkkaichkcjipfgblbfgojpa%' ESCAPE '\\' OR TargetObject LIKE '%oifjbnnafapeiknapihcmpeodaeblbkn%' ESCAPE '\\' OR TargetObject LIKE '%plpmggfglncceinmilojdkiijhmajkjh%' ESCAPE '\\' OR TargetObject LIKE '%mjnbclmflcpookeapghfhapeffmpodij%' ESCAPE '\\' OR TargetObject LIKE '%bblcccknbdbplgmdjnnikffefhdlobhp%' ESCAPE '\\' OR TargetObject LIKE '%aojlhgbkmkahabcmcpifbolnoichfeep%' ESCAPE '\\' OR TargetObject LIKE '%lcmammnjlbmlbcaniggmlejfjpjagiia%' ESCAPE '\\' OR TargetObject LIKE '%knajdeaocbpmfghhmijicidfcmdgbdpm%' ESCAPE '\\' OR TargetObject LIKE '%bdlcnpceagnkjnjlbbbcepohejbheilk%' ESCAPE '\\' OR TargetObject LIKE '%edknjdjielmpdlnllkdmaghlbpnmjmgb%' ESCAPE '\\' OR TargetObject LIKE '%eidnihaadmmancegllknfbliaijfmkgo%' ESCAPE '\\' OR TargetObject LIKE '%ckiahbcmlmkpfiijecbpflfahoimklke%' ESCAPE '\\' OR TargetObject LIKE '%macdlemfnignjhclfcfichcdhiomgjjb%' ESCAPE '\\' OR TargetObject LIKE '%chioafkonnhbpajpengbalkececleldf%' ESCAPE '\\' OR TargetObject LIKE '%amnoibeflfphhplmckdbiajkjaoomgnj%' ESCAPE '\\' OR TargetObject LIKE '%llbhddikeonkpbhpncnhialfbpnilcnc%' ESCAPE '\\' OR TargetObject LIKE '%pcienlhnoficegnepejpfiklggkioccm%' ESCAPE '\\' OR TargetObject LIKE '%iocnglnmfkgfedpcemdflhkchokkfeii%' ESCAPE '\\' OR TargetObject LIKE '%igahhbkcppaollcjeaaoapkijbnphfhb%' ESCAPE '\\' OR TargetObject LIKE '%njpmifchgidinihmijhcfpbdmglecdlb%' ESCAPE '\\' OR TargetObject LIKE '%ggackgngljinccllcmbgnpgpllcjepgc%' ESCAPE '\\' OR TargetObject LIKE '%kchocjcihdgkoplngjemhpplmmloanja%' ESCAPE '\\' OR TargetObject LIKE '%bnijmipndnicefcdbhgcjoognndbgkep%' ESCAPE '\\' OR TargetObject LIKE '%lklekjodgannjcccdlbicoamibgbdnmi%' ESCAPE '\\' OR TargetObject LIKE '%dbdbnchagbkhknegmhgikkleoogjcfge%' ESCAPE '\\' OR TargetObject LIKE '%egblhcjfjmbjajhjhpmnlekffgaemgfh%' ESCAPE '\\' OR TargetObject LIKE '%ehbhfpfdkmhcpaehaooegfdflljcnfec%' ESCAPE '\\' OR TargetObject LIKE '%bkkgdjpomdnfemhhkalfkogckjdkcjkg%' ESCAPE '\\' OR TargetObject LIKE '%almalgbpmcfpdaopimbdchdliminoign%' ESCAPE '\\' OR TargetObject LIKE '%akkbkhnikoeojlhiiomohpdnkhbkhieh%' ESCAPE '\\' OR TargetObject LIKE '%gbfgfbopcfokdpkdigfmoeaajfmpkbnh%' ESCAPE '\\' OR TargetObject LIKE '%bniikohfmajhdcffljgfeiklcbgffppl%' ESCAPE '\\' OR TargetObject LIKE '%lejgfmmlngaigdmmikblappdafcmkndb%' ESCAPE '\\' OR TargetObject LIKE '%ffhhkmlgedgcliajaedapkdfigdobcif%' ESCAPE '\\' OR TargetObject LIKE '%gcknhkkoolaabfmlnjonogaaifnjlfnp%' ESCAPE '\\' OR TargetObject LIKE '%pooljnboifbodgifngpppfklhifechoe%' ESCAPE '\\' OR TargetObject LIKE '%fjoaledfpmneenckfbpdfhkmimnjocfa%' ESCAPE '\\' OR TargetObject LIKE '%aakchaleigkohafkfjfjbblobjifikek%' ESCAPE '\\' OR TargetObject LIKE '%dpplabbmogkhghncfbfdeeokoefdjegm%' ESCAPE '\\' OR TargetObject LIKE '%padekgcemlokbadohgkifijomclgjgif%' ESCAPE '\\' OR TargetObject LIKE '%bfidboloedlamgdmenmlbipfnccokknp%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_chrome_extension.yml"
+    },
+    {
+        "title": "Winget Admin Settings Modification",
+        "id": "6db5eaf9-88f7-4ed9-af7d-9ef2ad12f236",
+        "status": "experimental",
+        "description": "Detects changes to the AppInstaller (winget) admin settings. Such as enabling local manifest installations or disabling installer hash checks",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "The event doesn't contain information about the type of change. False positives are expected with legitimate changes"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' AND TargetObject LIKE '\\\\REGISTRY\\\\A\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\LocalState\\\\admin\\_settings' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_winget_admin_settings_tampering.yml"
     },
     {
         "title": "Add DisallowRun Execution to Registry",
@@ -13406,18 +13499,18 @@
         "title": "Suspicious VHD Image Download From Browser",
         "id": "8468111a-ef07-4654-903b-b863a80bbc95",
         "status": "test",
-        "description": "Malware can use mountable Virtual Hard Disk .vhd file to encapsulate payloads and evade security controls",
+        "description": "Detects creation of \".vhd\"/\".vhdx\" files by browser processes.\nMalware can use mountable Virtual Hard Disk \".vhd\" files to encapsulate payloads and evade security controls.\n",
         "author": "frack113, Christopher Peacock '@securepeacock', SCYTHE '@scythe_io'",
         "tags": [
             "attack.resource_development",
             "attack.t1587.001"
         ],
         "falsepositives": [
-            "Legitimate user creation"
+            "Legitimate downloads of \".vhd\" files would also trigger this"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedgecp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') AND TargetFilename LIKE '%.vhd%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\') AND TargetFilename LIKE '%.vhd%' ESCAPE '\\')"
         ],
         "filename": "file_event_win_mal_vhd_download.yml"
     },
@@ -13727,6 +13820,24 @@
         "filename": "file_event_win_initial_access_dll_search_order_hijacking.yml"
     },
     {
+        "title": "RDP File Creation From Suspicious Application",
+        "id": "fccfb43e-09a7-4bd2-8b37-a5a7df33386d",
+        "status": "experimental",
+        "description": "Detects Rclone config file being created",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Whale.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Outlook.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Thunderbird.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Discord.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Keybase.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msteams.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Slack.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\teams.exe' ESCAPE '\\') AND TargetFilename LIKE '%.rdp%' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_rdp_file_susp_creation.yml"
+    },
+    {
         "title": "UAC Bypass Using .NET Code Profiler on MMC",
         "id": "93a19907-d4f9-4deb-9f91-aac4692776a6",
         "status": "test",
@@ -13984,11 +14095,11 @@
         ],
         "falsepositives": [
             "Legitimate macro files downloaded from the internet",
-            "Legitimate macro files sent as attachemnts via emails"
+            "Legitimate macro files sent as attachments via emails"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thunderbird.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\HxOutlook.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\microsoftedgecp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') AND ((TargetFilename LIKE '%.docm' ESCAPE '\\' OR TargetFilename LIKE '%.dotm' ESCAPE '\\' OR TargetFilename LIKE '%.xlsm' ESCAPE '\\' OR TargetFilename LIKE '%.xltm' ESCAPE '\\' OR TargetFilename LIKE '%.potm' ESCAPE '\\' OR TargetFilename LIKE '%.pptm' ESCAPE '\\') OR (TargetFilename LIKE '%.docm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dotm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xltm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.potm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.pptm:Zone%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thunderbird.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\') AND ((TargetFilename LIKE '%.docm' ESCAPE '\\' OR TargetFilename LIKE '%.dotm' ESCAPE '\\' OR TargetFilename LIKE '%.xlsm' ESCAPE '\\' OR TargetFilename LIKE '%.xltm' ESCAPE '\\' OR TargetFilename LIKE '%.potm' ESCAPE '\\' OR TargetFilename LIKE '%.pptm' ESCAPE '\\') OR (TargetFilename LIKE '%.docm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dotm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xltm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.potm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.pptm:Zone%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_office_macro_files_downloaded.yml"
     },
@@ -14594,7 +14705,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\MicrosoftAccountTokenProvider.dll' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\BackgroundTaskHost.exe' ESCAPE '\\'))) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\IDE\\\\devenv.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR (NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\OneDrive.exe' ESCAPE '\\') OR (NewProcessName = '')))"
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\MicrosoftAccountTokenProvider.dll' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\BackgroundTaskHost.exe' ESCAPE '\\'))) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\IDE\\\\devenv.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\OneDrive.exe' ESCAPE '\\') OR (NewProcessName = '')))"
         ],
         "filename": "image_load_abusing_azure_browser_sso.yml"
     },
@@ -19931,6 +20042,24 @@
         "filename": "proc_creation_win_susp_double_extension.yml"
     },
     {
+        "title": "Mstsc.EXE Execution From Uncommon Parent",
+        "id": "ff3b6b39-e765-42f9-bb2c-ea6761e0e0f6",
+        "status": "experimental",
+        "description": "Detects potential RDP connection via Mstsc using a local \".rdp\" file located in suspicious locations.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.lateral_movement"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\CCleanerBrowser.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\chromium.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\whale.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName = 'mstsc.exe'))"
+        ],
+        "filename": "proc_creation_win_mstsc_run_local_rpd_file_susp_parent.yml"
+    },
+    {
         "title": "Suspicious Query of MachineGUID",
         "id": "f5240972-3938-4e56-8e4b-e33893176c1f",
         "status": "test",
@@ -24383,26 +24512,6 @@
         "filename": "proc_creation_win_wmic_namespace_defender.yml"
     },
     {
-        "title": "Monitoring Winget For LOLbin Execution",
-        "id": "313d6012-51a0-4d93-8dfc-de8553239e25",
-        "status": "experimental",
-        "description": "Detects usage of winget to install applications via manifest file. Adversaries can abuse winget to download payloads remotely and execute them without touching disk. The manifest option enables you to install an application by passing in a YAML file directly to the client. Winget can be used to download and install exe's, msi, msix files later.",
-        "author": "Sreeman, Florian Roth (Nextron Systems), Frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.execution",
-            "attack.t1059"
-        ],
-        "falsepositives": [
-            "Admin activity installing packages not in the official Microsoft repo. Winget probably won't be used by most users."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND CommandLine LIKE '%install%' ESCAPE '\\' AND (CommandLine LIKE '%-m %' ESCAPE '\\' OR CommandLine LIKE '%--manifest%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_execution_via_winget.yml"
-    },
-    {
         "title": "Change PowerShell Policies to an Insecure Level",
         "id": "87e3c4e8-a6a8-4ad9-bb4f-46e7ff99a180",
         "status": "experimental",
@@ -25030,6 +25139,25 @@
         "filename": "proc_creation_win_regedit_import_keys.yml"
     },
     {
+        "title": "Suspicious Mstsc.EXE Execution With Local RDP File",
+        "id": "6e22722b-dfb1-4508-a911-49ac840b40f8",
+        "status": "experimental",
+        "description": "Detects potential RDP connection via Mstsc using a local \".rdp\" file located in suspicious locations.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Likelihood is related to how often the paths are used in the environement"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName = 'mstsc.exe') AND (CommandLine LIKE '%.rdp' ESCAPE '\\' OR CommandLine LIKE '%.rdp\"' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\color%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\_Migrated %' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tracing\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mstsc_run_local_rdp_file_susp_location.yml"
+    },
+    {
         "title": "HackTool - Sliver C2 Implant Activity Pattern",
         "id": "42333b2c-b425-441c-b70e-99404a17170f",
         "status": "experimental",
@@ -25217,6 +25345,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\te.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\te.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\te.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_use_of_te_bin.yml"
+    },
+    {
+        "title": "Add Potential Suspicious New Download Source To Winget",
+        "id": "c15a46a0-07d4-4c87-b4b6-89207835a83b",
+        "status": "experimental",
+        "description": "Detects usage of winget to add new potentially suspicious download sources",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\') AND CommandLine REGEXP '://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}')"
+        ],
+        "filename": "proc_creation_win_winget_add_susp_custom_source.yml"
     },
     {
         "title": "Allow Service Access Using Security Descriptor Tampering Via Sc.EXE",
@@ -28898,8 +29046,7 @@
             "attack.t1021.001"
         ],
         "falsepositives": [
-            "WSL (Windows Sub System For Linux)",
-            "Other currently unknown software"
+            "WSL (Windows Sub System For Linux)"
         ],
         "level": "medium",
         "rule": [
@@ -33603,6 +33750,25 @@
         "filename": "proc_creation_win_powershell_base64_reflection_assembly_load_obfusc.yml"
     },
     {
+        "title": "Mstsc.EXE Execution With Local RDP File",
+        "id": "5fdce3ac-e7f9-4ecd-a3aa-a4d78ebbf0af",
+        "status": "experimental",
+        "description": "Detects potential RDP connection via Mstsc using a local \".rdp\" file",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Christopher Peacock @securepeacock",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Likely with legitimate usage of \".rdp\" files"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName = 'mstsc.exe') AND (CommandLine LIKE '%.rdp%' ESCAPE '\\' OR CommandLine LIKE '%.rdp\"%' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\lxss\\\\wslhost.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\ProgramData\\\\Microsoft\\\\WSL\\\\wslg.rdp%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_mstsc_run_local_rdp_file.yml"
+    },
+    {
         "title": "Remote Access Tool - ScreenConnect Suspicious Execution",
         "id": "75bfe6e6-cd8e-429e-91d3-03921e1d7962",
         "status": "test",
@@ -35521,6 +35687,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND ((CommandLine LIKE '% -e%' ESCAPE '\\' AND (CommandLine LIKE '% JAB%' ESCAPE '\\' OR CommandLine LIKE '% SUVYI%' ESCAPE '\\' OR CommandLine LIKE '% SQBFAFgA%' ESCAPE '\\' OR CommandLine LIKE '% aQBlAHgA%' ESCAPE '\\' OR CommandLine LIKE '% aWV4I%' ESCAPE '\\' OR CommandLine LIKE '% IAA%' ESCAPE '\\' OR CommandLine LIKE '% IAB%' ESCAPE '\\' OR CommandLine LIKE '% UwB%' ESCAPE '\\' OR CommandLine LIKE '% cwB%' ESCAPE '\\')) OR (CommandLine LIKE '%.exe -ENCOD %' ESCAPE '\\' OR CommandLine LIKE '% BA^J e-%' ESCAPE '\\'))) AND NOT ((CommandLine LIKE '% -ExecutionPolicy remotesigned %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_base64_encoded_cmd.yml"
+    },
+    {
+        "title": "Add New Download Source To Winget",
+        "id": "05ebafc8-7aa2-4bcd-a269-2aec93f9e842",
+        "status": "experimental",
+        "description": "Detects usage of winget to add new additional download sources",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "False positive are expected with legitimate sources"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_winget_add_custom_source.yml"
     },
     {
         "title": "Lolbin Unregmp2.exe Use As Proxy",
@@ -37593,6 +37779,26 @@
         "filename": "proc_creation_win_powershell_install_unsigned_appx_packages.yml"
     },
     {
+        "title": "Install New Package Via Winget Local Manifest",
+        "id": "313d6012-51a0-4d93-8dfc-de8553239e25",
+        "status": "experimental",
+        "description": "Detects usage of winget to install applications via manifest file. Adversaries can abuse winget to download payloads remotely and execute them.\nThe manifest option enables you to install an application by passing in a YAML file directly to the client.\nWinget can be used to download and install exe, msi or msix files later.\n",
+        "author": "Sreeman, Florian Roth (Nextron Systems), frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Some false positives are expected in some environment that may use this functionality to install and test their custom applications"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%install%' ESCAPE '\\' OR CommandLine LIKE '% add %' ESCAPE '\\') AND (CommandLine LIKE '%-m %' ESCAPE '\\' OR CommandLine LIKE '%--manifest%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_winget_local_install_via_manifest.yml"
+    },
+    {
         "title": "Hermetic Wiper TG Process Patterns",
         "id": "2f974656-6d83-4059-bbdf-68ac5403422f",
         "status": "experimental",
@@ -37840,16 +38046,16 @@
         "id": "d4ca7c59-e9e4-42d8-bf57-91a776efcb87",
         "status": "test",
         "description": "Detects LOLBINs executing from an abnormal drive such as a mounted ISO.",
-        "author": "Christopher Peacock '@securepeacock', SCYTHE '@scythe_io'",
+        "author": "Christopher Peacock '@securepeacock', SCYTHE '@scythe_io', Angelo Violetti - SEC Consult '@angelo_violetti'",
         "tags": [
-            "attack.t1218.001"
+            "attack.defense_evasion"
         ],
         "falsepositives": [
             "Rare false positives could occur on servers with multiple drives."
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\installutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\') AND NOT ((CurrentDirectory LIKE '%C:\\\\%' ESCAPE '\\' OR CurrentDirectory = '') OR (CurrentDirectory = '')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\installutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\') OR OriginalFileName IN ('RUNDLL32.EXE', 'CALC.EXE', 'MSHTA.EXE', 'cscript.exe', 'wscript.exe', 'REGSVR32.EXE', 'installutil.exe', 'CMSTP.EXE')) AND NOT ((CurrentDirectory LIKE '%C:\\\\%' ESCAPE '\\') OR (CurrentDirectory = '') OR (CurrentDirectory = '')))"
         ],
         "filename": "proc_creation_win_lolbin_not_from_c_drive.yml"
     },
@@ -39702,6 +39908,26 @@
         "filename": "proc_creation_win_office_winword_dll_load.yml"
     },
     {
+        "title": "Add Insecure Download Source To Winget",
+        "id": "81a0ecb5-0a41-4ba1-b2ba-c944eb92bfa2",
+        "status": "experimental",
+        "description": "Detects usage of winget to add a new insecure (http) download source.\nWinget will not allow the addition of insecure sources, hence this could indicate potential suspicious activity (or typos)\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "False positives might occur if the users are unaware of such control checks"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%http://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_winget_add_insecure_custom_source.yml"
+    },
+    {
         "title": "Nltest.EXE Execution",
         "id": "903076ff-f442-475a-b667-4f246bcc203b",
         "status": "experimental",
@@ -40245,31 +40471,10 @@
         "id": "e0f8ab85-0ac9-423b-a73a-81b3c7b1aa97",
         "status": "test",
         "description": "Detects an executable in the Windows folder accessing suspicious domains",
-        "author": "Florian Roth (Nextron Systems)",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.lateral_movement",
             "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Initiated = 'true' AND (DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%.pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com/attachments/' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%.paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%.hastebin.com/raw/' ESCAPE '\\' OR DestinationHostname LIKE '%.ghostbin.co/' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\') AND (NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\'))"
-        ],
-        "filename": "net_connection_win_binary_susp_com.yml"
-    },
-    {
-        "title": "Microsoft Binary Github Communication",
-        "id": "635dbb88-67b3-4b41-9ea5-a3af2dd88153",
-        "status": "test",
-        "description": "Detects an executable in the Windows folder accessing github.com",
-        "author": "Michael Haag (idea), Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.t1105",
-            "attack.exfiltration",
-            "attack.t1567.001"
         ],
         "falsepositives": [
             "Unknown",
@@ -40277,9 +40482,9 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Initiated = 'true' AND (DestinationHostname LIKE '%.github.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\') AND NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE 'C:\\\\PerfLogs%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\') AND (Initiated = 'true' AND (DestinationHostname LIKE '%.ghostbin.co' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%.hastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%.paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%.pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\')))"
         ],
-        "filename": "net_connection_win_binary_github_com.yml"
+        "filename": "net_connection_win_binary_susp_com.yml"
     },
     {
         "title": "Dllhost Internet Connection",
@@ -40385,25 +40590,6 @@
         "filename": "net_connection_win_susp_outbound_mobsync_connection.yml"
     },
     {
-        "title": "Certutil Initiated Connection",
-        "id": "0dba975d-a193-4ed1-a067-424df57570d1",
-        "status": "experimental",
-        "description": "Detects a network connection intitiated by the certutil.exe tool. Attackers can abuse `certutil.exe` to download malware or offensive security tools.",
-        "author": "frack113, Florian Roth",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Legitimate certutil network connection"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' AND Initiated = 'true' AND DestinationPort IN ('80', '443', '135', '445'))"
-        ],
-        "filename": "net_connection_win_certutil.yml"
-    },
-    {
         "title": "Potential Compromised 3CXDesktopApp Beaconing Activity - Netcon",
         "id": "51eecf75-d069-43c7-9ea2-63f75499edd4",
         "status": "experimental",
@@ -40503,26 +40689,7 @@
         "filename": "net_connection_win_remote_powershell_session_network.yml"
     },
     {
-        "title": "Windows Crypto Mining Pool Connections",
-        "id": "fa5b1358-b040-4403-9868-15f7d9ab6329",
-        "status": "stable",
-        "description": "Detects process connections to a Monero crypto mining pool",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.impact",
-            "attack.t1496"
-        ],
-        "falsepositives": [
-            "Legitimate use of crypto miners"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE DestinationHostname IN ('pool.minexmr.com', 'fr.minexmr.com', 'de.minexmr.com', 'sg.minexmr.com', 'ca.minexmr.com', 'us-west.minexmr.com', 'pool.supportxmr.com', 'mine.c3pool.com', 'xmr-eu1.nanopool.org', 'xmr-eu2.nanopool.org', 'xmr-us-east1.nanopool.org', 'xmr-us-west1.nanopool.org', 'xmr-asia1.nanopool.org', 'xmr-jp1.nanopool.org', 'xmr-au1.nanopool.org', 'xmr.2miners.com', 'xmr.hashcity.org', 'xmr.f2pool.com', 'xmrpool.eu', 'pool.hashvault.pro', 'moneroocean.stream', 'monerocean.stream')"
-        ],
-        "filename": "net_connection_win_crypto_mining.yml"
-    },
-    {
-        "title": "Dead Drop Resolvers",
+        "title": "Potential Dead Drop Resolvers",
         "id": "297ae038-edc2-4b2e-bb3e-7c5fc94dd5c7",
         "status": "test",
         "description": "Detects an executable, which is not an internet browser, making DNS request to legit popular websites, which were seen to be used as dead drop resolvers in previous attacks.",
@@ -40537,7 +40704,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((Initiated = 'true' AND (DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%youtube.com' ESCAPE '\\' OR DestinationHostname LIKE '%technet.microsoft.com' ESCAPE '\\' OR DestinationHostname LIKE '%facebook.com' ESCAPE '\\' OR DestinationHostname LIKE '%.cloudflare.com' ESCAPE '\\' OR DestinationHostname LIKE '%docs.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%steamcommunity.com' ESCAPE '\\' OR DestinationHostname LIKE '%reddit.com' ESCAPE '\\' OR DestinationHostname LIKE '%fotolog.com' ESCAPE '\\' OR DestinationHostname LIKE '%twitter.com' ESCAPE '\\' OR DestinationHostname LIKE '%imgur.com' ESCAPE '\\' OR DestinationHostname LIKE '%feeds.rapidfeeds.com' ESCAPE '\\' OR DestinationHostname LIKE '%livejournal.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\')) AND NOT (((NewProcessName LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\edge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsSense.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PRTG Probe.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Engine.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (((Initiated = 'true' AND (DestinationHostname LIKE '%.cloudflare.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%docs.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%facebook.com' ESCAPE '\\' OR DestinationHostname LIKE '%feeds.rapidfeeds.com' ESCAPE '\\' OR DestinationHostname LIKE '%fotolog.com' ESCAPE '\\' OR DestinationHostname LIKE '%imgur.com' ESCAPE '\\' OR DestinationHostname LIKE '%livejournal.com' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%reddit.com' ESCAPE '\\' OR DestinationHostname LIKE '%steamcommunity.com' ESCAPE '\\' OR DestinationHostname LIKE '%technet.microsoft.com' ESCAPE '\\' OR DestinationHostname LIKE '%twitter.com' ESCAPE '\\' OR DestinationHostname LIKE '%youtube.com' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\'))) AND NOT (((NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsSense.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\PRTG Probe.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Engine.exe' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_dead_drop_resolvers.yml"
     },
@@ -40571,11 +40738,11 @@
             "attack.t1102"
         ],
         "falsepositives": [
-            "Legitimate applications communicating with the Reddit API e.g. web browsers not in exclusion list, app with an RSS  etc."
+            "Legitimate applications communicating with the Reddit API e.g. web browsers not in the exclusion list, app with an RSS  etc."
         ],
-        "level": "low",
+        "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (DestinationHostname LIKE '%reddit.com/api%' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ExpressConnectNetworkService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\iexplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (DestinationHostname LIKE '%reddit.com%' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_reddit_api_non_browser_access.yml"
     },
@@ -40716,6 +40883,44 @@
             "SELECT * FROM logs WHERE ((DestinationPort IN ('25', '587', '465', '2525') AND Initiated = 'true') AND NOT (((NewProcessName LIKE '%\\\\thunderbird.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Exchange Server\\\\%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\microsoft.windowscommunicationsapps\\_%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\HxTsr.exe' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_susp_outbound_smtp_connections.yml"
+    },
+    {
+        "title": "Network Communication With Crypto Mining Pool",
+        "id": "fa5b1358-b040-4403-9868-15f7d9ab6329",
+        "status": "stable",
+        "description": "Detects initiated network connections to crypto mining pools",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1496"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE DestinationHostname IN ('alimabi.cn', 'ap.luckpool.net', 'bcn.pool.minergate.com', 'bcn.vip.pool.minergate.com', 'bohemianpool.com', 'ca.minexmr.com', 'ca.monero.herominers.com', 'cbd.monerpool.org', 'cbdv2.monerpool.org', 'cryptmonero.com', 'crypto-pool.fr', 'crypto-pool.info', 'cryptonight-hub.miningpoolhub.com', 'd1pool.ddns.net', 'd5pool.us', 'daili01.monerpool.org', 'de.minexmr.com', 'dl.nbminer.com', 'donate.graef.in', 'donate.ssl.xmrig.com', 'donate.v2.xmrig.com', 'donate.xmrig.com', 'donate2.graef.in', 'drill.moneroworld.com', 'dwarfpool.com', 'emercoin.com', 'emercoin.net', 'emergate.net', 'ethereumpool.co', 'eu.luckpool.net', 'eu.minerpool.pw', 'fcn-xmr.pool.minergate.com', 'fee.xmrig.com', 'fr.minexmr.com', 'hellominer.com', 'herominers.com', 'huadong1-aeon.ppxxmr.com', 'iwanttoearn.money', 'jw-js1.ppxxmr.com', 'koto-pool.work', 'lhr.nbminer.com', 'lhr3.nbminer.com', 'linux.monerpool.org', 'lokiturtle.herominers.com', 'luckpool.net', 'masari.miner.rocks', 'mine.c3pool.com', 'mine.moneropool.com', 'mine.ppxxmr.com', 'mine.zpool.ca', 'mine1.ppxxmr.com', 'minemonero.gq', 'miner.ppxxmr.com', 'miner.rocks', 'minercircle.com', 'minergate.com', 'minerpool.pw', 'minerrocks.com', 'miners.pro', 'minerxmr.ru', 'minexmr.cn', 'minexmr.com', 'mining-help.ru', 'miningpoolhub.com', 'mixpools.org', 'moner.monerpool.org', 'moner1min.monerpool.org', 'monero-master.crypto-pool.fr', 'monero.crypto-pool.fr', 'monero.hashvault.pro', 'monero.herominers.com', 'monero.lindon-pool.win', 'monero.miners.pro', 'monero.riefly.id', 'monero.us.to', 'monerocean.stream', 'monerogb.com', 'monerohash.com', 'moneroocean.stream', 'moneropool.com', 'moneropool.nl', 'monerorx.com', 'monerpool.org', 'moriaxmr.com', 'mro.pool.minergate.com', 'multipool.us', 'myxmr.pw', 'na.luckpool.net', 'nanopool.org', 'nbminer.com', 'node3.luckpool.net', 'noobxmr.com', 'pangolinminer.comgandalph3000.com', 'pool.4i7i.com', 'pool.armornetwork.org', 'pool.cortins.tk', 'pool.gntl.co.uk', 'pool.hashvault.pro', 'pool.minergate.com', 'pool.minexmr.com', 'pool.monero.hashvault.pro', 'pool.ppxxmr.com', 'pool.somec.cc', 'pool.support', 'pool.supportxmr.com', 'pool.usa-138.com', 'pool.xmr.pt', 'pool.xmrfast.com', 'pool2.armornetwork.org', 'poolchange.ppxxmr.com', 'pooldd.com', 'poolmining.org', 'poolto.be', 'ppxvip1.ppxxmr.com', 'ppxxmr.com', 'prohash.net', 'r.twotouchauthentication.online', 'randomx.xmrig.com', 'ratchetmining.com', 'seed.emercoin.com', 'seed.emercoin.net', 'seed.emergate.net', 'seed1.joulecoin.org', 'seed2.joulecoin.org', 'seed3.joulecoin.org', 'seed4.joulecoin.org', 'seed5.joulecoin.org', 'seed6.joulecoin.org', 'seed7.joulecoin.org', 'seed8.joulecoin.org', 'sg.minexmr.com', 'sheepman.mine.bz', 'siamining.com', 'sumokoin.minerrocks.com', 'supportxmr.com', 'suprnova.cc', 'teracycle.net', 'trtl.cnpool.cc', 'trtl.pool.mine2gether.com', 'turtle.miner.rocks', 'us-west.minexmr.com', 'usxmrpool.com', 'viaxmr.com', 'webservicepag.webhop.net', 'xiazai.monerpool.org', 'xiazai1.monerpool.org', 'xmc.pool.minergate.com', 'xmo.pool.minergate.com', 'xmr-asia1.nanopool.org', 'xmr-au1.nanopool.org', 'xmr-eu1.nanopool.org', 'xmr-eu2.nanopool.org', 'xmr-jp1.nanopool.org', 'xmr-us-east1.nanopool.org', 'xmr-us-west1.nanopool.org', 'xmr-us.suprnova.cc', 'xmr-usa.dwarfpool.com', 'xmr.2miners.com', 'xmr.5b6b7b.ru', 'xmr.alimabi.cn', 'xmr.bohemianpool.com', 'xmr.crypto-pool.fr', 'xmr.crypto-pool.info', 'xmr.f2pool.com', 'xmr.hashcity.org', 'xmr.hex7e4.ru', 'xmr.ip28.net', 'xmr.monerpool.org', 'xmr.mypool.online', 'xmr.nanopool.org', 'xmr.pool.gntl.co.uk', 'xmr.pool.minergate.com', 'xmr.poolto.be', 'xmr.ppxxmr.com', 'xmr.prohash.net', 'xmr.simka.pw', 'xmr.somec.cc', 'xmr.suprnova.cc', 'xmr.usa-138.com', 'xmr.vip.pool.minergate.com', 'xmr1min.monerpool.org', 'xmrf.520fjh.org', 'xmrf.fjhan.club', 'xmrfast.com', 'xmrigcc.graef.in', 'xmrminer.cc', 'xmrpool.de', 'xmrpool.eu', 'xmrpool.me', 'xmrpool.net', 'xmrpool.xyz', 'xx11m.monerpool.org', 'xx11mv2.monerpool.org', 'xxx.hex7e4.ru', 'zarabotaibitok.ru', 'zer0day.ru')"
+        ],
+        "filename": "net_connection_win_crypto_mining_pools.yml"
+    },
+    {
+        "title": "Connection Initiated Via Certutil.EXE",
+        "id": "0dba975d-a193-4ed1-a067-424df57570d1",
+        "status": "experimental",
+        "description": "Detects a network connection initiated by the certutil.exe tool.\nAttackers can abuse the utility in order to download malware or additional payloads.\n",
+        "author": "frack113, Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' AND Initiated = 'true' AND DestinationPort IN ('80', '135', '443', '445'))"
+        ],
+        "filename": "net_connection_win_certutil_initiated_connection.yml"
     },
     {
         "title": "Rundll32 Internet Connection",
@@ -40909,26 +41114,5 @@
             "SELECT * FROM logs WHERE (Initiated = 'true' AND DestinationHostname LIKE '%api.mega.co.nz' ESCAPE '\\')"
         ],
         "filename": "net_connection_win_mega_nz.yml"
-    },
-    {
-        "title": "Suspicious Outbound RDP Connections",
-        "id": "ed74fe75-7594-4b4b-ae38-e38e3fd2eb23",
-        "status": "test",
-        "description": "Detects Non-Standard Tools Connecting to TCP port 3389 indicating possible lateral movement",
-        "author": "Markus Neis",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.t1021.001",
-            "car.2013-07-002"
-        ],
-        "falsepositives": [
-            "Other Remote Desktop RDP tools",
-            "Domain controller using dns.exe"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((DestinationPort = '3389' AND Initiated = 'true') AND NOT (((NewProcessName LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR NewProcessName LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\') OR (NewProcessName = '') OR (NewProcessName = '')))"
-        ],
-        "filename": "net_connection_win_susp_rdp.yml"
     }
 ]

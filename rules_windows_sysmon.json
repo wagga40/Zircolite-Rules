@@ -742,6 +742,25 @@
         "filename": "pipe_created_cred_dump_tools_named_pipes.yml"
     },
     {
+        "title": "Potential Suspicious Winget Package Installation",
+        "id": "a3f5c081-e75b-43a0-9f5b-51f26fe5dba2",
+        "status": "experimental",
+        "description": "Detects potential suspicious winget package installation from a suspicious source.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '15' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Contents LIKE '[ZoneTransfer]  ZoneId=3%' ESCAPE '\\' AND (Contents LIKE '%://1%' ESCAPE '\\' OR Contents LIKE '%://2%' ESCAPE '\\' OR Contents LIKE '%://3%' ESCAPE '\\' OR Contents LIKE '%://4%' ESCAPE '\\' OR Contents LIKE '%://5%' ESCAPE '\\' OR Contents LIKE '%://6%' ESCAPE '\\' OR Contents LIKE '%://7%' ESCAPE '\\' OR Contents LIKE '%://8%' ESCAPE '\\' OR Contents LIKE '%://9%' ESCAPE '\\') AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\WinGet\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "create_stream_hash_winget_susp_package_source.yml"
+    },
+    {
         "title": "Suspicious File Download From File Sharing Websites",
         "id": "52182dfb-afb7-41db-b4bc-5336cb29b464",
         "status": "experimental",
@@ -3580,6 +3599,24 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Application Popup' AND EventID = '26' AND Caption = 'sysmon64.exe - Application Error')"
         ],
         "filename": "win_system_application_sysmon_crash.yml"
+    },
+    {
+        "title": "Important Windows Service Terminated With Error",
+        "id": "d6b5520d-3934-48b4-928c-2aa3f92d6963",
+        "status": "experimental",
+        "description": "Detects important or interesting windows services that got terminated for whatever reason",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Rare false positives could occur since service termination could happen due to multiple reasons"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7023') AND ((param1 LIKE '% Antivirus%' ESCAPE '\\' OR param1 LIKE '% Firewall%' ESCAPE '\\' OR param1 LIKE '%Application Guard%' ESCAPE '\\' OR param1 LIKE '%BitLocker Drive Encryption Service%' ESCAPE '\\' OR param1 LIKE '%Encrypting File System%' ESCAPE '\\' OR param1 LIKE '%Microsoft Defender%' ESCAPE '\\' OR param1 LIKE '%Threat Protection%' ESCAPE '\\' OR param1 LIKE '%Windows Event Log%' ESCAPE '\\') OR (Binary LIKE '%770069006e0064006500660065006e006400%' ESCAPE '\\' OR Binary LIKE '%4500760065006e0074004c006f006700%' ESCAPE '\\' OR Binary LIKE '%6d0070007300730076006300%' ESCAPE '\\' OR Binary LIKE '%530065006e0073006500%' ESCAPE '\\' OR Binary LIKE '%450046005300%' ESCAPE '\\' OR Binary LIKE '%420044004500530056004300%' ESCAPE '\\')))"
+        ],
+        "filename": "win_system_service_terminated_error_important.yml"
     },
     {
         "title": "Invoke-Obfuscation VAR+ Launcher - System",
@@ -8781,6 +8818,24 @@
         "filename": "file_event_win_redmimicry_winnti_filedrop.yml"
     },
     {
+        "title": "RDP File Creation From Suspicious Application",
+        "id": "fccfb43e-09a7-4bd2-8b37-a5a7df33386d",
+        "status": "experimental",
+        "description": "Detects Rclone config file being created",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\brave.exe' ESCAPE '\\' OR Image LIKE '%\\\\CCleaner Browser\\\\Application\\\\CCleanerBrowser.exe' ESCAPE '\\' OR Image LIKE '%\\\\chromium.exe' ESCAPE '\\' OR Image LIKE '%\\\\firefox.exe' ESCAPE '\\' OR Image LIKE '%\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\Opera.exe' ESCAPE '\\' OR Image LIKE '%\\\\Vivaldi.exe' ESCAPE '\\' OR Image LIKE '%\\\\Whale.exe' ESCAPE '\\' OR Image LIKE '%\\\\Outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\Thunderbird.exe' ESCAPE '\\' OR Image LIKE '%\\\\Discord.exe' ESCAPE '\\' OR Image LIKE '%\\\\Keybase.exe' ESCAPE '\\' OR Image LIKE '%\\\\msteams.exe' ESCAPE '\\' OR Image LIKE '%\\\\Slack.exe' ESCAPE '\\' OR Image LIKE '%\\\\teams.exe' ESCAPE '\\') AND TargetFilename LIKE '%.rdp%' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_rdp_file_susp_creation.yml"
+    },
+    {
         "title": "UAC Bypass Using .NET Code Profiler on MMC",
         "id": "93a19907-d4f9-4deb-9f91-aac4692776a6",
         "status": "test",
@@ -11650,6 +11705,24 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%.doc.exe' ESCAPE '\\' OR Image LIKE '%.docx.exe' ESCAPE '\\' OR Image LIKE '%.xls.exe' ESCAPE '\\' OR Image LIKE '%.xlsx.exe' ESCAPE '\\' OR Image LIKE '%.ppt.exe' ESCAPE '\\' OR Image LIKE '%.pptx.exe' ESCAPE '\\' OR Image LIKE '%.rtf.exe' ESCAPE '\\' OR Image LIKE '%.pdf.exe' ESCAPE '\\' OR Image LIKE '%.txt.exe' ESCAPE '\\' OR Image LIKE '%      .exe' ESCAPE '\\' OR Image LIKE '%\\_\\_\\_\\_\\_\\_.exe' ESCAPE '\\' OR Image LIKE '%.doc.js' ESCAPE '\\' OR Image LIKE '%.docx.js' ESCAPE '\\' OR Image LIKE '%.xls.js' ESCAPE '\\' OR Image LIKE '%.xlsx.js' ESCAPE '\\' OR Image LIKE '%.ppt.js' ESCAPE '\\' OR Image LIKE '%.pptx.js' ESCAPE '\\' OR Image LIKE '%.rtf.js' ESCAPE '\\' OR Image LIKE '%.pdf.js' ESCAPE '\\' OR Image LIKE '%.txt.js' ESCAPE '\\') AND (CommandLine LIKE '%.doc.exe%' ESCAPE '\\' OR CommandLine LIKE '%.docx.exe%' ESCAPE '\\' OR CommandLine LIKE '%.xls.exe%' ESCAPE '\\' OR CommandLine LIKE '%.xlsx.exe%' ESCAPE '\\' OR CommandLine LIKE '%.ppt.exe%' ESCAPE '\\' OR CommandLine LIKE '%.pptx.exe%' ESCAPE '\\' OR CommandLine LIKE '%.rtf.exe%' ESCAPE '\\' OR CommandLine LIKE '%.pdf.exe%' ESCAPE '\\' OR CommandLine LIKE '%.txt.exe%' ESCAPE '\\' OR CommandLine LIKE '%      .exe%' ESCAPE '\\' OR CommandLine LIKE '%\\_\\_\\_\\_\\_\\_.exe%' ESCAPE '\\' OR CommandLine LIKE '%.doc.js%' ESCAPE '\\' OR CommandLine LIKE '%.docx.js%' ESCAPE '\\' OR CommandLine LIKE '%.xls.js%' ESCAPE '\\' OR CommandLine LIKE '%.xlsx.js%' ESCAPE '\\' OR CommandLine LIKE '%.ppt.js%' ESCAPE '\\' OR CommandLine LIKE '%.pptx.js%' ESCAPE '\\' OR CommandLine LIKE '%.rtf.js%' ESCAPE '\\' OR CommandLine LIKE '%.pdf.js%' ESCAPE '\\' OR CommandLine LIKE '%.txt.js%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_double_extension.yml"
+    },
+    {
+        "title": "Mstsc.EXE Execution From Uncommon Parent",
+        "id": "ff3b6b39-e765-42f9-bb2c-ea6761e0e0f6",
+        "status": "experimental",
+        "description": "Detects potential RDP connection via Mstsc using a local \".rdp\" file located in suspicious locations.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.lateral_movement"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\brave.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\CCleanerBrowser.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\chromium.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\firefox.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\microsoftedge.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msedge.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\opera.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\whale.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\outlook.exe' ESCAPE '\\') AND (Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName = 'mstsc.exe'))"
+        ],
+        "filename": "proc_creation_win_mstsc_run_local_rpd_file_susp_parent.yml"
     },
     {
         "title": "Potential Arbitrary Code Execution Via Node.EXE",
@@ -14594,6 +14667,25 @@
         "filename": "proc_creation_win_lolbin_susp_mpcmdrun_download.yml"
     },
     {
+        "title": "Suspicious Mstsc.EXE Execution With Local RDP File",
+        "id": "6e22722b-dfb1-4508-a911-49ac840b40f8",
+        "status": "experimental",
+        "description": "Detects potential RDP connection via Mstsc using a local \".rdp\" file located in suspicious locations.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Likelihood is related to how often the paths are used in the environement"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName = 'mstsc.exe') AND (CommandLine LIKE '%.rdp' ESCAPE '\\' OR CommandLine LIKE '%.rdp\"' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\color%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\_Migrated %' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tracing\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mstsc_run_local_rdp_file_susp_location.yml"
+    },
+    {
         "title": "HackTool - Sliver C2 Implant Activity Pattern",
         "id": "42333b2c-b425-441c-b70e-99404a17170f",
         "status": "experimental",
@@ -14705,6 +14797,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\mpiexec.exe' ESCAPE '\\' OR Imphash = 'd8b52ef6aaa3a81501bdfff9dbb96217' OR Hashes LIKE '%IMPHASH=d8b52ef6aaa3a81501bdfff9dbb96217%' ESCAPE '\\') AND (CommandLine LIKE '% /n 1 %' ESCAPE '\\' OR CommandLine LIKE '% -n 1 %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_lolbin_mpiexec.yml"
+    },
+    {
+        "title": "Add Potential Suspicious New Download Source To Winget",
+        "id": "c15a46a0-07d4-4c87-b4b6-89207835a83b",
+        "status": "experimental",
+        "description": "Detects usage of winget to add new potentially suspicious download sources",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\') AND CommandLine REGEXP '://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}')"
+        ],
+        "filename": "proc_creation_win_winget_add_susp_custom_source.yml"
     },
     {
         "title": "Allow Service Access Using Security Descriptor Tampering Via Sc.EXE",
@@ -23101,6 +23213,26 @@
         "filename": "proc_creation_win_susp_crypto_mining_monero.yml"
     },
     {
+        "title": "Add Insecure Download Source To Winget",
+        "id": "81a0ecb5-0a41-4ba1-b2ba-c944eb92bfa2",
+        "status": "experimental",
+        "description": "Detects usage of winget to add a new insecure (http) download source.\nWinget will not allow the addition of insecure sources, hence this could indicate potential suspicious activity (or typos)\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "False positives might occur if the users are unaware of such control checks"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%http://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_winget_add_insecure_custom_source.yml"
+    },
+    {
         "title": "Chopper Webshell Process Pattern",
         "id": "fa3c117a-bc0d-416e-a31b-0c0e80653efb",
         "status": "experimental",
@@ -23486,31 +23618,10 @@
         "id": "e0f8ab85-0ac9-423b-a73a-81b3c7b1aa97",
         "status": "test",
         "description": "Detects an executable in the Windows folder accessing suspicious domains",
-        "author": "Florian Roth (Nextron Systems)",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.lateral_movement",
             "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Initiated = 'true' AND (DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%.pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com/attachments/' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%.paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%.hastebin.com/raw/' ESCAPE '\\' OR DestinationHostname LIKE '%.ghostbin.co/' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\') AND (Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\'))"
-        ],
-        "filename": "net_connection_win_binary_susp_com.yml"
-    },
-    {
-        "title": "Microsoft Binary Github Communication",
-        "id": "635dbb88-67b3-4b41-9ea5-a3af2dd88153",
-        "status": "test",
-        "description": "Detects an executable in the Windows folder accessing github.com",
-        "author": "Michael Haag (idea), Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.t1105",
-            "attack.exfiltration",
-            "attack.t1567.001"
         ],
         "falsepositives": [
             "Unknown",
@@ -23518,9 +23629,9 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Initiated = 'true' AND (DestinationHostname LIKE '%.github.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\') AND Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE 'C:\\\\PerfLogs%' ESCAPE '\\' OR Image LIKE 'C:\\\\Temp\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\') OR Image LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\') AND (Initiated = 'true' AND (DestinationHostname LIKE '%.ghostbin.co' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%.hastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%.paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%.pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\')))"
         ],
-        "filename": "net_connection_win_binary_github_com.yml"
+        "filename": "net_connection_win_binary_susp_com.yml"
     },
     {
         "title": "Notepad Making Network Connection",
@@ -23561,25 +23672,6 @@
             "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\msbuild.exe' ESCAPE '\\' AND DestinationPort IN ('80', '443') AND Initiated = 'true')"
         ],
         "filename": "net_connection_win_silenttrinity_stager_msbuild_activity.yml"
-    },
-    {
-        "title": "Certutil Initiated Connection",
-        "id": "0dba975d-a193-4ed1-a067-424df57570d1",
-        "status": "experimental",
-        "description": "Detects a network connection intitiated by the certutil.exe tool. Attackers can abuse `certutil.exe` to download malware or offensive security tools.",
-        "author": "frack113, Florian Roth",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Legitimate certutil network connection"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\certutil.exe' ESCAPE '\\' AND Initiated = 'true' AND DestinationPort IN ('80', '443', '135', '445'))"
-        ],
-        "filename": "net_connection_win_certutil.yml"
     },
     {
         "title": "Potential Compromised 3CXDesktopApp Beaconing Activity - Netcon",
@@ -23681,26 +23773,7 @@
         "filename": "net_connection_win_remote_powershell_session_network.yml"
     },
     {
-        "title": "Windows Crypto Mining Pool Connections",
-        "id": "fa5b1358-b040-4403-9868-15f7d9ab6329",
-        "status": "stable",
-        "description": "Detects process connections to a Monero crypto mining pool",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.impact",
-            "attack.t1496"
-        ],
-        "falsepositives": [
-            "Legitimate use of crypto miners"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND DestinationHostname IN ('pool.minexmr.com', 'fr.minexmr.com', 'de.minexmr.com', 'sg.minexmr.com', 'ca.minexmr.com', 'us-west.minexmr.com', 'pool.supportxmr.com', 'mine.c3pool.com', 'xmr-eu1.nanopool.org', 'xmr-eu2.nanopool.org', 'xmr-us-east1.nanopool.org', 'xmr-us-west1.nanopool.org', 'xmr-asia1.nanopool.org', 'xmr-jp1.nanopool.org', 'xmr-au1.nanopool.org', 'xmr.2miners.com', 'xmr.hashcity.org', 'xmr.f2pool.com', 'xmrpool.eu', 'pool.hashvault.pro', 'moneroocean.stream', 'monerocean.stream'))"
-        ],
-        "filename": "net_connection_win_crypto_mining.yml"
-    },
-    {
-        "title": "Dead Drop Resolvers",
+        "title": "Potential Dead Drop Resolvers",
         "id": "297ae038-edc2-4b2e-bb3e-7c5fc94dd5c7",
         "status": "test",
         "description": "Detects an executable, which is not an internet browser, making DNS request to legit popular websites, which were seen to be used as dead drop resolvers in previous attacks.",
@@ -23715,7 +23788,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Initiated = 'true' AND (DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%youtube.com' ESCAPE '\\' OR DestinationHostname LIKE '%technet.microsoft.com' ESCAPE '\\' OR DestinationHostname LIKE '%facebook.com' ESCAPE '\\' OR DestinationHostname LIKE '%.cloudflare.com' ESCAPE '\\' OR DestinationHostname LIKE '%docs.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%steamcommunity.com' ESCAPE '\\' OR DestinationHostname LIKE '%reddit.com' ESCAPE '\\' OR DestinationHostname LIKE '%fotolog.com' ESCAPE '\\' OR DestinationHostname LIKE '%twitter.com' ESCAPE '\\' OR DestinationHostname LIKE '%imgur.com' ESCAPE '\\' OR DestinationHostname LIKE '%feeds.rapidfeeds.com' ESCAPE '\\' OR DestinationHostname LIKE '%livejournal.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\')) AND NOT (((Image LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\edge.exe' ESCAPE '\\' OR Image LIKE '%\\\\opera.exe' ESCAPE '\\' OR Image LIKE '%\\\\brave.exe' ESCAPE '\\' OR Image LIKE '%\\\\vivaldi.exe' ESCAPE '\\' OR Image LIKE '%\\\\whale.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\firefox.exe' ESCAPE '\\')) OR ((Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR Image LIKE '%\\\\MsSense.exe' ESCAPE '\\' OR Image LIKE '%\\\\PRTG Probe.exe' ESCAPE '\\' OR Image LIKE '%\\\\Engine.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Initiated = 'true' AND (DestinationHostname LIKE '%.cloudflare.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%docs.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%facebook.com' ESCAPE '\\' OR DestinationHostname LIKE '%feeds.rapidfeeds.com' ESCAPE '\\' OR DestinationHostname LIKE '%fotolog.com' ESCAPE '\\' OR DestinationHostname LIKE '%imgur.com' ESCAPE '\\' OR DestinationHostname LIKE '%livejournal.com' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%reddit.com' ESCAPE '\\' OR DestinationHostname LIKE '%steamcommunity.com' ESCAPE '\\' OR DestinationHostname LIKE '%technet.microsoft.com' ESCAPE '\\' OR DestinationHostname LIKE '%twitter.com' ESCAPE '\\' OR DestinationHostname LIKE '%youtube.com' ESCAPE '\\')) AND NOT ((Image LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\opera.exe' ESCAPE '\\') OR (Image LIKE '%\\\\safari.exe' ESCAPE '\\') OR (Image LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (Image LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (Image LIKE '%\\\\whale.exe' ESCAPE '\\'))) AND NOT (((Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR Image LIKE '%\\\\MsSense.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\PRTG Probe.exe' ESCAPE '\\') OR (Image LIKE '%\\\\Engine.exe' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_dead_drop_resolvers.yml"
     },
@@ -23819,6 +23892,44 @@
         "filename": "net_connection_win_regsvr32_network_activity.yml"
     },
     {
+        "title": "Network Communication With Crypto Mining Pool",
+        "id": "fa5b1358-b040-4403-9868-15f7d9ab6329",
+        "status": "stable",
+        "description": "Detects initiated network connections to crypto mining pools",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1496"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND DestinationHostname IN ('alimabi.cn', 'ap.luckpool.net', 'bcn.pool.minergate.com', 'bcn.vip.pool.minergate.com', 'bohemianpool.com', 'ca.minexmr.com', 'ca.monero.herominers.com', 'cbd.monerpool.org', 'cbdv2.monerpool.org', 'cryptmonero.com', 'crypto-pool.fr', 'crypto-pool.info', 'cryptonight-hub.miningpoolhub.com', 'd1pool.ddns.net', 'd5pool.us', 'daili01.monerpool.org', 'de.minexmr.com', 'dl.nbminer.com', 'donate.graef.in', 'donate.ssl.xmrig.com', 'donate.v2.xmrig.com', 'donate.xmrig.com', 'donate2.graef.in', 'drill.moneroworld.com', 'dwarfpool.com', 'emercoin.com', 'emercoin.net', 'emergate.net', 'ethereumpool.co', 'eu.luckpool.net', 'eu.minerpool.pw', 'fcn-xmr.pool.minergate.com', 'fee.xmrig.com', 'fr.minexmr.com', 'hellominer.com', 'herominers.com', 'huadong1-aeon.ppxxmr.com', 'iwanttoearn.money', 'jw-js1.ppxxmr.com', 'koto-pool.work', 'lhr.nbminer.com', 'lhr3.nbminer.com', 'linux.monerpool.org', 'lokiturtle.herominers.com', 'luckpool.net', 'masari.miner.rocks', 'mine.c3pool.com', 'mine.moneropool.com', 'mine.ppxxmr.com', 'mine.zpool.ca', 'mine1.ppxxmr.com', 'minemonero.gq', 'miner.ppxxmr.com', 'miner.rocks', 'minercircle.com', 'minergate.com', 'minerpool.pw', 'minerrocks.com', 'miners.pro', 'minerxmr.ru', 'minexmr.cn', 'minexmr.com', 'mining-help.ru', 'miningpoolhub.com', 'mixpools.org', 'moner.monerpool.org', 'moner1min.monerpool.org', 'monero-master.crypto-pool.fr', 'monero.crypto-pool.fr', 'monero.hashvault.pro', 'monero.herominers.com', 'monero.lindon-pool.win', 'monero.miners.pro', 'monero.riefly.id', 'monero.us.to', 'monerocean.stream', 'monerogb.com', 'monerohash.com', 'moneroocean.stream', 'moneropool.com', 'moneropool.nl', 'monerorx.com', 'monerpool.org', 'moriaxmr.com', 'mro.pool.minergate.com', 'multipool.us', 'myxmr.pw', 'na.luckpool.net', 'nanopool.org', 'nbminer.com', 'node3.luckpool.net', 'noobxmr.com', 'pangolinminer.comgandalph3000.com', 'pool.4i7i.com', 'pool.armornetwork.org', 'pool.cortins.tk', 'pool.gntl.co.uk', 'pool.hashvault.pro', 'pool.minergate.com', 'pool.minexmr.com', 'pool.monero.hashvault.pro', 'pool.ppxxmr.com', 'pool.somec.cc', 'pool.support', 'pool.supportxmr.com', 'pool.usa-138.com', 'pool.xmr.pt', 'pool.xmrfast.com', 'pool2.armornetwork.org', 'poolchange.ppxxmr.com', 'pooldd.com', 'poolmining.org', 'poolto.be', 'ppxvip1.ppxxmr.com', 'ppxxmr.com', 'prohash.net', 'r.twotouchauthentication.online', 'randomx.xmrig.com', 'ratchetmining.com', 'seed.emercoin.com', 'seed.emercoin.net', 'seed.emergate.net', 'seed1.joulecoin.org', 'seed2.joulecoin.org', 'seed3.joulecoin.org', 'seed4.joulecoin.org', 'seed5.joulecoin.org', 'seed6.joulecoin.org', 'seed7.joulecoin.org', 'seed8.joulecoin.org', 'sg.minexmr.com', 'sheepman.mine.bz', 'siamining.com', 'sumokoin.minerrocks.com', 'supportxmr.com', 'suprnova.cc', 'teracycle.net', 'trtl.cnpool.cc', 'trtl.pool.mine2gether.com', 'turtle.miner.rocks', 'us-west.minexmr.com', 'usxmrpool.com', 'viaxmr.com', 'webservicepag.webhop.net', 'xiazai.monerpool.org', 'xiazai1.monerpool.org', 'xmc.pool.minergate.com', 'xmo.pool.minergate.com', 'xmr-asia1.nanopool.org', 'xmr-au1.nanopool.org', 'xmr-eu1.nanopool.org', 'xmr-eu2.nanopool.org', 'xmr-jp1.nanopool.org', 'xmr-us-east1.nanopool.org', 'xmr-us-west1.nanopool.org', 'xmr-us.suprnova.cc', 'xmr-usa.dwarfpool.com', 'xmr.2miners.com', 'xmr.5b6b7b.ru', 'xmr.alimabi.cn', 'xmr.bohemianpool.com', 'xmr.crypto-pool.fr', 'xmr.crypto-pool.info', 'xmr.f2pool.com', 'xmr.hashcity.org', 'xmr.hex7e4.ru', 'xmr.ip28.net', 'xmr.monerpool.org', 'xmr.mypool.online', 'xmr.nanopool.org', 'xmr.pool.gntl.co.uk', 'xmr.pool.minergate.com', 'xmr.poolto.be', 'xmr.ppxxmr.com', 'xmr.prohash.net', 'xmr.simka.pw', 'xmr.somec.cc', 'xmr.suprnova.cc', 'xmr.usa-138.com', 'xmr.vip.pool.minergate.com', 'xmr1min.monerpool.org', 'xmrf.520fjh.org', 'xmrf.fjhan.club', 'xmrfast.com', 'xmrigcc.graef.in', 'xmrminer.cc', 'xmrpool.de', 'xmrpool.eu', 'xmrpool.me', 'xmrpool.net', 'xmrpool.xyz', 'xx11m.monerpool.org', 'xx11mv2.monerpool.org', 'xxx.hex7e4.ru', 'zarabotaibitok.ru', 'zer0day.ru'))"
+        ],
+        "filename": "net_connection_win_crypto_mining_pools.yml"
+    },
+    {
+        "title": "Connection Initiated Via Certutil.EXE",
+        "id": "0dba975d-a193-4ed1-a067-424df57570d1",
+        "status": "experimental",
+        "description": "Detects a network connection initiated by the certutil.exe tool.\nAttackers can abuse the utility in order to download malware or additional payloads.\n",
+        "author": "frack113, Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\certutil.exe' ESCAPE '\\' AND Initiated = 'true' AND DestinationPort IN ('80', '135', '443', '445'))"
+        ],
+        "filename": "net_connection_win_certutil_initiated_connection.yml"
+    },
+    {
         "title": "RDP to HTTP or HTTPS Target Ports",
         "id": "b1e5da3b-ca8e-4adf-915c-9921f3d85481",
         "status": "experimental",
@@ -23914,26 +24025,5 @@
             "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Initiated = 'true' AND DestinationHostname LIKE '%api.mega.co.nz' ESCAPE '\\')"
         ],
         "filename": "net_connection_win_mega_nz.yml"
-    },
-    {
-        "title": "Suspicious Outbound RDP Connections",
-        "id": "ed74fe75-7594-4b4b-ae38-e38e3fd2eb23",
-        "status": "test",
-        "description": "Detects Non-Standard Tools Connecting to TCP port 3389 indicating possible lateral movement",
-        "author": "Markus Neis",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.t1021.001",
-            "car.2013-07-002"
-        ],
-        "falsepositives": [
-            "Other Remote Desktop RDP tools",
-            "Domain controller using dns.exe"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationPort = '3389' AND Initiated = 'true') AND NOT (((Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR Image LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR Image LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\' OR Image LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR Image LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR Image LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR Image LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\dns.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\') OR (Image = '') OR (Image = '')))"
-        ],
-        "filename": "net_connection_win_susp_rdp.yml"
     }
 ]
