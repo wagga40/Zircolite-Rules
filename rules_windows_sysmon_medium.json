@@ -30568,7 +30568,7 @@
         "filename": "proc_creation_win_susp_compression_params.yml"
     },
     {
-        "title": "Suspicious Invoke-WebRequest Usage",
+        "title": "Suspicious Invoke-WebRequest Execution",
         "id": "5e3cc4d8-3e68-43db-8656-eaaeefdec9cc",
         "status": "experimental",
         "description": "Detects a suspicious call to Invoke-WebRequest cmdlet where the and output is located in a suspicious location",
@@ -30582,7 +30582,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\') AND (CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\' OR CommandLine LIKE '%curl %' ESCAPE '\\') AND (CommandLine LIKE '% -ur%' ESCAPE '\\' OR CommandLine LIKE '% -o%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\') AND (CommandLine LIKE '% -ur%' ESCAPE '\\' OR CommandLine LIKE '% -o%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_invoke_webrequest_download.yml"
     },
@@ -32610,7 +32610,7 @@
         "id": "05c36dd6-79d6-4a9a-97da-3db20298ab2d",
         "status": "test",
         "description": "Extensible Stylesheet Language (XSL) files are commonly used to describe the processing and rendering of data within XML files. Rule detects when adversaries abuse this functionality to execute arbitrary files while potentially bypassing application whitelisting defenses.",
-        "author": "Timur Zinniatullin, oscd.community",
+        "author": "Timur Zinniatullin, oscd.community, Swachchhanda Shrawan Poudel",
         "tags": [
             "attack.defense_evasion",
             "attack.t1220"
@@ -32622,7 +32622,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\wmic.exe' ESCAPE '\\' AND CommandLine LIKE '%/format%' ESCAPE '\\') AND NOT ((CommandLine LIKE '%/Format:List%' ESCAPE '\\' OR CommandLine LIKE '%/Format:htable%' ESCAPE '\\' OR CommandLine LIKE '%/Format:hform%' ESCAPE '\\' OR CommandLine LIKE '%/Format:table%' ESCAPE '\\' OR CommandLine LIKE '%/Format:mof%' ESCAPE '\\' OR CommandLine LIKE '%/Format:value%' ESCAPE '\\' OR CommandLine LIKE '%/Format:rawxml%' ESCAPE '\\' OR CommandLine LIKE '%/Format:xml%' ESCAPE '\\' OR CommandLine LIKE '%/Format:csv%' ESCAPE '\\'))) OR Image LIKE '%\\\\msxsl.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\wmic.exe' ESCAPE '\\' AND (CommandLine LIKE '%/format%' ESCAPE '\\' OR CommandLine LIKE '%-format%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%Format:List%' ESCAPE '\\' OR CommandLine LIKE '%Format:htable%' ESCAPE '\\' OR CommandLine LIKE '%Format:hform%' ESCAPE '\\' OR CommandLine LIKE '%Format:table%' ESCAPE '\\' OR CommandLine LIKE '%Format:mof%' ESCAPE '\\' OR CommandLine LIKE '%Format:value%' ESCAPE '\\' OR CommandLine LIKE '%Format:rawxml%' ESCAPE '\\' OR CommandLine LIKE '%Format:xml%' ESCAPE '\\' OR CommandLine LIKE '%Format:csv%' ESCAPE '\\'))) OR Image LIKE '%\\\\msxsl.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wmic_xsl_script_processing.yml"
     },
@@ -36097,6 +36097,25 @@
         "filename": "proc_creation_win_cmd_ntdllpipe_redirect.yml"
     },
     {
+        "title": "Suspicious Invoke-WebRequest Execution With DirectIP",
+        "id": "1edff897-9146-48d2-9066-52e8d8f80a2f",
+        "status": "experimental",
+        "description": "Detects calls to PowerShell with Invoke-WebRequest cmdlet using direct IP access",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\') AND (CommandLine LIKE '%://1%' ESCAPE '\\' OR CommandLine LIKE '%://2%' ESCAPE '\\' OR CommandLine LIKE '%://3%' ESCAPE '\\' OR CommandLine LIKE '%://4%' ESCAPE '\\' OR CommandLine LIKE '%://5%' ESCAPE '\\' OR CommandLine LIKE '%://6%' ESCAPE '\\' OR CommandLine LIKE '%://7%' ESCAPE '\\' OR CommandLine LIKE '%://8%' ESCAPE '\\' OR CommandLine LIKE '%://9%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_invoke_webrequest_direct_ip.yml"
+    },
+    {
         "title": "Download Arbitrary Files Via PresentationHost.exe",
         "id": "b124ddf4-778d-418e-907f-6dd3fc0d31cd",
         "status": "experimental",
@@ -37637,6 +37656,25 @@
             "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Protocol = 'tcp' AND Initiated = 'true' AND DestinationPort = '135') AND NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\ProgramData\\\\Amazon\\\\SSM\\\\Update\\\\amazon-ssm-agent-updater%' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_susp_epmap.yml"
+    },
+    {
+        "title": "Suspicious Network Connection to IP Lookup Service APIs",
+        "id": "edf3485d-dac4-4d50-90e4-b0e5813f7e60",
+        "status": "experimental",
+        "description": "Detects external IP address lookups by non-browser processes via services such as \"api.ipify.org\". This could be indicative of potential post compromise internet test activity.",
+        "author": "Janantha Marasinghe, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1016"
+        ],
+        "falsepositives": [
+            "Legitimate use of the external websites for troubleshooting or network monitoring"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationHostname LIKE '%api.2ip.ua%' ESCAPE '\\' OR DestinationHostname LIKE '%api.ipify.org%' ESCAPE '\\' OR DestinationHostname LIKE '%bot.whatismyipaddress.com%' ESCAPE '\\' OR DestinationHostname LIKE '%canireachthe.net%' ESCAPE '\\' OR DestinationHostname LIKE '%checkip.amazonaws.com%' ESCAPE '\\' OR DestinationHostname LIKE '%checkip.dyndns.org%' ESCAPE '\\' OR DestinationHostname LIKE '%curlmyip.com%' ESCAPE '\\' OR DestinationHostname LIKE '%edns.ip-api.com%' ESCAPE '\\' OR DestinationHostname LIKE '%eth0.me%' ESCAPE '\\' OR DestinationHostname LIKE '%freegeoip.app%' ESCAPE '\\' OR DestinationHostname LIKE '%icanhazip.com%' ESCAPE '\\' OR DestinationHostname LIKE '%ident.me%' ESCAPE '\\' OR DestinationHostname LIKE '%ifconfig.io%' ESCAPE '\\' OR DestinationHostname LIKE '%ifconfig.me%' ESCAPE '\\' OR DestinationHostname LIKE '%ip-api.com%' ESCAPE '\\' OR DestinationHostname LIKE '%ip.anysrc.net%' ESCAPE '\\' OR DestinationHostname LIKE '%ip.tyk.nu%' ESCAPE '\\' OR DestinationHostname LIKE '%ipaddressworld.com%' ESCAPE '\\' OR DestinationHostname LIKE '%ipecho.net%' ESCAPE '\\' OR DestinationHostname LIKE '%ipinfo.io%' ESCAPE '\\' OR DestinationHostname LIKE '%ipof.in%' ESCAPE '\\' OR DestinationHostname LIKE '%ipv4.icanhazip.com%' ESCAPE '\\' OR DestinationHostname LIKE '%ipv4bot.whatismyipaddress.com%' ESCAPE '\\' OR DestinationHostname LIKE '%ipwho.is%' ESCAPE '\\' OR DestinationHostname LIKE '%l2.io%' ESCAPE '\\' OR DestinationHostname LIKE '%myexternalip.com%' ESCAPE '\\' OR DestinationHostname LIKE '%wgetip.com%' ESCAPE '\\' OR DestinationHostname LIKE '%whatismyip.akamai.com%' ESCAPE '\\' OR DestinationHostname LIKE '%wtfismyip.com%' ESCAPE '\\') AND NOT ((Image LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\opera.exe' ESCAPE '\\') OR (Image LIKE '%\\\\safari.exe' ESCAPE '\\') OR (Image LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (Image LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (Image LIKE '%\\\\whale.exe' ESCAPE '\\')))"
+        ],
+        "filename": "net_connection_win_susp_external_ip_lookup.yml"
     },
     {
         "title": "RDP Over Reverse SSH Tunnel",
