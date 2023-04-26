@@ -1111,6 +1111,23 @@
         "filename": "file_event_lnx_triple_cross_rootkit_lock_file.yml"
     },
     {
+        "title": "Potential Python Reverse Shell",
+        "id": "32e62bc7-3de0-4bb1-90af-532978fe42c0",
+        "description": "Detects executing python with keywords related to network activity that could indicate a potential reverse shell",
+        "author": "@d4ns4n_, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%python%' ESCAPE '\\' AND CommandLine LIKE '% -c %' ESCAPE '\\' AND CommandLine LIKE '%import%' ESCAPE '\\' AND CommandLine LIKE '%pty%' ESCAPE '\\' AND CommandLine LIKE '%spawn(%' ESCAPE '\\' AND CommandLine LIKE '%.connect%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_python_reverse_shell.yml"
+    },
+    {
         "title": "Linux Webshell Indicators",
         "id": "818f7b24-0fba-4c49-a073-8b755573b9c7",
         "description": "Detects suspicious sub processes of web server processes",
@@ -1239,6 +1256,24 @@
         "filename": "proc_creation_lnx_cat_sudoers.yml"
     },
     {
+        "title": "Potential Netcat Reverse Shell Execution",
+        "id": "7f734ed0-4f47-46c0-837f-6ee62505abd9",
+        "description": "Detects execution of netcat with the \"-e\" flag followed by common shells. This could be a sign of a potential reverse shell setup.",
+        "author": "@d4ns4n_, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/nc' ESCAPE '\\' OR Image LIKE '%/ncat' ESCAPE '\\') AND (CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% -e %' ESCAPE '\\') AND (CommandLine LIKE '% ash%' ESCAPE '\\' OR CommandLine LIKE '% bash%' ESCAPE '\\' OR CommandLine LIKE '% bsh%' ESCAPE '\\' OR CommandLine LIKE '% csh%' ESCAPE '\\' OR CommandLine LIKE '% ksh%' ESCAPE '\\' OR CommandLine LIKE '% pdksh%' ESCAPE '\\' OR CommandLine LIKE '% sh%' ESCAPE '\\' OR CommandLine LIKE '% tcsh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/ash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/bsh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/csh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/ksh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/pdksh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/tcsh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\' OR CommandLine LIKE '%$IFSash%' ESCAPE '\\' OR CommandLine LIKE '%$IFSbash%' ESCAPE '\\' OR CommandLine LIKE '%$IFSbsh%' ESCAPE '\\' OR CommandLine LIKE '%$IFScsh%' ESCAPE '\\' OR CommandLine LIKE '%$IFSksh%' ESCAPE '\\' OR CommandLine LIKE '%$IFSpdksh%' ESCAPE '\\' OR CommandLine LIKE '%$IFSsh%' ESCAPE '\\' OR CommandLine LIKE '%$IFStcsh%' ESCAPE '\\' OR CommandLine LIKE '%$IFSzsh%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_netcat_reverse_shell.yml"
+    },
+    {
         "title": "OMIGOD SCX RunAsProvider ExecuteScript",
         "id": "6eea1bf6-f8d2-488a-a742-e6ef6c1b67db",
         "description": "Rule to detect the use of the SCX RunAsProvider ExecuteScript to execute any UNIX/Linux script using the /bin/sh shell.\nScript being executed gets created as a temp file in /tmp folder with a scx* prefix.\nThen it is invoked from the following directory /etc/opt/microsoft/scx/conf/tmpdir/.\nThe file in that directory has the same prefix scx*. SCXcore, started as the Microsoft Operations Manager UNIX/Linux Agent, is now used in a host of products including\nMicrosoft Operations Manager, Microsoft Azure, and Microsoft Operations Management Suite.\n",
@@ -1313,6 +1348,23 @@
             "SELECT * FROM logs WHERE ((CommandLine LIKE 'sh -c %' ESCAPE '\\' OR CommandLine LIKE 'bash -c %' ESCAPE '\\') AND ((CommandLine LIKE '%| bash %' ESCAPE '\\' OR CommandLine LIKE '%| sh %' ESCAPE '\\' OR CommandLine LIKE '%|bash %' ESCAPE '\\' OR CommandLine LIKE '%|sh %' ESCAPE '\\') OR (CommandLine LIKE '%| bash' ESCAPE '\\' OR CommandLine LIKE '%| sh' ESCAPE '\\' OR CommandLine LIKE '%|bash' ESCAPE '\\' OR CommandLine LIKE '% |sh' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_susp_pipe_shell.yml"
+    },
+    {
+        "title": "Potential PHP Reverse Shell",
+        "id": "c6714a24-d7d5-4283-a36b-3ffd091d5f7e",
+        "description": "Detects usage of the PHP CLI with the \"-r\" flag which allows it to run inline PHP code. The rule looks for calls to the \"fsockopen\" function which allows the creation of sockets.\nAttackers often leverage this in combination with functions such as \"exec\" or \"fopen\" to initiate a reverse shell connection.\n",
+        "author": "@d4ns4n_",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/php%' ESCAPE '\\' AND CommandLine LIKE '% -r %' ESCAPE '\\' AND CommandLine LIKE '%fsockopen%' ESCAPE '\\' AND (CommandLine LIKE '%ash%' ESCAPE '\\' OR CommandLine LIKE '%bash%' ESCAPE '\\' OR CommandLine LIKE '%bsh%' ESCAPE '\\' OR CommandLine LIKE '%csh%' ESCAPE '\\' OR CommandLine LIKE '%ksh%' ESCAPE '\\' OR CommandLine LIKE '%pdksh%' ESCAPE '\\' OR CommandLine LIKE '%sh%' ESCAPE '\\' OR CommandLine LIKE '%tcsh%' ESCAPE '\\' OR CommandLine LIKE '%zsh%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_php_reverse_shell.yml"
     },
     {
         "title": "Linux Package Uninstall",
@@ -1551,6 +1603,23 @@
         "filename": "proc_creation_lnx_crontab_removal.yml"
     },
     {
+        "title": "Potential Perl Reverse Shell Execution",
+        "id": "259df6bc-003f-4306-9f54-4ff1a08fa38e",
+        "description": "Detects execution of the perl binary with the \"-e\" flag and common strings related to potential reverse shell activity",
+        "author": "@d4ns4n_, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/perl' ESCAPE '\\' AND CommandLine LIKE '% -e %' ESCAPE '\\') AND ((CommandLine LIKE '%fdopen(%' ESCAPE '\\' AND CommandLine LIKE '%::Socket::INET%' ESCAPE '\\') OR (CommandLine LIKE '%Socket%' ESCAPE '\\' AND CommandLine LIKE '%connect%' ESCAPE '\\' AND CommandLine LIKE '%open%' ESCAPE '\\' AND CommandLine LIKE '%exec%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_lnx_perl_reverse_shell.yml"
+    },
+    {
         "title": "Scheduled Task/Job At",
         "id": "d2d642d7-b393-43fe-bae4-e81ed5915c4b",
         "description": "Detects the use of at/atd which are utilities that are used to schedule tasks.\nThey are often abused by adversaries to maintain persistence or to perform task scheduling for initial or recurring execution of malicious code\n",
@@ -1778,6 +1847,41 @@
             "SELECT * FROM logs WHERE (Image IN ('/bin/dd', '/usr/bin/dd') AND CommandLine LIKE '%of=%' ESCAPE '\\' AND (CommandLine LIKE '%if=/dev/zero%' ESCAPE '\\' OR CommandLine LIKE '%if=/dev/null%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_dd_file_overwrite.yml"
+    },
+    {
+        "title": "Potential Xterm Reverse Shell",
+        "id": "4e25af4b-246d-44ea-8563-e42aacab006b",
+        "description": "Detects usage of \"xterm\" as a potential reverse shell tunnel",
+        "author": "@d4ns4n_",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%xterm%' ESCAPE '\\' AND CommandLine LIKE '%-display%' ESCAPE '\\' AND CommandLine LIKE '%:1' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_xterm_reverse_shell.yml"
+    },
+    {
+        "title": "Potential Ruby Reverse Shell",
+        "id": "b8bdac18-c06e-4016-ac30-221553e74f59",
+        "description": "Detects execution of ruby with the \"-e\" flag and calls to \"socket\" related functions. This could be an indication of a potential attempt to setup a reverse shell",
+        "author": "@d4ns4n_",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%ruby%' ESCAPE '\\' AND CommandLine LIKE '% -e%' ESCAPE '\\' AND CommandLine LIKE '%rsocket%' ESCAPE '\\' AND CommandLine LIKE '%TCPSocket%' ESCAPE '\\' AND (CommandLine LIKE '% ash%' ESCAPE '\\' OR CommandLine LIKE '% bash%' ESCAPE '\\' OR CommandLine LIKE '% bsh%' ESCAPE '\\' OR CommandLine LIKE '% csh%' ESCAPE '\\' OR CommandLine LIKE '% ksh%' ESCAPE '\\' OR CommandLine LIKE '% pdksh%' ESCAPE '\\' OR CommandLine LIKE '% sh%' ESCAPE '\\' OR CommandLine LIKE '% tcsh%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_ruby_reverse_shell.yml"
     },
     {
         "title": "Vim GTFOBin Abuse - Linux",
@@ -2038,7 +2142,7 @@
     {
         "title": "Python Spawning Pretty TTY",
         "id": "c4042d54-110d-45dd-a0e1-05c47822c937",
-        "description": "Detects python spawning a pretty tty",
+        "description": "Detects python spawning a pretty tty which could be indicative of potential reverse shell activity",
         "author": "Nextron Systems",
         "tags": [
             "attack.execution",
@@ -2216,6 +2320,23 @@
             "SELECT * FROM logs WHERE (Image LIKE '%/git' ESCAPE '\\' AND CommandLine LIKE '% clone %' ESCAPE '\\' AND (CommandLine LIKE '%exploit%' ESCAPE '\\' OR CommandLine LIKE '%Vulns%' ESCAPE '\\' OR CommandLine LIKE '%vulnerability%' ESCAPE '\\' OR CommandLine LIKE '%RCE%' ESCAPE '\\' OR CommandLine LIKE '%RemoteCodeExecution%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%CVE-%' ESCAPE '\\' OR CommandLine LIKE '%poc-%' ESCAPE '\\' OR CommandLine LIKE '%ProofOfConcept%' ESCAPE '\\' OR CommandLine LIKE '%proxyshell%' ESCAPE '\\' OR CommandLine LIKE '%log4shell%' ESCAPE '\\' OR CommandLine LIKE '%eternalblue%' ESCAPE '\\' OR CommandLine LIKE '%eternal-blue%' ESCAPE '\\' OR CommandLine LIKE '%MS17-%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_susp_git_clone.yml"
+    },
+    {
+        "title": "Bash Interactive Shell",
+        "id": "6104e693-a7d6-4891-86cb-49a258523559",
+        "description": "Detects execution of the bash shell with the interactive flag \"-i\".",
+        "author": "@d4ns4n_",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/bash' ESCAPE '\\' AND CommandLine LIKE '% -i %' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_bash_interactive_shell.yml"
     },
     {
         "title": "Commands to Clear or Remove the Syslog",
