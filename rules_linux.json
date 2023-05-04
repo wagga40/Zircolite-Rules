@@ -1321,7 +1321,7 @@
         "title": "Suspicious Curl File Upload - Linux",
         "id": "00b90cc1-17ec-402c-96ad-3a8117d7a582",
         "description": "Detects a suspicious curl process start the adds a file to a web request",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Cedric MAURUGEON (Update)",
         "tags": [
             "attack.exfiltration",
             "attack.t1567",
@@ -1332,7 +1332,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/curl' ESCAPE '\\' AND (CommandLine LIKE '% -F %' ESCAPE '\\' OR CommandLine LIKE '% --form%' ESCAPE '\\' OR CommandLine LIKE '% -T %' ESCAPE '\\' OR CommandLine LIKE '% --upload-file %' ESCAPE '\\' OR CommandLine LIKE '% -d %' ESCAPE '\\' OR CommandLine LIKE '% --data %' ESCAPE '\\' OR CommandLine LIKE '% --data-%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/curl' ESCAPE '\\' AND ((CommandLine LIKE '% --form%' ESCAPE '\\' OR CommandLine LIKE '% --upload-file %' ESCAPE '\\' OR CommandLine LIKE '% --data %' ESCAPE '\\' OR CommandLine LIKE '% --data-%' ESCAPE '\\') OR CommandLine REGEXP '\\s-[FTd]\\s')) AND NOT (((CommandLine LIKE '%://localhost%' ESCAPE '\\' OR CommandLine LIKE '%://127.0.0.1%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_lnx_susp_curl_fileupload.yml"
     },
