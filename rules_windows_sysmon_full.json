@@ -2975,6 +2975,26 @@
         "filename": "file_event_win_office_outlook_macro_creation.yml"
     },
     {
+        "title": "Potential Homoglyph Attack Using Lookalike Characters in Filename",
+        "id": "4f1707b1-b50b-45b4-b5a2-3978b5a5d0d6",
+        "status": "experimental",
+        "description": "Detects the presence of unicode characters which are homoglyphs, or identical in appearance, to ASCII letter characters.\nThis is used as an obfuscation and masquerading techniques. Only \"perfect\" homoglyphs are included; these are characters that\nare indistinguishable from ASCII characters and thus may make excellent candidates for homoglyph attack characters.\n",
+        "author": "Micah Babinski, @micahbabinski",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036",
+            "attack.t1036.003"
+        ],
+        "falsepositives": [
+            "File names with legitimate Cyrillic text. Will likely require tuning (or not be usable) in countries where these alphabets are in use."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%А%' ESCAPE '\\' OR TargetFilename LIKE '%В%' ESCAPE '\\' OR TargetFilename LIKE '%Е%' ESCAPE '\\' OR TargetFilename LIKE '%К%' ESCAPE '\\' OR TargetFilename LIKE '%М%' ESCAPE '\\' OR TargetFilename LIKE '%Н%' ESCAPE '\\' OR TargetFilename LIKE '%О%' ESCAPE '\\' OR TargetFilename LIKE '%Р%' ESCAPE '\\' OR TargetFilename LIKE '%С%' ESCAPE '\\' OR TargetFilename LIKE '%Т%' ESCAPE '\\' OR TargetFilename LIKE '%Х%' ESCAPE '\\' OR TargetFilename LIKE '%Ѕ%' ESCAPE '\\' OR TargetFilename LIKE '%І%' ESCAPE '\\' OR TargetFilename LIKE '%Ј%' ESCAPE '\\' OR TargetFilename LIKE '%Ү%' ESCAPE '\\' OR TargetFilename LIKE '%Ӏ%' ESCAPE '\\' OR TargetFilename LIKE '%Ԍ%' ESCAPE '\\' OR TargetFilename LIKE '%Ԛ%' ESCAPE '\\' OR TargetFilename LIKE '%Ԝ%' ESCAPE '\\' OR TargetFilename LIKE '%Α%' ESCAPE '\\' OR TargetFilename LIKE '%Β%' ESCAPE '\\' OR TargetFilename LIKE '%Ε%' ESCAPE '\\' OR TargetFilename LIKE '%Ζ%' ESCAPE '\\' OR TargetFilename LIKE '%Η%' ESCAPE '\\' OR TargetFilename LIKE '%Ι%' ESCAPE '\\' OR TargetFilename LIKE '%Κ%' ESCAPE '\\' OR TargetFilename LIKE '%Μ%' ESCAPE '\\' OR TargetFilename LIKE '%Ν%' ESCAPE '\\' OR TargetFilename LIKE '%Ο%' ESCAPE '\\' OR TargetFilename LIKE '%Ρ%' ESCAPE '\\' OR TargetFilename LIKE '%Τ%' ESCAPE '\\' OR TargetFilename LIKE '%Υ%' ESCAPE '\\' OR TargetFilename LIKE '%Χ%' ESCAPE '\\') OR (TargetFilename LIKE '%а%' ESCAPE '\\' OR TargetFilename LIKE '%е%' ESCAPE '\\' OR TargetFilename LIKE '%о%' ESCAPE '\\' OR TargetFilename LIKE '%р%' ESCAPE '\\' OR TargetFilename LIKE '%с%' ESCAPE '\\' OR TargetFilename LIKE '%х%' ESCAPE '\\' OR TargetFilename LIKE '%ѕ%' ESCAPE '\\' OR TargetFilename LIKE '%і%' ESCAPE '\\' OR TargetFilename LIKE '%ӏ%' ESCAPE '\\' OR TargetFilename LIKE '%ј%' ESCAPE '\\' OR TargetFilename LIKE '%һ%' ESCAPE '\\' OR TargetFilename LIKE '%ԁ%' ESCAPE '\\' OR TargetFilename LIKE '%ԛ%' ESCAPE '\\' OR TargetFilename LIKE '%ԝ%' ESCAPE '\\' OR TargetFilename LIKE '%ο%' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_susp_homoglyph_filename.yml"
+    },
+    {
         "title": "Suspicious Files in Default GPO Folder",
         "id": "5f87308a-0a5b-4623-ae15-d8fa1809bc60",
         "status": "experimental",
@@ -19682,6 +19702,26 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%UtilityFunctions.ps1%' ESCAPE '\\' OR CommandLine LIKE '%RegSnapin %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_lolbin_utilityfunctions.yml"
+    },
+    {
+        "title": "Potential Homoglyph Attack Using Lookalike Characters",
+        "id": "32e280f1-8ad4-46ef-9e80-910657611fbc",
+        "status": "experimental",
+        "description": "Detects the presence of unicode characters which are homoglyphs, or identical in appearance, to ASCII letter characters.\nThis is used as an obfuscation and masquerading techniques. Only \"perfect\" homoglyphs are included; these are characters that\nare indistinguishable from ASCII characters and thus may make excellent candidates for homoglyph attack characters.\n",
+        "author": "Micah Babinski, @micahbabinski",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036",
+            "attack.t1036.003"
+        ],
+        "falsepositives": [
+            "Commandlines with legitimate Cyrillic text; will likely require tuning (or not be usable) in countries where these alphabets are in use."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%А%' ESCAPE '\\' OR CommandLine LIKE '%В%' ESCAPE '\\' OR CommandLine LIKE '%Е%' ESCAPE '\\' OR CommandLine LIKE '%К%' ESCAPE '\\' OR CommandLine LIKE '%М%' ESCAPE '\\' OR CommandLine LIKE '%Н%' ESCAPE '\\' OR CommandLine LIKE '%О%' ESCAPE '\\' OR CommandLine LIKE '%Р%' ESCAPE '\\' OR CommandLine LIKE '%С%' ESCAPE '\\' OR CommandLine LIKE '%Т%' ESCAPE '\\' OR CommandLine LIKE '%Х%' ESCAPE '\\' OR CommandLine LIKE '%Ѕ%' ESCAPE '\\' OR CommandLine LIKE '%І%' ESCAPE '\\' OR CommandLine LIKE '%Ј%' ESCAPE '\\' OR CommandLine LIKE '%Ү%' ESCAPE '\\' OR CommandLine LIKE '%Ӏ%' ESCAPE '\\' OR CommandLine LIKE '%Ԍ%' ESCAPE '\\' OR CommandLine LIKE '%Ԛ%' ESCAPE '\\' OR CommandLine LIKE '%Ԝ%' ESCAPE '\\' OR CommandLine LIKE '%Α%' ESCAPE '\\' OR CommandLine LIKE '%Β%' ESCAPE '\\' OR CommandLine LIKE '%Ε%' ESCAPE '\\' OR CommandLine LIKE '%Ζ%' ESCAPE '\\' OR CommandLine LIKE '%Η%' ESCAPE '\\' OR CommandLine LIKE '%Ι%' ESCAPE '\\' OR CommandLine LIKE '%Κ%' ESCAPE '\\' OR CommandLine LIKE '%Μ%' ESCAPE '\\' OR CommandLine LIKE '%Ν%' ESCAPE '\\' OR CommandLine LIKE '%Ο%' ESCAPE '\\' OR CommandLine LIKE '%Ρ%' ESCAPE '\\' OR CommandLine LIKE '%Τ%' ESCAPE '\\' OR CommandLine LIKE '%Υ%' ESCAPE '\\' OR CommandLine LIKE '%Χ%' ESCAPE '\\') OR (CommandLine LIKE '%а%' ESCAPE '\\' OR CommandLine LIKE '%е%' ESCAPE '\\' OR CommandLine LIKE '%о%' ESCAPE '\\' OR CommandLine LIKE '%р%' ESCAPE '\\' OR CommandLine LIKE '%с%' ESCAPE '\\' OR CommandLine LIKE '%х%' ESCAPE '\\' OR CommandLine LIKE '%ѕ%' ESCAPE '\\' OR CommandLine LIKE '%і%' ESCAPE '\\' OR CommandLine LIKE '%ӏ%' ESCAPE '\\' OR CommandLine LIKE '%ј%' ESCAPE '\\' OR CommandLine LIKE '%һ%' ESCAPE '\\' OR CommandLine LIKE '%ԁ%' ESCAPE '\\' OR CommandLine LIKE '%ԛ%' ESCAPE '\\' OR CommandLine LIKE '%ԝ%' ESCAPE '\\' OR CommandLine LIKE '%ο%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_homoglyph_cyrillic_lookalikes.yml"
     },
     {
         "title": "Wab Execution From Non Default Location",
