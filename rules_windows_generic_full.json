@@ -7198,6 +7198,25 @@
         "filename": "registry_set_services_etw_tamper.yml"
     },
     {
+        "title": "Potential Ransomware Activity Using LegalNotice Message",
+        "id": "8b9606c9-28be-4a38-b146-0e313cc232c1",
+        "status": "experimental",
+        "description": "Detect changes to the \"LegalNoticeCaption\" or \"LegalNoticeText\" registry values where the message set contains keywords often used in ransomware ransom messages",
+        "author": "frack113",
+        "tags": [
+            "attack.impact",
+            "attack.t1491.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeCaption%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeText%' ESCAPE '\\') AND (NewValue LIKE '%encrypted%' ESCAPE '\\' OR NewValue LIKE '%Unlock-Password%' ESCAPE '\\' OR NewValue LIKE '%paying%' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_legalnotice_susp_message.yml"
+    },
+    {
         "title": "Potential Persistence Via Custom Protocol Handler",
         "id": "fdbf0b9d-0182-4c43-893b-a1eaab92d085",
         "status": "experimental",
@@ -9147,25 +9166,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND (TargetObject LIKE '%Software\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Accessibility\\\\ATs%' ESCAPE '\\' OR TargetObject LIKE '%Software\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Accessibility\\\\Configuration%' ESCAPE '\\') AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\atbroker.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Accessibility\\\\Configuration%' ESCAPE '\\' AND NewValue = '(Empty)') OR (NewProcessName LIKE 'C:\\\\Windows\\\\Installer\\\\MSI%' ESCAPE '\\' AND TargetObject LIKE '%Software\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Accessibility\\\\ATs%' ESCAPE '\\')))"
         ],
         "filename": "registry_event_susp_atbroker_change.yml"
-    },
-    {
-        "title": "Potential Ransomware Activity Using LegalNotice Message",
-        "id": "8b9606c9-28be-4a38-b146-0e313cc232c1",
-        "status": "experimental",
-        "description": "Detect changes to the \"LegalNoticeCaption\" or \"LegalNoticeText\" registry values where the message set contains keywords often used in ransomware ransom messages",
-        "author": "frack113",
-        "tags": [
-            "attack.impact",
-            "attack.t1491.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeCaption%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeText%' ESCAPE '\\') AND (NewValue LIKE '%encrypted%' ESCAPE '\\' OR NewValue LIKE '%Unlock-Password%' ESCAPE '\\' OR NewValue LIKE '%paying%' ESCAPE '\\'))"
-        ],
-        "filename": "registry_set_legalnotice_susp_message.yml"
     },
     {
         "title": "Security Support Provider (SSP) Added to LSA Configuration",
@@ -16169,6 +16169,24 @@
             "SELECT * FROM logs WHERE (TargetFilename LIKE '%.kirbi' ESCAPE '\\' OR TargetFilename LIKE '%mimilsa.log' ESCAPE '\\')"
         ],
         "filename": "file_event_win_hktl_mimikatz_files.yml"
+    },
+    {
+        "title": "WinSxS Executable File Creation By Non-System Process",
+        "id": "34746e8c-5fb8-415a-b135-0abc167e912a",
+        "status": "experimental",
+        "description": "Detects the creation of binaries in the WinSxS folder by non-system processes",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\Systems32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "file_event_win_susp_winsxs_binary_creation.yml"
     },
     {
         "title": "New Outlook Macro Created",

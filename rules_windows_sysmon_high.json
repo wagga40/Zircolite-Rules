@@ -4173,6 +4173,25 @@
         "filename": "registry_set_add_load_service_in_safe_mode.yml"
     },
     {
+        "title": "Potential Ransomware Activity Using LegalNotice Message",
+        "id": "8b9606c9-28be-4a38-b146-0e313cc232c1",
+        "status": "experimental",
+        "description": "Detect changes to the \"LegalNoticeCaption\" or \"LegalNoticeText\" registry values where the message set contains keywords often used in ransomware ransom messages",
+        "author": "frack113",
+        "tags": [
+            "attack.impact",
+            "attack.t1491.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeCaption%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeText%' ESCAPE '\\') AND (Details LIKE '%encrypted%' ESCAPE '\\' OR Details LIKE '%Unlock-Password%' ESCAPE '\\' OR Details LIKE '%paying%' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_legalnotice_susp_message.yml"
+    },
+    {
         "title": "Suspicious New Printer Ports in Registry (CVE-2020-1048)",
         "id": "7ec912f2-5175-4868-b811-ec13ad0f8567",
         "status": "test",
@@ -5410,25 +5429,6 @@
             "SELECT * FROM logs WHERE ((EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\Services\\\\HybridConnectionManager%' ESCAPE '\\' OR (EventType = 'SetValue' AND Details LIKE '%Microsoft.HybridConnectionManager.Listener.exe%' ESCAPE '\\')))"
         ],
         "filename": "registry_event_hybridconnectionmgr_svc_installation.yml"
-    },
-    {
-        "title": "Potential Ransomware Activity Using LegalNotice Message",
-        "id": "8b9606c9-28be-4a38-b146-0e313cc232c1",
-        "status": "experimental",
-        "description": "Detect changes to the \"LegalNoticeCaption\" or \"LegalNoticeText\" registry values where the message set contains keywords often used in ransomware ransom messages",
-        "author": "frack113",
-        "tags": [
-            "attack.impact",
-            "attack.t1491.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeCaption%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LegalNoticeText%' ESCAPE '\\') AND (Details LIKE '%encrypted%' ESCAPE '\\' OR Details LIKE '%Unlock-Password%' ESCAPE '\\' OR Details LIKE '%paying%' ESCAPE '\\'))"
-        ],
-        "filename": "registry_set_legalnotice_susp_message.yml"
     },
     {
         "title": "Security Support Provider (SSP) Added to LSA Configuration",
