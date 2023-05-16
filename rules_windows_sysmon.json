@@ -5790,6 +5790,25 @@
         "filename": "posh_pc_remote_powershell_session.yml"
     },
     {
+        "title": "Potential RemoteFXvGPUDisablement.EXE Abuse",
+        "id": "f65e22f9-819e-4f96-9c7b-498364ae7a25",
+        "status": "test",
+        "description": "Detects PowerShell module creation where the module Contents are set to \"function Get-VMRemoteFXPhysicalVideoAdapter\". This could be a sign of potential abuse of  the \"RemoteFXvGPUDisablement.exe\" binary which is known to be vulnerable to module load-order hijacking.",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Windows PowerShell' AND Data LIKE '%ModuleContents=function Get-VMRemoteFXPhysicalVideoAdapter {%' ESCAPE '\\')"
+        ],
+        "filename": "posh_pc_remotefxvgpudisablement_abuse.yml"
+    },
+    {
         "title": "Invoke-Obfuscation Via Use MSHTA - PowerShell Module",
         "id": "07ad2ea8-6a55-4ac6-bf3e-91b8e59676eb",
         "status": "experimental",
@@ -6040,6 +6059,25 @@
             "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i).*?echo.*clip.*&&.*(Clipboard|i`?n`?v`?o`?k`?e`?).*')"
         ],
         "filename": "posh_pm_invoke_obfuscation_via_use_clip.yml"
+    },
+    {
+        "title": "Potential RemoteFXvGPUDisablement.EXE Abuse - PowerShell Module",
+        "id": "38a7625e-b2cb-485d-b83d-aff137d859f4",
+        "status": "experimental",
+        "description": "Detects PowerShell module creation where the module Contents are set to \"function Get-VMRemoteFXPhysicalVideoAdapter\". This could be a sign of potential abuse of the \"RemoteFXvGPUDisablement.exe\" binary which is known to be vulnerable to module load-order hijacking.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload LIKE '%ModuleContents=function Get-VMRemoteFXPhysicalVideoAdapter {%' ESCAPE '\\')"
+        ],
+        "filename": "posh_pm_remotefxvgpudisablement_abuse.yml"
     },
     {
         "title": "Invoke-Obfuscation Via Use Rundll32 - PowerShell Module",
@@ -6385,6 +6423,25 @@
             "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%&&%' ESCAPE '\\' AND ScriptBlockText LIKE '%rundll32%' ESCAPE '\\' AND ScriptBlockText LIKE '%shell32.dll%' ESCAPE '\\' AND ScriptBlockText LIKE '%shellexec\\_rundll%' ESCAPE '\\' AND (ScriptBlockText LIKE '%value%' ESCAPE '\\' OR ScriptBlockText LIKE '%invoke%' ESCAPE '\\' OR ScriptBlockText LIKE '%comspec%' ESCAPE '\\' OR ScriptBlockText LIKE '%iex%' ESCAPE '\\'))"
         ],
         "filename": "posh_ps_invoke_obfuscation_via_use_rundll32.yml"
+    },
+    {
+        "title": "Potential RemoteFXvGPUDisablement.EXE Abuse - PowerShell ScriptBlock",
+        "id": "cacef8fc-9d3d-41f7-956d-455c6e881bc5",
+        "status": "experimental",
+        "description": "Detects PowerShell module creation where the module Contents are set to \"function Get-VMRemoteFXPhysicalVideoAdapter\". This could be a sign of potential abuse of the \"RemoteFXvGPUDisablement.exe\" binary which is known to be vulnerable to module load-order hijacking.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE 'function Get-VMRemoteFXPhysicalVideoAdapter {%' ESCAPE '\\')"
+        ],
+        "filename": "posh_ps_remotefxvgpudisablement_abuse.yml"
     },
     {
         "title": "Abuse of Service Permissions to Hide Services Via Set-Service - PS",
@@ -8179,25 +8236,6 @@
         "filename": "file_event_win_dll_sideloading_space_path.yml"
     },
     {
-        "title": "Rclone Config File Creation",
-        "id": "34986307-b7f4-49be-92f3-e7a4d01ac5db",
-        "status": "test",
-        "description": "Detects Rclone config file being created",
-        "author": "Aaron Greetham (@beardofbinary) - NCC Group",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1567.002"
-        ],
-        "falsepositives": [
-            "Legitimate Rclone usage (rare)"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\.config\\\\rclone\\\\%' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_rclone_exec_file.yml"
-    },
-    {
         "title": "Potential RipZip Attack on Startup Folder",
         "id": "a6976974-ea6f-4e97-818e-ea08625c52cb",
         "status": "experimental",
@@ -8416,6 +8454,25 @@
         "filename": "file_event_win_creation_system_file.yml"
     },
     {
+        "title": "Potential Remote Credential Dumping Activity",
+        "id": "6e2a900a-ced9-4e4a-a9c2-13e706f9518a",
+        "status": "experimental",
+        "description": "Detects default filenames output from the execution of CrackMapExec and Impacket-secretsdump against an endpoint.",
+        "author": "SecurityAura",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\svchost.exe' ESCAPE '\\' AND TargetFilename REGEXP '\\\\Windows\\\\System32\\\\[a-zA-Z0-9]{8}\\.tmp$')"
+        ],
+        "filename": "file_event_win_hktl_remote_cred_dump.yml"
+    },
+    {
         "title": "Suspicious File Event With Teams Objects",
         "id": "6902955a-01b7-432c-b32a-6f5f81d8f624",
         "status": "experimental",
@@ -8454,10 +8511,10 @@
         "filename": "file_event_win_susp_desktopimgdownldr_file.yml"
     },
     {
-        "title": "Dumpert Process Dumper Default File",
+        "title": "HackTool - Dumpert Process Dumper Default File",
         "id": "93d94efc-d7ad-4161-ad7d-1638c4f908d8",
         "status": "test",
-        "description": "Detects the use of Dumpert process dumper, which dumps the lsass.exe process memory",
+        "description": "Detects the creation of the default dump file used by Outflank Dumpert tool. A process dumper, which dumps the lsass process memory",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.credential_access",
@@ -8468,7 +8525,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\Windows\\\\Temp\\\\dumpert.dmp' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%dumpert.dmp' ESCAPE '\\')"
         ],
         "filename": "file_event_win_hktl_dumpert.yml"
     },
@@ -8584,7 +8641,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetFilename LIKE '%.zip' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.doc.%' ESCAPE '\\' OR TargetFilename LIKE '%.docx.%' ESCAPE '\\' OR TargetFilename LIKE '%.xls.%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx.%' ESCAPE '\\' OR TargetFilename LIKE '%.ppt.%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpg.%' ESCAPE '\\' OR TargetFilename LIKE '%.pdf.%' ESCAPE '\\')) OR (TargetFilename LIKE '%.zip.exe' ESCAPE '\\' OR TargetFilename LIKE '%.rar.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\') AND (TargetFilename LIKE '%.doc.%' ESCAPE '\\' OR TargetFilename LIKE '%.docx.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpg.%' ESCAPE '\\' OR TargetFilename LIKE '%.pdf.%' ESCAPE '\\' OR TargetFilename LIKE '%.ppt.%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx.%' ESCAPE '\\' OR TargetFilename LIKE '%.xls.%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx.%' ESCAPE '\\')) OR (TargetFilename LIKE '%.rar.exe' ESCAPE '\\' OR TargetFilename LIKE '%.zip.exe' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_susp_double_extension.yml"
     },
@@ -9091,6 +9148,31 @@
         "filename": "file_event_win_uac_bypass_idiagnostic_profile.yml"
     },
     {
+        "title": "PSEXEC Remote Execution File Artefact",
+        "id": "304afd73-55a5-4bb9-8c21-0b1fc84ea9e4",
+        "status": "experimental",
+        "description": "Detects creation of the PSEXEC key file. Which is created anytime a PsExec command is executed. It gets written to the file system and will be recorded in the USN Journal on the target system",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.lateral_movement",
+            "attack.privilege_escalation",
+            "attack.execution",
+            "attack.persistence",
+            "attack.t1136.002",
+            "attack.t1543.003",
+            "attack.t1570",
+            "attack.s0029"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\Windows\\\\PSEXEC-%' ESCAPE '\\' AND TargetFilename LIKE '%.key' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_sysinternals_psexec_service_key.yml"
+    },
+    {
         "title": "Suspicious Startup Folder Persistence",
         "id": "28208707-fe31-437f-9a7f-4b1108b94d2e",
         "status": "experimental",
@@ -9452,50 +9534,6 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\ba9ea7344a4a5f591d6e5dc32a13494b\\\\%' ESCAPE '\\')"
         ],
         "filename": "file_event_win_pcre_net_temp_file.yml"
-    },
-    {
-        "title": "Potential Remote Credential Dumping Activity",
-        "id": "6e2a900a-ced9-4e4a-a9c2-13e706f9518a",
-        "status": "experimental",
-        "description": "Detects default filenames output from the execution of CrackMapExec and Impacket-secretsdump against an endpoint.",
-        "author": "SecurityAura",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\svchost.exe' ESCAPE '\\' AND TargetFilename REGEXP '\\\\Windows\\\\System32\\\\[a-zA-Z0-9]{8}\\.tmp$')"
-        ],
-        "filename": "file_event_win_remote_cred_dump.yml"
-    },
-    {
-        "title": "PSEXEC Remote Execution File Artefact",
-        "id": "304afd73-55a5-4bb9-8c21-0b1fc84ea9e4",
-        "status": "experimental",
-        "description": "Detects creation of the PSEXEC key file. Which is created anytime a PsExec command is executed. It gets written to the file system and will be recorded in the USN Journal on the target system",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.privilege_escalation",
-            "attack.execution",
-            "attack.persistence",
-            "attack.t1136.002",
-            "attack.t1543.003",
-            "attack.t1570",
-            "attack.s0029"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\Windows\\\\PSEXEC-%' ESCAPE '\\' AND TargetFilename LIKE '%.key' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_psexec_service_key.yml"
     },
     {
         "title": "Typical HiveNightmare SAM File Export",
@@ -10463,6 +10501,26 @@
         "filename": "driver_load_win_mal_poortry_driver.yml"
     },
     {
+        "title": "PUA - Process Hacker Driver Load",
+        "id": "67add051-9ee7-4ad3-93ba-42935615ae8d",
+        "status": "experimental",
+        "description": "Detects driver load of the Process Hacker tool",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation",
+            "cve.2021.21551",
+            "attack.t1543"
+        ],
+        "falsepositives": [
+            "Legitimate use of process hacker or system informer by low level developers or system administrators"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '6' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%\\\\kprocesshacker.sys' ESCAPE '\\' OR (Hashes LIKE '%IMPHASH=821D74031D3F625BCBD0DF08B70F1E77%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=F86759BB4DE4320918615DC06E998A39%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0A64EEB85419257D0CE32BD5D55C3A18%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=6E7B34DFC017700B1517B230DF6FF0D0%' ESCAPE '\\') OR Imphash IN ('821D74031D3F625BCBD0DF08B70F1E77', 'F86759BB4DE4320918615DC06E998A39', '0A64EEB85419257D0CE32BD5D55C3A18', '6E7B34DFC017700B1517B230DF6FF0D0')))"
+        ],
+        "filename": "driver_load_win_pua_process_hacker.yml"
+    },
+    {
         "title": "HackTool - SILENTTRINITY Stager DLL Load",
         "id": "75c505b1-711d-4f68-a357-8c3fe37dbf2d",
         "status": "test",
@@ -11204,6 +11262,25 @@
             "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ImageLoaded LIKE '%\\\\dbghelp.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\dbgcore.dll' ESCAPE '\\') AND (Image LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\dnx.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvcs.exe' ESCAPE '\\' OR Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR Image LIKE '%\\\\scriptrunner.exe' ESCAPE '\\')) AND NOT ((CommandLine LIKE 'C:\\\\WINDOWS\\\\winsxs\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\TiWorker.exe -Embedding' ESCAPE '\\')))"
         ],
         "filename": "image_load_dll_dbghelp_dbgcore_susp_load.yml"
+    },
+    {
+        "title": "RemoteFXvGPUDisablement Abuse Via AtomicTestHarnesses",
+        "id": "a6fc3c46-23b8-4996-9ea2-573f4c4d88c5",
+        "status": "test",
+        "description": "Detects calls to the AtomicTestHarnesses \"Invoke-ATHRemoteFXvGPUDisablementCommand\" which is designed to abuse the \"RemoteFXvGPUDisablement.exe\" binary to run custom PowerShell code via module load-order hijacking.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%Invoke-ATHRemoteFXvGPUDisablementCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ATHRemoteFXvGPUDisableme%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_remotefxvgpudisablement_abuse.yml"
     },
     {
         "title": "Potential Manage-bde.wsf Abuse To Proxy Execution",
@@ -16833,10 +16910,10 @@
         "filename": "proc_creation_win_schtasks_schedule_type.yml"
     },
     {
-        "title": "Potential Procdump Evasion",
+        "title": "Potential SysInternals ProcDump Evasion",
         "id": "79b06761-465f-4f88-9ef2-150e24d3d737",
         "status": "test",
-        "description": "Detects uses of the SysInternals Procdump utility in which procdump or its output get renamed or a dump file is moved ot copied to a different name",
+        "description": "Detects uses of the SysInternals ProcDump utility in which ProcDump or its output get renamed, or a dump file is moved or copied to a different name",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -16844,7 +16921,7 @@
             "attack.t1003.001"
         ],
         "falsepositives": [
-            "Cases in which procdump just gets copied to a different directory without any renaming"
+            "False positives are expected in cases in which ProcDump just gets copied to a different directory without any renaming"
         ],
         "level": "high",
         "rule": [
@@ -18845,7 +18922,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%dllhost.exe' ESCAPE '\\' AND Image LIKE '%\\\\dllhost.exe' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' AND CommandLine IN ('dllhost.exe', 'dllhost')) AND NOT ((CommandLine = '')))"
         ],
         "filename": "proc_creation_win_dllhost_no_cli_execution.yml"
     },
@@ -18991,7 +19068,7 @@
         "title": "File Download with Headless Browser",
         "id": "0e8cfe08-02c9-4815-a2f8-0d157b7ed33e",
         "status": "test",
-        "description": "This is an unusual method to download files. It starts a browser headless and downloads a file from a location. This can be used by threat actors to download files.",
+        "description": "Detects execution of chromium based browser in headless mode using the \"dump-dom\" command line to download files",
         "author": "Sreeman, Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command_and_control",
@@ -19002,7 +19079,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\') AND CommandLine LIKE '%--headless%' ESCAPE '\\' AND CommandLine LIKE '%dump-dom%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\brave.exe' ESCAPE '\\' OR Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\opera.exe' ESCAPE '\\' OR Image LIKE '%\\\\vivaldi.exe' ESCAPE '\\') AND CommandLine LIKE '%--headless%' ESCAPE '\\' AND CommandLine LIKE '%dump-dom%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_browsers_chromium_headless_file_download.yml"
     },
@@ -19628,6 +19705,23 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'pssuspend.exe' OR (Image LIKE '%\\\\pssuspend.exe' ESCAPE '\\' OR Image LIKE '%\\\\pssuspend64.exe' ESCAPE '\\')) AND CommandLine LIKE '%msmpeng.exe%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_sysinternals_pssuspend_susp_execution.yml"
+    },
+    {
+        "title": "Potentially Suspicious GoogleUpdate Child Process",
+        "id": "84b1ecf9-6eff-4004-bafb-bae5c0e251b2",
+        "description": "Detects potentially suspicious child processes of \"GoogleUpdate.exe\"",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\GoogleUpdate.exe' ESCAPE '\\' AND NOT ((Image LIKE '%\\\\Google%' ESCAPE '\\' OR (Image LIKE '%\\\\setup.exe' ESCAPE '\\' OR Image LIKE '%chrome\\_updater.exe' ESCAPE '\\' OR Image LIKE '%chrome\\_installer.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_googleupdate_susp_child_process.yml"
     },
     {
         "title": "Potential Credential Dumping Attempt Using New NetworkProvider - CLI",
@@ -20780,17 +20874,17 @@
         "filename": "proc_creation_win_susp_system_exe_anomaly.yml"
     },
     {
-        "title": "PUA - Process Hacker / System Informer Execution",
+        "title": "PUA - Process Hacker Execution",
         "id": "811e0002-b13b-4a15-9d00-a613fce66e42",
         "status": "experimental",
-        "description": "Detects suspicious use of Process Hacker and its newer version named System Informer, a tool to view and manipulate processes, kernel options and other low level stuff",
+        "description": "Detects the execution of Process Hacker based on binary metadata information (Image, Hash, Imphash, etc). Process Hacker is a tool to view and manipulate processes, kernel options and other low level options. Threat actors regularly abuse it to manipulate system processes.",
         "author": "Florian Roth (Nextron Systems)",
         "falsepositives": [
-            "Sometimes used by developers or system administrators for debugging purposes"
+            "While sometimes 'Process Hacker is used by legitimate administrators, the execution of Process Hacker must be investigated and allowed on a case by case basis"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\ProcessHacker\\_%' ESCAPE '\\' OR (Image LIKE '%\\\\SystemInformer.exe' ESCAPE '\\' OR Image LIKE '%\\\\ProcessHacker.exe' ESCAPE '\\') OR OriginalFileName IN ('ProcessHacker.exe', 'Process Hacker', 'SystemInformer.exe') OR Description IN ('Process Hacker', 'System Informer') OR Product = 'Process Hacker' OR (Hashes LIKE '%MD5=68F9B52895F4D34E74112F3129B3B00D%' ESCAPE '\\' OR Hashes LIKE '%SHA1=C5E2018BF7C0F314FED4FD7FE7E69FA2E648359E%' ESCAPE '\\' OR Hashes LIKE '%SHA256=D4A0FE56316A2C45B9BA9AC1005363309A3EDC7ACF9E4DF64D326A0FF273E80F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=04DE0AD9C37EB7BD52043D2ECAC958DF%' ESCAPE '\\' OR Hashes LIKE '%MD5=B365AF317AE730A67C936F21432B9C71%' ESCAPE '\\' OR Hashes LIKE '%SHA1=A0BDFAC3CE1880B32FF9B696458327CE352E3B1D%' ESCAPE '\\' OR Hashes LIKE '%SHA256=BD2C2CF0631D881ED382817AFCCE2B093F4E412FFB170A719E2762F250ABFEA4%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3695333C60DEDECDCAFF1590409AA462%' ESCAPE '\\') OR md5 IN ('68f9b52895f4d34e74112f3129b3b00d', 'b365af317ae730a67c936f21432b9c71') OR sha1 IN ('c5e2018bf7c0f314fed4fd7fe7e69fa2e648359e', 'a0bdfac3ce1880b32ff9b696458327ce352e3b1d') OR sha256 IN ('d4a0fe56316a2c45b9ba9ac1005363309a3edc7acf9e4df64d326a0ff273e80f', 'bd2c2cf0631d881ed382817afcce2b093f4e412ffb170a719e2762f250abfea4') OR Imphash IN ('04de0ad9c37eb7bd52043d2ecac958df', '3695333c60dedecdcaff1590409aa462')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\ProcessHacker\\_%' ESCAPE '\\' OR Image LIKE '%\\\\ProcessHacker.exe' ESCAPE '\\' OR OriginalFileName IN ('ProcessHacker.exe', 'Process Hacker') OR Description = 'Process Hacker' OR Product = 'Process Hacker' OR (Hashes LIKE '%MD5=68F9B52895F4D34E74112F3129B3B00D%' ESCAPE '\\' OR Hashes LIKE '%MD5=B365AF317AE730A67C936F21432B9C71%' ESCAPE '\\' OR Hashes LIKE '%SHA1=A0BDFAC3CE1880B32FF9B696458327CE352E3B1D%' ESCAPE '\\' OR Hashes LIKE '%SHA1=C5E2018BF7C0F314FED4FD7FE7E69FA2E648359E%' ESCAPE '\\' OR Hashes LIKE '%SHA256=D4A0FE56316A2C45B9BA9AC1005363309A3EDC7ACF9E4DF64D326A0FF273E80F%' ESCAPE '\\' OR Hashes LIKE '%SHA256=BD2C2CF0631D881ED382817AFCCE2B093F4E412FFB170A719E2762F250ABFEA4%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3695333C60DEDECDCAFF1590409AA462%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=04DE0AD9C37EB7BD52043D2ECAC958DF%' ESCAPE '\\') OR md5 IN ('68f9b52895f4d34e74112f3129b3b00d', 'b365af317ae730a67c936f21432b9c71') OR sha1 IN ('c5e2018bf7c0f314fed4fd7fe7e69fa2e648359e', 'a0bdfac3ce1880b32ff9b696458327ce352e3b1d') OR sha256 IN ('d4a0fe56316a2c45b9ba9ac1005363309a3edc7acf9e4df64d326a0ff273e80f', 'bd2c2cf0631d881ed382817afcce2b093f4e412ffb170a719e2762f250abfea4') OR Imphash IN ('04de0ad9c37eb7bd52043d2ecac958df', '3695333c60dedecdcaff1590409aa462')))"
         ],
         "filename": "proc_creation_win_pua_process_hacker.yml"
     },
@@ -20957,7 +21051,7 @@
         "title": "Potential LSASS Process Dump Via Procdump",
         "id": "5afee48e-67dd-4e03-a783-f74259dcf998",
         "status": "stable",
-        "description": "Detects suspicious uses of the SysInternals Procdump utility by using a special command line parameter in combination with the lsass.exe process. This way we're also able to catch cases in which the attacker has renamed the procdump executable.",
+        "description": "Detects suspicious uses of the SysInternals Procdump utility by using a special command line parameter in combination with the lsass.exe process.\nThis way we are also able to catch cases in which the attacker has renamed the procdump executable.\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -20968,7 +21062,7 @@
         ],
         "falsepositives": [
             "Unlikely, because no one should dump an lsass process memory",
-            "Another tool that uses the command line switches of Procdump"
+            "Another tool that uses command line flags similar to ProcDump"
         ],
         "level": "high",
         "rule": [
