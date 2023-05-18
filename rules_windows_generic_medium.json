@@ -1092,7 +1092,7 @@
         "id": "100ef69e-3327-481c-8e5c-6d80d9507556",
         "status": "experimental",
         "description": "Detects the clearing of one of the Windows Core Eventlogs. e.g. caused by \"wevtutil cl\" command execution",
-        "author": "Florian Roth (Nextron Systems), Tim Shelton",
+        "author": "Florian Roth (Nextron Systems), Tim Shelton, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1070.001",
@@ -1104,7 +1104,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog' AND Channel IN ('System', 'Security', 'Application'))"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog' AND Channel IN ('Application', 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-Sysmon/Operational', 'PowerShellCore/Operational', 'Security', 'System', 'Windows PowerShell'))"
         ],
         "filename": "win_system_susp_eventlog_cleared.yml"
     },
@@ -1125,7 +1125,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND (EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog') AND NOT (Channel IN ('System', 'Security', 'Application')))"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (EventID = '104' AND Provider_Name = 'Microsoft-Windows-Eventlog') AND NOT (Channel IN ('Application', 'Microsoft-Windows-PowerShell/Operational', 'Microsoft-Windows-Sysmon/Operational', 'PowerShellCore/Operational', 'Security', 'System', 'Windows PowerShell')))"
         ],
         "filename": "win_system_eventlog_cleared.yml"
     },
@@ -4761,7 +4761,7 @@
         "title": "Scheduled Task Executed Uncommon LOLBIN",
         "id": "f0767f15-0fb3-44b9-851e-e8d9a6d0005d",
         "status": "experimental",
-        "description": "Detects the execution of Scheduled Tasks where the Program being run is located in a suspicious location or it's an unusale program to be run from a Scheduled Task",
+        "description": "Detects the execution of Scheduled Tasks where the program being run is located in a suspicious location or where it is an unusual program to be run from a Scheduled Task",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.persistence",
@@ -6400,7 +6400,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND (TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((EventType = 'SetValue' AND (TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\')))) AND NOT ((NewProcessName = '')))"
         ],
         "filename": "registry_set_renamed_sysinternals_eula_accepted.yml"
     },
@@ -6461,6 +6461,24 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Advanced\\\\HideFileExt' ESCAPE '\\' AND NewValue = 'DWORD (0x00000001)') OR (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Advanced\\\\Hidden' ESCAPE '\\' AND NewValue = 'DWORD (0x00000002)')))"
         ],
         "filename": "registry_set_hidden_extention.yml"
+    },
+    {
+        "title": "Internet Explorer DisableFirstRunCustomize Enabled",
+        "id": "ab567429-1dfb-4674-b6d2-979fd2f9d125",
+        "status": "experimental",
+        "description": "Detects changes to the Internet Explorer \"DisableFirstRunCustomize\" value, which prevents Internet Explorer from running the first run wizard the first time a user starts the browser after installing Internet Explorer or Windows.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "As this is controlled by group policy as well as user settings. Some false positives may occur."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\Microsoft\\\\Internet Explorer\\\\Main\\\\DisableFirstRunCustomize' ESCAPE '\\' AND NewValue IN ('DWORD (0x00000001)', 'DWORD (0x00000002)')) AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\ie4uinit.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "registry_set_internet_explorer_disable_first_run_customize.yml"
     },
     {
         "title": "Registry Persitence via Service in Safe Mode",
@@ -14236,6 +14254,25 @@
         "filename": "file_event_win_lsass_shtinkering.yml"
     },
     {
+        "title": "LiveKD Kernel Memory Dump File Created",
+        "id": "814ddeca-3d31-4265-8e07-8cc54fb44903",
+        "status": "experimental",
+        "description": "Detects the creation of a file that has the same name as the default LiveKD kernel memory dump.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "In rare occasions administrators might leverage LiveKD to perform live kernel debugging. This should not be allowed on production systems. Investigate and apply additional filters where necessary."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE 'C:\\\\Windows\\\\livekd.dmp' ESCAPE '\\'"
+        ],
+        "filename": "file_event_win_sysinternals_livekd_default_dump_name.yml"
+    },
+    {
         "title": "WScript or CScript Dropper - File",
         "id": "002bdb95-0cf1-46a6-9e08-d38c128a6127",
         "status": "experimental",
@@ -14837,6 +14874,25 @@
             "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Microsoft\\\\Outlook\\\\VbaProject.OTM' ESCAPE '\\')"
         ],
         "filename": "file_event_win_office_outlook_macro_creation.yml"
+    },
+    {
+        "title": "LiveKD Driver Creation By Uncommon Process",
+        "id": "059c5af9-5131-4d8d-92b2-de4ad6146712",
+        "status": "experimental",
+        "description": "Detects the creation of the LiveKD driver by a process image other than \"livekd.exe\".",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Administrators might rename LiveKD before its usage which could trigger this. Add additional names you use to the filter"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\drivers\\\\LiveKdD.SYS' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livek64.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "file_event_win_sysinternals_livekd_driver_susp_creation.yml"
     },
     {
         "title": "Suspicious ADSI-Cache Usage By Unknown Tool",
@@ -15765,6 +15821,25 @@
             "SELECT * FROM logs WHERE ((TargetFilename LIKE '%WsmPty.xsl' ESCAPE '\\' OR TargetFilename LIKE '%WsmTxt.xsl' ESCAPE '\\') AND NOT ((TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_winrm_awl_bypass.yml"
+    },
+    {
+        "title": "LiveKD Driver Creation",
+        "id": "16fe46bb-4f64-46aa-817d-ff7bec4a2352",
+        "status": "experimental",
+        "description": "Detects the creation of the LiveKD driver, which is used for live kernel debugging",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Legitimate usage of LiveKD for debugging purposes will also trigger this"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\drivers\\\\LiveKdD.SYS' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livek64.exe' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_sysinternals_livekd_driver.yml"
     },
     {
         "title": "Powerup Write Hijack DLL",
@@ -18325,6 +18400,27 @@
         "filename": "proc_creation_win_wmic_recon_system_info_discovery.yml"
     },
     {
+        "title": "Cloudflared Tunnel Connections Cleanup",
+        "id": "7050bba1-1aed-454e-8f73-3f46f09ce56a",
+        "status": "experimental",
+        "description": "Detects execution of the \"cloudflared\" tool with the tunnel \"cleanup\" flag in order to cleanup tunnel connections.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1102",
+            "attack.t1090",
+            "attack.t1572"
+        ],
+        "falsepositives": [
+            "Legitimate usage of Cloudflared."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '% tunnel %' ESCAPE '\\' AND CommandLine LIKE '%cleanup %' ESCAPE '\\' AND (CommandLine LIKE '% --config %' ESCAPE '\\' OR CommandLine LIKE '% --connector-id %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_cloudflared_tunnel_cleanup.yml"
+    },
+    {
         "title": "Potential Manage-bde.wsf Abuse To Proxy Execution",
         "id": "c363385c-f75d-4753-a108-c1a8e28bdbda",
         "status": "test",
@@ -18617,6 +18713,24 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\' OR CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%DownloadFile%' ESCAPE '\\' OR CommandLine LIKE '%DownloadString%' ESCAPE '\\') AND ((CommandLine LIKE '%//0x%' ESCAPE '\\' OR CommandLine LIKE '%.0x%' ESCAPE '\\' OR CommandLine LIKE '%.00x%' ESCAPE '\\') OR (CommandLine LIKE '%http://\\%%' ESCAPE '\\' AND CommandLine LIKE '%\\%2e%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_obfuscated_ip_download.yml"
+    },
+    {
+        "title": "Potential Memory Dumping Activity Via LiveKD",
+        "id": "a85f7765-698a-4088-afa0-ecfbf8d01fa4",
+        "status": "experimental",
+        "description": "Detects execution of LiveKD based on PE metadata or image name",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Administration and debugging activity (must be investigated)"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName = 'livekd.exe'))"
+        ],
+        "filename": "proc_creation_win_sysinternals_livekd_execution.yml"
     },
     {
         "title": "HTML Help HH.EXE Suspicious Child Process",
@@ -19221,26 +19335,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName = 'msiexec.exe') AND (CommandLine LIKE '%/i%' ESCAPE '\\' OR CommandLine LIKE '%-i%' ESCAPE '\\' OR CommandLine LIKE '%/package%' ESCAPE '\\' OR CommandLine LIKE '%-package%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/j%' ESCAPE '\\' OR CommandLine LIKE '%-j%' ESCAPE '\\') AND (CommandLine LIKE '%/q%' ESCAPE '\\' OR CommandLine LIKE '%-q%' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\CCM\\\\Ccm32BitLauncher.exe' ESCAPE '\\' AND IntegrityLevel = 'System')))"
         ],
         "filename": "proc_creation_win_msiexec_install_quiet.yml"
-    },
-    {
-        "title": "WSF/JSE/JS/VBA/VBE File Execution",
-        "id": "1e33157c-53b1-41ad-bbcc-780b80b58288",
-        "status": "test",
-        "description": "Detects suspicious file execution by wscript and cscript",
-        "author": "Michael Haag",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.005",
-            "attack.t1059.007"
-        ],
-        "falsepositives": [
-            "Will need to be tuned. I recommend adding the user profile path in CommandLine if it is getting too noisy."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('wscript.exe', 'cscript.exe') OR (NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\')) AND (CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.jse%' ESCAPE '\\' OR CommandLine LIKE '%.vba%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_script_execution.yml"
     },
     {
         "title": "Process Reconnaissance Via Wmic.EXE",
@@ -20237,25 +20331,6 @@
         "filename": "proc_creation_win_bitsadmin_potential_persistence.yml"
     },
     {
-        "title": "Wscript Shell Run In CommandLine",
-        "id": "2c28c248-7f50-417a-9186-a85b223010ee",
-        "status": "experimental",
-        "description": "Detects the presence of the keywords \"Wscript\", \"Shell\" and \"Run\" in the command, which could indicate a suspicious activity",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.execution",
-            "attack.t1059"
-        ],
-        "falsepositives": [
-            "Rare legitimate inline scripting by some administrators"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%Wscript.%' ESCAPE '\\' AND CommandLine LIKE '%.Shell%' ESCAPE '\\' AND CommandLine LIKE '%.Run%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_script_wscript_shell_cli.yml"
-    },
-    {
         "title": "HackTool - SharpImpersonation Execution",
         "id": "f89b08d0-77ad-4728-817b-9b16c5a69c7a",
         "status": "experimental",
@@ -21228,11 +21303,11 @@
             "attack.t1218"
         ],
         "falsepositives": [
-            "Legitimate admin scripts"
+            "Legitimate admin or third party scripts used for diagnostic collection might generate some false positives"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND ((CommandLine LIKE '%> \\%USERPROFILE\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%APPDATA\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%TEMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%TMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Temp\\\\%' ESCAPE '\\') OR ((CommandLine LIKE '% > %' ESCAPE '\\' OR CommandLine LIKE '% >> %' ESCAPE '\\') AND CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND ((CommandLine LIKE '%> \\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%APPDATA\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%TEMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%TMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%USERPROFILE\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%APPDATA\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%TEMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%TMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%USERPROFILE\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>C:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') OR ((CommandLine LIKE '% >%' ESCAPE '\\' OR CommandLine LIKE '%\">%' ESCAPE '\\' OR CommandLine LIKE '%''>%' ESCAPE '\\') AND CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_cmd_redirection_susp_folder.yml"
     },
@@ -21602,6 +21677,24 @@
         "filename": "proc_creation_win_uac_bypass_trustedpath.yml"
     },
     {
+        "title": "Kernel Memory Dump Via LiveKD",
+        "id": "c7746f1c-47d3-43d6-8c45-cd1e54b6b0a2",
+        "status": "experimental",
+        "description": "Detects execution of LiveKD with the \"-m\" flag to potentially dump the kernel memory",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unlikely in production environement"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName = 'livekd.exe') AND (CommandLine LIKE '% /m%' ESCAPE '\\' AND CommandLine LIKE '% -m%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_sysinternals_livekd_kernel_memory_dump.yml"
+    },
+    {
         "title": "Filter Driver Unloaded Via Fltmc.EXE",
         "id": "4931188c-178e-4ee7-a348-39e8a7a56821",
         "status": "test",
@@ -21800,21 +21893,21 @@
         "filename": "proc_creation_win_malware_conti_shadowcopy.yml"
     },
     {
-        "title": "Suspicious Add Scheduled Command Pattern",
+        "title": "Suspicious Command Patterns In Scheduled Task Creation",
         "id": "f2c64357-b1d2-41b7-849f-34d2682c0fad",
         "status": "experimental",
-        "description": "Detects suspicious scheduled task creations with commands that are uncommon",
+        "description": "Detects scheduled task creation using \"schtasks\" that contain potentially suspicious or uncommon commands",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.t1053.005"
         ],
         "falsepositives": [
-            "Software installers that run from temporary folders and also install scheduled tasks"
+            "Software installers that run from temporary folders and also install scheduled tasks are expected to generate some false positives"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Create %' ESCAPE '\\') AND (((CommandLine LIKE '%/sc minute %' ESCAPE '\\' OR CommandLine LIKE '%/ru system %' ESCAPE '\\') AND (CommandLine LIKE '%cmd.exe /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r %' ESCAPE '\\' OR CommandLine LIKE '%cmd /r%' ESCAPE '\\')) OR (CommandLine LIKE '% bypass %' ESCAPE '\\' OR CommandLine LIKE '%.DownloadString%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadFile%' ESCAPE '\\' OR CommandLine LIKE '%FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '% -w hidden %' ESCAPE '\\' OR CommandLine LIKE '% IEX%' ESCAPE '\\' OR CommandLine LIKE '% -enc %' ESCAPE '\\' OR CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '%/c start /min %' ESCAPE '\\' OR CommandLine LIKE '% curl %' ESCAPE '\\') OR (CommandLine LIKE '%/xml C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%wscript.exe%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Create %' ESCAPE '\\') AND ((((CommandLine LIKE '%/sc minute %' ESCAPE '\\' OR CommandLine LIKE '%/ru system %' ESCAPE '\\') AND (CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd /r%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r %' ESCAPE '\\')) OR (CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '% -enc %' ESCAPE '\\' OR CommandLine LIKE '% -w hidden %' ESCAPE '\\' OR CommandLine LIKE '% bypass %' ESCAPE '\\' OR CommandLine LIKE '% IEX%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadData%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadFile%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadString%' ESCAPE '\\' OR CommandLine LIKE '%/c start /min %' ESCAPE '\\' OR CommandLine LIKE '%FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '%mshta http%' ESCAPE '\\' OR CommandLine LIKE '%mshta.exe http%' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' AND CommandLine LIKE '%\\%Temp\\%%' ESCAPE '\\' AND CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%/xml C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%cscript%' ESCAPE '\\' AND CommandLine LIKE '%curl%' ESCAPE '\\' AND CommandLine LIKE '%wscript%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_schtasks_susp_pattern.yml"
     },
@@ -22716,6 +22809,27 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\netsh.exe' ESCAPE '\\' OR OriginalFileName = 'netsh.exe') AND ((CommandLine LIKE '%firewall%' ESCAPE '\\' AND CommandLine LIKE '%set%' ESCAPE '\\' AND CommandLine LIKE '%opmode%' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\') OR (CommandLine LIKE '%advfirewall%' ESCAPE '\\' AND CommandLine LIKE '%set%' ESCAPE '\\' AND CommandLine LIKE '%state%' ESCAPE '\\' AND CommandLine LIKE '%off%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_netsh_fw_disable.yml"
+    },
+    {
+        "title": "Cloudflared Tunnel Execution",
+        "id": "9a019ffc-3580-4c9d-8d87-079f7e8d3fd4",
+        "status": "experimental",
+        "description": "Detects execution of the \"cloudflared\" tool to connect back to a tunnel. This was seen used by threat actors to maintain persistence and remote access to compromised networks.",
+        "author": "Janantha Marasinghe, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1102",
+            "attack.t1090",
+            "attack.t1572"
+        ],
+        "falsepositives": [
+            "Legitimate usage of Cloudflared."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '% tunnel %' ESCAPE '\\' AND CommandLine LIKE '% run %' ESCAPE '\\' AND (CommandLine LIKE '% --config %' ESCAPE '\\' OR CommandLine LIKE '% --credentials-contents %' ESCAPE '\\' OR CommandLine LIKE '% --credentials-file %' ESCAPE '\\' OR CommandLine LIKE '% --token %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_cloudflared_tunnel_run.yml"
     },
     {
         "title": "Potential Meterpreter/CobaltStrike Activity",
@@ -24240,7 +24354,7 @@
         "filename": "proc_creation_win_hktl_uacme.yml"
     },
     {
-        "title": "Process Dumping Via Comsvcs.DLL",
+        "title": "Process Memory Dump Via Comsvcs.DLL",
         "id": "646ea171-dded-4578-8a4d-65e9822892e3",
         "status": "test",
         "description": "Detects a process memory dump via \"comsvcs.dll\" using rundll32, covering multiple different techniques (ordinal, minidump function, etc.)",
@@ -24253,11 +24367,11 @@
             "car.2013-05-009"
         ],
         "falsepositives": [
-            "Unlikely, because no one should dump the process memory in that way"
+            "Unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND (CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '%24 %' ESCAPE '\\' OR CommandLine LIKE '%#24%' ESCAPE '\\' OR CommandLine LIKE '%#+24%' ESCAPE '\\' OR CommandLine LIKE '%MiniDump%' ESCAPE '\\'))) OR CommandLine LIKE '%#-4294967272%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND (CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '%#-%' ESCAPE '\\' OR CommandLine LIKE '%#+%' ESCAPE '\\' OR CommandLine LIKE '%#24%' ESCAPE '\\' OR CommandLine LIKE '%24 %' ESCAPE '\\' OR CommandLine LIKE '%MiniDump%' ESCAPE '\\'))) OR (CommandLine LIKE '%24%' ESCAPE '\\' AND CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '% #%' ESCAPE '\\' OR CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_rundll32_process_dump_via_comsvcs.yml"
     },
@@ -24722,6 +24836,24 @@
         "filename": "proc_creation_win_rundll32_keymgr.yml"
     },
     {
+        "title": "Suspicious Advpack Call Via Rundll32.EXE",
+        "id": "a1473adb-5338-4a20-b4c3-126763e2d3d3",
+        "status": "experimental",
+        "description": "Detects execution of \"rundll32\" calling \"advpack.dll\" with potential obfuscated ordinal calls in order to leverage the \"RegisterOCX\" function",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND CommandLine LIKE '%advpack%' ESCAPE '\\' AND ((CommandLine LIKE '%#+%' ESCAPE '\\' AND CommandLine LIKE '%12%' ESCAPE '\\') OR CommandLine LIKE '%#-%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_rundll32_advpack_obfuscated_ordinal_call.yml"
+    },
+    {
         "title": "New User Created Via Net.EXE",
         "id": "cd219ff3-fa99-45d4-8380-a7d15116c6dc",
         "status": "test",
@@ -24896,6 +25028,26 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%domainlist%' ESCAPE '\\' OR CommandLine LIKE '%trustdmp%' ESCAPE '\\' OR CommandLine LIKE '%dcmodes%' ESCAPE '\\' OR CommandLine LIKE '%adinfo%' ESCAPE '\\' OR CommandLine LIKE '% dclist %' ESCAPE '\\' OR CommandLine LIKE '%computer\\_pwdnotreqd%' ESCAPE '\\' OR CommandLine LIKE '%objectcategory=%' ESCAPE '\\' OR CommandLine LIKE '%-subnets -f%' ESCAPE '\\' OR CommandLine LIKE '%name=\"Domain Admins\"%' ESCAPE '\\' OR CommandLine LIKE '%-sc u:%' ESCAPE '\\' OR CommandLine LIKE '%domainncs%' ESCAPE '\\' OR CommandLine LIKE '%dompol%' ESCAPE '\\' OR CommandLine LIKE '% oudmp %' ESCAPE '\\' OR CommandLine LIKE '%subnetdmp%' ESCAPE '\\' OR CommandLine LIKE '%gpodmp%' ESCAPE '\\' OR CommandLine LIKE '%fspdmp%' ESCAPE '\\' OR CommandLine LIKE '%users\\_noexpire%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_active%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_pwdnotreqd%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_pua_adfind_susp_usage.yml"
+    },
+    {
+        "title": "Cscript/Wscript Uncommon Script Extension Execution",
+        "id": "99b7460d-c9f1-40d7-a316-1f36f61d52ee",
+        "status": "experimental",
+        "description": "Detects Wscript/Cscript executing a file with an uncommon (i.e. non-script) extension",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.005",
+            "attack.t1059.007"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('wscript.exe', 'cscript.exe') OR (NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\')) AND (CommandLine LIKE '%.csv%' ESCAPE '\\' OR CommandLine LIKE '%.dat%' ESCAPE '\\' OR CommandLine LIKE '%.doc%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.ppt%' ESCAPE '\\' OR CommandLine LIKE '%.txt%' ESCAPE '\\' OR CommandLine LIKE '%.xls%' ESCAPE '\\' OR CommandLine LIKE '%.xml%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_wscript_cscript_uncommon_extension_exec.yml"
     },
     {
         "title": "Suspicious Download from Office Domain",
@@ -25881,26 +26033,6 @@
         "filename": "proc_creation_win_dsim_remove.yml"
     },
     {
-        "title": "Curl.EXE Execution With Custom UserAgent",
-        "id": "3286d37a-00fd-41c2-a624-a672dcd34e60",
-        "status": "test",
-        "description": "Detects execution of curl.exe with custom useragent options",
-        "author": "frack113",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1071.001"
-        ],
-        "falsepositives": [
-            "Scripts created by developers and admins",
-            "Administrative activity"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR Product = 'The curl executable') AND (CommandLine LIKE '% -A %' ESCAPE '\\' OR CommandLine LIKE '% --user-agent %' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_curl_useragent.yml"
-    },
-    {
         "title": "HackTool - Hydra Password Bruteforce Execution",
         "id": "aaafa146-074c-11eb-adc1-0242ac120002",
         "status": "test",
@@ -25938,6 +26070,24 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName = 'mstsc.exe') AND CommandLine LIKE '% /v:%' ESCAPE '\\') AND NOT ((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\lxss\\\\wslhost.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\ProgramData\\\\Microsoft\\\\WSL\\\\wslg.rdp%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_mstsc_remote_connection.yml"
+    },
+    {
+        "title": "Potential Obfuscated Ordinal Call Via Rundll32",
+        "id": "43fa5350-db63-4b8f-9a01-789a427074e1",
+        "status": "experimental",
+        "description": "Detects execution of \"rundll32\" with potential obfuscated ordinal calls",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND (CommandLine LIKE '%#+%' ESCAPE '\\' OR CommandLine LIKE '%#-%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_rundll32_obfuscated_ordinal_call.yml"
     },
     {
         "title": "Suspicious Windows Defender Folder Exclusion Added Via Reg.EXE",
@@ -26925,6 +27075,26 @@
         "filename": "proc_creation_win_cmd_shadowcopy_access.yml"
     },
     {
+        "title": "WSF/JSE/JS/VBA/VBE File Execution Via Cscript/Wscript",
+        "id": "1e33157c-53b1-41ad-bbcc-780b80b58288",
+        "status": "test",
+        "description": "Detects script file execution (.js, .jse, .vba, .vbe, .vbs, .wsf) by Wscript/Cscript",
+        "author": "Michael Haag",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.005",
+            "attack.t1059.007"
+        ],
+        "falsepositives": [
+            "Some additional tunning is required. It is recommended to add the user profile path in CommandLine if it is getting too noisy."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('wscript.exe', 'cscript.exe') OR (NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\')) AND (CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.jse%' ESCAPE '\\' OR CommandLine LIKE '%.vba%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.wsf%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_wscript_cscript_script_exec.yml"
+    },
+    {
         "title": "PUA - Nmap/Zenmap Execution",
         "id": "f6ecd1cf-19b8-4488-97f6-00f0924991a3",
         "status": "test",
@@ -27000,26 +27170,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\logman.exe' ESCAPE '\\' OR OriginalFileName = 'Logman.exe') AND (CommandLine LIKE '%stop %' ESCAPE '\\' OR CommandLine LIKE '%delete %' ESCAPE '\\') AND (CommandLine LIKE '%Circular Kernel Context Logger%' ESCAPE '\\' OR CommandLine LIKE '%EventLog-%' ESCAPE '\\' OR CommandLine LIKE '%SYSMON TRACE%' ESCAPE '\\' OR CommandLine LIKE '%SysmonDnsEtwSession%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_logman_disable_eventlog.yml"
-    },
-    {
-        "title": "Potential Data Exfiltration Via Curl.EXE",
-        "id": "00bca14a-df4e-4649-9054-3f2aa676bc04",
-        "status": "test",
-        "description": "Detects the execution of the \"curl\" process with \"upload\" flags. Which might indicate potential data exfiltration",
-        "author": "Florian Roth (Nextron Systems), Cedric MAURUGEON (Update)",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1567",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Scripts created by developers and admins"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR Product = 'The curl executable') AND ((CommandLine LIKE '% --form%' ESCAPE '\\' OR CommandLine LIKE '% --upload-file %' ESCAPE '\\' OR CommandLine LIKE '% --data %' ESCAPE '\\' OR CommandLine LIKE '% --data-%' ESCAPE '\\') OR CommandLine REGEXP '\\s-[FTd]\\s')) AND NOT (((CommandLine LIKE '%://localhost%' ESCAPE '\\' OR CommandLine LIKE '%://127.0.0.1%' ESCAPE '\\'))))"
-        ],
-        "filename": "proc_creation_win_curl_fileupload.yml"
     },
     {
         "title": "UAC Bypass Using Consent and Comctl32 - Process",
@@ -27294,11 +27444,11 @@
         "filename": "proc_creation_win_winrm_remote_powershell_session_process.yml"
     },
     {
-        "title": "Suspicious Rundll32 Activity",
+        "title": "Potentially Suspicious Rundll32 Activity",
         "id": "e593cf51-88db-4ee1-b920-37e89012a3c9",
         "status": "test",
-        "description": "Detects suspicious process related to rundll32 based on arguments",
-        "author": "juju4, Jonhnathan Ribeiro, oscd.community, Nasreddine Bencherchali",
+        "description": "Detects suspicious execution of rundll32, with specific calls to some DLLs with known LOLBIN functionalities",
+        "author": "juju4, Jonhnathan Ribeiro, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1218.011"
@@ -27308,7 +27458,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%javascript:%' ESCAPE '\\' AND CommandLine LIKE '%.RegisterXLL%' ESCAPE '\\') OR (CommandLine LIKE '%url.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURL%' ESCAPE '\\') OR (CommandLine LIKE '%url.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURLA%' ESCAPE '\\') OR (CommandLine LIKE '%url.dll%' ESCAPE '\\' AND CommandLine LIKE '%FileProtocolHandler%' ESCAPE '\\') OR (CommandLine LIKE '%zipfldr.dll%' ESCAPE '\\' AND CommandLine LIKE '%RouteTheCall%' ESCAPE '\\') OR (CommandLine LIKE '%shell32.dll%' ESCAPE '\\' AND CommandLine LIKE '%Control\\_RunDLL%' ESCAPE '\\') OR (CommandLine LIKE '%shell32.dll%' ESCAPE '\\' AND CommandLine LIKE '%ShellExec\\_RunDLL%' ESCAPE '\\') OR (CommandLine LIKE '%mshtml.dll%' ESCAPE '\\' AND CommandLine LIKE '%PrintHTML%' ESCAPE '\\') OR (CommandLine LIKE '%advpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%LaunchINFSection%' ESCAPE '\\') OR (CommandLine LIKE '%advpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%RegisterOCX%' ESCAPE '\\') OR (CommandLine LIKE '%ieadvpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%LaunchINFSection%' ESCAPE '\\') OR (CommandLine LIKE '%ieadvpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%RegisterOCX%' ESCAPE '\\') OR (CommandLine LIKE '%ieframe.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURL%' ESCAPE '\\') OR (CommandLine LIKE '%shdocvw.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURL%' ESCAPE '\\') OR (CommandLine LIKE '%syssetup.dll%' ESCAPE '\\' AND CommandLine LIKE '%SetupInfObjectInstallAction%' ESCAPE '\\') OR (CommandLine LIKE '%setupapi.dll%' ESCAPE '\\' AND CommandLine LIKE '%InstallHinfSection%' ESCAPE '\\') OR (CommandLine LIKE '%pcwutl.dll%' ESCAPE '\\' AND CommandLine LIKE '%LaunchApplication%' ESCAPE '\\') OR (CommandLine LIKE '%dfshim.dll%' ESCAPE '\\' AND CommandLine LIKE '%ShOpenVerbApplication%' ESCAPE '\\') OR (CommandLine LIKE '%dfshim.dll%' ESCAPE '\\' AND CommandLine LIKE '%ShOpenVerbShortcut%' ESCAPE '\\') OR (CommandLine LIKE '%scrobj.dll%' ESCAPE '\\' AND CommandLine LIKE '%GenerateTypeLib%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\') OR (CommandLine LIKE '%shimgvw.dll%' ESCAPE '\\' AND CommandLine LIKE '%ImageView\\_Fullscreen%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%shell32.dll,Control\\_RunDLL desk.cpl,screensaver,@screensaver%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\control.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%.cpl%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\control.exe' ESCAPE '\\' AND CommandLine LIKE '\"C:\\\\Windows\\\\system32\\\\rundll32.exe\" Shell32.dll,Control\\_RunDLL \"C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.cpl\",' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%javascript:%' ESCAPE '\\' AND CommandLine LIKE '%.RegisterXLL%' ESCAPE '\\') OR (CommandLine LIKE '%url.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURL%' ESCAPE '\\') OR (CommandLine LIKE '%url.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURLA%' ESCAPE '\\') OR (CommandLine LIKE '%url.dll%' ESCAPE '\\' AND CommandLine LIKE '%FileProtocolHandler%' ESCAPE '\\') OR (CommandLine LIKE '%zipfldr.dll%' ESCAPE '\\' AND CommandLine LIKE '%RouteTheCall%' ESCAPE '\\') OR (CommandLine LIKE '%shell32.dll%' ESCAPE '\\' AND CommandLine LIKE '%Control\\_RunDLL%' ESCAPE '\\') OR (CommandLine LIKE '%shell32.dll%' ESCAPE '\\' AND CommandLine LIKE '%ShellExec\\_RunDLL%' ESCAPE '\\') OR (CommandLine LIKE '%mshtml.dll%' ESCAPE '\\' AND CommandLine LIKE '%PrintHTML%' ESCAPE '\\') OR (CommandLine LIKE '%advpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%LaunchINFSection%' ESCAPE '\\') OR (CommandLine LIKE '%advpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%RegisterOCX%' ESCAPE '\\') OR (CommandLine LIKE '%ieadvpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%LaunchINFSection%' ESCAPE '\\') OR (CommandLine LIKE '%ieadvpack.dll%' ESCAPE '\\' AND CommandLine LIKE '%RegisterOCX%' ESCAPE '\\') OR (CommandLine LIKE '%ieframe.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURL%' ESCAPE '\\') OR (CommandLine LIKE '%shdocvw.dll%' ESCAPE '\\' AND CommandLine LIKE '%OpenURL%' ESCAPE '\\') OR (CommandLine LIKE '%syssetup.dll%' ESCAPE '\\' AND CommandLine LIKE '%SetupInfObjectInstallAction%' ESCAPE '\\') OR (CommandLine LIKE '%setupapi.dll%' ESCAPE '\\' AND CommandLine LIKE '%InstallHinfSection%' ESCAPE '\\') OR (CommandLine LIKE '%pcwutl.dll%' ESCAPE '\\' AND CommandLine LIKE '%LaunchApplication%' ESCAPE '\\') OR (CommandLine LIKE '%dfshim.dll%' ESCAPE '\\' AND CommandLine LIKE '%ShOpenVerbApplication%' ESCAPE '\\') OR (CommandLine LIKE '%dfshim.dll%' ESCAPE '\\' AND CommandLine LIKE '%ShOpenVerbShortcut%' ESCAPE '\\') OR (CommandLine LIKE '%scrobj.dll%' ESCAPE '\\' AND CommandLine LIKE '%GenerateTypeLib%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\') OR (CommandLine LIKE '%shimgvw.dll%' ESCAPE '\\' AND CommandLine LIKE '%ImageView\\_Fullscreen%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\') OR (CommandLine LIKE '%comsvcs.dll%' ESCAPE '\\' AND CommandLine LIKE '%MiniDump%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%shell32.dll,Control\\_RunDLL desk.cpl,screensaver,@screensaver%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\control.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%.cpl%' ESCAPE '\\' AND CommandLine LIKE '%Shell32.dll%' ESCAPE '\\' AND CommandLine LIKE '%Control\\_RunDLL%' ESCAPE '\\' AND CommandLine LIKE '%.cpl%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\control.exe' ESCAPE '\\' AND CommandLine LIKE '\"C:\\\\Windows\\\\system32\\\\rundll32.exe\" Shell32.dll,Control\\_RunDLL \"C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.cpl\",' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_rundll32_susp_activity.yml"
     },
@@ -28033,6 +28183,24 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Imphash IN ('bcca3c247b619dcd13c8cdff5f123932', '3a19059bd7688cb88e70005f18efc439', 'bf6223a49e45d99094406777eb6004ba', '0c106686a31bfe2ba931ae1cf6e9dbc6', '0d1447d4b3259b3c2a1d4cfb7ece13c3', '1b0369a1e06271833f78ffa70ffb4eaf', '4c1b52a19748428e51b14c278d0f58e3', '4d927a711f77d62cebd4f322cb57ec6f', '66ee036df5fc1004d9ed5e9a94a1086a', '672b13f4a0b6f27d29065123fe882dfc', '6bbd59cea665c4afcc2814c1327ec91f', '725bb81dc24214f6ecacc0cfb36ad30d', '9528a0e91e28fbb88ad433feabca2456', '9da6d5d77be11712527dcab86df449a3', 'a6e01bc1ab89f8d91d9eab72032aae88', 'b24c5eddaea4fe50c6a96a2a133521e4', 'd21bbc50dcc169d7b4d0f01962793154', 'fcc251cceae90d22c392215cc9a2d5d6', '23867a89c2b8fc733be6cf5ef902f2d1', 'a37ff327f8d48e8a4d2f757e1b6e70bc', 'f9a28c458284584a93b14216308d31bd', '6118619783fc175bc7ebecff0769b46e', '959a83047e80ab68b368fdb3f4c6e4ea', '563233bfa169acc7892451f71ad5850a', '87575cb7a0e0700eb37f2e3668671a08', '13f08707f759af6003837a150a371ba1', '1781f06048a7e58b323f0b9259be798b', '233f85f2d4bc9d6521a6caae11a1e7f5', '24af2584cbf4d60bbe5c6d1b31b3be6d', '632969ddf6dbf4e0f53424b75e4b91f2', '713c29b396b907ed71a72482759ed757', '749a7bb1f0b4c4455949c0b2bf7f9e9f', '8628b2608957a6b0c6330ac3de28ce2e', '8b114550386e31895dfab371e741123d', '94cb940a1a6b65bed4d5a8f849ce9793', '9d68781980370e00e0bd939ee5e6c141', 'b18a1401ff8f444056d29450fbc0a6ce', 'cb567f9498452721d77a451374955f5f', '730073214094cd328547bf1f72289752', '17b461a082950fc6332228572138b80c', 'dc25ee78e2ef4d36faa0badf1e7461c9', '819b19d53ca6736448f9325a85736792', '829da329ce140d873b4a8bde2cbfaa7e', 'c547f2e66061a8dffb6f5a3ff63c0a74', '0588081ab0e63ba785938467e1b10cca', '0d9ec08bac6c07d9987dfd0f1506587c', 'bc129092b71c89b4d4c8cdf8ea590b29', '4da924cf622d039d58bce71cdf05d242', 'e7a3a5c377e2d29324093377d7db1c66', '9a9dbec5c62f0380b4fa5fd31deffedf', 'af8a3976ad71e5d5fdfb67ddb8dadfce', '0c477898bbf137bbd6f2a54e3b805ff4', '0ca9f02b537bcea20d4ea5eb1a9fe338', '3ab3655e5a14d4eefc547f4781bf7f9e', 'e6f9d5152da699934b30daab206471f6', '3ad59991ccf1d67339b319b15a41b35d', 'ffdd59e0318b85a3e480874d9796d872', '0cf479628d7cc1ea25ec7998a92f5051', '07a2d4dcbd6cb2c6a45e6b101f0b6d51', 'd6d0f80386e1380d05cb78e871bc72b1', '38d9e015591bbfd4929e0d0f47fa0055', '0e2216679ca6e1094d63322e3412d650', 'ada161bf41b8e5e9132858cb54cab5fb', '2a1bc4913cd5ecb0434df07cb675b798', '11083e75553baae21dc89ce8f9a195e4', 'a23d29c9e566f2fa8ffbb79267f5df80', '4a07f944a83e8a7c2525efa35dd30e2f', '767637c23bb42cd5d7397cf58b0be688', '14c4e4c72ba075e9069ee67f39188ad8', '3c782813d4afce07bbfc5a9772acdbdc', '7d010c6bb6a3726f327f7e239166d127', '89159ba4dd04e4ce5559f132a9964eb3', '6f33f4a5fc42b8cec7314947bd13f30f', '5834ed4291bdeb928270428ebbaf7604', '5a8a8a43f25485e7ee1b201edcbc7a38', 'dc7d30b90b2d8abf664fbed2b1b59894', '41923ea1f824fe63ea5beb84db7a3e74', '3de09703c8e79ed2ca3f01074719906b', 'a53a02b997935fd8eedcb5f7abab9b9f', 'e96a73c7bf33a464c510ede582318bf2', '32089b8851bbf8bc2d014e9f37288c83', '09D278F9DE118EF09163C6140255C690', '03866661686829d806989e2fc5a72606', 'e57401fbdadcd4571ff385ab82bd5d6d', '84B763C45C0E4A3E7CA5548C710DB4EE', '19584675d94829987952432e018d5056', '330768a4f172e10acb6287b87289d83b') OR (Hashes LIKE '%IMPHASH=BCCA3C247B619DCD13C8CDFF5F123932%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3A19059BD7688CB88E70005F18EFC439%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=bf6223a49e45d99094406777eb6004ba%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0C106686A31BFE2BA931AE1CF6E9DBC6%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0D1447D4B3259B3C2A1D4CFB7ECE13C3%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=1B0369A1E06271833F78FFA70FFB4EAF%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=4C1B52A19748428E51B14C278D0F58E3%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=4D927A711F77D62CEBD4F322CB57EC6F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=66EE036DF5FC1004D9ED5E9A94A1086A%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=672B13F4A0B6F27D29065123FE882DFC%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=6BBD59CEA665C4AFCC2814C1327EC91F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=725BB81DC24214F6ECACC0CFB36AD30D%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=9528A0E91E28FBB88AD433FEABCA2456%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=9DA6D5D77BE11712527DCAB86DF449A3%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=A6E01BC1AB89F8D91D9EAB72032AAE88%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=B24C5EDDAEA4FE50C6A96A2A133521E4%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=D21BBC50DCC169D7B4D0F01962793154%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=FCC251CCEAE90D22C392215CC9A2D5D6%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=23867A89C2B8FC733BE6CF5EF902F2D1%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=A37FF327F8D48E8A4D2F757E1B6E70BC%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=F9A28C458284584A93B14216308D31BD%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=6118619783FC175BC7EBECFF0769B46E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=959A83047E80AB68B368FDB3F4C6E4EA%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=563233BFA169ACC7892451F71AD5850A%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=87575CB7A0E0700EB37F2E3668671A08%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=13F08707F759AF6003837A150A371BA1%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=1781F06048A7E58B323F0B9259BE798B%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=233F85F2D4BC9D6521A6CAAE11A1E7F5%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=24AF2584CBF4D60BBE5C6D1B31B3BE6D%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=632969DDF6DBF4E0F53424B75E4B91F2%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=713C29B396B907ED71A72482759ED757%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=749A7BB1F0B4C4455949C0B2BF7F9E9F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=8628B2608957A6B0C6330AC3DE28CE2E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=8B114550386E31895DFAB371E741123D%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=94CB940A1A6B65BED4D5A8F849CE9793%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=9D68781980370E00E0BD939EE5E6C141%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=B18A1401FF8F444056D29450FBC0A6CE%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=CB567F9498452721D77A451374955F5F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=730073214094CD328547BF1F72289752%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=17B461A082950FC6332228572138B80C%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=DC25EE78E2EF4D36FAA0BADF1E7461C9%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=819B19D53CA6736448F9325A85736792%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=829DA329CE140D873B4A8BDE2CBFAA7E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=C547F2E66061A8DFFB6F5A3FF63C0A74%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0588081AB0E63BA785938467E1B10CCA%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0D9EC08BAC6C07D9987DFD0F1506587C%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=BC129092B71C89B4D4C8CDF8EA590B29%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=4DA924CF622D039D58BCE71CDF05D242%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=E7A3A5C377E2D29324093377D7DB1C66%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=9A9DBEC5C62F0380B4FA5FD31DEFFEDF%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=AF8A3976AD71E5D5FDFB67DDB8DADFCE%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0C477898BBF137BBD6F2A54E3B805FF4%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0CA9F02B537BCEA20D4EA5EB1A9FE338%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3AB3655E5A14D4EEFC547F4781BF7F9E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=E6F9D5152DA699934B30DAAB206471F6%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3AD59991CCF1D67339B319B15A41B35D%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=FFDD59E0318B85A3E480874D9796D872%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0CF479628D7CC1EA25EC7998A92F5051%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=07A2D4DCBD6CB2C6A45E6B101F0B6D51%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=D6D0F80386E1380D05CB78E871BC72B1%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=38D9E015591BBFD4929E0D0F47FA0055%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0E2216679CA6E1094D63322E3412D650%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=ADA161BF41B8E5E9132858CB54CAB5FB%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=2A1BC4913CD5ECB0434DF07CB675B798%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=11083E75553BAAE21DC89CE8F9A195E4%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=A23D29C9E566F2FA8FFBB79267F5DF80%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=4A07F944A83E8A7C2525EFA35DD30E2F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=767637C23BB42CD5D7397CF58B0BE688%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=14C4E4C72BA075E9069EE67F39188AD8%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3C782813D4AFCE07BBFC5A9772ACDBDC%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=7D010C6BB6A3726F327F7E239166D127%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=89159BA4DD04E4CE5559F132A9964EB3%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=6F33F4A5FC42B8CEC7314947BD13F30F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=5834ED4291BDEB928270428EBBAF7604%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=5A8A8A43F25485E7EE1B201EDCBC7A38%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=DC7D30B90B2D8ABF664FBED2B1B59894%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=41923EA1F824FE63EA5BEB84DB7A3E74%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=3DE09703C8E79ED2CA3F01074719906B%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=A53A02B997935FD8EEDCB5F7ABAB9B9F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=E96A73C7BF33A464C510EDE582318BF2%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=32089B8851BBF8BC2D014E9F37288C83%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=09D278F9DE118EF09163C6140255C690%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=03866661686829d806989e2fc5a72606%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=e57401fbdadcd4571ff385ab82bd5d6d%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=84B763C45C0E4A3E7CA5548C710DB4EE%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=19584675D94829987952432E018D5056%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=330768A4F172E10ACB6287B87289D83B%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_execution_via_imphashes.yml"
+    },
+    {
+        "title": "Cscript/Wscript Suspicious Child Process",
+        "id": "b6676963-0353-4f88-90f5-36c20d443c6a",
+        "status": "experimental",
+        "description": "Detects suspicious child processes of Wscript/Cscript",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Some false positives might occur with admin or third party software scripts. Investigate and apply additional filters accordingly."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (ParentProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND ((CommandLine LIKE '%mshta%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\') OR (CommandLine LIKE '%rundll32%' ESCAPE '\\' OR CommandLine LIKE '%regsvr32%' ESCAPE '\\' OR CommandLine LIKE '%msiexec%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_wscript_cscript_susp_child_processes.yml"
     },
     {
         "title": "Suspicious Process Parents",
@@ -30009,6 +30177,25 @@
         "filename": "proc_creation_win_ldifde_file_load.yml"
     },
     {
+        "title": "Wscript Shell Run In CommandLine",
+        "id": "2c28c248-7f50-417a-9186-a85b223010ee",
+        "status": "experimental",
+        "description": "Detects the presence of the keywords \"Wscript\", \"Shell\" and \"Run\" in the command, which could indicate a suspicious activity",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Inline scripting can be used by some rare third party applications or administrators. Investigate and apply additional filters accordingly"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%Wscript.%' ESCAPE '\\' AND CommandLine LIKE '%.Shell%' ESCAPE '\\' AND CommandLine LIKE '%.Run%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_mshta_inline_vbscript.yml"
+    },
+    {
         "title": "Execution of Powershell Script in Public Folder",
         "id": "fb9d3ff7-7348-46ab-af8c-b55f5fbf39b4",
         "status": "experimental",
@@ -30236,6 +30423,25 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\OUTLOOK.EXE' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\AppVLP.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mftrace.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scrcons.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scriptrunner.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_office_outlook_susp_child_processes.yml"
+    },
+    {
+        "title": "Suspicious File Encoded To Base64 Via Certutil.EXE",
+        "id": "ea0cdc3e-2239-4f26-a947-4e8f8224e464",
+        "status": "experimental",
+        "description": "Detects the execution of certutil with the \"encode\" flag to encode a file to base64 where the extensions of the file is suspicious",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1027"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName = 'CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\') AND (CommandLine LIKE '%.acl%' ESCAPE '\\' OR CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.doc%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.mp3%' ESCAPE '\\' OR CommandLine LIKE '%.pdf%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.ppt%' ESCAPE '\\' OR CommandLine LIKE '%.tmp%' ESCAPE '\\' OR CommandLine LIKE '%.xls%' ESCAPE '\\' OR CommandLine LIKE '%.xml%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_certutil_encode_susp_extensions.yml"
     },
     {
         "title": "Arbitrary Binary Execution Using GUP Utility",
@@ -30834,6 +31040,25 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '% -NoP -NonI -w Hidden -c $x=$((gp HKCU:Software\\\\Microsoft\\\\Windows Update).Update)%' ESCAPE '\\' OR CommandLine LIKE '% -NoP -NonI -c $x=$((gp HKCU:Software\\\\Microsoft\\\\Windows Update).Update);%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hktl_empire_powershell_uac_bypass.yml"
+    },
+    {
+        "title": "File In Suspicious Location Encoded To Base64 Via Certutil.EXE",
+        "id": "82a6714f-4899-4f16-9c1e-9a333544d4c3",
+        "status": "experimental",
+        "description": "Detects the execution of certutil with the \"encode\" flag to encode a file to base64 where the files are located in potentially suspicious locations",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1027"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName = 'CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%$Recycle.Bin%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_certutil_encode_susp_location.yml"
     },
     {
         "title": "Potential PowerShell Execution Policy Tampering - ProcCreation",
@@ -33721,7 +33946,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '% /dest:rdp-tcp:%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '% /dest:rdp-tcp#%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_tscon_rdp_redirect.yml"
     },
@@ -33820,6 +34045,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND NOT ((CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine LIKE '%.ocx%' ESCAPE '\\' OR CommandLine LIKE '%.cpl%' ESCAPE '\\' OR CommandLine LIKE '%.ax%' ESCAPE '\\' OR CommandLine LIKE '%.bav%' ESCAPE '\\' OR CommandLine LIKE '%.ppl%' ESCAPE '\\'))) AND NOT (CommandLine = '')) AND NOT (CommandLine = ''))"
         ],
         "filename": "proc_creation_win_regsvr32_no_dll.yml"
+    },
+    {
+        "title": "Windows Kernel Debugger Execution",
+        "id": "27ee9438-90dc-4bef-904b-d3ef927f5e7e",
+        "status": "experimental",
+        "description": "Detects execution of the Windows Kernel Debugger \"kd.exe\".",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Rare occasions of legitimate cases where kernel debugging is necessary in production. Investigation is required"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\kd.exe' ESCAPE '\\' OR OriginalFileName = 'kd.exe'))"
+        ],
+        "filename": "proc_creation_win_kd_execution.yml"
     },
     {
         "title": "Process Access via TrolleyExpress Exclusion",
@@ -35714,7 +35958,7 @@
             "attack.t1027"
         ],
         "falsepositives": [
-            "Unknown"
+            "As this is a general purpose rule, legitimate usage of the encode functionality will trigger some false positives. Apply additional filters accordingly"
         ],
         "level": "medium",
         "rule": [
@@ -35840,27 +36084,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Description = 'Web Browser Password Viewer' OR NewProcessName LIKE '%\\\\WebBrowserPassView.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_pua_webbrowserpassview.yml"
-    },
-    {
-        "title": "File Download Via Curl.EXE",
-        "id": "9a517fca-4ba3-4629-9278-a68694697b81",
-        "status": "experimental",
-        "description": "Detects file download using curl.exe",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Scripts created by developers and admins",
-            "Administrative activity",
-            "The \"\\Git\\usr\\bin\\sh.exe\" process uses the \"--output\" flag to download a specific file in the temp directory with the pattern \"gfw-httpget-xxxxxxxx.txt \""
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR Product = 'The curl executable') AND (CommandLine LIKE '% -O%' ESCAPE '\\' OR CommandLine LIKE '%--remote-name%' ESCAPE '\\' OR CommandLine LIKE '%--output%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_curl_download.yml"
     },
     {
         "title": "Suspicious Script Execution From Temp Folder",
