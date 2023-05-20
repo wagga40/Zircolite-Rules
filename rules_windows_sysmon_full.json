@@ -1284,6 +1284,25 @@
         "filename": "win_sshd_openssh_server_listening_on_socket.yml"
     },
     {
+        "title": "Certificate Private Key Acquired",
+        "id": "e2b5163d-7deb-4566-9af3-40afea6858c3",
+        "status": "experimental",
+        "description": "Detects when an application acquires a certificate private key",
+        "author": "Zach Mathis",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1649"
+        ],
+        "falsepositives": [
+            "Legitimate application requesting certificate exports will trigger this. Apply additional filters as needed"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE EventID = '70'"
+        ],
+        "filename": "win_capi2_acquire_certificate_private_key.yml"
+    },
+    {
         "title": "A Rule Has Been Deleted From The Windows Firewall Exception List",
         "id": "c187c075-bb3e-4c62-b4fa-beae0ffc211f",
         "status": "experimental",
@@ -1705,6 +1724,22 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4662' AND ObjectType = 'WMI Namespace' AND ObjectName LIKE '%subscription%' ESCAPE '\\')"
         ],
         "filename": "win_security_wmi_persistence.yml"
+    },
+    {
+        "title": "Password Policy Enumerated",
+        "id": "12ba6a38-adb3-4d6b-91ba-a7fb248e3199",
+        "status": "experimental",
+        "description": "Detects when the password policy is enumerated.",
+        "author": "Zach Mathis",
+        "tags": [
+            "attack.discovery",
+            "attack.t1201"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4661' AND AccessList LIKE '%\\%\\%5392%' ESCAPE '\\' AND ObjectServer = 'Security Account Manager')"
+        ],
+        "filename": "win_security_password_policy_enumerated.yml"
     },
     {
         "title": "Windows Network Access Suspicious desktop.ini Action",
@@ -4759,6 +4794,25 @@
             "SELECT * FROM logs WHERE (EventID = '257' AND QNAME IN ('asyspy256.ddns.net', 'hotkillmail9sddcc.ddns.net', 'rosaf112.ddns.net', 'cvdfhjh1231.myftp.biz', 'sz2016rose.ddns.net', 'dffwescwer4325.myftp.biz', 'cvdfhjh1231.ddns.net'))"
         ],
         "filename": "win_dns_analytic_apt_gallium.yml"
+    },
+    {
+        "title": "Certificate Exported From Local Certificate Store",
+        "id": "58c0bff0-40a0-46e8-b5e8-b734b84d2017",
+        "status": "experimental",
+        "description": "Detects when an application exports a certificate (and potentially the private key as well) from the local Windows certificate store.",
+        "author": "Zach Mathis",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1649"
+        ],
+        "falsepositives": [
+            "Legitimate application requesting certificate exports will trigger this. Apply additional filters as needed"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE EventID = '1007'"
+        ],
+        "filename": "win_certificateservicesclient_lifecycle_system_cert_exported.yml"
     },
     {
         "title": "File Was Not Allowed To Run",
@@ -11510,6 +11564,25 @@
         "filename": "posh_ps_adrecon_execution.yml"
     },
     {
+        "title": "Certificate Exported Via PowerShell - ScriptBlock",
+        "id": "aa7a3fce-bef5-4311-9cc1-5f04bb8c308c",
+        "status": "test",
+        "description": "Detects calls to cmdlets inside of PowerShell scripts that are used to export certificates from the local certificate store. Threat actors were seen abusing this to steal private keys from compromised machines.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1552.004"
+        ],
+        "falsepositives": [
+            "Legitimate certificate exports by administrators. Additional filters might be required."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND (ScriptBlockText LIKE '%Export-PfxCertificate%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-Certificate%' ESCAPE '\\') AND NOT ((ScriptBlockText LIKE '%CmdletsToExport = @(%' ESCAPE '\\')))"
+        ],
+        "filename": "posh_ps_export_certificate.yml"
+    },
+    {
         "title": "Tamper Windows Defender Remove-MpPreference - ScriptBlockLogging",
         "id": "ae2bdd58-0681-48ac-be7f-58ab4e593458",
         "status": "experimental",
@@ -13471,25 +13544,6 @@
         "filename": "posh_ps_copy_item_system_directory.yml"
     },
     {
-        "title": "Suspicious Export-PfxCertificate",
-        "id": "aa7a3fce-bef5-4311-9cc1-5f04bb8c308c",
-        "status": "test",
-        "description": "Detects Commandlet that is used to export certificates from the local certificate store and sometimes used by threat actors to steal private keys from compromised machines",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1552.004"
-        ],
-        "falsepositives": [
-            "Legitimate certificate exports invoked by administrators or users (depends on processes in the environment - filter if unusable)"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND ScriptBlockText LIKE '%Export-PfxCertificate%' ESCAPE '\\' AND NOT ((ScriptBlockText LIKE '%CmdletsToExport = @(%' ESCAPE '\\')))"
-        ],
-        "filename": "posh_ps_susp_export_pfxcertificate.yml"
-    },
-    {
         "title": "Potential PowerShell Obfuscation Using Character Join",
         "id": "e8314f79-564d-4f79-bc13-fbc0bf2660d8",
         "status": "experimental",
@@ -14111,7 +14165,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '10' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetImage LIKE '%\\\\lsass.exe' ESCAPE '\\' AND (GrantedAccess LIKE '%30' ESCAPE '\\' OR GrantedAccess LIKE '%50' ESCAPE '\\' OR GrantedAccess LIKE '%70' ESCAPE '\\' OR GrantedAccess LIKE '%90' ESCAPE '\\' OR GrantedAccess LIKE '%B0' ESCAPE '\\' OR GrantedAccess LIKE '%D0' ESCAPE '\\' OR GrantedAccess LIKE '%F0' ESCAPE '\\' OR GrantedAccess LIKE '%18' ESCAPE '\\' OR GrantedAccess LIKE '%38' ESCAPE '\\' OR GrantedAccess LIKE '%58' ESCAPE '\\' OR GrantedAccess LIKE '%78' ESCAPE '\\' OR GrantedAccess LIKE '%98' ESCAPE '\\' OR GrantedAccess LIKE '%B8' ESCAPE '\\' OR GrantedAccess LIKE '%D8' ESCAPE '\\' OR GrantedAccess LIKE '%F8' ESCAPE '\\' OR GrantedAccess LIKE '%1A' ESCAPE '\\' OR GrantedAccess LIKE '%3A' ESCAPE '\\' OR GrantedAccess LIKE '%5A' ESCAPE '\\' OR GrantedAccess LIKE '%7A' ESCAPE '\\' OR GrantedAccess LIKE '%9A' ESCAPE '\\' OR GrantedAccess LIKE '%BA' ESCAPE '\\' OR GrantedAccess LIKE '%DA' ESCAPE '\\' OR GrantedAccess LIKE '%FA' ESCAPE '\\' OR GrantedAccess LIKE '%0x14C2' ESCAPE '\\')) AND NOT (((SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskmgr.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Malwarebytes\\\\Anti-Malware\\\\MBAMService.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\PROGRAMDATA\\\\MALWAREBYTES\\\\MBAMSERVICE\\\\ctlrupdate\\\\mbupdatr.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskhostw.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Users\\\\%\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\System32\\\\perfmon.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\MRT.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Cisco\\\\Cisco AnyConnect Secure Mobility Client\\\\vpnagent.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Cisco\\\\Cisco AnyConnect Secure Mobility Client\\\\vpnagent.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR (CallTrace LIKE '%|C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Definition Updates\\\\{%' ESCAPE '\\' AND CallTrace LIKE '%}\\\\mpengine.dll+%' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Security Client\\\\MsMpEng.exe' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\ProgramData\\\\VMware\\\\VMware Tools\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\vmtoolsd.exe' ESCAPE '\\') OR ((SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') AND SourceImage LIKE '%Antivirus%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\MRT.exe' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Common Files\\\\McAfee\\\\MMSSHost\\\\MMSSHOST.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\asgard2-agent\\\\%' ESCAPE '\\' AND (SourceImage LIKE '%\\\\thor64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\thor.exe' ESCAPE '\\') AND GrantedAccess = '0x1fffff')))"
+            "SELECT * FROM logs WHERE ((EventID = '10' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetImage LIKE '%\\\\lsass.exe' ESCAPE '\\' AND (GrantedAccess LIKE '%30' ESCAPE '\\' OR GrantedAccess LIKE '%50' ESCAPE '\\' OR GrantedAccess LIKE '%70' ESCAPE '\\' OR GrantedAccess LIKE '%90' ESCAPE '\\' OR GrantedAccess LIKE '%B0' ESCAPE '\\' OR GrantedAccess LIKE '%D0' ESCAPE '\\' OR GrantedAccess LIKE '%F0' ESCAPE '\\' OR GrantedAccess LIKE '%18' ESCAPE '\\' OR GrantedAccess LIKE '%38' ESCAPE '\\' OR GrantedAccess LIKE '%58' ESCAPE '\\' OR GrantedAccess LIKE '%78' ESCAPE '\\' OR GrantedAccess LIKE '%98' ESCAPE '\\' OR GrantedAccess LIKE '%B8' ESCAPE '\\' OR GrantedAccess LIKE '%D8' ESCAPE '\\' OR GrantedAccess LIKE '%F8' ESCAPE '\\' OR GrantedAccess LIKE '%1A' ESCAPE '\\' OR GrantedAccess LIKE '%3A' ESCAPE '\\' OR GrantedAccess LIKE '%5A' ESCAPE '\\' OR GrantedAccess LIKE '%7A' ESCAPE '\\' OR GrantedAccess LIKE '%9A' ESCAPE '\\' OR GrantedAccess LIKE '%BA' ESCAPE '\\' OR GrantedAccess LIKE '%DA' ESCAPE '\\' OR GrantedAccess LIKE '%FA' ESCAPE '\\' OR GrantedAccess LIKE '%0x14C2' ESCAPE '\\')) AND NOT (((SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskmgr.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Malwarebytes\\\\Anti-Malware\\\\MBAMService.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\PROGRAMDATA\\\\MALWAREBYTES\\\\MBAMSERVICE\\\\ctlrupdate\\\\mbupdatr.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\taskhostw.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\WINDOWS\\\\System32\\\\perfmon.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\MRT.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files\\\\Cisco\\\\Cisco AnyConnect Secure Mobility Client\\\\vpnagent.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\Cisco\\\\Cisco AnyConnect Secure Mobility Client\\\\vpnagent.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR (CallTrace LIKE '%|C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Definition Updates\\\\{%' ESCAPE '\\' AND CallTrace LIKE '%}\\\\mpengine.dll+%' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Microsoft Security Client\\\\MsMpEng.exe' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\ProgramData\\\\VMware\\\\VMware Tools\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\vmtoolsd.exe' ESCAPE '\\') OR ((SourceImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') AND SourceImage LIKE '%Antivirus%' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\WINDOWS\\\\system32\\\\MRT.exe' ESCAPE '\\' AND GrantedAccess = '0x1418') OR (SourceImage LIKE 'C:\\\\Program Files\\\\Common Files\\\\McAfee\\\\MMSSHost\\\\MMSSHOST.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\Temp\\\\asgard2-agent\\\\%' ESCAPE '\\' AND (SourceImage LIKE '%\\\\thor64.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\thor.exe' ESCAPE '\\') AND GrantedAccess = '0x1fffff')))"
         ],
         "filename": "proc_access_win_susp_proc_access_lsass.yml"
     },
@@ -15544,7 +15598,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%\\\\lsass.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.zip' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.rar' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Temp\\\\dumpert.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Andrew.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Coredump.dmp' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass\\_2%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdump%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdmp%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp%' ESCAPE '\\') OR (TargetFilename LIKE '%SQLDmpr%' ESCAPE '\\' AND TargetFilename LIKE '%.mdmp' ESCAPE '\\') OR (TargetFilename LIKE 'nanodump%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%\\\\lsass.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.zip' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.rar' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Andrew.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Coredump.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\NotLSASS.zip' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass\\_2%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdump%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdmp%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp%' ESCAPE '\\') OR (TargetFilename LIKE '%SQLDmpr%' ESCAPE '\\' AND TargetFilename LIKE '%.mdmp' ESCAPE '\\') OR (TargetFilename LIKE 'nanodump%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_lsass_dump.yml"
     },
@@ -17795,6 +17849,24 @@
         "filename": "create_stream_hash_hacktool_download.yml"
     },
     {
+        "title": "Potentially Suspicious File Download From ZIP TLD",
+        "id": "0bb4bbeb-fe52-4044-b40c-430a04577ebe",
+        "status": "experimental",
+        "description": "Detects the download of a file with a potentially suspicious extension from a .zip top level domain.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Legitimate file downloads from a websites and web services that uses the \".zip\" top level domain."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '15' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Contents LIKE '%.zip/%' ESCAPE '\\' AND (TargetFilename LIKE '%.bat:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dat:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dll:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.doc:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.docm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.exe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.hta:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.pptm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.ps1:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.rar:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.rtf:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.sct:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbs:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.ws:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.wsf:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xll:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xls:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsm:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.zip:Zone%' ESCAPE '\\'))"
+        ],
+        "filename": "create_stream_hash_zip_tld_download.yml"
+    },
+    {
         "title": "Hidden Executable In NTFS Alternate Data Stream",
         "id": "b69888d4-380c-45ce-9cf9-d9ce46e67821",
         "status": "test",
@@ -19603,6 +19675,27 @@
             "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\ba9ea7344a4a5f591d6e5dc32a13494b\\\\%' ESCAPE '\\')"
         ],
         "filename": "image_load_pcre_net_load.yml"
+    },
+    {
+        "title": "Potential WWlib.DLL Sideloading",
+        "id": "e2e01011-5910-4267-9c3b-4149ed5479cf",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"wwlib.dll\"",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\wwlib.dll' ESCAPE '\\' AND NOT (((Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\winword.exe' ESCAPE '\\' AND (ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_wwlib.yml"
     },
     {
         "title": "Python Py2Exe Image Load",
@@ -36744,6 +36837,21 @@
         "filename": "proc_creation_win_whoami_susp_flags.yml"
     },
     {
+        "title": "Certificate Exported Via PowerShell",
+        "id": "9e716b33-63b2-46da-86a4-bd3c3b9b5dfb",
+        "status": "experimental",
+        "description": "Detects calls to cmdlets that are used to export certificates from the local certificate store. Threat actors were seen abusing this to steal private keys from compromised machines.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "falsepositives": [
+            "Legitimate certificate exports by administrators. Additional filters might be required."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%Export-PfxCertificate %' ESCAPE '\\' OR CommandLine LIKE '%Export-Certificate %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_export_certificate.yml"
+    },
+    {
         "title": "Suspicious Process Created Via Wmic.EXE",
         "id": "3c89a1e8-0fba-449e-8f1b-8409d6267ec8",
         "status": "test",
@@ -39376,6 +39484,25 @@
             "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' AND Initiated = 'true') AND NOT (((DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '192.168.%' ESCAPE '\\' OR DestinationIp LIKE '172.16.%' ESCAPE '\\' OR DestinationIp LIKE '172.17.%' ESCAPE '\\' OR DestinationIp LIKE '172.18.%' ESCAPE '\\' OR DestinationIp LIKE '172.19.%' ESCAPE '\\' OR DestinationIp LIKE '172.20.%' ESCAPE '\\' OR DestinationIp LIKE '172.21.%' ESCAPE '\\' OR DestinationIp LIKE '172.22.%' ESCAPE '\\' OR DestinationIp LIKE '172.23.%' ESCAPE '\\' OR DestinationIp LIKE '172.24.%' ESCAPE '\\' OR DestinationIp LIKE '172.25.%' ESCAPE '\\' OR DestinationIp LIKE '172.26.%' ESCAPE '\\' OR DestinationIp LIKE '172.27.%' ESCAPE '\\' OR DestinationIp LIKE '172.28.%' ESCAPE '\\' OR DestinationIp LIKE '172.29.%' ESCAPE '\\' OR DestinationIp LIKE '172.30.%' ESCAPE '\\' OR DestinationIp LIKE '172.31.%' ESCAPE '\\' OR DestinationIp LIKE '169.254.%' ESCAPE '\\' OR DestinationIp LIKE '127.%' ESCAPE '\\')) OR ((DestinationIp LIKE '::1%' ESCAPE '\\' OR DestinationIp LIKE '0:0:0:0:0:0:0:1%' ESCAPE '\\' OR DestinationIp LIKE 'fe80:%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\')) OR ((DestinationIp LIKE '20.184.%' ESCAPE '\\' OR DestinationIp LIKE '20.185.%' ESCAPE '\\' OR DestinationIp LIKE '20.186.%' ESCAPE '\\' OR DestinationIp LIKE '20.187.%' ESCAPE '\\' OR DestinationIp LIKE '20.188.%' ESCAPE '\\' OR DestinationIp LIKE '20.189.%' ESCAPE '\\' OR DestinationIp LIKE '20.190.%' ESCAPE '\\' OR DestinationIp LIKE '20.191.%' ESCAPE '\\' OR DestinationIp LIKE '23.79.%' ESCAPE '\\' OR DestinationIp LIKE '51.10.%' ESCAPE '\\' OR DestinationIp LIKE '51.103.%' ESCAPE '\\' OR DestinationIp LIKE '51.104.%' ESCAPE '\\' OR DestinationIp LIKE '51.105.%' ESCAPE '\\' OR DestinationIp LIKE '52.239.%' ESCAPE '\\'))))"
         ],
         "filename": "net_connection_win_dllhost_net_connections.yml"
+    },
+    {
+        "title": "Suspicious Non-Browser Network Communication With Telegram API",
+        "id": "c3dbbc9f-ef1d-470a-a90a-d343448d5875",
+        "status": "experimental",
+        "description": "Detects an a non-browser process interacting with the Telegram API which could indicate use of a covert C2",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1102"
+        ],
+        "falsepositives": [
+            "Legitimate applications communicating with the Telegram API e.g. web browsers not in the exclusion list, app with an RSS  etc."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND DestinationHostname LIKE '%api.telegram.org%' ESCAPE '\\' AND NOT ((Image LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\opera.exe' ESCAPE '\\') OR (Image LIKE '%\\\\safari.exe' ESCAPE '\\') OR (Image LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (Image LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (Image LIKE '%\\\\whale.exe' ESCAPE '\\')))"
+        ],
+        "filename": "net_connection_win_telegram_api_non_browser_access.yml"
     },
     {
         "title": "Suspicious Non-Browser Network Communication With Google API",
