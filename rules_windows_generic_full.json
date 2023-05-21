@@ -18606,11 +18606,12 @@
             "attack.t1574.002"
         ],
         "falsepositives": [
-            "False positives are expected from Google Chrome installations running from user locations (AppData) and other custom locations. Apply additional filters accordingly."
+            "False positives are expected from Google Chrome installations running from user locations (AppData) and other custom locations. Apply additional filters accordingly.",
+            "Other third party chromium browsers located in AppData"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\goopdate.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\GoogleUpdate.exe' ESCAPE '\\' AND (ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Google\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%\\\\GoogleUpdate.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Update\\\\%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Dropbox%' ESCAPE '\\' AND (ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\GUM%' ESCAPE '\\' AND NewProcessName LIKE '%.tmp\\\\Dropbox%' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\GUM%' ESCAPE '\\' AND ImageLoaded LIKE '%.tmp\\\\goopdate.dll%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\goopdate.dll' ESCAPE '\\' AND NOT (((ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\GUM%' ESCAPE '\\' AND NewProcessName LIKE '%.tmp\\\\Dropbox%' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\GUM%' ESCAPE '\\' AND ImageLoaded LIKE '%.tmp\\\\goopdate.dll%' ESCAPE '\\')))"
         ],
         "filename": "image_load_side_load_goopdate.yml"
     },
