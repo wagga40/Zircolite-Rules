@@ -3926,6 +3926,25 @@
         "filename": "registry_set_disabled_pua_protection_on_microsoft_defender.yml"
     },
     {
+        "title": "Potentially Suspicious ODBC Driver Registered",
+        "id": "e4d22291-f3d5-4b78-9a0c-a1fbaf32a6a4",
+        "status": "experimental",
+        "description": "Detects the registration of a new ODBC driver where the driver is located in a potentially suspicious location",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1003"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\ODBC\\\\ODBCINST.INI\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Driver' ESCAPE '\\' OR TargetObject LIKE '%\\\\Setup' ESCAPE '\\') AND (Details LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\Registration\\\\CRMLog%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\com\\\\dmp\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\FxsTmp\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\Microsoft\\\\Crypto\\\\RSA\\\\MachineKeys\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\color\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\PRINTERS\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\SERVERS\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\_Migrated\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\SysWOW64\\\\com\\\\dmp\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\SysWOW64\\\\FxsTmp\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\PLA\\\\System\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Windows\\\\Tracing\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_odbc_driver_registered_susp.yml"
+    },
+    {
         "title": "New RUN Key Pointing to Suspicious Folder",
         "id": "02ee49e2-e294-4d0f-9278-f5b3212fc588",
         "status": "experimental",
@@ -10918,7 +10937,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR Image LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR Image LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR Image LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR Image LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\') OR (Image = '')))"
         ],
         "filename": "image_load_dll_vss_ps_susp_load.yml"
     },
@@ -13602,6 +13621,25 @@
         "filename": "proc_creation_win_susp_workfolders.yml"
     },
     {
+        "title": "Suspicious Driver/DLL Installation Via Odbcconf.EXE",
+        "id": "cb0fe7c5-f3a3-484d-aa25-d350a7912729",
+        "status": "experimental",
+        "description": "Detects execution of \"odbcconf\" with the \"INSTALLDRIVER\" action where the driver doesn't contain a \".dll\" extension. This is often used as a defense evasion method.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.008"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName = 'odbcconf.exe') AND CommandLine LIKE '%INSTALLDRIVER %' ESCAPE '\\') AND NOT ((CommandLine LIKE '%.dll%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_odbcconf_driver_install_susp.yml"
+    },
+    {
         "title": "Suspicious Parent of Csc.exe",
         "id": "b730a276-6b63-41b8-bcf8-55930c8fc6ee",
         "status": "test",
@@ -13886,6 +13924,25 @@
         "filename": "proc_creation_win_uac_bypass_wsreset_integrity_level.yml"
     },
     {
+        "title": "Suspicious Response File Execution Via Odbcconf.EXE",
+        "id": "2d32dd6f-3196-4093-b9eb-1ad8ab088ca5",
+        "status": "experimental",
+        "description": "Detects execution of \"odbcconf\" with the \"-f\" flag in order to load a response file with a non-\".rsp\" extension.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.008"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName = 'odbcconf.exe') AND (CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% /f %' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%.rsp%' ESCAPE '\\') OR (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\runonce.exe' ESCAPE '\\' AND CommandLine LIKE '%.exe /E /F \"C:\\\\WINDOWS\\\\system32\\\\odbcconf.tmp\"%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_odbcconf_response_file_susp.yml"
+    },
+    {
         "title": "Suspicious Eventlog Clear or Configuration Change",
         "id": "cc36992a-4671-4f21-a91d-6c2b72a2edf5",
         "status": "stable",
@@ -14007,6 +14064,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Image LIKE '%\\\\GUP.exe' ESCAPE '\\' AND NOT (((Image LIKE '%\\\\Program Files\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\' OR Image LIKE '%\\\\Program Files (x86)\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\Users\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\AppData\\\\Local\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\' OR Image LIKE '%\\\\AppData\\\\Roaming\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_gup_suspicious_execution.yml"
+    },
+    {
+        "title": "Potentially Suspicious DLL Registered Via Odbcconf.EXE",
+        "id": "ba4cfc11-d0fa-4d94-bf20-7c332c412e76",
+        "status": "experimental",
+        "description": "Detects execution of \"odbcconf\" with the \"REGSVR\" action where the DLL in question doesn't contain a \".dll\" extension. Which is often used as a method to evade defenses.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.008"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName = 'odbcconf.exe') AND CommandLine LIKE '%REGSVR %' ESCAPE '\\') AND NOT ((CommandLine LIKE '%.dll%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_odbcconf_register_dll_regsvr_susp.yml"
     },
     {
         "title": "LSASS Memory Dumping",
@@ -17746,7 +17822,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE '%\\\\mshta.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\cscript.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\wscript.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\wmiprvse.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\regsvr32.exe' ESCAPE '\\') AND (Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\nslookup.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\')) AND NOT ((CurrentDirectory LIKE '%\\\\ccmcache\\\\%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\setup-scheduledtask.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\set-selfhealing.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\check-workspacehealth.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\nessus\\_%' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\nessus\\_%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE '%\\\\mshta.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\cscript.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\wscript.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\wmiprvse.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\regsvr32.exe' ESCAPE '\\') AND (Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\nslookup.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\')) AND NOT ((CurrentDirectory LIKE '%\\\\ccmcache\\\\%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\setup-scheduledtask.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\set-selfhealing.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\check-workspacehealth.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\nessus\\_%' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\nessus\\_%' ESCAPE '\\') OR (ParentImage LIKE '%\\\\mshta.exe' ESCAPE '\\' AND Image LIKE '%\\\\mshta.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%C:\\\\MEM\\_Configmgr\\_%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\splash.hta%' ESCAPE '\\' AND ParentCommandLine LIKE '%{1E460BD7-F1C3-4B2E-88BF-4E770A288AF5}%' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\MEM\\_Configmgr\\_%' ESCAPE '\\' AND CommandLine LIKE '%\\\\SMSSETUP\\\\BIN\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\autorun.hta%' ESCAPE '\\' AND CommandLine LIKE '%{1E460BD7-F1C3-4B2E-88BF-4E770A288AF5}%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_shell_spawn_susp_program.yml"
     },
@@ -17768,6 +17844,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '% /delete %' ESCAPE '\\' AND CommandLine LIKE '%/tn \\*' ESCAPE '\\' AND CommandLine LIKE '% /f%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_schtasks_delete_all.yml"
+    },
+    {
+        "title": "Odbcconf.EXE Suspicious DLL Location",
+        "id": "6b65c28e-11f3-46cb-902a-68f2cafaf474",
+        "status": "experimental",
+        "description": "Detects execution of \"odbcconf\" where the path of the DLL being registered is located in a potentially suspicious location.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.008"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName = 'odbcconf.exe') AND (CommandLine LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Registration\\\\CRMLog%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\com\\\\dmp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\FxsTmp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Microsoft\\\\Crypto\\\\RSA\\\\MachineKeys\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\color\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\PRINTERS\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\SERVERS\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\_Migrated\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\SysWOW64\\\\com\\\\dmp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\SysWOW64\\\\FxsTmp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\PLA\\\\System\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tracing\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_odbcconf_exec_susp_locations.yml"
     },
     {
         "title": "Execution of Powershell Script in Public Folder",
