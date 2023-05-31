@@ -1777,6 +1777,24 @@
         "filename": "proc_creation_lnx_base64_execution.yml"
     },
     {
+        "title": "Potential Suspicious Change To Sensitive/Critical Files",
+        "id": "86157017-c2b1-4d4a-8c33-93b8e67e4af4",
+        "description": "Detects changes of sensitive and critical files. Monitors files that you don't expect to change without planning on Linux system.",
+        "author": "@d4ns4n_ (Wuerth-Phoenix)",
+        "tags": [
+            "attack.impact",
+            "attack.t1565.001"
+        ],
+        "falsepositives": [
+            "Some false positives are to be expected on user or administrator machines. Apply additional filters as needed."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/echo' ESCAPE '\\' OR Image LIKE '%/grep' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\') AND CommandLine LIKE '%>%' ESCAPE '\\') OR (Image LIKE '%/emacs' ESCAPE '\\' OR Image LIKE '%/nano' ESCAPE '\\' OR Image LIKE '%/sed' ESCAPE '\\' OR Image LIKE '%/vi' ESCAPE '\\' OR Image LIKE '%/vim' ESCAPE '\\')) AND (CommandLine LIKE '%/bin/login%' ESCAPE '\\' OR CommandLine LIKE '%/bin/passwd%' ESCAPE '\\' OR CommandLine LIKE '%/boot/%' ESCAPE '\\' OR CommandLine LIKE '%/etc/%.conf%' ESCAPE '\\' OR CommandLine LIKE '%/etc/cron.%' ESCAPE '\\' OR CommandLine LIKE '%/etc/crontab%' ESCAPE '\\' OR CommandLine LIKE '%/etc/hosts%' ESCAPE '\\' OR CommandLine LIKE '%/etc/init.d%' ESCAPE '\\' OR CommandLine LIKE '%/etc/sudoers%' ESCAPE '\\' OR CommandLine LIKE '%/opt/bin/%' ESCAPE '\\' OR CommandLine LIKE '%/sbin%' ESCAPE '\\' OR CommandLine LIKE '%/usr/bin/%' ESCAPE '\\' OR CommandLine LIKE '%/usr/local/bin/%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_susp_sensitive_file_access.yml"
+    },
+    {
         "title": "Security Software Discovery - Linux",
         "id": "c9d8b7fd-78e4-44fe-88f6-599135d46d60",
         "description": "Detects usage of system utilities (only grep and egrep for now) to discover security software discovery",
