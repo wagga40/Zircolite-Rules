@@ -327,6 +327,24 @@
         "filename": "proc_creation_lnx_base64_decode.yml"
     },
     {
+        "title": "Crontab Enumeration",
+        "id": "403ed92c-b7ec-4edd-9947-5b535ee12d46",
+        "description": "Detects usage of crontab to list the tasks of the user",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.discovery",
+            "attack.t1007"
+        ],
+        "falsepositives": [
+            "Legitimate use of crontab"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/crontab' ESCAPE '\\' AND CommandLine LIKE '% -l%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_crontab_enumeration.yml"
+    },
+    {
         "title": "User Added To Root/Sudoers Group Using Usermod",
         "id": "6a50f16c-3b7b-42d1-b081-0fdd3ba70a73",
         "description": "Detects usage of the \"usermod\" binary to add users add users to the root or suoders groups",
@@ -487,6 +505,24 @@
             "SELECT * FROM logs WHERE (Image LIKE '%/touch' ESCAPE '\\' AND CommandLine LIKE '% -t %' ESCAPE '\\' AND CommandLine LIKE '%.service' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_touch_susp.yml"
+    },
+    {
+        "title": "OS Architecture Discovery Via Grep",
+        "id": "d27ab432-2199-483f-a297-03633c05bae6",
+        "description": "Detects the use of grep to identify information about the operating system architecture. Often combined beforehand with the execution of \"uname\" or \"cat /proc/cpuinfo\"\n",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/grep' ESCAPE '\\' AND (CommandLine LIKE '%aarch64' ESCAPE '\\' OR CommandLine LIKE '%arm' ESCAPE '\\' OR CommandLine LIKE '%i386' ESCAPE '\\' OR CommandLine LIKE '%i686' ESCAPE '\\' OR CommandLine LIKE '%mips' ESCAPE '\\' OR CommandLine LIKE '%x86\\_64' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_grep_os_arch_discovery.yml"
     },
     {
         "title": "Sudo Privilege Escalation CVE-2019-14287",
@@ -724,6 +760,24 @@
         "filename": "proc_creation_lnx_kill_process.yml"
     },
     {
+        "title": "Download File To Potentially Suspicious Directory Via Wget",
+        "id": "cf610c15-ed71-46e1-bdf8-2bd1a99de6c4",
+        "description": "Detects the use of wget to download content to a suspicious directory",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/wget' ESCAPE '\\' AND (CommandLine REGEXP '\\s-O\\s' OR CommandLine LIKE '%--output-document%' ESCAPE '\\') AND CommandLine LIKE '%/tmp/%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_wget_download_suspicious_directory.yml"
+    },
+    {
         "title": "Flush Iptables Ufw Chain",
         "id": "3be619f4-d9ec-4ea8-a173-18fdd01996ab",
         "description": "Detect use of iptables to flush all firewall rules, tables and chains and allow all network traffic",
@@ -941,6 +995,23 @@
         "filename": "proc_creation_lnx_doas_execution.yml"
     },
     {
+        "title": "Shell Execution Of Process Located In Tmp Directory",
+        "id": "2fade0b6-7423-4835-9d4f-335b39b83867",
+        "description": "Detects execution of shells from a parent process located in a temporary (/tmp) directory",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ParentImage LIKE '/tmp/%' ESCAPE '\\' AND (Image LIKE '%/bash' ESCAPE '\\' OR Image LIKE '%/csh' ESCAPE '\\' OR Image LIKE '%/dash' ESCAPE '\\' OR Image LIKE '%/fish' ESCAPE '\\' OR Image LIKE '%/ksh' ESCAPE '\\' OR Image LIKE '%/sh' ESCAPE '\\' OR Image LIKE '%/zsh' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_susp_shell_child_process_from_parent_tmp_folder.yml"
+    },
+    {
         "title": "Local Groups Discovery - Linux",
         "id": "676381a6-15ca-4d73-a9c8-6a22e970b90d",
         "description": "Detects enumeration of local system groups. Adversaries may attempt to find local system groups and permission settings",
@@ -1082,6 +1153,20 @@
         "filename": "proc_creation_lnx_schedule_task_job_cron.yml"
     },
     {
+        "title": "Potentially Suspicious Execution From Tmp Folder",
+        "id": "312b42b1-bded-4441-8b58-163a3af58775",
+        "description": "Detects a potentially suspicious execution of a process located in the '/tmp/' folder",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Image LIKE '/tmp/%' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_lnx_susp_execution_tmp_folder.yml"
+    },
+    {
         "title": "Remove Scheduled Cron Task/Job",
         "id": "c2e234de-03a3-41e1-b39a-1e56dc17ba67",
         "description": "Detects usage of the 'crontab' utility to remove the current crontab.\nThis is a common occurrence where cryptocurrency miners compete against each other by removing traces of other miners to hijack the maximum amount of resources possible\n",
@@ -1115,6 +1200,24 @@
             "SELECT * FROM logs WHERE Image LIKE '%/groupdel' ESCAPE '\\'"
         ],
         "filename": "proc_creation_lnx_groupdel.yml"
+    },
+    {
+        "title": "Potential GobRAT File Discovery Via Grep",
+        "id": "e34cfa0c-0a50-4210-9cb3-5632d08eb041",
+        "description": "Detects the use of grep to discover specific files created by the GobRAT malware",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/grep' ESCAPE '\\' AND (CommandLine LIKE '%apached%' ESCAPE '\\' OR CommandLine LIKE '%frpc%' ESCAPE '\\' OR CommandLine LIKE '%sshd.sh%' ESCAPE '\\' OR CommandLine LIKE '%zone.arm%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_malware_gobrat_grep_payload_discovery.yml"
     },
     {
         "title": "Enable BPF Kprobes Tracing",
@@ -1442,6 +1545,23 @@
         "filename": "proc_creation_lnx_curl_usage.yml"
     },
     {
+        "title": "Suspicious Nohup Execution",
+        "id": "457df417-8b9d-4912-85f3-9dbda39c3645",
+        "description": "Detects execution of binaries located in potentially suspicious locations via \"nohup\"",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/nohup' ESCAPE '\\' AND CommandLine LIKE '%/tmp/%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_nohup_susp_execution.yml"
+    },
+    {
         "title": "Suspicious Git Clone - Linux",
         "id": "cfec9d29-64ec-4a0f-9ffe-0fdb856d5446",
         "description": "Detects execution of \"git\" in order to clone a remote repository that contain suspicious keywords which might be suspicious",
@@ -1529,6 +1649,23 @@
             "SELECT * FROM logs WHERE (Image LIKE '%bpftrace' ESCAPE '\\' AND CommandLine LIKE '%--unsafe%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_bpftrace_unsafe_option_usage.yml"
+    },
+    {
+        "title": "Execution Of Script Located In Potentially Suspicious Directory",
+        "id": "30bcce26-51c5-49f2-99c8-7b59e3af36c7",
+        "description": "Detects executions of scripts located in potentially suspicious locations such as \"/tmp\" via a shell such as \"bash\", \"sh\", etc.",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/bash' ESCAPE '\\' OR Image LIKE '%/csh' ESCAPE '\\' OR Image LIKE '%/dash' ESCAPE '\\' OR Image LIKE '%/fish' ESCAPE '\\' OR Image LIKE '%/ksh' ESCAPE '\\' OR Image LIKE '%/sh' ESCAPE '\\' OR Image LIKE '%/zsh' ESCAPE '\\') AND CommandLine LIKE '% -c %' ESCAPE '\\' AND CommandLine LIKE '%/tmp/%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_susp_shell_script_exec_from_susp_location.yml"
     },
     {
         "title": "Linux Recon Indicators",
@@ -2462,6 +2599,24 @@
         "filename": "file_event_lnx_persistence_sudoers_files.yml"
     },
     {
+        "title": "Wget Creating Files in Tmp Directory",
+        "id": "35a05c60-9012-49b6-a11f-6bab741c9f74",
+        "description": "Detects the use of wget to download content in a temporary directory such as \"/tmp\" or \"/var/tmp\"",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Legitimate downloads of files in the tmp folder."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/wget' ESCAPE '\\' AND (TargetFilename LIKE '/tmp/%' ESCAPE '\\' OR TargetFilename LIKE '/var/tmp/%' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_lnx_wget_download_file_in_tmp_dir.yml"
+    },
+    {
         "title": "Linux Doas Conf File Creation",
         "id": "00eee2a5-fdb0-4746-a21d-e43fbdea5681",
         "description": "Detects the creation of doas.conf file in linux host platform.",
@@ -2532,6 +2687,24 @@
             "SELECT * FROM logs WHERE TargetFilename = '/tmp/rootlog'"
         ],
         "filename": "file_event_lnx_triple_cross_rootkit_lock_file.yml"
+    },
+    {
+        "title": "Potentially Suspicious Shell Script Creation in Profile Folder",
+        "id": "13f08f54-e705-4498-91fd-cce9d9cee9f1",
+        "description": "Detects the creation of shell scripts under the \"profile.d\" path.",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Legitimate shell scripts in the \"profile.d\" directory could be common in your environment. Apply additional filter accordingly via \"image\", by adding specific filenames you \"trust\" or by correlating it with other events.",
+            "Regular file creation during system update or software installation by the package manager"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%/etc/profile.d/%' ESCAPE '\\' AND (TargetFilename LIKE '%.csh' ESCAPE '\\' OR TargetFilename LIKE '%.sh' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_lnx_susp_shell_script_under_profile_directory.yml"
     },
     {
         "title": "Linux Reverse Shell Indicator",

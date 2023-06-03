@@ -32939,6 +32939,27 @@
         "filename": "image_load_side_load_aruba_networks_virtual_intranet_access.yml"
     },
     {
+        "title": "Potential SmadHook.DLL Sideloading",
+        "id": "24b6cf51-6122-469e-861a-22974e9c1e5b",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"SmadHook.dll\", a DLL used by SmadAV antivirus",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\SmadHook32c.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\SmadHook64c.dll' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\SMADAV\\\\SmadavProtect32.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\SMADAV\\\\SmadavProtect64.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\SMADAV\\\\SmadavProtect32.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\SMADAV\\\\SmadavProtect64.exe' ESCAPE '\\') AND (ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\SMADAV\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\SMADAV\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_smadhook.yml"
+    },
+    {
         "title": "Potential Wazuh Security Platform DLL Sideloading",
         "id": "db77ce78-7e28-4188-9337-cf30e2b3ba9f",
         "status": "experimental",
