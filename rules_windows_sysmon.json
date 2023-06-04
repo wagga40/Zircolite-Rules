@@ -18304,6 +18304,40 @@
         "filename": "win_security_exploit_cve_2023_23397_outlook_remote_file_query.yml"
     },
     {
+        "title": "Potential MOVEit Transfer CVE-2023-34362 Exploitation",
+        "id": "c3b2a774-3152-4989-83c1-7afc48fd1599",
+        "status": "experimental",
+        "description": "Detects file indicators of potential exploitation of MOVEit CVE-2023-34362.",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190"
+        ],
+        "falsepositives": [
+            "To avoid FP, this rule should only be applied on MOVEit servers."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetFilename LIKE '%\\\\MOVEit Transfer\\\\wwwroot\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEitTransfer\\\\wwwroot\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%.7z' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\')) OR (TargetFilename LIKE '%\\\\MOVEit Transfer\\\\wwwroot\\\\\\_human2.aspx.lnk' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEit Transfer\\\\wwwroot\\\\\\_human2.aspx' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEit Transfer\\\\wwwroot\\\\human2.aspx.lnk' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEit Transfer\\\\wwwroot\\\\human2.aspx' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEitTransfer\\\\wwwroot\\\\\\_human2.aspx.lnk' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEitTransfer\\\\wwwroot\\\\\\_human2.aspx' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEitTransfer\\\\wwwroot\\\\human2.aspx.lnk' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEitTransfer\\\\wwwroot\\\\human2.aspx' ESCAPE '\\') OR ((CreationUtcTime LIKE '2023-03- %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-04- %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-05- %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-06- %' ESCAPE '\\') AND TargetFilename LIKE '%\\\\Windows\\\\Microsoft.net\\\\Framework64\\\\v%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Temporary ASP.NET Files\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%App\\_Web\\_%' ESCAPE '\\' AND TargetFilename LIKE '%.dll' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_exploit_cve_2023_34362_moveit_transfer.yml"
+    },
+    {
+        "title": "MOVEit CVE-2023-34362 Exploitation Attempt - Potential Web Shell Request",
+        "id": "435e41f2-48eb-4c95-8a2b-ed24b50ec30b",
+        "status": "experimental",
+        "description": "Detects get requests to specific files used during the exploitation of MOVEit CVE-2023-34362",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-method = 'GET' AND (cs-uri-stem LIKE '/human2.aspx' ESCAPE '\\' OR cs-uri-stem LIKE '/\\_human2.aspx' ESCAPE '\\'))"
+        ],
+        "filename": "web_cve_2023_34362_known_payload_request.yml.yml"
+    },
+    {
         "title": "Potential Exploitation Attempt Of Undocumented WindowsServer RCE",
         "id": "6d5b8176-d87d-4402-8af4-53aee9db7b5d",
         "status": "experimental",
@@ -18337,25 +18371,6 @@
             "SELECT * FROM logs WHERE (cs-method = 'GET' AND cs-uri-query LIKE '%/api/index.php/v1/%' ESCAPE '\\' AND cs-uri-query LIKE '%public=true%' ESCAPE '\\')"
         ],
         "filename": "web_cve_2023_23752_joomla_exploit_attempt.yml"
-    },
-    {
-        "title": "Potential MOVEit Transfer Exploitation",
-        "id": "c3b2a774-3152-4989-83c1-7afc48fd1599",
-        "status": "experimental",
-        "description": "Detects the creation of files with unexpected extensions in the web root folder of the MOVEit Transfer service.\nReports mentioned uncommon file types in the \"wwwroot\" folder as a sign of potential compromise. Attackers used that folder as a staging directory for the exfiltration.\n",
-        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.initial_access",
-            "attack.t1190"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetFilename LIKE '%\\\\MOVEit Transfer\\\\wwwroot\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEitTransfer\\\\wwwroot\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%.7z' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\')) OR (TargetFilename LIKE '%\\\\MOVEit Transfer\\\\wwwroot\\\\human2.aspx' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MOVEitTransfer\\\\wwwroot\\\\human2.aspx' ESCAPE '\\') OR ((CreationUtcTime LIKE '2023-05-26 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-05-27 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-05-28 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-05-29 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-05-30 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-05-31 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-06-01 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-06-02 %' ESCAPE '\\' OR CreationUtcTime LIKE '2023-06-03 %' ESCAPE '\\') AND TargetFilename LIKE '%\\\\Windows\\\\Microsoft.net\\\\Framework64\\\\v%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Temporary ASP.NET Files\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%App\\_Web\\_%' ESCAPE '\\' AND TargetFilename LIKE '%.dll' ESCAPE '\\')))"
-        ],
-        "filename": "file_event_win_exploit_other_moveit_transfer.yml"
     },
     {
         "title": "Potential APT Mustang Panda Activity Against Australian Gov",
