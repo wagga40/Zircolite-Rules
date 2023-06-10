@@ -763,6 +763,26 @@
         "filename": "win_system_application_sysmon_crash.yml"
     },
     {
+        "title": "NTLMv1 Logon Between Client and Server",
+        "id": "e9d4ab66-a532-4ef7-a502-66a9e4a34f5d",
+        "status": "experimental",
+        "description": "Detects the reporting of NTLMv1 being used between a client and server. NTLMv1 is unsecure as the underlying encryption algorithms can be brute-forced by modern hardware.",
+        "author": "Tim Shelton, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.lateral_movement",
+            "attack.t1550.002"
+        ],
+        "falsepositives": [
+            "Environments that use NTLMv1"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'LsaSrv' AND EventID IN ('6038', '6039'))"
+        ],
+        "filename": "win_system_lsasrv_ntlmv1.yml"
+    },
+    {
         "title": "Important Windows Eventlog Cleared",
         "id": "100ef69e-3327-481c-8e5c-6d80d9507556",
         "status": "experimental",
@@ -4948,48 +4968,119 @@
         "filename": "win_appxpackaging_om_sups_appx_signature.yml"
     },
     {
-        "title": "Code Integrity Attempted DLL Load",
+        "title": "CodeIntegrity - Unmet Signing Level Requirements By File Under Validation",
         "id": "f8931561-97f5-4c46-907f-0a4a592e47a7",
-        "description": "Detects attempted DLL load events that didn't meet anti-malware or Windows signing level requirements. It often means the file's signature is revoked or expired",
-        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali",
         "status": "experimental",
+        "description": "Detects attempted file load events that did not meet the signing level requirements. It often means the file's signature is revoked or a signature with the Lifetime Signing EKU has expired.\nThis event is best correlated with EID 3089 to determine the error of the validation.\n",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution"
         ],
         "falsepositives": [
-            "Antivirus products"
+            "Antivirus and other third party products. Apply additional filters accordingly"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3033' AND NOT ((FileNameBuffer LIKE '%\\\\Program Files\\\\DTrace\\\\dtrace.dll' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND RequestedPolicy = '12' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Windows\\\\System32\\\\DriverStore\\\\FileRepository\\\\%' ESCAPE '\\' AND FileNameBuffer LIKE '%\\\\igd10iumd64.dll' ESCAPE '\\' AND RequestedPolicy = '7' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Windows\\\\System32\\\\nvspcap64.dll' ESCAPE '\\' AND (ProcessNameBuffer LIKE '%\\\\AppData\\\\Local\\\\Keybase\\\\Gui\\\\Keybase.exe' ESCAPE '\\' OR ProcessNameBuffer LIKE '%\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe' ESCAPE '\\') AND RequestedPolicy = '8' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll' ESCAPE '\\' AND (ProcessNameBuffer LIKE '%\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ProcessNameBuffer LIKE '%\\\\Windows\\\\System32\\\\SIHClient.exe' ESCAPE '\\') AND RequestedPolicy IN ('8', '12') AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Microsoft Office\\\\root\\\\vfs\\\\ProgramFilesCommonX64\\\\Microsoft Shared\\\\OFFICE%' ESCAPE '\\' AND FileNameBuffer LIKE '%\\\\MSOXMLMF.DLL' ESCAPE '\\' AND RequestedPolicy = '7' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Windows\\\\System32\\\\nvspcap64.dll' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\AppData\\\\Local\\\\slack\\\\app-%' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\slack.exe' ESCAPE '\\' AND RequestedPolicy = '8' AND ValidatedPolicy = '1') OR ((FileNameBuffer LIKE '%\\\\Mozilla Firefox\\\\mozavcodec.dll' ESCAPE '\\' OR FileNameBuffer LIKE '%\\\\Mozilla Firefox\\\\mozavutil.dll' ESCAPE '\\') AND ProcessNameBuffer LIKE '%\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' AND RequestedPolicy = '8') OR ((FileNameBuffer LIKE '%\\\\Program Files\\\\Avast Software\\\\Avast\\\\aswAMSI.dll' ESCAPE '\\' OR FileNameBuffer LIKE '%\\\\Program Files (x86)\\\\Avast Software\\\\Avast\\\\aswAMSI.dll' ESCAPE '\\') AND RequestedPolicy IN ('8', '12') AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Windows\\\\assembly\\\\GAC\\\\%' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\Windows\\\\Microsoft.NET\\\\%' ESCAPE '\\' AND RequestedPolicy = '8' AND ValidatedPolicy IN ('1', '2')) OR (FileNameBuffer LIKE '%\\\\Program Files\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\' AND FileNameBuffer LIKE '%\\\\crashpad\\_handler.exe' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\' AND RequestedPolicy = '8' AND ValidatedPolicy = '1')))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND (EventID IN ('3033', '3034') AND NOT ((FileNameBuffer LIKE '%\\\\Windows\\\\assembly\\\\GAC\\\\%' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\Windows\\\\Microsoft.NET\\\\%' ESCAPE '\\' AND RequestedPolicy = '8' AND ValidatedPolicy IN ('1', '2')))) AND NOT ((FileNameBuffer LIKE '%\\\\Program Files\\\\DTrace\\\\dtrace.dll' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND RequestedPolicy = '12' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Windows\\\\System32\\\\DriverStore\\\\FileRepository\\\\%' ESCAPE '\\' AND FileNameBuffer LIKE '%\\\\igd10iumd64.dll' ESCAPE '\\' AND RequestedPolicy = '7' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Windows\\\\System32\\\\nvspcap64.dll' ESCAPE '\\' AND (ProcessNameBuffer LIKE '%\\\\AppData\\\\Local\\\\Keybase\\\\Gui\\\\Keybase.exe' ESCAPE '\\' OR ProcessNameBuffer LIKE '%\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe' ESCAPE '\\') AND RequestedPolicy = '8' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll' ESCAPE '\\' AND (ProcessNameBuffer LIKE '%\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ProcessNameBuffer LIKE '%\\\\Windows\\\\System32\\\\SIHClient.exe' ESCAPE '\\') AND RequestedPolicy IN ('8', '12') AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Microsoft Office\\\\root\\\\vfs\\\\ProgramFilesCommonX64\\\\Microsoft Shared\\\\OFFICE%' ESCAPE '\\' AND FileNameBuffer LIKE '%\\\\MSOXMLMF.DLL' ESCAPE '\\' AND RequestedPolicy = '7' AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Windows\\\\System32\\\\nvspcap64.dll' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\AppData\\\\Local\\\\slack\\\\app-%' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\slack.exe' ESCAPE '\\' AND RequestedPolicy = '8' AND ValidatedPolicy = '1') OR ((FileNameBuffer LIKE '%\\\\Mozilla Firefox\\\\mozavcodec.dll' ESCAPE '\\' OR FileNameBuffer LIKE '%\\\\Mozilla Firefox\\\\mozavutil.dll' ESCAPE '\\') AND ProcessNameBuffer LIKE '%\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' AND RequestedPolicy = '8') OR ((FileNameBuffer LIKE '%\\\\Program Files\\\\Avast Software\\\\Avast\\\\aswAMSI.dll' ESCAPE '\\' OR FileNameBuffer LIKE '%\\\\Program Files (x86)\\\\Avast Software\\\\Avast\\\\aswAMSI.dll' ESCAPE '\\') AND RequestedPolicy IN ('8', '12') AND ValidatedPolicy = '1') OR (FileNameBuffer LIKE '%\\\\Program Files\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\' AND FileNameBuffer LIKE '%\\\\crashpad\\_handler.exe' ESCAPE '\\' AND ProcessNameBuffer LIKE '%\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\' AND RequestedPolicy = '8' AND ValidatedPolicy = '1')))"
         ],
         "filename": "win_codeintegrity_attempted_dll_load.yml"
     },
     {
-        "title": "Code Integrity Blocked Driver Load",
-        "id": "e4be5675-4a53-426a-8c81-a8bb2387e947",
-        "description": "Detects blocked load events that did not meet the authenticode signing level requirements or violated code integrity policy",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "title": "CodeIntegrity - Blocked Image Load With Revoked Certificate",
+        "id": "6f156c48-3894-4952-baf0-16193e9067d2",
         "status": "experimental",
+        "description": "Detects blocked image load events with revoked certificates by code integrity.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.privilege_escalation",
-            "attack.t1543"
+            "attack.privilege_escalation"
         ],
         "falsepositives": [
-            "Unknown"
+            "Unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3077')"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3036')"
         ],
-        "filename": "win_codeintegrity_blocked_driver_load.yml"
+        "filename": "win_codeintegrity_revoked_image_blocked.yml"
     },
     {
-        "title": "Block Load Of Revoked Driver",
+        "title": "CodeIntegrity - Revoked Kernel Driver Loaded",
+        "id": "320fccbf-5e32-4101-82b8-2679c5f007c6",
+        "status": "experimental",
+        "description": "Detects the load of a revoked kernel driver",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID IN ('3021', '3022'))"
+        ],
+        "filename": "win_codeintegrity_revoked_driver_loaded.yml"
+    },
+    {
+        "title": "CodeIntegrity - Unmet WHQL Requirements For Loaded Kernel Module",
+        "id": "2f8cd7a0-9d5a-4f62-9f8b-2c951aa0dd1f",
+        "status": "experimental",
+        "description": "Detects loaded kernel modules that did not meet the WHQL signing requirements.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID IN ('3082', '3083'))"
+        ],
+        "filename": "win_codeintegrity_whql_failure.yml"
+    },
+    {
+        "title": "CodeIntegrity - Disallowed File For Protected Processes Has Been Blocked",
+        "id": "5daf11c3-022b-4969-adb9-365e6c078c7c",
+        "status": "experimental",
+        "description": "Detects block events for files that are disallowed by code integrity for protected processes",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3104')"
+        ],
+        "filename": "win_codeintegrity_blocked_protected_process_file.yml"
+    },
+    {
+        "title": "CodeIntegrity - Unsigned Image Loaded",
+        "id": "c92c24e7-f595-493f-9c98-53d5142f5c18",
+        "status": "experimental",
+        "description": "Detects loaded unsigned image on the system",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3037')"
+        ],
+        "filename": "win_codeintegrity_unsigned_image_loaded.yml"
+    },
+    {
+        "title": "CodeIntegrity - Blocked Driver Load With Revoked Certificate",
         "id": "9b72b82d-f1c5-4632-b589-187159bc6ec1",
+        "status": "experimental",
         "description": "Detects blocked load attempts of revoked drivers",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "status": "experimental",
         "tags": [
             "attack.privilege_escalation",
             "attack.t1543"
@@ -5001,7 +5092,62 @@
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3023')"
         ],
-        "filename": "win_codeintegrity_revoked_driver.yml"
+        "filename": "win_codeintegrity_revoked_driver_blocked.yml"
+    },
+    {
+        "title": "CodeIntegrity - Unsigned Kernel Module Loaded",
+        "id": "951f8d29-f2f6-48a7-859f-0673ff105e6f",
+        "status": "experimental",
+        "description": "Detects the presence of a loaded unsigned kernel module on the system.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3001')"
+        ],
+        "filename": "win_codeintegrity_unsigned_driver_loaded.yml"
+    },
+    {
+        "title": "CodeIntegrity - Blocked Image/Driver Load For Policy Violation",
+        "id": "e4be5675-4a53-426a-8c81-a8bb2387e947",
+        "status": "experimental",
+        "description": "Detects blocked load events that did not meet the authenticode signing level requirements or violated the code integrity policy.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.t1543"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID = '3077')"
+        ],
+        "filename": "win_codeintegrity_enforced_policy_block.yml"
+    },
+    {
+        "title": "CodeIntegrity - Revoked Image Loaded",
+        "id": "881b7725-47cc-4055-8000-425823344c59",
+        "status": "experimental",
+        "description": "Detects image load events with revoked certificates by code integrity.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID IN ('3032', '3035'))"
+        ],
+        "filename": "win_codeintegrity_revoked_image_loaded.yml"
     },
     {
         "title": "Removal Of SD Value to Hide Schedule Task - Registry",
@@ -7928,7 +8074,7 @@
         "title": "Register New IFiltre For Persistence",
         "id": "b23818c7-e575-4d13-8012-332075ec0a2b",
         "status": "experimental",
-        "description": "Detects when an attacker register a new IFilter for an exntesion. Microsoft Windows Search uses filters to extract the content of items for inclusion in a full-text index. You can extend Windows Search to index new or proprietary file types by writing filters to extract the content, and property handlers to extract the properties of files",
+        "description": "Detects when an attacker register a new IFilter for an extension. Microsoft Windows Search uses filters to extract the content of items for inclusion in a full-text index. You can extend Windows Search to index new or proprietary file types by writing filters to extract the content, and property handlers to extract the properties of files",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.persistence"
@@ -8061,7 +8207,7 @@
         "title": "Potential Persistence Via Logon Scripts - Registry",
         "id": "9ace0707-b560-49b8-b6ca-5148b42f39fb",
         "status": "test",
-        "description": "Detects creation of UserInitMprLogonScript persistence method",
+        "description": "Detects creation of \"UserInitMprLogonScript\" registry value which can be used as a persistence method by malicious actors",
         "author": "Tom Ueltschi (@c_APT_ure)",
         "tags": [
             "attack.t1037.001",
@@ -8069,9 +8215,9 @@
             "attack.lateral_movement"
         ],
         "falsepositives": [
-            "Exclude legitimate logon scripts"
+            "Investigate the contents of the \"UserInitMprLogonScript\" value to determine of the added script is legitimate"
         ],
-        "level": "high",
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (EventID = '12' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'CreateKey' AND TargetObject LIKE '%UserInitMprLogonScript%' ESCAPE '\\')"
         ],
@@ -22799,25 +22945,6 @@
         "filename": "proc_creation_win_netsh_fw_enable_group_rule.yml"
     },
     {
-        "title": "Logon Scripts (UserInitMprLogonScript)",
-        "id": "0a98a10c-685d-4ab0-bddc-b6bdd1d48458",
-        "status": "test",
-        "description": "Detects creation or execution of UserInitMprLogonScript persistence method",
-        "author": "Tom Ueltschi (@c_APT_ure), Tim Shelton",
-        "tags": [
-            "attack.t1037.001",
-            "attack.persistence"
-        ],
-        "falsepositives": [
-            "Exclude legitimate logon scripts"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%UserInitMprLogonScript%' ESCAPE '\\' OR (ParentImage LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((CommandLine LIKE '%netlogon%.bat%' ESCAPE '\\' OR CommandLine LIKE '%UsrLogon.cmd%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\WINDOWS\\\\Explorer.EXE%' ESCAPE '\\') OR (Image LIKE '%\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%\\\\proquota.exe' ESCAPE '\\' OR Image LIKE '%\\\\Citrix\\\\System32\\\\icast.exe' ESCAPE '\\')))))"
-        ],
-        "filename": "proc_creation_win_persistence_userinitmprlogonscript.yml"
-    },
-    {
         "title": "Whoami.EXE Execution Anomaly",
         "id": "8de1cbe8-d6f5-496d-8237-5f44a721c7a0",
         "status": "experimental",
@@ -23721,6 +23848,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%python.exe' ESCAPE '\\' OR Image LIKE '%python3.exe' ESCAPE '\\' OR Image LIKE '%python2.exe' ESCAPE '\\') AND ((CommandLine LIKE '%import pty%' ESCAPE '\\' AND CommandLine LIKE '%.spawn(%' ESCAPE '\\') OR CommandLine LIKE '%from pty import spawn%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_python_pty_spawn.yml"
+    },
+    {
+        "title": "Potential Persistence Via Logon Scripts - CommandLine",
+        "id": "21d856f9-9281-4ded-9377-51a1a6e2a432",
+        "status": "experimental",
+        "description": "Detects the addition of a new LogonScript to the registry value \"UserInitMprLogonScript\" for potential persistence",
+        "author": "Tom Ueltschi (@c_APT_ure)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1037.001"
+        ],
+        "falsepositives": [
+            "Legitimate addition of Logon Scripts via the command line by administrators or third party tools"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%UserInitMprLogonScript%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_registry_logon_script.yml"
     },
     {
         "title": "Winrar Compressing Dump Files",
@@ -28088,6 +28234,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% -en %' ESCAPE '\\' OR CommandLine LIKE '% -enc %' ESCAPE '\\' OR CommandLine LIKE '% -enco%' ESCAPE '\\' OR CommandLine LIKE '% -ec %' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% -Encoding %' ESCAPE '\\') OR ((ParentImage LIKE '%C:\\\\Packages\\\\Plugins\\\\Microsoft.GuestConfiguration.ConfigurationforWindows\\\\%' ESCAPE '\\' OR ParentImage LIKE '%\\\\gc\\_worker.exe%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_powershell_encode.yml"
+    },
+    {
+        "title": "Uncommon Userinit Child Process",
+        "id": "0a98a10c-685d-4ab0-bddc-b6bdd1d48458",
+        "status": "test",
+        "description": "Detects uncommon \"userinit.exe\" child processes, which could be a sign of uncommon shells or login scripts used for persistence.",
+        "author": "Tom Ueltschi (@c_APT_ure), Tim Shelton",
+        "tags": [
+            "attack.t1037.001",
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Legitimate logon scripts or custom shells may trigger false positives. Apply additional filters accordingly."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\WINDOWS\\\\explorer.exe' ESCAPE '\\'))) AND NOT (((CommandLine LIKE '%netlogon.bat%' ESCAPE '\\' OR CommandLine LIKE '%UsrLogon.cmd%' ESCAPE '\\')) OR (CommandLine = 'PowerShell.exe') OR ((Image LIKE 'C:\\\\Windows\\\\System32\\\\proquota.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\proquota.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\Citrix\\\\System32\\\\icast.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_userinit_uncommon_child_processes.yml"
     },
     {
         "title": "Shadow Copies Deletion Using Operating Systems Utilities",
