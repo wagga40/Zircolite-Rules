@@ -19503,6 +19503,24 @@
         "filename": "proc_creation_win_lolbin_mspub_download.yml"
     },
     {
+        "title": "Uncommon Child Processes Of SndVol.exe",
+        "id": "ba42babc-0666-4393-a4f7-ceaf5a69191e",
+        "status": "experimental",
+        "description": "Detects potentially uncommon child processes of SndVol.exe (the Windows volume mixer)",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\SndVol.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND CommandLine LIKE '% shell32.dll,Control\\_RunDLL %' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_sndvol_susp_child_processes.yml"
+    },
+    {
         "title": "Suspicious Cabinet File Expansion",
         "id": "9f107a84-532c-41af-b005-8d12a607639f",
         "status": "test",
@@ -30009,6 +30027,26 @@
         "filename": "web_cve_2023_25717_ruckus_wireless_admin_exploit_attempt.yml"
     },
     {
+        "title": "Potential CVE-2023-2283 Exploitation",
+        "id": "8b244735-5833-4517-a45b-28d8c63924c0",
+        "status": "experimental",
+        "description": "Detects potential exploitation attempt of CVE-2023-2283 an authentication bypass in libSSH. The exploitation method causes an error message stating that keys for curve25519 could not be generated. It is an error message that is a sign of an exploitation attempt. It is not a sign of a successful exploitation.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190",
+            "cve.2023.2283"
+        ],
+        "falsepositives": [
+            "Errors with the initialization or generation of the X25519 elliptic curve keys may generate the same error message"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE logs MATCH ('\"Failed to generate curve25519 keys\"')"
+        ],
+        "filename": "lnx_sshd_exploit_cve_2023_2283_libssh_authentication_bypass.yml"
+    },
+    {
         "title": "Potential APT Mustang Panda Activity Against Australian Gov",
         "id": "7806bb49-f653-48d3-a915-5115c1a85234",
         "status": "experimental",
@@ -36443,6 +36481,27 @@
         "filename": "image_load_side_load_from_non_system_location.yml"
     },
     {
+        "title": "Potential Edputil.DLL Sideloading",
+        "id": "e4903324-1a10-4ed3-981b-f6fe3be3a2c2",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"edputil.dll\"",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\edputil.dll' ESCAPE '\\' AND NOT (((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_edputil.yml"
+    },
+    {
         "title": "DLL Loaded From Suspicious Location Via Cmspt.EXE",
         "id": "75e508f7-932d-4ebc-af77-269237a84ce1",
         "status": "experimental",
@@ -36622,6 +36681,27 @@
             "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\SolidPDFCreator.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\SolidPDFCreator.exe' ESCAPE '\\' AND (ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\SolidDocuments\\\\SolidPDFCreator\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\SolidDocuments\\\\SolidPDFCreator\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "image_load_side_load_solidpdfcreator.yml"
+    },
+    {
+        "title": "Potential RjvPlatform.DLL Sideloading From Non-Default Location",
+        "id": "0e0bc253-07ed-43f1-816d-e1b220fe8971",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"RjvPlatform.dll\" by \"SystemResetPlatform.exe\" located in a non-default location.",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\RjvPlatform.dll' ESCAPE '\\' AND NewProcessName LIKE '\\\\SystemResetPlatform.exe' ESCAPE '\\') AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\SystemResetPlatform\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_side_load_rjvplatform_non_default_location.yml"
     },
     {
         "title": "Fax Service DLL Search Order Hijack",
@@ -37389,6 +37469,27 @@
             "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' AND (ImageLoaded LIKE '%\\\\jscript.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\vbscript.dll' ESCAPE '\\'))"
         ],
         "filename": "image_load_wmic_remote_xsl_scripting_dlls.yml"
+    },
+    {
+        "title": "Potential RjvPlatform.DLL Sideloading From Default Location",
+        "id": "259dda31-b7a3-444f-b7d8-17f96e8a7d0d",
+        "status": "experimental",
+        "description": "Detects loading of \"RjvPlatform.dll\" by the \"SystemResetPlatform.exe\" binary which can be abused as a method of DLL side loading since the \"$SysReset\" directory isn't created by default.",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\SystemResetPlatform\\\\SystemResetPlatform.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\$SysReset\\\\Framework\\\\Stack\\\\RjvPlatform.dll' ESCAPE '\\')"
+        ],
+        "filename": "image_load_side_load_rjvplatform_default_location.yml"
     },
     {
         "title": "Aruba Network Service Potential DLL Sideloading",

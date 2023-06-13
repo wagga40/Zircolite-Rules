@@ -23602,6 +23602,27 @@
         "filename": "image_load_side_load_from_non_system_location.yml"
     },
     {
+        "title": "Potential Edputil.DLL Sideloading",
+        "id": "e4903324-1a10-4ed3-981b-f6fe3be3a2c2",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"edputil.dll\"",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\edputil.dll' ESCAPE '\\' AND NOT (((ImageLoaded LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_edputil.yml"
+    },
+    {
         "title": "DLL Loaded From Suspicious Location Via Cmspt.EXE",
         "id": "75e508f7-932d-4ebc-af77-269237a84ce1",
         "status": "experimental",
@@ -23700,6 +23721,27 @@
             "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\vsstrace.dll' ESCAPE '\\' AND NOT (((Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\Temp\\\\{%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "image_load_dll_vsstrace_susp_load.yml"
+    },
+    {
+        "title": "Potential RjvPlatform.DLL Sideloading From Non-Default Location",
+        "id": "0e0bc253-07ed-43f1-816d-e1b220fe8971",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"RjvPlatform.dll\" by \"SystemResetPlatform.exe\" located in a non-default location.",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%\\\\RjvPlatform.dll' ESCAPE '\\' AND Image LIKE '\\\\SystemResetPlatform.exe' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Windows\\\\System32\\\\SystemResetPlatform\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_side_load_rjvplatform_non_default_location.yml"
     },
     {
         "title": "Fax Service DLL Search Order Hijack",
