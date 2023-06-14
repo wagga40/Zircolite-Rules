@@ -3368,7 +3368,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID IN ('3082', '3083'))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID IN ('3082', '3083') AND NOT ((FileNameBuffer LIKE 'system32\\\\DRIVERS\\\\vsock.sys' ESCAPE '\\')))"
         ],
         "filename": "win_codeintegrity_whql_failure.yml"
     },

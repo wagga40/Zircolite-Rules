@@ -5634,7 +5634,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID IN ('3082', '3083'))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-CodeIntegrity/Operational' AND EventID IN ('3082', '3083') AND NOT ((FileNameBuffer LIKE 'system32\\\\DRIVERS\\\\vsock.sys' ESCAPE '\\')))"
         ],
         "filename": "win_codeintegrity_whql_failure.yml"
     },
@@ -6308,6 +6308,25 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\%' ESCAPE '\\')) AND ((Details LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%C:\\\\$Recycle.bin\\\\%' ESCAPE '\\' OR Details LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE '%C:\\\\Users\\\\Default\\\\%' ESCAPE '\\' OR Details LIKE '%C:\\\\Users\\\\Desktop\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%\\%temp\\%\\\\%' ESCAPE '\\' OR Details LIKE '%\\%tmp\\%\\\\%' ESCAPE '\\') OR (Details LIKE '\\%Public\\%\\\\%' ESCAPE '\\' OR Details LIKE 'wscript%' ESCAPE '\\' OR Details LIKE 'cscript%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_susp_run_key_img_folder.yml"
+    },
+    {
+        "title": "ClickOnce Trust Prompt Tampering",
+        "id": "ac9159cc-c364-4304-8f0a-d63fc1a0aabb",
+        "status": "experimental",
+        "description": "Detects changes to the ClickOnce trust prompt registry key in order to enable an installation from different locations such as the Internet.",
+        "author": "@SerkinValery, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Legitimate internal requirements."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\MICROSOFT\\\\.NETFramework\\\\Security\\\\TrustManager\\\\PromptingLevel\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Internet' ESCAPE '\\' OR TargetObject LIKE '%\\\\LocalIntranet' ESCAPE '\\' OR TargetObject LIKE '%\\\\MyComputer' ESCAPE '\\' OR TargetObject LIKE '%\\\\TrustedSites' ESCAPE '\\' OR TargetObject LIKE '%\\\\UntrustedSites' ESCAPE '\\') AND Details = 'Enabled')"
+        ],
+        "filename": "registry_set_clickonce_trust_prompt.yml"
     },
     {
         "title": "Potential Persistence Via Outlook Home Page",
@@ -14626,6 +14645,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR OriginalFileName = 'wmic.exe' OR Imphash IN ('1B1A3F43BF37B5BFE60751F2EE2F326E', '37777A96245A3C74EB217308F3546F4C', '9D87C9D67CE724033C0B40CC4CA1B206') OR (Hashes LIKE '%IMPHASH=1B1A3F43BF37B5BFE60751F2EE2F326E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=37777A96245A3C74EB217308F3546F4C%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=9D87C9D67CE724033C0B40CC4CA1B206%' ESCAPE '\\')) AND (CommandLine LIKE '%format:%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wmic_squiblytwo_bypass.yml"
+    },
+    {
+        "title": "Potentially Suspicious Child Process Of ClickOnce Application",
+        "id": "67bc0e75-c0a9-4cfc-8754-84a505b63c04",
+        "status": "experimental",
+        "description": "Detects potentially suspicious child processes of a ClickOnce deployment application",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\AppData\\\\Local\\\\Apps\\\\2.0\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\calc.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\net.exe' ESCAPE '\\' OR Image LIKE '%\\\\net1.exe' ESCAPE '\\' OR Image LIKE '%\\\\nltest.exe' ESCAPE '\\' OR Image LIKE '%\\\\notepad.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\werfault.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_dfsvc_suspicious_child_processes.yml"
     },
     {
         "title": "Suspicious Rundll32 Execution With Image Extension",
@@ -34910,6 +34948,25 @@
         "filename": "proc_creation_win_findstr_password_recon.yml"
     },
     {
+        "title": "ClickOnce Deployment Execution - Dfsvc.EXE Child Process",
+        "id": "241d52b5-eee0-49d0-ac8a-8b9c15c7221c",
+        "status": "experimental",
+        "description": "Detects child processes of \"dfsvc\" which indicates a ClickOnce deployment execution.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "False positives are expected in environement leveraging ClickOnce deployments. An initial baselining is required before using this rule in production."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\dfsvc.exe' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Apps\\\\2.0\\\\' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_dfsvc_child_processes.yml"
+    },
+    {
         "title": "Microsoft Excel Add-In Loaded",
         "id": "c5f4b5cb-4c25-4249-ba91-aa03626e3185",
         "status": "experimental",
@@ -34927,6 +34984,25 @@
             "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\excel.exe' ESCAPE '\\' AND ImageLoaded LIKE '%.xll' ESCAPE '\\')"
         ],
         "filename": "image_load_office_excel_xll_load.yml"
+    },
+    {
+        "title": "Dfsvc.EXE Network Connection To Non-Local IPs",
+        "id": "3c21219b-49b5-4268-bce6-c914ed50f09c",
+        "status": "experimental",
+        "description": "Detects network connections from \"dfsvc.exe\" used to handled ClickOnce applications to non-local IPs",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1203"
+        ],
+        "falsepositives": [
+            "False positives are expected from ClickOnce manifests hosted on public IPs and domains. Apply additional filters for the accepted IPs in your environement as necessary"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\dfsvc.exe' ESCAPE '\\' AND Initiated = 'true') AND NOT (((DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '127.0.0.1%' ESCAPE '\\' OR DestinationIp LIKE '172.16.%' ESCAPE '\\' OR DestinationIp LIKE '172.17.%' ESCAPE '\\' OR DestinationIp LIKE '172.18.%' ESCAPE '\\' OR DestinationIp LIKE '172.19.%' ESCAPE '\\' OR DestinationIp LIKE '172.20.%' ESCAPE '\\' OR DestinationIp LIKE '172.21.%' ESCAPE '\\' OR DestinationIp LIKE '172.22.%' ESCAPE '\\' OR DestinationIp LIKE '172.23.%' ESCAPE '\\' OR DestinationIp LIKE '172.24.%' ESCAPE '\\' OR DestinationIp LIKE '172.25.%' ESCAPE '\\' OR DestinationIp LIKE '172.26.%' ESCAPE '\\' OR DestinationIp LIKE '172.27.%' ESCAPE '\\' OR DestinationIp LIKE '172.28.%' ESCAPE '\\' OR DestinationIp LIKE '172.29.%' ESCAPE '\\' OR DestinationIp LIKE '172.30.%' ESCAPE '\\' OR DestinationIp LIKE '172.31.%' ESCAPE '\\' OR DestinationIp LIKE '192.168.%' ESCAPE '\\')) OR ((DestinationIp LIKE '::1%' ESCAPE '\\' OR DestinationIp LIKE '0:0:0:0:0:0:0:1%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\' OR DestinationIp LIKE 'fe80:%' ESCAPE '\\'))))"
+        ],
+        "filename": "net_connection_win_dfsvc_suspicious_ip.yml"
     },
     {
         "title": "Rename Common File to DLL File",
@@ -39763,6 +39839,25 @@
         "filename": "image_load_side_load_coregen.yml"
     },
     {
+        "title": "Unsigned Module Loaded by ClickOnce Application",
+        "id": "060d5ad4-3153-47bb-8382-43e5e29eda92",
+        "status": "experimental",
+        "description": "Detects unsigned module load by ClickOnce application.",
+        "author": "@SerkinValery",
+        "tags": [
+            "attack.persistence",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Image LIKE '%\\\\AppData\\\\Local\\\\Apps\\\\2.0\\\\%' ESCAPE '\\' AND (Signed = 'false' OR SignatureStatus = 'Expired'))"
+        ],
+        "filename": "image_load_clickonce_unsigned_module_loaded.yml"
+    },
+    {
         "title": "Potential Libvlc.DLL Sideloading",
         "id": "bf9808c4-d24f-44a2-8398-b65227d406b6",
         "status": "experimental",
@@ -44231,6 +44326,25 @@
             "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationHostname LIKE '%oauth2.googleapis.com%' ESCAPE '\\' OR DestinationHostname LIKE '%sheets.googleapis.com%' ESCAPE '\\' OR DestinationHostname LIKE '%drive.googleapis.com%' ESCAPE '\\' OR DestinationHostname LIKE '%www.googleapis.com%' ESCAPE '\\') AND NOT ((Image LIKE '%\\\\brave.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Google\\\\Drive File Stream\\*\\\\GoogleDriveFS.exe%' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\opera.exe' ESCAPE '\\') OR (Image LIKE '%\\\\safari.exe' ESCAPE '\\') OR (Image LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (Image LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR (Image LIKE '%\\\\whale.exe' ESCAPE '\\') OR (Image LIKE '%\\\\GoogleUpdate.exe' ESCAPE '\\') OR (Image LIKE '%\\\\outlook.exe' ESCAPE '\\') OR (Image LIKE '%\\\\teams.exe' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_google_api_non_browser_access.yml"
+    },
+    {
+        "title": "Dfsvc.EXE Network Connection To Uncommon Ports",
+        "id": "4c5fba4a-9ef6-4f16-823d-606246054741",
+        "status": "experimental",
+        "description": "Detects network connections from \"dfsvc.exe\" used to handled ClickOnce applications to uncommon ports",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1203"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\dfsvc.exe' ESCAPE '\\' AND Initiated = 'true') AND NOT ((DestinationPort IN ('80', '443', '445'))))"
+        ],
+        "filename": "net_connection_win_dfsvc_uncommon_ports.yml"
     },
     {
         "title": "Excel Network Connections",
