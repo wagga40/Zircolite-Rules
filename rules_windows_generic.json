@@ -17532,6 +17532,27 @@
         "filename": "image_load_dll_amsi_suspicious_process.yml"
     },
     {
+        "title": "Potential Waveedit.DLL Sideloading",
+        "id": "71b31e99-9ad0-47d4-aeb5-c0ca3928eeeb",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"waveedit.dll\", which is part of the Nero WaveEditor audio editing software.",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\waveedit.dll' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Nero\\\\Nero Apps\\\\Nero WaveEditor\\\\waveedit.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Nero\\\\Nero Apps\\\\Nero WaveEditor\\\\waveedit.exe' ESCAPE '\\') AND (ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Nero\\\\Nero Apps\\\\Nero WaveEditor\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\Nero\\\\Nero Apps\\\\Nero WaveEditor\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_waveedit.yml"
+    },
+    {
         "title": "PCRE.NET Package Image Load",
         "id": "84b0a8f3-680b-4096-a45b-e9a89221727c",
         "status": "test",
@@ -25529,7 +25550,7 @@
         "filename": "registry_event_shell_open_keys_manipulation.yml"
     },
     {
-        "title": "PrinterNightmare Mimimkatz Driver Name",
+        "title": "PrinterNightmare Mimikatz Driver Name",
         "id": "ba6b9e43-1d45-4d3c-a504-1043a64c8469",
         "status": "test",
         "description": "Detects static QMS 810 and mimikatz driver name used by Mimikatz as exploited in CVE-2021-1675 and CVE-2021-34527",
