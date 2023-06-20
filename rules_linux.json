@@ -219,6 +219,23 @@
         "filename": "proc_creation_lnx_omigod_scx_runasprovider_executeshellcommand.yml"
     },
     {
+        "title": "Named Pipe Created Via Mkfifo",
+        "id": "9d779ce8-5256-4b13-8b6f-b91c602b43f4",
+        "description": "Detects the creation of a new named pipe using the \"mkfifo\" utility",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Image LIKE '%/mkfifo' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_lnx_mkfifo_named_pipe_creation.yml"
+    },
+    {
         "title": "Group Has Been Deleted Via Groupdel",
         "id": "8a46f16c-8c4c-82d1-b121-0fdd3ba70a84",
         "description": "Detects execution of the \"groupdel\" binary. Which is used to delete a group. This is sometimes abused by threat actors in order to cover their tracks",
@@ -304,7 +321,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/python2.%' ESCAPE '\\' OR Image LIKE '%/python3.%' ESCAPE '\\') AND ((CommandLine LIKE '%import pty%' ESCAPE '\\' AND CommandLine LIKE '%.spawn(%' ESCAPE '\\') OR CommandLine LIKE '%from pty import spawn%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (((Image LIKE '%/python' ESCAPE '\\' OR Image LIKE '%/python2' ESCAPE '\\' OR Image LIKE '%/python3' ESCAPE '\\') OR (Image LIKE '%/python2.%' ESCAPE '\\' OR Image LIKE '%/python3.%' ESCAPE '\\')) AND ((CommandLine LIKE '%import pty%' ESCAPE '\\' AND CommandLine LIKE '%.spawn(%' ESCAPE '\\') OR CommandLine LIKE '%from pty import spawn%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_python_pty_spawn.yml"
     },
@@ -856,6 +873,23 @@
         "filename": "proc_creation_lnx_malware_gobrat_grep_payload_discovery.yml"
     },
     {
+        "title": "Potentially Suspicious Named Pipe Created Via Mkfifo",
+        "id": "999c3b12-0a8c-40b6-8e13-dd7d62b75c7a",
+        "description": "Detects the creation of a new named pipe using the \"mkfifo\" utility in a potentially suspicious location",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/mkfifo' ESCAPE '\\' AND CommandLine LIKE '% /tmp/%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_mkfifo_named_pipe_creation_susp_location.yml"
+    },
+    {
         "title": "Interactive Bash Suspicious Children",
         "id": "ea3ecad2-db86-4a89-ad0b-132a10d2db55",
         "description": "Detects suspicious interactive bash as a parent to rather uncommon child processes",
@@ -1155,7 +1189,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (CommandLine LIKE '%base64 -w0 %' ESCAPE '\\' AND ((CommandLine LIKE '%| bash %' ESCAPE '\\' OR CommandLine LIKE '%| sh %' ESCAPE '\\' OR CommandLine LIKE '%|bash %' ESCAPE '\\' OR CommandLine LIKE '%|sh %' ESCAPE '\\') OR (CommandLine LIKE '%| bash' ESCAPE '\\' OR CommandLine LIKE '%| sh' ESCAPE '\\' OR CommandLine LIKE '%|bash' ESCAPE '\\' OR CommandLine LIKE '% |sh' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (CommandLine LIKE '%base64 %' ESCAPE '\\' AND ((CommandLine LIKE '%| bash %' ESCAPE '\\' OR CommandLine LIKE '%| sh %' ESCAPE '\\' OR CommandLine LIKE '%|bash %' ESCAPE '\\' OR CommandLine LIKE '%|sh %' ESCAPE '\\') OR (CommandLine LIKE '% |sh' ESCAPE '\\' OR CommandLine LIKE '%| bash' ESCAPE '\\' OR CommandLine LIKE '%| sh' ESCAPE '\\' OR CommandLine LIKE '%|bash' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_base64_execution.yml"
     },
