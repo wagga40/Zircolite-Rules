@@ -1147,7 +1147,7 @@
         "title": "Tamper Windows Defender Remove-MpPreference",
         "id": "07e3cb2c-0608-410d-be4b-1511cb1a0448",
         "status": "experimental",
-        "description": "Detects attempts to remove windows defender configuration using the 'MpPreference' cmdlet",
+        "description": "Detects attempts to remove Windows Defender configurations using the 'MpPreference' cmdlet",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -1689,7 +1689,7 @@
         "title": "PUA - Crassus Execution",
         "id": "2c32b543-1058-4808-91c6-5b31b8bed6c5",
         "status": "experimental",
-        "description": "Detects Crassus a windows privilege escalation discovery tool based on PE metadata characteristics.",
+        "description": "Detects Crassus, a Windows privilege escalation discovery tool, based on PE metadata characteristics.",
         "author": "pH-T (Nextron Systems)",
         "tags": [
             "attack.discovery",
@@ -2596,7 +2596,7 @@
         "title": "Suspicious Elevated System Shell",
         "id": "178e615d-e666-498b-9630-9ed363038101",
         "status": "experimental",
-        "description": "Detects when a shell program such as the windows Command Prompt or PowerShell is launched with system privileges.",
+        "description": "Detects when a shell program such as the Windows command prompt or PowerShell is launched with system privileges.",
         "author": "frack113, Tim Shelton (update fp)",
         "tags": [
             "attack.privilege_escalation",
@@ -3913,7 +3913,7 @@
         "title": "HackTool - KrbRelayUp Execution",
         "id": "12827a56-61a4-476a-a9cb-f3068f191073",
         "status": "experimental",
-        "description": "Detects KrbRelayUp used to perform a universal no-fix local privilege escalation in windows domain environments where LDAP signing is not enforced",
+        "description": "Detects KrbRelayUp used to perform a universal no-fix local privilege escalation in Windows domain environments where LDAP signing is not enforced",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.credential_access",
@@ -4402,7 +4402,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\WINDOWS\\\\explorer.exe' ESCAPE '\\'))) AND NOT (((CommandLine LIKE '%netlogon.bat%' ESCAPE '\\' OR CommandLine LIKE '%UsrLogon.cmd%' ESCAPE '\\')) OR (CommandLine = 'PowerShell.exe') OR ((Image LIKE 'C:\\\\Windows\\\\System32\\\\proquota.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\proquota.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\Citrix\\\\System32\\\\icast.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((Image LIKE 'C:\\\\WINDOWS\\\\explorer.exe' ESCAPE '\\'))) AND NOT (((CommandLine LIKE '%netlogon.bat%' ESCAPE '\\' OR CommandLine LIKE '%UsrLogon.cmd%' ESCAPE '\\')) OR (CommandLine = 'PowerShell.exe') OR ((Image LIKE 'C:\\\\Windows\\\\System32\\\\proquota.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\proquota.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\Citrix\\\\System32\\\\icast.exe' ESCAPE '\\') OR (Image = '')))"
         ],
         "filename": "proc_creation_win_userinit_uncommon_child_processes.yml"
     },
@@ -11321,7 +11321,7 @@
         "title": "Windows Defender Suspicious Configuration Changes",
         "id": "801bd44f-ceed-4eb6-887c-11544633c0aa",
         "status": "stable",
-        "description": "Detects suspicious changes to the windows defender configuration",
+        "description": "Detects suspicious changes to the Windows Defender configuration",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -12155,7 +12155,7 @@
         "title": "Important Windows Service Terminated Unexpectedly",
         "id": "56abae0c-6212-4b97-adc0-0b559bb950c3",
         "status": "experimental",
-        "description": "Detects important or interesting windows services that got terminated unexpectedly.",
+        "description": "Detects important or interesting Windows services that got terminated unexpectedly.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion"
@@ -12213,7 +12213,7 @@
         "title": "KrbRelayUp Service Installation",
         "id": "e97d9903-53b2-41fc-8cb9-889ed4093e80",
         "status": "experimental",
-        "description": "Detects service creation from KrbRelayUp tool used for privilege escalation in windows domain environments where LDAP signing is not enforced (the default settings)",
+        "description": "Detects service creation from KrbRelayUp tool used for privilege escalation in Windows domain environments where LDAP signing is not enforced (the default settings)",
         "author": "Sittikorn S, Tim Shelton",
         "tags": [
             "attack.privilege_escalation",
@@ -12279,7 +12279,7 @@
         "title": "Important Windows Service Terminated With Error",
         "id": "d6b5520d-3934-48b4-928c-2aa3f92d6963",
         "status": "experimental",
-        "description": "Detects important or interesting windows services that got terminated for whatever reason",
+        "description": "Detects important or interesting Windows services that got terminated for whatever reason",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion"
@@ -12486,7 +12486,7 @@
         "title": "Potential Credential Dumping Via WER - Application",
         "id": "a18e0862-127b-43ca-be12-1a542c75c7c5",
         "status": "experimental",
-        "description": "Detects windows error reporting event where the process that crashed is lsass. This could be the cause of an intentional crash by techniques such as Lsass-Shtinkering to dump credential",
+        "description": "Detects Windows error reporting event where the process that crashed is lsass. This could be the cause of an intentional crash by techniques such as Lsass-Shtinkering to dump credential",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.credential_access",
@@ -13851,7 +13851,7 @@
         "title": "Windows Defender Exclusion Set",
         "id": "e9c8808f-4cfb-4ba9-97d4-e5f3beaa244d",
         "status": "test",
-        "description": "Detects scenarios where an windows defender exclusion was added in registry where an entity would want to bypass antivirus scanning from windows defender",
+        "description": "Detects scenarios where an Windows Defender exclusion was added in registry where an entity would want to bypass antivirus scanning from Windows Defender",
         "author": "@BarryShooshooga",
         "tags": [
             "attack.defense_evasion",
@@ -15485,7 +15485,7 @@
         "title": "Suspicious Double Extension Files",
         "id": "b4926b47-a9d7-434c-b3a0-adc3fa0bd13e",
         "status": "experimental",
-        "description": "Detects dropped files with double extensions, which is often used by malware as a method to abuse the fact that windows hide default extensions by default.",
+        "description": "Detects dropped files with double extensions, which is often used by malware as a method to abuse the fact that Windows hide default extensions by default.",
         "author": "Nasreddine Bencherchali (Nextron Systems), frack113",
         "tags": [
             "attack.defense_evasion",
@@ -15989,7 +15989,7 @@
         "title": "Windows Binaries Write Suspicious Extensions",
         "id": "b8fd0e93-ff58-4cbd-8f48-1c114e342e62",
         "status": "experimental",
-        "description": "Detects windows executables that writes files with suspicious extensions",
+        "description": "Detects Windows executables that writes files with suspicious extensions",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "falsepositives": [
             "Unknown"
@@ -19055,7 +19055,7 @@
         "title": "Tamper Windows Defender - ScriptBlockLogging",
         "id": "14c71865-6cd3-44ae-adaa-1db923fae5f2",
         "status": "experimental",
-        "description": "Detects powershell scripts attempting to disable scheduled scanning and other parts of windows defender atp or set default actions to allow.",
+        "description": "Detects PowerShell scripts attempting to disable scheduled scanning and other parts of Windows Defender ATP or set default actions to allow.",
         "author": "frack113, elhoim, Tim Shelton (fps, alias support), Swachchhanda Shrawan Poudel",
         "tags": [
             "attack.defense_evasion",
@@ -19520,7 +19520,7 @@
         "title": "Tamper Windows Defender Remove-MpPreference - ScriptBlockLogging",
         "id": "ae2bdd58-0681-48ac-be7f-58ab4e593458",
         "status": "experimental",
-        "description": "Detects attempts to remove windows defender configuration using the 'MpPreference' cmdlet",
+        "description": "Detects attempts to remove Windows Defender configuration using the 'MpPreference' cmdlet",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -25177,7 +25177,7 @@
         "title": "Disable Windows Defender Functionalities Via Registry Keys",
         "id": "0eb46774-f1ab-4a74-8238-1155855f2263",
         "status": "experimental",
-        "description": "Detects when attackers or tools disable Windows Defender functionalities via the windows registry",
+        "description": "Detects when attackers or tools disable Windows Defender functionalities via the Windows registry",
         "author": "AlertIQ, Ján Trenčanský, frack113, Nasreddine Bencherchali, Swachchhanda Shrawan Poudel",
         "tags": [
             "attack.defense_evasion",
@@ -25560,7 +25560,7 @@
         "title": "Change Winevt Event Access Permission Via Registry",
         "id": "7d9263bd-dc47-4a58-bc92-5474abab390c",
         "status": "experimental",
-        "description": "Detects tampering with the \"ChannelAccess\" registry key in order to change access to windows event channel",
+        "description": "Detects tampering with the \"ChannelAccess\" registry key in order to change access to Windows event channel",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
@@ -25655,7 +25655,7 @@
         "title": "Disable Windows Event Logging Via Registry",
         "id": "2f78da12-f7c7-430b-8b19-a28f269b77a3",
         "status": "experimental",
-        "description": "Detects tampering with the \"Enabled\" registry key in order to disable windows logging of a windows event channel",
+        "description": "Detects tampering with the \"Enabled\" registry key in order to disable Windows logging of a Windows event channel",
         "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -25809,7 +25809,7 @@
         "title": "UAC Bypass Via Wsreset",
         "id": "6ea3bf32-9680-422d-9f50-e90716b12a66",
         "status": "test",
-        "description": "Unfixed method for UAC bypass from windows 10. WSReset.exe file associated with the Windows Store. It will run a binary file contained in a low-privilege registry.",
+        "description": "Unfixed method for UAC bypass from Windows 10. WSReset.exe file associated with the Windows Store. It will run a binary file contained in a low-privilege registry.",
         "author": "oscd.community, Dmitry Uchakin",
         "tags": [
             "attack.defense_evasion",
@@ -26604,7 +26604,7 @@
         "title": "Potential Svchost Memory Access",
         "id": "166e9c50-8cd9-44af-815d-d1f0c0e90dde",
         "status": "experimental",
-        "description": "Detects potential access to svchost process memory such as that used by Invoke-Phantom to kill the winRM windows event logging service.",
+        "description": "Detects potential access to svchost process memory such as that used by Invoke-Phantom to kill the winRM Windows event logging service.",
         "author": "Tim Burrell",
         "tags": [
             "attack.defense_evasion",
