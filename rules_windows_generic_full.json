@@ -5508,21 +5508,22 @@
         "filename": "posh_ps_accessing_win_api.yml"
     },
     {
-        "title": "Active Directory Computers Enumeration with Get-AdComputer",
+        "title": "Active Directory Computers Enumeration With Get-AdComputer",
         "id": "36bed6b2-e9a0-4fff-beeb-413a92b86138",
         "status": "experimental",
-        "description": "Detects usage of the \"Get-AdComputer\" to enumerate Computers within Active Directory.",
+        "description": "Detects usage of the \"Get-AdComputer\" to enumerate Computers or properties within Active Directory.",
         "author": "frack113",
         "tags": [
             "attack.discovery",
-            "attack.t1018"
+            "attack.t1018",
+            "attack.t1087.002"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%Get-AdComputer %' ESCAPE '\\' AND ScriptBlockText LIKE '%-Filter%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%Get-AdComputer %' ESCAPE '\\' AND (ScriptBlockText LIKE '%-Filter %' ESCAPE '\\' OR ScriptBlockText LIKE '%-LDAPFilter %' ESCAPE '\\' OR ScriptBlockText LIKE '%-Properties %' ESCAPE '\\'))"
         ],
         "filename": "posh_ps_get_adcomputer.yml"
     },
@@ -18324,7 +18325,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'Cmd.Exe')) AND ((User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND SubjectLogonId = '0x3e7')) AND NOT (((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\')) OR (ParentProcessName LIKE 'C:\\\\ManageEngine\\\\ADManager Plus\\\\pgsql\\\\bin\\\\postgres.exe' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\config\\\\systemprofile\\\\Citrix\\\\UpdaterBinaries\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\CitrixReceiverUpdater.exe' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR (CommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\cmd.exe /c \"%' ESCAPE '\\' AND CurrentDirectory LIKE '%C:\\\\WINDOWS\\\\Temp\\\\asgard2-agent\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\Temp%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\invcol.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%C:\\\\ProgramData\\\\Dell\\\\UpdateService\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\CompatTelRunner.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\CompatTelRunner.exe -m:appraiser.dll -f:DoScheduledTelemetryRun%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\IBM\\\\SpectrumProtect\\\\webserver\\\\scripts\\\\%' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\IBM\\\\SpectrumProtect\\\\webserver\\\\scripts\\\\%' ESCAPE '\\') OR (CommandLine = 'powershell.exe -ExecutionPolicy Restricted -Command Write-Host ''Final result: 1'';') OR (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%/d /c C:\\\\Windows\\\\system32\\\\silcollector.cmd%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (CommandLine LIKE '%cmd.exe /c btool server list replication\\_port --no-log' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /c btool server list general --no-log' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\Windows\\\\system32\\\\reg.exe query hklm\\\\software\\\\microsoft\\\\windows\\\\softwareinventorylogging /v collectionstate /reg:64%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\cmd.exe /c PAUSE' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'Cmd.Exe')) AND ((User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND SubjectLogonId = '0x3e7')) AND NOT (((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\')) OR (ParentProcessName LIKE 'C:\\\\ManageEngine\\\\ADManager Plus\\\\pgsql\\\\bin\\\\postgres.exe' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\config\\\\systemprofile\\\\Citrix\\\\UpdaterBinaries\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\CitrixReceiverUpdater.exe' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR (CommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\cmd.exe /c \"%' ESCAPE '\\' AND CurrentDirectory LIKE '%C:\\\\WINDOWS\\\\Temp\\\\asgard2-agent\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\Temp%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\invcol.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%C:\\\\ProgramData\\\\Dell\\\\UpdateService\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\CompatTelRunner.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\CompatTelRunner.exe -m:appraiser.dll -f:DoScheduledTelemetryRun%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\IBM\\\\SpectrumProtect\\\\webserver\\\\scripts\\\\%' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\IBM\\\\SpectrumProtect\\\\webserver\\\\scripts\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\syswow64\\\\MsiExec.exe -Embedding%' ESCAPE '\\' AND CommandLine LIKE '%\\\\RegisterMicrosoftUpdate.ps1%' ESCAPE '\\') OR (CommandLine = 'powershell.exe -ExecutionPolicy Restricted -Command Write-Host ''Final result: 1'';') OR (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%/d /c C:\\\\Windows\\\\system32\\\\silcollector.cmd%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (CommandLine LIKE '%cmd.exe /c btool server list replication\\_port --no-log' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /c btool server list general --no-log' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\Windows\\\\system32\\\\reg.exe query hklm\\\\software\\\\microsoft\\\\windows\\\\softwareinventorylogging /v collectionstate /reg:64%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\cmd.exe /c PAUSE' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_elevated_system_shell.yml"
     },
@@ -23186,7 +23187,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%~1.exe%' ESCAPE '\\' OR NewProcessName LIKE '%~1.bat%' ESCAPE '\\' OR NewProcessName LIKE '%~1.msi%' ESCAPE '\\' OR NewProcessName LIKE '%~1.vbe%' ESCAPE '\\' OR NewProcessName LIKE '%~1.vbs%' ESCAPE '\\' OR NewProcessName LIKE '%~1.dll%' ESCAPE '\\' OR NewProcessName LIKE '%~1.ps1%' ESCAPE '\\' OR NewProcessName LIKE '%~1.js%' ESCAPE '\\' OR NewProcessName LIKE '%~1.hta%' ESCAPE '\\' OR NewProcessName LIKE '%~2.exe%' ESCAPE '\\' OR NewProcessName LIKE '%~2.bat%' ESCAPE '\\' OR NewProcessName LIKE '%~2.msi%' ESCAPE '\\' OR NewProcessName LIKE '%~2.vbe%' ESCAPE '\\' OR NewProcessName LIKE '%~2.vbs%' ESCAPE '\\' OR NewProcessName LIKE '%~2.dll%' ESCAPE '\\' OR NewProcessName LIKE '%~2.ps1%' ESCAPE '\\' OR NewProcessName LIKE '%~2.js%' ESCAPE '\\' OR NewProcessName LIKE '%~2.hta%' ESCAPE '\\') AND NOT ((ParentProcessName LIKE '%\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\thor\\\\thor64.exe' ESCAPE '\\' OR ParentProcessName LIKE '%-installer.exe' ESCAPE '\\') OR NewProcessName LIKE '%\\\\vcredi%' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%~1.exe%' ESCAPE '\\' OR NewProcessName LIKE '%~1.bat%' ESCAPE '\\' OR NewProcessName LIKE '%~1.msi%' ESCAPE '\\' OR NewProcessName LIKE '%~1.vbe%' ESCAPE '\\' OR NewProcessName LIKE '%~1.vbs%' ESCAPE '\\' OR NewProcessName LIKE '%~1.dll%' ESCAPE '\\' OR NewProcessName LIKE '%~1.ps1%' ESCAPE '\\' OR NewProcessName LIKE '%~1.js%' ESCAPE '\\' OR NewProcessName LIKE '%~1.hta%' ESCAPE '\\' OR NewProcessName LIKE '%~2.exe%' ESCAPE '\\' OR NewProcessName LIKE '%~2.bat%' ESCAPE '\\' OR NewProcessName LIKE '%~2.msi%' ESCAPE '\\' OR NewProcessName LIKE '%~2.vbe%' ESCAPE '\\' OR NewProcessName LIKE '%~2.vbs%' ESCAPE '\\' OR NewProcessName LIKE '%~2.dll%' ESCAPE '\\' OR NewProcessName LIKE '%~2.ps1%' ESCAPE '\\' OR NewProcessName LIKE '%~2.js%' ESCAPE '\\' OR NewProcessName LIKE '%~2.hta%' ESCAPE '\\') AND NOT (ParentProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR (ParentProcessName LIKE '%\\\\WebEx\\\\WebexHost.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\thor\\\\thor64.exe' ESCAPE '\\' OR ParentProcessName LIKE '%-installer.exe' ESCAPE '\\') OR NewProcessName LIKE 'C:\\\\PROGRA~1\\\\WinZip\\\\WZPREL~1.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vcredi%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_ntfs_short_name_use_image.yml"
     },
@@ -32397,6 +32398,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\nimgrab.exe' ESCAPE '\\' OR (Hashes LIKE '%MD5=2DD44C3C29D667F5C0EF5F9D7C7FFB8B%' ESCAPE '\\' OR Hashes LIKE '%SHA256=F266609E91985F0FE3E31C5E8FAEEEC4FFA5E0322D8B6F15FE69F4C5165B9559%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=C07FDDD21D123EA9B3A08EEF44AAAC45%' ESCAPE '\\') OR md5 = '2DD44C3C29D667F5C0EF5F9D7C7FFB8B' OR sha256 = 'F266609E91985F0FE3E31C5E8FAEEEC4FFA5E0322D8B6F15FE69F4C5165B9559' OR Imphash = 'C07FDDD21D123EA9B3A08EEF44AAAC45'))"
         ],
         "filename": "proc_creation_win_pua_nimgrab.yml"
+    },
+    {
+        "title": "Findstr Suspicious ParentCommandLine",
+        "id": "ccb5742c-c248-4982-8c5c-5571b9275ad3",
+        "status": "experimental",
+        "description": "Detects findstring commands with a suspicious ParentCommandLine",
+        "author": "frack113",
+        "tags": [
+            "attack.discovery",
+            "attack.t1057"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND ParentCommandLine LIKE '%tasklist%' ESCAPE '\\') AND NOT ((CommandLine LIKE '%httpd.exe%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_findstr_susp_parent.yml"
     },
     {
         "title": "Ruby Inline Command Execution",
