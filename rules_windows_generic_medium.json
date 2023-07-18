@@ -2803,6 +2803,121 @@
         "filename": "lnx_sshd_exploit_cve_2023_2283_libssh_authentication_bypass.yml"
     },
     {
+        "title": "Potential CVE-2303-36884 URL Request Pattern Traffic",
+        "id": "d9365e39-febd-4a4b-8441-3ca91bb9d333",
+        "status": "experimental",
+        "description": "Detects a specific URL pattern containing a specific extension and parameters pointing to an IP address. This pattern was seen being used by RomCOM potentially exploiting CVE-2023-36884",
+        "author": "X__Junior",
+        "tags": [
+            "attack.command_and_control",
+            "cve.2023.36884"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-method = 'GET' AND c-uri REGEXP '\\.(zip|asp|htm|url|xml|chm|mht|vbs|search-ms)\\?d=[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')"
+        ],
+        "filename": "proxy_exploit_cve_2023_36884_office_windows_html_rce_extenstion_ip_pattern_traffic.yml"
+    },
+    {
+        "title": "Potential CVE-2023-36884 Exploitation - URL Marker",
+        "id": "e59f71ff-c042-4f7a-8a82-8f53beea817e",
+        "status": "experimental",
+        "description": "Detects a unique URL marker seen being used by RomCom potentially exploiting CVE-2023-36884",
+        "author": "X__Junior",
+        "tags": [
+            "attack.command_and_control",
+            "cve.2023.36884"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-method = 'GET' AND c-uri LIKE '%/MSHTML\\_C7/%' ESCAPE '\\')"
+        ],
+        "filename": "proxy_exploit_cve_2023_36884_office_windows_html_rce_url_marker_traffic.yml"
+    },
+    {
+        "title": "Potential CVE-2023-36884 Exploitation - Share Access",
+        "id": "3df95076-9e78-4e63-accb-16699c3b74f8",
+        "status": "experimental",
+        "description": "Detects access to a file share with a naming schema seen being used during exploitation of CVE-2023-36884",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "cve.2023.36884"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5140' AND ((ShareName LIKE '%\\\\MSHTML\\_C7\\\\%' ESCAPE '\\' AND ShareName REGEXP '[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}') OR (ShareLocalPath LIKE '%\\\\MSHTML\\_C7\\\\%' ESCAPE '\\' AND ShareLocalPath REGEXP '[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')))"
+        ],
+        "filename": "win_security_exploit_cve_2023_36884_office_windows_html_rce_share_access_pattern.yml"
+    },
+    {
+        "title": "Potential CVE-2023-36884 Exploitation Pattern",
+        "id": "0066d244-c277-4c3e-88ec-9e7b777cc8bc",
+        "status": "experimental",
+        "description": "Detects a unique pattern seen being used by RomCom potentially exploiting CVE-2023-36884",
+        "author": "X__Junior",
+        "tags": [
+            "attack.command_and_control",
+            "cve.2023.36884"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-method = 'GET' AND c-uri LIKE '%/MSHTML\\_C7/%' ESCAPE '\\' AND c-uri REGEXP '\\?d=[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')"
+        ],
+        "filename": "proxy_exploit_cve_2023_36884_office_windows_html_rce.yml"
+    },
+    {
+        "title": "Potential CVE-2023-36884 Exploitation Dropped File",
+        "id": "8023d3a2-dcdc-44da-8fa9-5c7906e55b38",
+        "status": "experimental",
+        "description": "Detects a specific file being created in the recent folder of Office. These files have been seen being dropped during potential exploitations of CVE-2023-36884",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.defense_evasion",
+            "cve.2023.36884"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Office\\\\Recent\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\file001.url' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_exploit_cve_2023_36884_office_windows_html_rce_file_patterns.yml"
+    },
+    {
+        "title": "Potential CVE-2023-36884 Exploitation - File Downloads",
+        "id": "6af1617f-c179-47e3-bd66-b28034a1052d",
+        "status": "experimental",
+        "description": "Detects files seen being requested by RomCom while potentially exploiting CVE-2023-36884",
+        "author": "X__Junior",
+        "tags": [
+            "attack.command_and_control",
+            "cve.2023.36884"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-method = 'GET' AND (c-uri LIKE '%/ex001.url%' ESCAPE '\\' OR c-uri LIKE '%/file001.search-ms%' ESCAPE '\\' OR c-uri LIKE '%/file001.url%' ESCAPE '\\' OR c-uri LIKE '%/file001.vbs%' ESCAPE '\\' OR c-uri LIKE '%/file1.mht%' ESCAPE '\\' OR c-uri LIKE '%/o2010.asp%' ESCAPE '\\' OR c-uri LIKE '%/redir\\_obj.html%' ESCAPE '\\' OR c-uri LIKE '%/RFile.asp%' ESCAPE '\\' OR c-uri LIKE '%/zip\\_k.asp%' ESCAPE '\\' OR c-uri LIKE '%/zip\\_k2.asp%' ESCAPE '\\' OR c-uri LIKE '%/zip\\_k3.asp%' ESCAPE '\\'))"
+        ],
+        "filename": "proxy_exploit_cve_2023_36884_office_windows_html_rce_traffic.yml"
+    },
+    {
         "title": "Potential CVE-2023-25717 Exploitation Attempt",
         "id": "043c1609-0e32-4462-a6f2-5a0c2da3fafe",
         "status": "experimental",
@@ -41415,6 +41530,25 @@
         "filename": "net_connection_win_susp_external_ip_lookup.yml"
     },
     {
+        "title": "Suspicious Office Outbound Connections",
+        "id": "3b5ba899-9842-4bc2-acc2-12308498bf42",
+        "status": "experimental",
+        "description": "Detects office suit applications communicating to target systems on uncommon ports",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.command_and_control"
+        ],
+        "falsepositives": [
+            "Other ports can be used, apply additional filters accordingly"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\outlook.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winword.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordview.exe' ESCAPE '\\') AND NOT ((DestinationPort IN ('139', '443', '445', '80'))))"
+        ],
+        "filename": "net_connection_win_office_susp_ports.yml"
+    },
+    {
         "title": "Suspicious Epmap Connection",
         "id": "628d7a0b-7b84-4466-8552-e6138bc03b43",
         "status": "experimental",
@@ -41794,6 +41928,47 @@
             "SELECT * FROM logs WHERE DestinationHostname IN ('alimabi.cn', 'ap.luckpool.net', 'bcn.pool.minergate.com', 'bcn.vip.pool.minergate.com', 'bohemianpool.com', 'ca.minexmr.com', 'ca.monero.herominers.com', 'cbd.monerpool.org', 'cbdv2.monerpool.org', 'cryptmonero.com', 'crypto-pool.fr', 'crypto-pool.info', 'cryptonight-hub.miningpoolhub.com', 'd1pool.ddns.net', 'd5pool.us', 'daili01.monerpool.org', 'de.minexmr.com', 'dl.nbminer.com', 'donate.graef.in', 'donate.ssl.xmrig.com', 'donate.v2.xmrig.com', 'donate.xmrig.com', 'donate2.graef.in', 'drill.moneroworld.com', 'dwarfpool.com', 'emercoin.com', 'emercoin.net', 'emergate.net', 'ethereumpool.co', 'eu.luckpool.net', 'eu.minerpool.pw', 'fcn-xmr.pool.minergate.com', 'fee.xmrig.com', 'fr.minexmr.com', 'hellominer.com', 'herominers.com', 'huadong1-aeon.ppxxmr.com', 'iwanttoearn.money', 'jw-js1.ppxxmr.com', 'koto-pool.work', 'lhr.nbminer.com', 'lhr3.nbminer.com', 'linux.monerpool.org', 'lokiturtle.herominers.com', 'luckpool.net', 'masari.miner.rocks', 'mine.c3pool.com', 'mine.moneropool.com', 'mine.ppxxmr.com', 'mine.zpool.ca', 'mine1.ppxxmr.com', 'minemonero.gq', 'miner.ppxxmr.com', 'miner.rocks', 'minercircle.com', 'minergate.com', 'minerpool.pw', 'minerrocks.com', 'miners.pro', 'minerxmr.ru', 'minexmr.cn', 'minexmr.com', 'mining-help.ru', 'miningpoolhub.com', 'mixpools.org', 'moner.monerpool.org', 'moner1min.monerpool.org', 'monero-master.crypto-pool.fr', 'monero.crypto-pool.fr', 'monero.hashvault.pro', 'monero.herominers.com', 'monero.lindon-pool.win', 'monero.miners.pro', 'monero.riefly.id', 'monero.us.to', 'monerocean.stream', 'monerogb.com', 'monerohash.com', 'moneroocean.stream', 'moneropool.com', 'moneropool.nl', 'monerorx.com', 'monerpool.org', 'moriaxmr.com', 'mro.pool.minergate.com', 'multipool.us', 'myxmr.pw', 'na.luckpool.net', 'nanopool.org', 'nbminer.com', 'node3.luckpool.net', 'noobxmr.com', 'pangolinminer.comgandalph3000.com', 'pool.4i7i.com', 'pool.armornetwork.org', 'pool.cortins.tk', 'pool.gntl.co.uk', 'pool.hashvault.pro', 'pool.minergate.com', 'pool.minexmr.com', 'pool.monero.hashvault.pro', 'pool.ppxxmr.com', 'pool.somec.cc', 'pool.support', 'pool.supportxmr.com', 'pool.usa-138.com', 'pool.xmr.pt', 'pool.xmrfast.com', 'pool2.armornetwork.org', 'poolchange.ppxxmr.com', 'pooldd.com', 'poolmining.org', 'poolto.be', 'ppxvip1.ppxxmr.com', 'ppxxmr.com', 'prohash.net', 'r.twotouchauthentication.online', 'randomx.xmrig.com', 'ratchetmining.com', 'seed.emercoin.com', 'seed.emercoin.net', 'seed.emergate.net', 'seed1.joulecoin.org', 'seed2.joulecoin.org', 'seed3.joulecoin.org', 'seed4.joulecoin.org', 'seed5.joulecoin.org', 'seed6.joulecoin.org', 'seed7.joulecoin.org', 'seed8.joulecoin.org', 'sg.minexmr.com', 'sheepman.mine.bz', 'siamining.com', 'sumokoin.minerrocks.com', 'supportxmr.com', 'suprnova.cc', 'teracycle.net', 'trtl.cnpool.cc', 'trtl.pool.mine2gether.com', 'turtle.miner.rocks', 'us-west.minexmr.com', 'usxmrpool.com', 'viaxmr.com', 'webservicepag.webhop.net', 'xiazai.monerpool.org', 'xiazai1.monerpool.org', 'xmc.pool.minergate.com', 'xmo.pool.minergate.com', 'xmr-asia1.nanopool.org', 'xmr-au1.nanopool.org', 'xmr-eu1.nanopool.org', 'xmr-eu2.nanopool.org', 'xmr-jp1.nanopool.org', 'xmr-us-east1.nanopool.org', 'xmr-us-west1.nanopool.org', 'xmr-us.suprnova.cc', 'xmr-usa.dwarfpool.com', 'xmr.2miners.com', 'xmr.5b6b7b.ru', 'xmr.alimabi.cn', 'xmr.bohemianpool.com', 'xmr.crypto-pool.fr', 'xmr.crypto-pool.info', 'xmr.f2pool.com', 'xmr.hashcity.org', 'xmr.hex7e4.ru', 'xmr.ip28.net', 'xmr.monerpool.org', 'xmr.mypool.online', 'xmr.nanopool.org', 'xmr.pool.gntl.co.uk', 'xmr.pool.minergate.com', 'xmr.poolto.be', 'xmr.ppxxmr.com', 'xmr.prohash.net', 'xmr.simka.pw', 'xmr.somec.cc', 'xmr.suprnova.cc', 'xmr.usa-138.com', 'xmr.vip.pool.minergate.com', 'xmr1min.monerpool.org', 'xmrf.520fjh.org', 'xmrf.fjhan.club', 'xmrfast.com', 'xmrigcc.graef.in', 'xmrminer.cc', 'xmrpool.de', 'xmrpool.eu', 'xmrpool.me', 'xmrpool.net', 'xmrpool.xyz', 'xx11m.monerpool.org', 'xx11mv2.monerpool.org', 'xxx.hex7e4.ru', 'zarabotaibitok.ru', 'zer0day.ru')"
         ],
         "filename": "net_connection_win_crypto_mining_pools.yml"
+    },
+    {
+        "title": "Windows Mail App Mailbox Access Via PowerShell Script",
+        "id": "4e485d01-e18a-43f6-a46b-ef20496fa9d3",
+        "status": "experimental",
+        "description": "Detects PowerShell scripts that try to access the default Windows MailApp MailBox. This indicates manipulation of or access to the stored emails of a user. E.g. this could be used by an attacker to exfiltrate or delete the content of the emails.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070.008",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%\\\\Comms\\\\Unistore\\\\data%' ESCAPE '\\')"
+        ],
+        "filename": "posh_ps_mailbox_access.yml"
+    },
+    {
+        "title": "Potential Registry Reconnaissance Via PowerShell Script",
+        "id": "064060aa-09fb-4636-817f-020a32aa7e9e",
+        "status": "experimental",
+        "description": "Detects PowerShell scripts with potential registry reconnaissance capabilities. Adversaries may interact with the Windows registry to gather information about the system credentials, configuration, and installed software.",
+        "author": "frack113",
+        "tags": [
+            "attack.discovery",
+            "attack.t1012",
+            "attack.t1007",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Due to the nature of the script block, the matching of the string could sometimes result in a false positive. Use this rule to hunt for potential malicious or suspicious scripts."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(Get-Item|gci|Get-ChildItem).{1,64}-Path.{1,64}\\\\(currentcontrolset\\\\services|CurrentVersion\\\\Policies\\\\Explorer\\\\Run|CurrentVersion\\\\Run|CurrentVersion\\\\ShellServiceObjectDelayLoad|CurrentVersion\\\\Windows\\winlogon)\\\\')"
+        ],
+        "filename": "posh_ps_registry_reconnaissance.yml"
     },
     {
         "title": "Potential Password Reconnaissance Via Findstr.EXE",
