@@ -12724,6 +12724,25 @@
         "filename": "proc_creation_win_powershell_cmdline_reversed_strings.yml"
     },
     {
+        "title": "Windows Defender Definition Files Removed",
+        "id": "9719a8aa-401c-41af-8108-ced7ec9cd75c",
+        "status": "test",
+        "description": "Adversaries may disable security tools to avoid possible detection of their tools and activities by removing Windows Defender Definition Files",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' OR OriginalFileName = 'MpCmdRun.exe') AND (CommandLine LIKE '% -RemoveDefinitions%' ESCAPE '\\' AND CommandLine LIKE '% -All%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mpcmdrun_remove_windows_defender_definition.yml"
+    },
+    {
         "title": "Invoke-Obfuscation VAR++ LAUNCHER OBFUSCATION",
         "id": "e9f55347-2928-4c06-88e5-1a7f8169942e",
         "status": "test",
