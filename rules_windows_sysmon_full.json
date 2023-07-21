@@ -7464,6 +7464,25 @@
         "filename": "posh_ps_file_and_directory_discovery.yml"
     },
     {
+        "title": "PowerShell Set-Acl On Windows Folder - PsScript",
+        "id": "3bf1d859-3a7e-44cb-8809-a99e066d3478",
+        "status": "experimental",
+        "description": "Detects PowerShell scripts to set the ACL to a file in the Windows folder",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1222"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%Set-Acl %' ESCAPE '\\' AND ScriptBlockText LIKE '%-AclObject %' ESCAPE '\\' AND (ScriptBlockText LIKE '%-Path \"C:\\\\Windows%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path \"C:/Windows%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path ''C:\\\\Windows%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path ''C:/Windows%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path C:\\\\Windows%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path C:/Windows%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path $env:windir%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path \"$env:windir%' ESCAPE '\\' OR ScriptBlockText LIKE '%-Path ''$env:windir%' ESCAPE '\\') AND (ScriptBlockText LIKE '%FullControl%' ESCAPE '\\' OR ScriptBlockText LIKE '%Allow%' ESCAPE '\\'))"
+        ],
+        "filename": "posh_ps_set_acl_susp_location.yml"
+    },
+    {
         "title": "Clearing Windows Console History",
         "id": "bde47d4b-9987-405c-94c7-b080410e8ea7",
         "status": "test",
@@ -7501,6 +7520,25 @@
             "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%New-Object%' ESCAPE '\\' AND ScriptBlockText LIKE '%IO.FileStream%' ESCAPE '\\' AND ScriptBlockText LIKE '%\\\\\\\\.\\\\\\*' ESCAPE '\\')"
         ],
         "filename": "posh_ps_susp_iofilestream.yml"
+    },
+    {
+        "title": "PowerShell Script Change Permission Via Set-Acl - PsScript",
+        "id": "cae80281-ef23-44c5-873b-fd48d2666f49",
+        "status": "experimental",
+        "description": "Detects PowerShell scripts set ACL to of a file or a folder",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1222"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%Set-Acl %' ESCAPE '\\' AND ScriptBlockText LIKE '%-AclObject %' ESCAPE '\\' AND ScriptBlockText LIKE '%-Path %' ESCAPE '\\')"
+        ],
+        "filename": "posh_ps_set_acl.yml"
     },
     {
         "title": "Potential In-Memory Execution Using Reflection.Assembly",
@@ -22626,6 +22664,24 @@
         "filename": "proc_creation_win_userinit_uncommon_child_processes.yml"
     },
     {
+        "title": "PowerShell Set-Acl On Windows Folder",
+        "id": "0944e002-e3f6-4eb5-bf69-3a3067b53d73",
+        "status": "experimental",
+        "description": "Detects PowerShell scripts to set the ACL to a file in the Windows folder",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll') OR (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\')) AND (CommandLine LIKE '%Set-Acl %' ESCAPE '\\' AND CommandLine LIKE '%-AclObject %' ESCAPE '\\') AND (CommandLine LIKE '%-Path \"C:\\\\Windows%' ESCAPE '\\' OR CommandLine LIKE '%-Path ''C:\\\\Windows%' ESCAPE '\\' OR CommandLine LIKE '%-Path \\%windir\\%%' ESCAPE '\\' OR CommandLine LIKE '%-Path $env:windir%' ESCAPE '\\') AND (CommandLine LIKE '%FullControl%' ESCAPE '\\' OR CommandLine LIKE '%Allow%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_set_acl_susp_location.yml"
+    },
+    {
         "title": "SyncAppvPublishingServer Execute Arbitrary PowerShell Code",
         "id": "fbd7c32d-db2a-4418-b92c-566eb8911133",
         "status": "experimental",
@@ -23461,6 +23517,24 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND ((CommandLine LIKE '%VwBpAG4AMwAyAF8AUwBoAGEAZABvAHcAYwBvAHAAeQ%' ESCAPE '\\' OR CommandLine LIKE '%cAaQBuADMAMgBfAFMAaABhAGQAbwB3AGMAbwBwAHkA%' ESCAPE '\\' OR CommandLine LIKE '%XAGkAbgAzADIAXwBTAGgAYQBkAG8AdwBjAG8AcAB5A%' ESCAPE '\\' OR CommandLine LIKE '%V2luMzJfU2hhZG93Y29we%' ESCAPE '\\' OR CommandLine LIKE '%dpbjMyX1NoYWRvd2NvcH%' ESCAPE '\\' OR CommandLine LIKE '%XaW4zMl9TaGFkb3djb3B5%' ESCAPE '\\') OR (CommandLine LIKE '%VwBpAG4AMwAyAF8AUwBjAGgAZQBkAHUAbABlAGQASgBvAGIA%' ESCAPE '\\' OR CommandLine LIKE '%cAaQBuADMAMgBfAFMAYwBoAGUAZAB1AGwAZQBkAEoAbwBiA%' ESCAPE '\\' OR CommandLine LIKE '%XAGkAbgAzADIAXwBTAGMAaABlAGQAdQBsAGUAZABKAG8AYg%' ESCAPE '\\' OR CommandLine LIKE '%V2luMzJfU2NoZWR1bGVkSm9i%' ESCAPE '\\' OR CommandLine LIKE '%dpbjMyX1NjaGVkdWxlZEpvY%' ESCAPE '\\' OR CommandLine LIKE '%XaW4zMl9TY2hlZHVsZWRKb2%' ESCAPE '\\') OR (CommandLine LIKE '%VwBpAG4AMwAyAF8AUAByAG8AYwBlAHMAcw%' ESCAPE '\\' OR CommandLine LIKE '%cAaQBuADMAMgBfAFAAcgBvAGMAZQBzAHMA%' ESCAPE '\\' OR CommandLine LIKE '%XAGkAbgAzADIAXwBQAHIAbwBjAGUAcwBzA%' ESCAPE '\\' OR CommandLine LIKE '%V2luMzJfUHJvY2Vzc%' ESCAPE '\\' OR CommandLine LIKE '%dpbjMyX1Byb2Nlc3%' ESCAPE '\\' OR CommandLine LIKE '%XaW4zMl9Qcm9jZXNz%' ESCAPE '\\') OR (CommandLine LIKE '%VwBpAG4AMwAyAF8AVQBzAGUAcgBBAGMAYwBvAHUAbgB0A%' ESCAPE '\\' OR CommandLine LIKE '%cAaQBuADMAMgBfAFUAcwBlAHIAQQBjAGMAbwB1AG4AdA%' ESCAPE '\\' OR CommandLine LIKE '%XAGkAbgAzADIAXwBVAHMAZQByAEEAYwBjAG8AdQBuAHQA%' ESCAPE '\\' OR CommandLine LIKE '%V2luMzJfVXNlckFjY291bn%' ESCAPE '\\' OR CommandLine LIKE '%dpbjMyX1VzZXJBY2NvdW50%' ESCAPE '\\' OR CommandLine LIKE '%XaW4zMl9Vc2VyQWNjb3Vud%' ESCAPE '\\') OR (CommandLine LIKE '%VwBpAG4AMwAyAF8ATABvAGcAZwBlAGQATwBuAFUAcwBlAHIA%' ESCAPE '\\' OR CommandLine LIKE '%cAaQBuADMAMgBfAEwAbwBnAGcAZQBkAE8AbgBVAHMAZQByA%' ESCAPE '\\' OR CommandLine LIKE '%XAGkAbgAzADIAXwBMAG8AZwBnAGUAZABPAG4AVQBzAGUAcg%' ESCAPE '\\' OR CommandLine LIKE '%V2luMzJfTG9nZ2VkT25Vc2Vy%' ESCAPE '\\' OR CommandLine LIKE '%dpbjMyX0xvZ2dlZE9uVXNlc%' ESCAPE '\\' OR CommandLine LIKE '%XaW4zMl9Mb2dnZWRPblVzZX%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_base64_wmi_classes.yml"
+    },
+    {
+        "title": "PowerShell Script Change Permission Via Set-Acl",
+        "id": "bdeb2cff-af74-4094-8426-724dc937f20a",
+        "status": "experimental",
+        "description": "Detects PowerShell execution to set the ACL of a file or a folder",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll') OR (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\')) AND (CommandLine LIKE '%Set-Acl %' ESCAPE '\\' AND CommandLine LIKE '%-AclObject %' ESCAPE '\\' AND CommandLine LIKE '%-Path %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_set_acl.yml"
     },
     {
         "title": "Persistence Via TypedPaths - CommandLine",
