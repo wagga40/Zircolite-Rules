@@ -17247,6 +17247,24 @@
         "filename": "dns_query_win_tor_onion.yml"
     },
     {
+        "title": "Sysmon File Executable Creation Detected",
+        "id": "693a44e9-7f26-4cb6-b787-214867672d3a",
+        "status": "experimental",
+        "description": "Triggers on any Sysmon \"FileExecutableDetected\" event, which triggers every time a PE that is monitored by the config is created.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventID = '29')"
+        ],
+        "filename": "sysmon_file_executable.yml"
+    },
+    {
         "title": "Sysmon Configuration Modification",
         "id": "1f2b5353-573f-4880-8e33-7d04dcf97744",
         "status": "test",
@@ -17303,6 +17321,24 @@
             "SELECT * FROM logs WHERE (Type = 'Image is replaced' AND NOT ((NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MicrosoftEdge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WMIADAP.exe' ESCAPE '\\')))"
         ],
         "filename": "sysmon_process_hollowing.yml"
+    },
+    {
+        "title": "Sysmon Blocked File Shredding",
+        "id": "c3e5c1b1-45e9-4632-b242-27939c170239",
+        "status": "experimental",
+        "description": "Triggers on any Sysmon \"FileBlockShredding\" event, which indicates a violation of the configured shredding policy.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventID = '28')"
+        ],
+        "filename": "sysmon_file_block_shredding.yml"
     },
     {
         "title": "Sysmon Configuration Change",

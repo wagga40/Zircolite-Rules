@@ -11056,6 +11056,24 @@
         "filename": "sysmon_process_hollowing.yml"
     },
     {
+        "title": "Sysmon Blocked File Shredding",
+        "id": "c3e5c1b1-45e9-4632-b242-27939c170239",
+        "status": "experimental",
+        "description": "Triggers on any Sysmon \"FileBlockShredding\" event, which indicates a violation of the configured shredding policy.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventID = '28')"
+        ],
+        "filename": "sysmon_file_block_shredding.yml"
+    },
+    {
         "title": "Sysmon Blocked Executable",
         "id": "23b71bc5-953e-4971-be4c-c896cda73fc2",
         "status": "experimental",
