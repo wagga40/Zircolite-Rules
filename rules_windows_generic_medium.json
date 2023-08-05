@@ -5977,7 +5977,7 @@
         "title": "Potential Registry Persistence Attempt Via Windows Telemetry",
         "id": "73a883d0-0348-4be4-a8d8-51031c2564f8",
         "status": "test",
-        "description": "Detects potential persistence behaviour using the windows telemetry registry key.\nWindows telemetry makes use of the binary CompatTelRunner.exe to run a variety of commands and perform the actual telemetry collections.\nThis binary was created to be easily extensible, and to that end, it relies on the registry to instruct on which commands to run.\nThe problem is, it will run any arbitrary command without restriction of location or type.\n",
+        "description": "Detects potential persistence behavior using the windows telemetry registry key.\nWindows telemetry makes use of the binary CompatTelRunner.exe to run a variety of commands and perform the actual telemetry collections.\nThis binary was created to be easily extensible, and to that end, it relies on the registry to instruct on which commands to run.\nThe problem is, it will run any arbitrary command without restriction of location or type.\n",
         "author": "Lednyov Alexey, oscd.community, Sreeman",
         "tags": [
             "attack.persistence",
@@ -5988,7 +5988,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\TelemetryController\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Command' ESCAPE '\\' AND (NewValue LIKE '%.sh%' ESCAPE '\\' OR NewValue LIKE '%.exe%' ESCAPE '\\' OR NewValue LIKE '%.dll%' ESCAPE '\\' OR NewValue LIKE '%.bin%' ESCAPE '\\' OR NewValue LIKE '%.bat%' ESCAPE '\\' OR NewValue LIKE '%.cmd%' ESCAPE '\\' OR NewValue LIKE '%.js%' ESCAPE '\\' OR NewValue LIKE '%.ps%' ESCAPE '\\' OR NewValue LIKE '%.vb%' ESCAPE '\\' OR NewValue LIKE '%.jar%' ESCAPE '\\' OR NewValue LIKE '%.hta%' ESCAPE '\\' OR NewValue LIKE '%.msi%' ESCAPE '\\' OR NewValue LIKE '%.vbs%' ESCAPE '\\')) AND NOT ((NewValue LIKE '%\\\\system32\\\\CompatTelRunner.exe%' ESCAPE '\\' OR NewValue LIKE '%\\\\system32\\\\DeviceCensus.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\TelemetryController\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Command' ESCAPE '\\' AND (NewValue LIKE '%.bat%' ESCAPE '\\' OR NewValue LIKE '%.bin%' ESCAPE '\\' OR NewValue LIKE '%.cmd%' ESCAPE '\\' OR NewValue LIKE '%.dat%' ESCAPE '\\' OR NewValue LIKE '%.dll%' ESCAPE '\\' OR NewValue LIKE '%.exe%' ESCAPE '\\' OR NewValue LIKE '%.hta%' ESCAPE '\\' OR NewValue LIKE '%.jar%' ESCAPE '\\' OR NewValue LIKE '%.js%' ESCAPE '\\' OR NewValue LIKE '%.msi%' ESCAPE '\\' OR NewValue LIKE '%.ps%' ESCAPE '\\' OR NewValue LIKE '%.sh%' ESCAPE '\\' OR NewValue LIKE '%.vb%' ESCAPE '\\')) AND NOT (((NewValue LIKE '%\\\\system32\\\\CompatTelRunner.exe%' ESCAPE '\\' OR NewValue LIKE '%\\\\system32\\\\DeviceCensus.exe%' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_telemetry_persistence.yml"
     },
@@ -6776,6 +6776,25 @@
         "filename": "registry_set_timeproviders_dllname.yml"
     },
     {
+        "title": "Suspicious Shim Database Patching Activity",
+        "id": "bf344fea-d947-4ef4-9192-34d008315d3a",
+        "status": "experimental",
+        "description": "Detects installation of new shim databases that try to patch sections of known processes for potential process injection or persistence.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\Custom\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\csrss.exe' ESCAPE '\\' OR TargetObject LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR TargetObject LIKE '%\\\\explorer.exe' ESCAPE '\\' OR TargetObject LIKE '%\\\\services.exe' ESCAPE '\\' OR TargetObject LIKE '%\\\\svchost.exe' ESCAPE '\\' OR TargetObject LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR TargetObject LIKE '%\\\\winlogon.exe' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_persistence_shim_database_susp_application.yml"
+    },
+    {
         "title": "ClickOnce Trust Prompt Tampering",
         "id": "ac9159cc-c364-4304-8f0a-d63fc1a0aabb",
         "status": "experimental",
@@ -7492,25 +7511,6 @@
         "filename": "registry_set_dns_server_level_plugin_dll.yml"
     },
     {
-        "title": "Potential Persistence Via Shim Database Modification",
-        "id": "dfb5b4e8-91d0-4291-b40a-e3b0d3942c45",
-        "status": "experimental",
-        "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by application shims.\nThe Microsoft Windows Application Compatibility Infrastructure/Framework (Application Shim) was created to allow for backward compatibility of software as the operating system codebase changes over time\n",
-        "author": "frack113",
-        "tags": [
-            "attack.persistence",
-            "attack.t1546.011"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((TargetObject LIKE 'HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\InstalledSDB\\\\%' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\Custom\\\\%' ESCAPE '\\') AND EventType = 'SetValue') AND NOT (NewValue = ''))"
-        ],
-        "filename": "registry_set_persistence_shim_databases.yml"
-    },
-    {
         "title": "ETW Logging Disabled In .NET Processes - Sysmon Registry",
         "id": "bf4fc428-dcc3-4bbd-99fe-2422aeee2544",
         "status": "test",
@@ -7951,6 +7951,25 @@
         "filename": "registry_set_creation_service_susp_folder.yml"
     },
     {
+        "title": "Potential Persistence Via Shim Database In Uncommon Location",
+        "id": "6b6976a3-b0e6-4723-ac24-ae38a737af41",
+        "status": "experimental",
+        "description": "Detects the installation of a new shim database where the file is located in a non-default location",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\InstalledSDB\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\DatabasePath%' ESCAPE '\\') AND NOT ((NewValue LIKE '%:\\\\Windows\\\\AppPatch\\\\Custom%' ESCAPE '\\')))"
+        ],
+        "filename": "registry_set_persistence_shim_database_uncommon_location.yml"
+    },
+    {
         "title": "Potential Persistence Via COM Hijacking From Suspicious Locations",
         "id": "3d968d17-ffa4-4bc0-bfdc-f139de76ce77",
         "status": "experimental",
@@ -8182,6 +8201,25 @@
             "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\Policies\\\\Microsoft\\\\Windows Defender\\\\PUAProtection%' ESCAPE '\\' AND NewValue = 'DWORD (0x00000000)')"
         ],
         "filename": "registry_set_disabled_pua_protection_on_microsoft_defender.yml"
+    },
+    {
+        "title": "Potential Persistence Via Shim Database Modification",
+        "id": "dfb5b4e8-91d0-4291-b40a-e3b0d3942c45",
+        "status": "experimental",
+        "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by application shims.\nThe Microsoft Windows Application Compatibility Infrastructure/Framework (Application Shim) was created to allow for backward compatibility of software as the operating system codebase changes over time\n",
+        "author": "frack113",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546.011"
+        ],
+        "falsepositives": [
+            "Legitimate custom SHIM installations will also trigger this rule"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\InstalledSDB\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\AppCompatFlags\\\\Custom\\\\%' ESCAPE '\\')) AND NOT ((NewValue = '')))"
+        ],
+        "filename": "registry_set_persistence_shim_database.yml"
     },
     {
         "title": "Session Manager Autorun Keys Modification",
@@ -15835,17 +15873,17 @@
         "id": "ee63c85c-6d51-4d12-ad09-04e25877a947",
         "status": "test",
         "description": "Adversaries may establish persistence and/or elevate privileges by executing malicious content triggered by application shims.\nThe Microsoft Windows Application Compatibility Infrastructure/Framework (Application Shim) was created to allow for backward compatibility of software as the operating system codebase changes over time.\n",
-        "author": "frack113",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.persistence",
             "attack.t1547.009"
         ],
         "falsepositives": [
-            "Unknown"
+            "Legitimate custom SHIM installations will also trigger this rule"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE '%.sdb' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Windows\\\\apppatch\\\\Custom\\\\%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%:\\\\Windows\\\\apppatch\\\\Custom\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\apppatch\\\\CustomSDB\\\\%' ESCAPE '\\')"
         ],
         "filename": "file_event_win_creation_new_shim_database.yml"
     },
@@ -18063,6 +18101,27 @@
         "filename": "image_load_dll_vsstrace_susp_load.yml"
     },
     {
+        "title": "Potential EACore.DLL Sideloading",
+        "id": "edd3ddc3-386f-4ba5-9ada-4376b2cfa7b5",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"EACore.dll\"",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\EACore.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%C:\\\\Program Files\\\\Electronic Arts\\\\EA Desktop\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\EACoreServer.exe%' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\Program Files\\\\Electronic Arts\\\\EA Desktop\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_side_load_eacore.yml"
+    },
+    {
         "title": "Potential Waveedit.DLL Sideloading",
         "id": "71b31e99-9ad0-47d4-aeb5-c0ca3928eeeb",
         "status": "experimental",
@@ -18387,6 +18446,27 @@
         "filename": "image_load_side_load_shelldispatch.yml"
     },
     {
+        "title": "Potential Mfdetours.DLL Sideloading",
+        "id": "d2605a99-2218-4894-8fd3-2afb7946514d",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"mfdetours.dll\". While using \"mftrace.exe\" it can be abused to attach to an arbitrary process and force load any DLL named \"mfdetours.dll\" from the current directory of execution.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\mfdetours.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE '%:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\bin\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_side_load_mfdetours.yml"
+    },
+    {
         "title": "Active Directory Parsing DLL Loaded Via Office Application",
         "id": "a2a3b925-7bb0-433b-b508-db9003263cc4",
         "status": "test",
@@ -18609,6 +18689,27 @@
             "SELECT * FROM logs WHERE ((((ImageLoaded LIKE '%\\\\credui.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wincredui.dll' ESCAPE '\\') OR OriginalFileName IN ('credui.dll', 'wincredui.dll')) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\regedit.exe' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%\\\\opera\\_autoupdate.exe' ESCAPE '\\') OR ((NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Teams.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\%' ESCAPE '\\')))"
         ],
         "filename": "image_load_credui_uncommon_process_load.yml"
+    },
+    {
+        "title": "Potential Vivaldi_elf.DLL Sideloading",
+        "id": "2092cacb-d77b-4f98-ab0d-32b32f99a054",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"vivaldi_elf.dll\"",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\vivaldi\\_elf.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\Vivaldi\\\\Application\\\\vivaldi.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\Vivaldi\\\\Application\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_side_load_vivaldi_elf.yml"
     },
     {
         "title": "Potential DLL Sideloading Of Non-Existent DLLs From System Folders",
@@ -19351,6 +19452,27 @@
             "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\JSESPR.dll' ESCAPE '\\' AND NOT (ImageLoaded LIKE 'C:\\\\Program Files\\\\Common Files\\\\Justsystem\\\\JsSchHlp\\\\%' ESCAPE '\\'))"
         ],
         "filename": "image_load_side_load_jsschhlp.yml"
+    },
+    {
+        "title": "Potential AVKkid.DLL Sideloading",
+        "id": "952ed57c-8f99-453d-aee0-53a49c22f95d",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of \"AVKkid.dll\"",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\AVKkid.dll' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\G DATA\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Program Files\\\\G DATA\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\AVKKid.exe' ESCAPE '\\' AND (ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\G DATA\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files\\\\G DATA\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_avkkid.yml"
     },
     {
         "title": "CVE-2010-5278 Exploitation Attempt",
@@ -28057,11 +28179,11 @@
         "filename": "proc_creation_win_powershell_cmdline_convertto_securestring.yml"
     },
     {
-        "title": "Suspicious Parent of Csc.exe",
+        "title": "Csc.EXE Execution Form Potentially Suspicious Parent",
         "id": "b730a276-6b63-41b8-bcf8-55930c8fc6ee",
         "status": "test",
-        "description": "Detects a suspicious parent of csc.exe, which could by a sign of payload delivery",
-        "author": "Florian Roth (Nextron Systems)",
+        "description": "Detects a potentially suspicious parent of \"csc.exe\", which could be a sign of payload delivery.",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.t1059.005",
@@ -28075,7 +28197,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' AND (ParentProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' OR OriginalFileName = 'csc.exe') AND ((ParentProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\winword.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR ((ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (ParentCommandLine LIKE '%-Encoded %' ESCAPE '\\' OR ParentCommandLine LIKE '%FromBase64String%' ESCAPE '\\')) OR (ParentCommandLine REGEXP '([Pp]rogram[Dd]ata|%([Ll]ocal)?[Aa]pp[Dd]ata%|\\\\[Aa]pp[Dd]ata\\\\([Ll]ocal(Ll]ow)?|[Rr]oaming))\\\\[^\\\\]{1,256}$' OR (ParentCommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))) AND NOT (((ParentCommandLine LIKE '%JwB7ACIAZgBhAGkAbABlAGQAIgA6AHQAcgB1AGUALAAiAG0AcwBnACIAOgAiAEEAbgBzAGkAYgBsAGUAIAByAGUAcQB1AGkAcgBlAHMAIABQAG8AdwBlAHIAUwBoAGUAbABsACAAdgAzAC4AMAAgAG8AcgAgAG4AZQB3AGUAcgAiAH0AJw%' ESCAPE '\\' OR ParentCommandLine LIKE '%cAewAiAGYAYQBpAGwAZQBkACIAOgB0AHIAdQBlACwAIgBtAHMAZwAiADoAIgBBAG4AcwBpAGIAbABlACAAcgBlAHEAdQBpAHIAZQBzACAAUABvAHcAZQByAFMAaABlAGwAbAAgAHYAMwAuADAAIABvAHIAIABuAGUAdwBlAHIAIgB9ACcA%' ESCAPE '\\' OR ParentCommandLine LIKE '%nAHsAIgBmAGEAaQBsAGUAZAAiADoAdAByAHUAZQAsACIAbQBzAGcAIgA6ACIAQQBuAHMAaQBiAGwAZQAgAHIAZQBxAHUAaQByAGUAcwAgAFAAbwB3AGUAcgBTAGgAZQBsAGwAIAB2ADMALgAwACAAbwByACAAbgBlAHcAZQByACIAfQAnA%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_csc_susp_parent.yml"
     },
@@ -28236,6 +28358,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '% /create %' ESCAPE '\\' AND (CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Perflogs%' ESCAPE '\\')) OR (ParentCommandLine LIKE '%\\\\svchost.exe -k netsvcs -p -s Schedule' ESCAPE '\\' AND (CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Perflogs%' ESCAPE '\\'))) AND NOT (((CommandLine LIKE '%update\\_task.xml%' ESCAPE '\\' OR CommandLine LIKE '%/Create /TN TVInstallRestore /TR%' ESCAPE '\\') OR ParentCommandLine LIKE '%unattended.ini%' ESCAPE '\\') OR (CommandLine LIKE '%/Create /Xml \"C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\.CR.%' ESCAPE '\\' AND CommandLine LIKE '%Avira\\_Security\\_Installation.xml%' ESCAPE '\\') OR (CommandLine LIKE '%/Create /F /TN%' ESCAPE '\\' AND CommandLine LIKE '%/Xml %' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\is-%' ESCAPE '\\' AND CommandLine LIKE '%Avira\\_%' ESCAPE '\\' AND (CommandLine LIKE '%.tmp\\\\UpdateFallbackTask.xml%' ESCAPE '\\' OR CommandLine LIKE '%.tmp\\\\WatchdogServiceControlManagerTimeout.xml%' ESCAPE '\\' OR CommandLine LIKE '%.tmp\\\\SystrayAutostart.xml%' ESCAPE '\\' OR CommandLine LIKE '%.tmp\\\\MaintenanceTask.xml%' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%/Create /TN \"klcp\\_update\" /XML %' ESCAPE '\\' AND CommandLine LIKE '%\\\\klcp\\_update\\_task.xml%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_schtasks_env_folder.yml"
+    },
+    {
+        "title": "Potential Mpclient.DLL Sideloading Via OfflineScannerShell.EXE Execution",
+        "id": "02b18447-ea83-4b1b-8805-714a8a34546a",
+        "status": "test",
+        "description": "Detects execution of Windows Defender \"OfflineScannerShell.exe\" from its non standard directory.\nThe \"OfflineScannerShell.exe\" binary is vulnerable to DLL side loading and will load any DLL named \"mpclient.dll\" from the current working directory.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\OfflineScannerShell.exe' ESCAPE '\\' OR OriginalFileName = 'OfflineScannerShell.exe') AND NOT ((CurrentDirectory LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\Offline\\\\' ESCAPE '\\') OR (CurrentDirectory = '') OR (CurrentDirectory = '')))"
+        ],
+        "filename": "proc_creation_win_offlinescannershell_mpclient_sideloading.yml"
     },
     {
         "title": "Suspicious UltraVNC Execution",
@@ -28748,25 +28889,6 @@
         "filename": "proc_creation_win_lolbin_bginfo.yml"
     },
     {
-        "title": "Suspicious OfflineScannerShell.exe Execution From Another Folder",
-        "id": "02b18447-ea83-4b1b-8805-714a8a34546a",
-        "status": "test",
-        "description": "Use OfflineScannerShell.exe to execute mpclient.dll library in the current working directory",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\OfflineScannerShell.exe' ESCAPE '\\' AND NOT ((CurrentDirectory LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\Offline\\\\' ESCAPE '\\') OR (CurrentDirectory = '')))"
-        ],
-        "filename": "proc_creation_win_lolbin_offlinescannershell.yml"
-    },
-    {
         "title": "Suspicious GUP Usage",
         "id": "0a4f6091-223b-41f6-8743-f322ec84930b",
         "status": "test",
@@ -28826,10 +28948,10 @@
         "filename": "proc_creation_win_uac_bypass_ieinstal.yml"
     },
     {
-        "title": "Possible Shim Database Persistence via sdbinst.exe",
+        "title": "Potential Shim Database Persistence via Sdbinst.EXE",
         "id": "517490a7-115a-48c6-8862-1a481504d5a8",
         "status": "test",
-        "description": "Detects installation of a new shim using sdbinst.exe. A shim can be used to load malicious DLLs into applications.",
+        "description": "Detects installation of a new shim using sdbinst.exe.\nAdversaries may establish persistence and/or elevate privileges by executing malicious content triggered by application shims\n",
         "author": "Markus Neis",
         "tags": [
             "attack.persistence",
@@ -28839,9 +28961,9 @@
         "falsepositives": [
             "Unknown"
         ],
-        "level": "high",
+        "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\sdbinst.exe' ESCAPE '\\' AND CommandLine LIKE '%.sdb%' ESCAPE '\\') AND NOT (CommandLine LIKE '%iisexpressshim.sdb%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\sdbinst.exe' ESCAPE '\\' OR OriginalFileName = 'sdbinst.exe') AND CommandLine LIKE '%.sdb%' ESCAPE '\\') AND NOT ((ParentProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND CommandLine LIKE '%iisexpressshim.sdb%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_sdbinst_shim_persistence.yml"
     },
@@ -30252,6 +30374,27 @@
         "filename": "proc_creation_win_rar_susp_greedy_compression.yml"
     },
     {
+        "title": "Dynamic .NET Compilation Via Csc.EXE",
+        "id": "dcaa3f04-70c3-427a-80b4-b870d73c94c4",
+        "status": "test",
+        "description": "Detects execution of \"csc.exe\" to compile .NET code. Attackers often leverage this to compile code on the fly and use it in other stages.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1027.004"
+        ],
+        "falsepositives": [
+            "Legitimate software from program files - https://twitter.com/gN3mes1s/status/1206874118282448897",
+            "Legitimate Microsoft software - https://twitter.com/gabriele_pippi/status/1206907900268072962",
+            "Ansible"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' AND (CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')) AND NOT (((ParentProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR ParentProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\')) OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\sdiagnhost.exe' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\inetsrv\\\\w3wp.exe' ESCAPE '\\'))) AND NOT ((ParentProcessName LIKE 'C:\\\\ProgramData\\\\chocolatey\\\\choco.exe' ESCAPE '\\') OR (ParentCommandLine LIKE '%\\\\ProgramData\\\\Microsoft\\\\Windows Defender Advanced Threat Protection%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%JwB7ACIAZgBhAGkAbABlAGQAIgA6AHQAcgB1AGUALAAiAG0AcwBnACIAOgAiAEEAbgBzAGkAYgBsAGUAIAByAGUAcQB1AGkAcgBlAHMAIABQAG8AdwBlAHIAUwBoAGUAbABsACAAdgAzAC4AMAAgAG8AcgAgAG4AZQB3AGUAcgAiAH0AJw%' ESCAPE '\\' OR ParentCommandLine LIKE '%cAewAiAGYAYQBpAGwAZQBkACIAOgB0AHIAdQBlACwAIgBtAHMAZwAiADoAIgBBAG4AcwBpAGIAbABlACAAcgBlAHEAdQBpAHIAZQBzACAAUABvAHcAZQByAFMAaABlAGwAbAAgAHYAMwAuADAAIABvAHIAIABuAGUAdwBlAHIAIgB9ACcA%' ESCAPE '\\' OR ParentCommandLine LIKE '%nAHsAIgBmAGEAaQBsAGUAZAAiADoAdAByAHUAZQAsACIAbQBzAGcAIgA6ACIAQQBuAHMAaQBiAGwAZQAgAHIAZQBxAHUAaQByAGUAcwAgAFAAbwB3AGUAcgBTAGgAZQBsAGwAIAB2ADMALgAwACAAbwByACAAbgBlAHcAZQByACIAfQAnA%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_csc_susp_dynamic_compilation.yml"
+    },
+    {
         "title": "Domain Trust Discovery Via Dsquery",
         "id": "3bad990e-4848-4a78-9530-b427d854aac0",
         "status": "test",
@@ -30593,26 +30736,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%&&%' ESCAPE '\\' AND CommandLine LIKE '%clipboard]::%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\' AND (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hktl_invoke_obfuscation_clip.yml"
-    },
-    {
-        "title": "Suspicious Csc.exe Source File Folder",
-        "id": "dcaa3f04-70c3-427a-80b4-b870d73c94c4",
-        "status": "test",
-        "description": "Detects a suspicious execution of csc.exe, which uses a source in a suspicious folder (e.g. AppData)",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1027.004"
-        ],
-        "falsepositives": [
-            "Legitimate software from program files - https://twitter.com/gN3mes1s/status/1206874118282448897",
-            "Legitimate Microsoft software - https://twitter.com/gabriele_pippi/status/1206907900268072962"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' AND (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')) AND NOT (ParentProcessName LIKE 'C:\\\\Program Files%' ESCAPE '\\' OR (ParentProcessName LIKE '%\\\\sdiagnhost.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\w3wp.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\choco.exe' ESCAPE '\\') OR ParentCommandLine LIKE '%\\\\ProgramData\\\\Microsoft\\\\Windows Defender Advanced Threat Protection%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_csc_susp_folder.yml"
     },
     {
         "title": "Renamed Office Binary Execution",
@@ -38828,25 +38951,6 @@
         "filename": "proc_creation_win_susp_service_dir.yml"
     },
     {
-        "title": "Use of Mftrace.exe",
-        "id": "3d48c9d3-1aa6-418d-98d3-8fd3c01a564e",
-        "status": "experimental",
-        "description": "The \"Trace log generation tool for Media Foundation Tools\" (Mftrace.exe) can be used to execute arbitrary binaries",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1127"
-        ],
-        "falsepositives": [
-            "Legitimate use for tracing purposes"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\mftrace.exe' ESCAPE '\\' OR OriginalFileName = 'mftrace.exe') AND (CommandLine LIKE '%.exe %' ESCAPE '\\' AND CommandLine LIKE '%.exe' ESCAPE '\\')) OR ParentProcessName LIKE '%\\\\mftrace.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_mftrace.yml"
-    },
-    {
         "title": "WMI Backdoor Exchange Transport Agent",
         "id": "797011dc-44f4-4e6f-9f10-a8ceefbe566b",
         "status": "test",
@@ -39447,6 +39551,24 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND ((CommandLine LIKE '%> \\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%APPDATA\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%TEMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%TMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> \\%USERPROFILE\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%> C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%APPDATA\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%TEMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%TMP\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>\\%USERPROFILE\\%\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>C:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%>C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') OR ((CommandLine LIKE '% >%' ESCAPE '\\' OR CommandLine LIKE '%\">%' ESCAPE '\\' OR CommandLine LIKE '%''>%' ESCAPE '\\') AND CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_cmd_redirection_susp_folder.yml"
+    },
+    {
+        "title": "LOLBIN From Abnormal Drive",
+        "id": "d4ca7c59-e9e4-42d8-bf57-91a776efcb87",
+        "status": "test",
+        "description": "Detects LOLBINs executing from an abnormal drive such as a mounted ISO.",
+        "author": "Christopher Peacock '@securepeacock', SCYTHE '@scythe_io', Angelo Violetti - SEC Consult '@angelo_violetti'",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Rare false positives could occur on servers with multiple drives."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\installutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\') OR OriginalFileName IN ('RUNDLL32.EXE', 'CALC.EXE', 'MSHTA.EXE', 'cscript.exe', 'wscript.exe', 'REGSVR32.EXE', 'installutil.exe', 'CMSTP.EXE')) AND NOT ((CurrentDirectory LIKE '%C:\\\\%' ESCAPE '\\') OR (CurrentDirectory = '') OR (CurrentDirectory = '')))"
+        ],
+        "filename": "proc_creation_win_susp_lolbin_exec_from_non_c_drive.yml"
     },
     {
         "title": "Suspicious File Download From IP Via Wget.EXE",
@@ -41650,6 +41772,25 @@
         "filename": "proc_creation_win_rundll32_parent_explorer.yml"
     },
     {
+        "title": "Potential Mftrace.EXE Abuse",
+        "id": "3d48c9d3-1aa6-418d-98d3-8fd3c01a564e",
+        "status": "experimental",
+        "description": "Detects child processes of the \"Trace log generation tool for Media Foundation Tools\" (Mftrace.exe) which can abused to execute arbitrary binaries.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1127"
+        ],
+        "falsepositives": [
+            "Legitimate use for tracing purposes"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\mftrace.exe' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_mftrace_child_process.yml"
+    },
+    {
         "title": "Sdiagnhost Calling Suspicious Child Process",
         "id": "f3d39c45-de1a-4486-a687-ab126124f744",
         "status": "experimental",
@@ -41784,24 +41925,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\ldifde.exe' ESCAPE '\\' OR OriginalFileName = 'ldifde.exe') AND (CommandLine LIKE '%-i%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_ldifde_file_load.yml"
-    },
-    {
-        "title": "LOLBIN From Abnormal Drive",
-        "id": "d4ca7c59-e9e4-42d8-bf57-91a776efcb87",
-        "status": "test",
-        "description": "Detects LOLBINs executing from an abnormal drive such as a mounted ISO.",
-        "author": "Christopher Peacock '@securepeacock', SCYTHE '@scythe_io', Angelo Violetti - SEC Consult '@angelo_violetti'",
-        "tags": [
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Rare false positives could occur on servers with multiple drives."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\installutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\') OR OriginalFileName IN ('RUNDLL32.EXE', 'CALC.EXE', 'MSHTA.EXE', 'cscript.exe', 'wscript.exe', 'REGSVR32.EXE', 'installutil.exe', 'CMSTP.EXE')) AND NOT ((CurrentDirectory LIKE '%C:\\\\%' ESCAPE '\\') OR (CurrentDirectory = '') OR (CurrentDirectory = '')))"
-        ],
-        "filename": "proc_creation_win_lolbin_not_from_c_drive.yml"
     },
     {
         "title": "Suspicious Download From Direct IP Via Bitsadmin",
@@ -42137,6 +42260,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'cmd.exe') AND ((ParentCommandLine LIKE '%/c%' ESCAPE '\\' OR ParentCommandLine LIKE '%/k%' ESCAPE '\\' OR ParentCommandLine LIKE '%/r%' ESCAPE '\\') OR (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/k%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\')) AND (ParentCommandLine = '/../../' OR CommandLine LIKE '%/../../%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%\\\\Tasktop\\\\keycloak\\\\bin\\\\/../../jre\\\\bin\\\\java%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_cmd_path_traversal.yml"
+    },
+    {
+        "title": "Suspicious Shim Database Installation via Sdbinst.EXE",
+        "id": "18ee686c-38a3-4f65-9f44-48a077141f42",
+        "status": "test",
+        "description": "Detects installation of a potentially suspicious new shim with an uncommon extension using sdbinst.exe.\nAdversaries may establish persistence and/or elevate privileges by executing malicious content triggered by application shims\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1546.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\sdbinst.exe' ESCAPE '\\' OR OriginalFileName = 'sdbinst.exe') AND NOT ((CommandLine LIKE '%.sdb%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_sdbinst_susp_extension.yml"
     },
     {
         "title": "Abused Debug Privilege by Arbitrary Parent Processes",
@@ -43665,6 +43808,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND (CommandLine LIKE '%contraseña%' ESCAPE '\\' OR CommandLine LIKE '%hasło%' ESCAPE '\\' OR CommandLine LIKE '%heslo%' ESCAPE '\\' OR CommandLine LIKE '%parola%' ESCAPE '\\' OR CommandLine LIKE '%passe%' ESCAPE '\\' OR CommandLine LIKE '%passw%' ESCAPE '\\' OR CommandLine LIKE '%senha%' ESCAPE '\\' OR CommandLine LIKE '%senord%' ESCAPE '\\' OR CommandLine LIKE '%密碼%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_findstr_password_recon.yml"
+    },
+    {
+        "title": "Dynamic .NET Compilation Via Csc.EXE - Hunting",
+        "id": "acf2807c-805b-4042-aab9-f86b6ba9cb2b",
+        "status": "experimental",
+        "description": "Detects execution of \"csc.exe\" to compile .NET code. Attackers often leverage this to compile code on the fly and use it in other stages.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1027.004"
+        ],
+        "falsepositives": [
+            "Many legitimate applications make use of dynamic compilation. Use this rule to hunt for anomalies"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' AND CommandLine LIKE '%/noconfig /fullpaths @%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_csc_compilation.yml"
     },
     {
         "title": "SMB over QUIC Via Net.EXE",

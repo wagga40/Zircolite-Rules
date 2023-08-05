@@ -1711,6 +1711,25 @@
         "filename": "proc_creation_lnx_install_root_certificate.yml"
     },
     {
+        "title": "Potential Linux Amazon SSM Agent Hijacking",
+        "id": "f9b3edc5-3322-4fc7-8aa3-245d646cc4b7",
+        "description": "Detects potential Amazon SSM agent hijack attempts as outlined in the Mitiga research reoport.",
+        "author": "Muhammad Faisal",
+        "tags": [
+            "attack.command_and_control",
+            "attack.persistence",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Legitimate activity of system administrators"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/amazon-ssm-agent' ESCAPE '\\' AND CommandLine LIKE '%-register %' ESCAPE '\\' AND CommandLine LIKE '%-code %' ESCAPE '\\' AND CommandLine LIKE '%-id %' ESCAPE '\\' AND CommandLine LIKE '%-region %' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_ssm_agent_abuse.yml"
+    },
+    {
         "title": "Mount Execution With Hidepid Parameter",
         "id": "ec52985a-d024-41e3-8ff6-14169039a0b3",
         "description": "Detects execution of the \"mount\" command with \"hidepid\" parameter to make invisible processes to other users from the system",
