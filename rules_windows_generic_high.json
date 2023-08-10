@@ -4229,6 +4229,25 @@
         "filename": "registry_set_cobaltstrike_service_installs.yml"
     },
     {
+        "title": "Potential Provisioning Registry Key Abuse For Binary Proxy Execution - REG",
+        "id": "7021255e-5db3-4946-a8b9-0ba7a4644a69",
+        "status": "experimental",
+        "description": "Detects potential abuse of the provisioning registry key for indirect command execution through \"Provlaunch.exe\".",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Provisioning\\\\Commands\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_provisioning_command_abuse.yml"
+    },
+    {
         "title": "Registry Disable System Restore",
         "id": "5de03871-5d46-4539-a82d-3aa992a69a83",
         "status": "experimental",
@@ -17765,6 +17784,25 @@
         "filename": "proc_creation_win_powershell_invoke_webrequest_download.yml"
     },
     {
+        "title": "Potential Provisioning Registry Key Abuse For Binary Proxy Execution",
+        "id": "2a4b3e61-9d22-4e4a-b60f-6e8f0cde6f25",
+        "status": "experimental",
+        "description": "Detects potential abuse of the provisioning registry key for indirect command execution through \"Provlaunch.exe\".",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%SOFTWARE\\\\Microsoft\\\\Provisioning\\\\Commands\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_registry_provlaunch_provisioning_command.yml"
+    },
+    {
         "title": "Suspicious Splwow64 Without Params",
         "id": "1f1a8509-2cbb-44f5-8751-8e1571518ce2",
         "status": "test",
@@ -18159,6 +18197,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\iodine.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dnscat2%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_dns_exfiltration_tools_execution.yml"
+    },
+    {
+        "title": "Suspicious Provlaunch.EXE Child Process",
+        "id": "f9999590-1f94-4a34-a91e-951e47bedefd",
+        "status": "experimental",
+        "description": "Detects suspicious child processes of \"provlaunch.exe\" which might indicate potential abuse to proxy execution.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\provlaunch.exe' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notepad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_provlaunch_susp_child_process.yml"
     },
     {
         "title": "Bypass UAC via CMSTP",

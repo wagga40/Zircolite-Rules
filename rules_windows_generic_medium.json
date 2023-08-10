@@ -6378,6 +6378,25 @@
         "filename": "registry_set_winlogon_allow_multiple_tssessions.yml"
     },
     {
+        "title": "Potential Provisioning Registry Key Abuse For Binary Proxy Execution - REG",
+        "id": "7021255e-5db3-4946-a8b9-0ba7a4644a69",
+        "status": "experimental",
+        "description": "Detects potential abuse of the provisioning registry key for indirect command execution through \"Provlaunch.exe\".",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Provisioning\\\\Commands\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_provisioning_command_abuse.yml"
+    },
+    {
         "title": "Registry Disable System Restore",
         "id": "5de03871-5d46-4539-a82d-3aa992a69a83",
         "status": "experimental",
@@ -26408,6 +26427,25 @@
         "filename": "proc_creation_win_powershell_invoke_webrequest_download.yml"
     },
     {
+        "title": "Potential Provisioning Registry Key Abuse For Binary Proxy Execution",
+        "id": "2a4b3e61-9d22-4e4a-b60f-6e8f0cde6f25",
+        "status": "experimental",
+        "description": "Detects potential abuse of the provisioning registry key for indirect command execution through \"Provlaunch.exe\".",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%SOFTWARE\\\\Microsoft\\\\Provisioning\\\\Commands\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_registry_provlaunch_provisioning_command.yml"
+    },
+    {
         "title": "Suspicious Splwow64 Without Params",
         "id": "1f1a8509-2cbb-44f5-8751-8e1571518ce2",
         "status": "test",
@@ -27167,6 +27205,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\' OR CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%DownloadFile%' ESCAPE '\\' OR CommandLine LIKE '%DownloadString%' ESCAPE '\\') AND ((CommandLine LIKE '%//0x%' ESCAPE '\\' OR CommandLine LIKE '%.0x%' ESCAPE '\\' OR CommandLine LIKE '%.00x%' ESCAPE '\\') OR (CommandLine LIKE '%http://\\%%' ESCAPE '\\' AND CommandLine LIKE '%\\%2e%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_obfuscated_ip_download.yml"
+    },
+    {
+        "title": "Suspicious Provlaunch.EXE Child Process",
+        "id": "f9999590-1f94-4a34-a91e-951e47bedefd",
+        "status": "experimental",
+        "description": "Detects suspicious child processes of \"provlaunch.exe\" which might indicate potential abuse to proxy execution.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\provlaunch.exe' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notepad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_provlaunch_susp_child_process.yml"
     },
     {
         "title": "Detected Windows Software Discovery",
@@ -42358,6 +42415,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName = 'CertUtil.exe') AND (CommandLine LIKE '%/addstore%' ESCAPE '\\' OR CommandLine LIKE '%-addstore%' ESCAPE '\\') AND CommandLine LIKE '%root%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_certutil_certificate_installation.yml"
+    },
+    {
+        "title": "Potential Provlaunch.EXE Binary Proxy Execution Abuse",
+        "id": "7f5d1c9a-3e83-48df-95a7-2b98aae6c13c",
+        "status": "experimental",
+        "description": "Detects child processes of \"provlaunch.exe\" which might indicate potential abuse to proxy execution.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\provlaunch.exe' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notepad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_provlaunch_potential_abuse.yml"
     },
     {
         "title": "Process Creation Using Sysnative Folder",
