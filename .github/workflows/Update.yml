@@ -32,6 +32,13 @@ jobs:
           rm pyproject.toml .pdm* pdm.*
           pdm init -n
           pdm add requests urllib3 progressbar2 pymisp PyYAML "ruamel.yaml" termcolor
+      - name: Clean annoying PDM files 
+        shell: bash
+        continue-on-error: true
+        run: |
+          rm -rf ./src
+          rm -rf ./tests
+          rm -rf ./README.md
       - name: Generate Zircolite rules
         shell: bash
         continue-on-error: true
