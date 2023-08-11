@@ -2498,7 +2498,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND (ServiceFileName LIKE '%fgexec%' ESCAPE '\\' OR ServiceFileName LIKE '%dumpsvc%' ESCAPE '\\' OR ServiceFileName LIKE '%cachedump%' ESCAPE '\\' OR ServiceFileName LIKE '%mimidrv%' ESCAPE '\\' OR ServiceFileName LIKE '%gsecdump%' ESCAPE '\\' OR ServiceFileName LIKE '%servpw%' ESCAPE '\\' OR ServiceFileName LIKE '%pwdump%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND (ServiceFileName LIKE '%cachedump%' ESCAPE '\\' OR ServiceFileName LIKE '%dumpsvc%' ESCAPE '\\' OR ServiceFileName LIKE '%fgexec%' ESCAPE '\\' OR ServiceFileName LIKE '%gsecdump%' ESCAPE '\\' OR ServiceFileName LIKE '%mimidrv%' ESCAPE '\\' OR ServiceFileName LIKE '%pwdump%' ESCAPE '\\' OR ServiceFileName LIKE '%servpw%' ESCAPE '\\'))"
         ],
         "filename": "win_security_mal_creddumper.yml"
     },
@@ -3502,9 +3502,29 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND (ImagePath LIKE '%fgexec%' ESCAPE '\\' OR ImagePath LIKE '%dumpsvc%' ESCAPE '\\' OR ImagePath LIKE '%cachedump%' ESCAPE '\\' OR ImagePath LIKE '%mimidrv%' ESCAPE '\\' OR ImagePath LIKE '%gsecdump%' ESCAPE '\\' OR ImagePath LIKE '%servpw%' ESCAPE '\\' OR ImagePath LIKE '%pwdump%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Service Control Manager' AND EventID = '7045' AND (ImagePath LIKE '%cachedump%' ESCAPE '\\' OR ImagePath LIKE '%dumpsvc%' ESCAPE '\\' OR ImagePath LIKE '%fgexec%' ESCAPE '\\' OR ImagePath LIKE '%gsecdump%' ESCAPE '\\' OR ImagePath LIKE '%mimidrv%' ESCAPE '\\' OR ImagePath LIKE '%pwdump%' ESCAPE '\\' OR ImagePath LIKE '%servpw%' ESCAPE '\\'))"
         ],
         "filename": "win_system_mal_creddumper.yml"
+    },
+    {
+        "title": "Windows Defender Threat Detection Disabled - Service",
+        "id": "6c0a7755-6d31-44fa-80e1-133e57752680",
+        "status": "stable",
+        "description": "Detects the \"Windows Defender Threat Protection\" service has been disabled",
+        "author": "Ján Trenčanský, frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Administrator actions",
+            "Auto updates of Windows Defender causes restarts"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '7036' AND Provider_Name = 'Service Control Manager' AND param1 IN ('Windows Defender Antivirus Service', 'Service antivirus Microsoft Defender') AND param2 IN ('stopped', 'arrêté'))"
+        ],
+        "filename": "win_system_defender_disabled.yml"
     },
     {
         "title": "Invoke-Obfuscation VAR++ LAUNCHER OBFUSCATION - System",
@@ -3708,6 +3728,26 @@
         "filename": "win_system_invoke_obfuscation_stdin_services.yml"
     },
     {
+        "title": "PsExec Service Installation",
+        "id": "42c575ea-e41e-41f1-b248-8093c3e82a28",
+        "status": "experimental",
+        "description": "Detects PsExec service installation and execution events",
+        "author": "Thomas Patzke",
+        "tags": [
+            "attack.execution",
+            "attack.t1569.002",
+            "attack.s0029"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND (ServiceName = 'PSEXESVC' OR ImagePath LIKE '%\\\\PSEXESVC.exe' ESCAPE '\\'))"
+        ],
+        "filename": "win_system_service_install_sysinternals_psexec.yml"
+    },
+    {
         "title": "Invoke-Obfuscation Via Use Clip - System",
         "id": "63e3365d-4824-42d8-8b82-e56810fefa0c",
         "status": "experimental",
@@ -3870,7 +3910,7 @@
         "id": "31c51af6-e7aa-4da7-84d4-8f32cc580af2",
         "status": "experimental",
         "description": "Detects known malicious service installation that appear in cases in which a Sliver implants execute the PsExec commands",
-        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.privilege_escalation",
@@ -3945,10 +3985,29 @@
         "filename": "win_system_service_install_pdqdeploy.yml"
     },
     {
-        "title": "Hacktool Service Registration or Execution",
+        "title": "RemCom Service Installation",
+        "id": "9e36ed87-4986-482e-8e3b-5c23ffff11bf",
+        "status": "experimental",
+        "description": "Detects RemCom service installation and execution events",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1569.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND (ServiceName = 'RemComSvc' OR ImagePath LIKE '%\\\\RemComSvc.exe' ESCAPE '\\'))"
+        ],
+        "filename": "win_system_service_install_remcom.yml"
+    },
+    {
+        "title": "HackTool Service Registration or Execution",
         "id": "d26ce60c-2151-403c-9a42-49420d87b5e4",
         "status": "test",
-        "description": "Detects PsExec service installation and execution events (service and Sysmon)",
+        "description": "Detects installation or execution of services",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.execution",
@@ -3960,7 +4019,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID IN ('7045', '7036')) AND ((ServiceName LIKE '%WCESERVICE%' ESCAPE '\\' OR ServiceName LIKE '%WCE SERVICE%' ESCAPE '\\' OR ServiceName LIKE '%winexesvc%' ESCAPE '\\' OR ServiceName LIKE '%DumpSvc%' ESCAPE '\\' OR ServiceName LIKE '%pwdump%' ESCAPE '\\' OR ServiceName LIKE '%gsecdump%' ESCAPE '\\' OR ServiceName LIKE '%cachedump%' ESCAPE '\\') OR ImagePath LIKE '%bypass%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID IN ('7045', '7036')) AND ((ServiceName LIKE '%cachedump%' ESCAPE '\\' OR ServiceName LIKE '%DumpSvc%' ESCAPE '\\' OR ServiceName LIKE '%gsecdump%' ESCAPE '\\' OR ServiceName LIKE '%pwdump%' ESCAPE '\\' OR ServiceName LIKE '%UACBypassedService%' ESCAPE '\\' OR ServiceName LIKE '%WCE SERVICE%' ESCAPE '\\' OR ServiceName LIKE '%WCESERVICE%' ESCAPE '\\' OR ServiceName LIKE '%winexesvc%' ESCAPE '\\') OR ImagePath LIKE '%bypass%' ESCAPE '\\'))"
         ],
         "filename": "win_system_service_install_hacktools.yml"
     },
@@ -4201,6 +4260,25 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '7045' AND (ImagePath REGEXP '\\$PSHome\\[\\s*\\d{1,3}\\s*\\]\\s*\\+\\s*\\$PSHome\\[' OR ImagePath REGEXP '\\$ShellId\\[\\s*\\d{1,3}\\s*\\]\\s*\\+\\s*\\$ShellId\\[' OR ImagePath REGEXP '\\$env:Public\\[\\s*\\d{1,3}\\s*\\]\\s*\\+\\s*\\$env:Public\\[' OR ImagePath REGEXP '\\$env:ComSpec\\[(\\s*\\d{1,3}\\s*,){2}' OR ImagePath REGEXP '\\\\*mdr\\*\\W\\s*\\)\\.Name' OR ImagePath REGEXP '\\$VerbosePreference\\.ToString\\(' OR ImagePath REGEXP '\\String\\]\\s*\\$VerbosePreference'))"
         ],
         "filename": "win_system_invoke_obfuscation_obfuscated_iex_services.yml"
+    },
+    {
+        "title": "CSExec Service Installation",
+        "id": "a27e5fa9-c35e-4e3d-b7e0-1ce2af66ad12",
+        "status": "experimental",
+        "description": "Detects CSExec service installation and execution events",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1569.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND (Provider_Name = 'Service Control Manager' AND EventID = '7045') AND (ServiceName = 'csexecsvc' OR ImagePath LIKE '%\\\\csexecsvc.exe' ESCAPE '\\'))"
+        ],
+        "filename": "win_system_service_install_csexecsvc.yml"
     },
     {
         "title": "Meterpreter or Cobalt Strike Getsystem Service Installation - System",
@@ -13805,7 +13883,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%fgexec%' ESCAPE '\\' OR ImageLoaded LIKE '%dumpsvc%' ESCAPE '\\' OR ImageLoaded LIKE '%cachedump%' ESCAPE '\\' OR ImageLoaded LIKE '%mimidrv%' ESCAPE '\\' OR ImageLoaded LIKE '%gsecdump%' ESCAPE '\\' OR ImageLoaded LIKE '%servpw%' ESCAPE '\\' OR ImageLoaded LIKE '%pwdump%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%cachedump%' ESCAPE '\\' OR ImageLoaded LIKE '%dumpsvc%' ESCAPE '\\' OR ImageLoaded LIKE '%fgexec%' ESCAPE '\\' OR ImageLoaded LIKE '%gsecdump%' ESCAPE '\\' OR ImageLoaded LIKE '%mimidrv%' ESCAPE '\\' OR ImageLoaded LIKE '%pwdump%' ESCAPE '\\' OR ImageLoaded LIKE '%servpw%' ESCAPE '\\')"
         ],
         "filename": "driver_load_win_mal_creddumper.yml"
     },
@@ -15430,7 +15508,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\pwdump%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\kirbi%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\pwhashes%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\wce\\_ccache%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\wce\\_krbtkts%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\fgdump-log%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\test.pwd' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsremora64.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsremora.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\fgexec.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\wceaux.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SECURITY.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SYSTEM.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\NTDS.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DumpExt.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DumpSvc.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\cachedump64.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\cachedump.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\pstgdump.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\servpw.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\servpw64.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\pwdump.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Dumpy.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\fgdump-log%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\kirbi%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\pwdump%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\pwhashes%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\wce\\_ccache%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\wce\\_krbtkts%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\cachedump.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\cachedump64.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DumpExt.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DumpSvc.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Dumpy.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\fgexec.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsremora.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsremora64.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\NTDS.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\pstgdump.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\pwdump.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SAM.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SECURITY.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\servpw.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\servpw64.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SYSTEM.out' ESCAPE '\\' OR TargetFilename LIKE '%\\\\test.pwd' ESCAPE '\\' OR TargetFilename LIKE '%\\\\wceaux.dll' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_cred_dump_tools_dropped_files.yml"
     },
@@ -16634,6 +16712,26 @@
         "filename": "file_event_win_bloodhound_collection.yml"
     },
     {
+        "title": "CSExec Service File Creation",
+        "id": "f0e2b768-5220-47dd-b891-d57b96fc0ec1",
+        "status": "test",
+        "description": "Detects default CSExec service filename which indicates CSExec service installation and execution",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1569.002",
+            "attack.s0029"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%\\\\csexecsvc.exe' ESCAPE '\\'"
+        ],
+        "filename": "file_event_win_csexec_service.yml"
+    },
+    {
         "title": "Suspicious PFX File Creation",
         "id": "dca1b3e8-e043-4ec8-85d7-867f334b5724",
         "status": "test",
@@ -17691,6 +17789,26 @@
             "SELECT * FROM logs WHERE (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\config\\\\systemprofile\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\PowerShell\\\\PSReadLine\\\\ConsoleHost\\_history.txt' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\config\\\\systemprofile\\\\AppData\\\\Local\\\\Microsoft\\\\Windows\\\\PowerShell\\\\StartupProfileData-Interactive' ESCAPE '\\')"
         ],
         "filename": "file_event_win_susp_system_interactive_powershell.yml"
+    },
+    {
+        "title": "RemCom Service File Creation",
+        "id": "7eff1a7f-dd45-4c20-877a-f21e342a7611",
+        "status": "test",
+        "description": "Detects default RemCom service filename which indicates RemCom service installation and execution",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1569.002",
+            "attack.s0029"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%\\\\RemComSvc.exe' ESCAPE '\\'"
+        ],
+        "filename": "file_event_win_remcom_service.yml"
     },
     {
         "title": "Files With System Process Name In Unsuspected Locations",
@@ -19127,21 +19245,21 @@
         "filename": "image_load_wsman_provider_image_load.yml"
     },
     {
-        "title": "Microsoft Defender Loading DLL from Nondefault Path",
+        "title": "Potential Mpclient.DLL Sideloading",
         "id": "418dc89a-9808-4b87-b1d7-e5ae0cb6effc",
         "status": "experimental",
-        "description": "Detects loading of Microsoft Defender's DLLs by its processes (MpCmdRun and NisSrv) from the non-default directory which may be an attempt to sideload arbitrary DLL",
+        "description": "Detects potential sideloading of \"mpclient.dll\" by Windows Defender processes (\"MpCmdRun\" and \"NisSrv\") from their non-default directory.",
         "author": "Bhabesh Raj",
         "tags": [
             "attack.defense_evasion",
             "attack.t1574.002"
         ],
         "falsepositives": [
-            "Very unlikely"
+            "Unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\NisSrv.exe' ESCAPE '\\') AND ImageLoaded LIKE '%\\\\mpclient.dll' ESCAPE '\\') AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Windows Defender\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\mpclient.dll' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\NisSrv.exe' ESCAPE '\\')) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Windows Defender\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Security Client\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "image_load_side_load_windows_defender.yml"
     },
@@ -23240,6 +23358,26 @@
         "filename": "proc_creation_win_apt_apt10_cloud_hopper.yml"
     },
     {
+        "title": "Turla Group Named Pipes",
+        "id": "739915e4-1e70-4778-8b8a-17db02f66db1",
+        "status": "test",
+        "description": "Detects a named pipe used by Turla group samples",
+        "author": "Markus Neis",
+        "tags": [
+            "attack.g0010",
+            "attack.execution",
+            "attack.t1106"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\atctl' ESCAPE '\\' OR PipeName LIKE '\\\\comnap' ESCAPE '\\' OR PipeName LIKE '\\\\iehelper' ESCAPE '\\' OR PipeName LIKE '\\\\sdlrpc' ESCAPE '\\' OR PipeName LIKE '\\\\userpipe' ESCAPE '\\')"
+        ],
+        "filename": "pipe_created_apt_turla_named_pipes.yml"
+    },
+    {
         "title": "Fireball Archer Install",
         "id": "3d4aebe0-6d29-45b2-a8a4-3dfde586a26d",
         "status": "test",
@@ -24504,45 +24642,24 @@
         "filename": "sysmon_wmi_susp_scripting.yml"
     },
     {
-        "title": "Koh Default Named Pipes",
-        "id": "0adc67e0-a68f-4ffd-9c43-28905aad5d6a",
+        "title": "HackTool - EfsPotato Named Pipe Creation",
+        "id": "637f689e-b4a5-4a86-be0e-0100a0a33ba2",
         "status": "experimental",
-        "description": "Detects creation of default named pipes used by the Koh tool",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "description": "Detects the pattern of a pipe name as used by the hacktool EfsPotato",
+        "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense_evasion",
             "attack.privilege_escalation",
-            "attack.credential_access",
-            "attack.t1528",
-            "attack.t1134.001"
+            "attack.t1055"
         ],
         "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (PipeName LIKE '%\\\\imposecost%' ESCAPE '\\' OR PipeName LIKE '%\\\\imposingcost%' ESCAPE '\\')"
-        ],
-        "filename": "pipe_created_koh_default_pipe.yml"
-    },
-    {
-        "title": "PsExec Tool Execution From Suspicious Locations - PipeName",
-        "id": "41504465-5e3a-4a5b-a5b4-2a0baadd4463",
-        "status": "experimental",
-        "description": "Detects PsExec default pipe creation where the image executed is located in a suspicious location. Which could indicate that the tool is being used in an attack",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.execution",
-            "attack.t1569.002",
-            "attack.s0029"
-        ],
-        "falsepositives": [
-            "Rare legitimate use of psexec from the locations mentioned above"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\PSEXESVC' ESCAPE '\\' AND (NewProcessName LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((PipeName LIKE '%\\\\pipe\\\\%' ESCAPE '\\' OR PipeName LIKE '%\\\\pipe\\\\srvsvc%' ESCAPE '\\') AND NOT ((PipeName LIKE '%\\\\CtxShare%' ESCAPE '\\')))"
         ],
-        "filename": "pipe_created_psexec_default_pipe_from_susp_location.yml"
+        "filename": "pipe_created_hktl_efspotato.yml"
     },
     {
         "title": "CobaltStrike Named Pipe Patterns",
@@ -24556,53 +24673,13 @@
             "attack.t1055"
         ],
         "falsepositives": [
-            "Chrome instances using the exact same pipe name \"mojo.something\""
+            "Chrome instances using the exact same pipe name \"mojo.xxx\""
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((((PipeName LIKE '\\\\mojo.5688.8052.183894939787088877%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo.5688.8052.35780273329370473%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-f%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-h%' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs%' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\_svc%' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss%' ESCAPE '\\' OR PipeName LIKE '\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\wkssvc%' ESCAPE '\\' OR PipeName LIKE '\\\\f53f%' ESCAPE '\\' OR PipeName LIKE '\\\\windows.update.manager%' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester%' ESCAPE '\\' OR PipeName LIKE '\\\\DserNamePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds%' ESCAPE '\\' OR PipeName LIKE '\\\\f4c3%' ESCAPE '\\' OR PipeName LIKE '\\\\fullduplex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\rpc\\_%' ESCAPE '\\') OR (PipeName LIKE '\\\\demoagent\\_11' ESCAPE '\\' OR PipeName LIKE '\\\\demoagent\\_22' ESCAPE '\\')) OR (PipeName LIKE '\\\\Winsock2\\\\CatalogChangeListener-%' ESCAPE '\\' AND PipeName LIKE '%-0,' ESCAPE '\\')) AND NOT ((PipeName LIKE '\\\\wkssvc' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((((PipeName LIKE '\\\\DserNamePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\f4c3%' ESCAPE '\\' OR PipeName LIKE '\\\\f53f%' ESCAPE '\\' OR PipeName LIKE '\\\\fullduplex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo.5688.8052.183894939787088877%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo.5688.8052.35780273329370473%' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds%' ESCAPE '\\' OR PipeName LIKE '\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-f%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-h%' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs%' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\rpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc%' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester%' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\_svc%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\windows.update.manager%' ESCAPE '\\' OR PipeName LIKE '\\\\wkssvc%' ESCAPE '\\') OR (PipeName LIKE '\\\\demoagent\\_11' ESCAPE '\\' OR PipeName LIKE '\\\\demoagent\\_22' ESCAPE '\\')) OR (PipeName LIKE '\\\\Winsock2\\\\CatalogChangeListener-%' ESCAPE '\\' AND PipeName LIKE '%-0,' ESCAPE '\\')) AND NOT (((PipeName LIKE '\\\\wkssvc' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds' ESCAPE '\\'))))"
         ],
-        "filename": "pipe_created_susp_cobaltstrike_pipe_patterns.yml"
-    },
-    {
-        "title": "EfsPotato Named Pipe",
-        "id": "637f689e-b4a5-4a86-be0e-0100a0a33ba2",
-        "status": "experimental",
-        "description": "Detects the pattern of a pipe name as used by the tool EfsPotato",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.privilege_escalation",
-            "attack.t1055"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((PipeName LIKE '%\\\\pipe\\\\%' ESCAPE '\\' OR PipeName LIKE '%\\\\pipe\\\\srvsvc%' ESCAPE '\\') AND NOT (PipeName LIKE '%\\\\CtxShare%' ESCAPE '\\'))"
-        ],
-        "filename": "pipe_created_efspotato_namedpipe.yml"
-    },
-    {
-        "title": "CobaltStrike Named Pipe",
-        "id": "d5601f8c-b26f-4ab0-9035-69e11a8d4ad2",
-        "status": "test",
-        "description": "Detects the creation of a named pipe as used by CobaltStrike",
-        "author": "Florian Roth (Nextron Systems), Wojciech Lesicki",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.privilege_escalation",
-            "attack.t1055"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE ((PipeName LIKE '%\\\\MSSE-%' ESCAPE '\\' AND PipeName LIKE '%-server%' ESCAPE '\\') OR PipeName LIKE '\\\\postex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\status\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\msagent\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\interprocess\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\samr\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\netlogon\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\srvsvc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\lsarpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\wkssvc\\_%' ESCAPE '\\')"
-        ],
-        "filename": "pipe_created_mal_cobaltstrike.yml"
+        "filename": "pipe_created_hktl_cobaltstrike_susp_pipe_patterns.yml"
     },
     {
         "title": "ADFS Database Named Pipe Connection",
@@ -24624,6 +24701,47 @@
         "filename": "pipe_created_susp_adfs_namedpipe_connection.yml"
     },
     {
+        "title": "RemCom Default Named Pipe",
+        "id": "d36f87ea-c403-44d2-aa79-1a0ac7c24456",
+        "status": "test",
+        "description": "Detects default RemCom pipe creation",
+        "author": "Nikita Nazarov, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.lateral_movement",
+            "attack.t1021.002",
+            "attack.execution",
+            "attack.t1569.002"
+        ],
+        "falsepositives": [
+            "Legitimate Administrator activity"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE PipeName LIKE '%\\\\RemCom%' ESCAPE '\\'"
+        ],
+        "filename": "pipe_created_remcom_default_pipe.yml"
+    },
+    {
+        "title": "PsExec Tool Execution From Suspicious Locations - PipeName",
+        "id": "41504465-5e3a-4a5b-a5b4-2a0baadd4463",
+        "status": "experimental",
+        "description": "Detects PsExec default pipe creation where the image executed is located in a suspicious location. Which could indicate that the tool is being used in an attack",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1569.002",
+            "attack.s0029"
+        ],
+        "falsepositives": [
+            "Rare legitimate use of psexec from the locations mentioned above"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\PSEXESVC' ESCAPE '\\' AND (NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Downloads\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "pipe_created_sysinternals_psexec_default_pipe_susp_location.yml"
+    },
+    {
         "title": "WMI Event Consumer Created Named Pipe",
         "id": "493fb4ab-cdcc-4c4f-818c-0e363bd1e4bb",
         "status": "test",
@@ -24640,31 +24758,32 @@
         "rule": [
             "SELECT * FROM logs WHERE NewProcessName LIKE '%\\\\scrcons.exe' ESCAPE '\\'"
         ],
-        "filename": "pipe_created_susp_wmi_consumer_namedpipe.yml"
+        "filename": "pipe_created_scrcons_wmi_consumer_namedpipe.yml"
     },
     {
-        "title": "DiagTrackEoP Default Named Pipe",
-        "id": "1f7025a6-e747-4130-aac4-961eb47015f1",
-        "status": "experimental",
-        "description": "Detects creation of default named pipe used by the DiagTrackEoP POC",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "title": "Alternate PowerShell Hosts Pipe",
+        "id": "58cb02d5-78ce-4692-b3e1-dce850aae41a",
+        "status": "test",
+        "description": "Detects alternate PowerShell hosts potentially bypassing detections looking for powershell.exe",
+        "author": "Roberto Rodriguez @Cyb3rWard0g, Tim Shelton",
         "tags": [
-            "attack.privilege_escalation"
+            "attack.execution",
+            "attack.t1059.001"
         ],
         "falsepositives": [
-            "Unlikely"
+            "Programs using PowerShell directly without invocation of a dedicated interpreter."
         ],
-        "level": "critical",
+        "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE PipeName LIKE '%thisispipe%' ESCAPE '\\'"
+            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\PSHost%' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINDOWS\\\\System32\\\\sdiagnhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINDOWS\\\\System32\\\\wsmprovhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\system32\\\\dsac.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\system32\\\\wbem\\\\wmiprvse.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ForefrontActiveDirectoryConnector.exe' ESCAPE '\\' OR NewProcessName LIKE '%c:\\\\windows\\\\system32\\\\inetsrv\\\\w3wp.exe' ESCAPE '\\')) OR (NewProcessName = '') OR (NewProcessName LIKE '%:\\\\Program Files%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Microsoft SQL Server\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Tools\\\\Binn\\\\SQLPS.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Citrix\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Exchange Server\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\ServerManager.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\'))))"
         ],
-        "filename": "pipe_created_diagtrack_eop_default_pipe.yml"
+        "filename": "pipe_created_powershell_alternate_host_pipe.yml"
     },
     {
-        "title": "Cred Dump-Tools Named Pipes",
+        "title": "HackTool - Credential Dumping Tools Named Pipe Created",
         "id": "961d0ba2-3eea-4303-a930-2cf78bbfcc5e",
         "status": "test",
-        "description": "Detects well-known credential dumping tools execution via specific named pipes",
+        "description": "Detects well-known credential dumping tools execution via specific named pipe creation",
         "author": "Teymur Kheirkhabarov, oscd.community",
         "tags": [
             "attack.credential_access",
@@ -24678,29 +24797,30 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (PipeName LIKE '%\\\\lsadump%' ESCAPE '\\' OR PipeName LIKE '%\\\\cachedump%' ESCAPE '\\' OR PipeName LIKE '%\\\\wceservicepipe%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (PipeName LIKE '%\\\\cachedump%' ESCAPE '\\' OR PipeName LIKE '%\\\\lsadump%' ESCAPE '\\' OR PipeName LIKE '%\\\\wceservicepipe%' ESCAPE '\\')"
         ],
-        "filename": "pipe_created_cred_dump_tools_named_pipes.yml"
+        "filename": "pipe_created_hktl_generic_cred_dump_tools_pipes.yml"
     },
     {
-        "title": "Turla Group Named Pipes",
-        "id": "739915e4-1e70-4778-8b8a-17db02f66db1",
-        "status": "test",
-        "description": "Detects a named pipe used by Turla group samples",
-        "author": "Markus Neis",
+        "title": "HackTool - Koh Default Named Pipe",
+        "id": "0adc67e0-a68f-4ffd-9c43-28905aad5d6a",
+        "status": "experimental",
+        "description": "Detects creation of default named pipes used by the Koh tool",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.g0010",
-            "attack.execution",
-            "attack.t1106"
+            "attack.privilege_escalation",
+            "attack.credential_access",
+            "attack.t1528",
+            "attack.t1134.001"
         ],
         "falsepositives": [
-            "Unknown"
+            "Unlikely"
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\atctl' ESCAPE '\\' OR PipeName LIKE '\\\\userpipe' ESCAPE '\\' OR PipeName LIKE '\\\\iehelper' ESCAPE '\\' OR PipeName LIKE '\\\\sdlrpc' ESCAPE '\\' OR PipeName LIKE '\\\\comnap' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (PipeName LIKE '%\\\\imposecost%' ESCAPE '\\' OR PipeName LIKE '%\\\\imposingcost%' ESCAPE '\\')"
         ],
-        "filename": "pipe_created_apt_turla_namedpipes.yml"
+        "filename": "pipe_created_hktl_koh_default_pipe.yml"
     },
     {
         "title": "CobaltStrike Named Pipe Pattern Regex",
@@ -24720,14 +24840,14 @@
         "rule": [
             "SELECT * FROM logs WHERE (PipeName REGEXP '\\\\mojo\\.5688\\.8052\\.(?:183894939787088877|35780273329370473)[0-9a-f]{2}' OR PipeName REGEXP '\\\\wkssvc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\ntsvcs[0-9a-f]{2}' OR PipeName REGEXP '\\\\DserNamePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\SearchTextHarvester[0-9a-f]{2}' OR PipeName REGEXP '\\\\mypipe-(?:f|h)[0-9a-f]{2}' OR PipeName REGEXP '\\\\windows\\.update\\.manager[0-9a-f]{2,3}' OR PipeName REGEXP '\\\\ntsvcs_[0-9a-f]{2}' OR PipeName REGEXP '\\\\scerpc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\PGMessagePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\MsFteWds[0-9a-f]{2}' OR PipeName REGEXP '\\\\f4c3[0-9a-f]{2}' OR PipeName REGEXP '\\\\fullduplex_[0-9a-f]{2}' OR PipeName REGEXP '\\\\msrpc_[0-9a-f]{4}' OR PipeName REGEXP '\\\\win\\\\msrpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\f53f[0-9a-f]{2}' OR PipeName REGEXP '\\\\rpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\spoolss_[0-9a-f]{2}' OR PipeName REGEXP '\\\\Winsock2\\\\CatalogChangeListener-[0-9a-f]{3}-0,')"
         ],
-        "filename": "pipe_created_mal_cobaltstrike_re.yml"
+        "filename": "pipe_created_hktl_cobaltstrike_re.yml"
     },
     {
-        "title": "PsExec Pipes Artifacts",
-        "id": "9e77ed63-2ecf-4c7b-b09d-640834882028",
+        "title": "CSExec Default Named Pipe",
+        "id": "f318b911-ea88-43f4-9281-0de23ede628e",
         "status": "test",
-        "description": "Detecting use PsExec via Pipe Creation/Access to pipes",
-        "author": "Nikita Nazarov, oscd.community",
+        "description": "Detects default CSExec pipe creation",
+        "author": "Nikita Nazarov, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.lateral_movement",
             "attack.t1021.002",
@@ -24739,15 +24859,15 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (PipeName LIKE 'psexec%' ESCAPE '\\' OR PipeName LIKE 'paexec%' ESCAPE '\\' OR PipeName LIKE 'remcom%' ESCAPE '\\' OR PipeName LIKE 'csexec%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE PipeName LIKE '%\\\\csexecsvc%' ESCAPE '\\'"
         ],
-        "filename": "pipe_created_psexec_pipes_artifacts.yml"
+        "filename": "pipe_created_csexec_default_pipe.yml"
     },
     {
-        "title": "Malicious Named Pipe",
+        "title": "Malicious Named Pipe Created",
         "id": "fe3ac066-98bb-432a-b1e7-a5229cb39d4a",
         "status": "test",
-        "description": "Detects the creation of a named pipe used by known APT malware",
+        "description": "Detects the creation of a named pipe seen used by known APTs or malware.",
         "author": "Florian Roth (Nextron Systems), blueteam0ps, elhoim",
         "tags": [
             "attack.defense_evasion",
@@ -24759,7 +24879,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\isapi\\_http' ESCAPE '\\' OR PipeName LIKE '\\\\isapi\\_dg' ESCAPE '\\' OR PipeName LIKE '\\\\isapi\\_dg2' ESCAPE '\\' OR PipeName LIKE '\\\\sdlrpc' ESCAPE '\\' OR PipeName LIKE '\\\\ahexec' ESCAPE '\\' OR PipeName LIKE '\\\\winsession' ESCAPE '\\' OR PipeName LIKE '\\\\lsassw' ESCAPE '\\' OR PipeName LIKE '\\\\46a676ab7f179e511e30dd2dc41bd388' ESCAPE '\\' OR PipeName LIKE '\\\\9f81f59bc58452127884ce513865ed20' ESCAPE '\\' OR PipeName LIKE '\\\\e710f28d59aa529d6792ca6ff0ca1b34' ESCAPE '\\' OR PipeName LIKE '\\\\rpchlp\\_3' ESCAPE '\\' OR PipeName LIKE '\\\\NamePipe\\_MoreWindows' ESCAPE '\\' OR PipeName LIKE '\\\\pcheap\\_reuse' ESCAPE '\\' OR PipeName LIKE '\\\\gruntsvc' ESCAPE '\\' OR PipeName LIKE '\\\\583da945-62af-10e8-4902-a8f205c72b2e' ESCAPE '\\' OR PipeName LIKE '\\\\bizkaz' ESCAPE '\\' OR PipeName LIKE '\\\\svcctl' ESCAPE '\\' OR PipeName LIKE '\\\\Posh%' ESCAPE '\\' OR PipeName LIKE '\\\\jaccdpqnvbrrxlaf' ESCAPE '\\' OR PipeName LIKE '\\\\csexecsvc' ESCAPE '\\' OR PipeName LIKE '\\\\6e7645c4-32c5-4fe3-aabf-e94c2f4370e7' ESCAPE '\\' OR PipeName LIKE '\\\\adschemerpc' ESCAPE '\\' OR PipeName LIKE '\\\\AnonymousPipe' ESCAPE '\\' OR PipeName LIKE '\\\\bc367' ESCAPE '\\' OR PipeName LIKE '\\\\bc31a7' ESCAPE '\\' OR PipeName LIKE '\\\\testPipe' ESCAPE '\\' OR PipeName LIKE '\\\\dce\\_3d' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\46a676ab7f179e511e30dd2dc41bd388' ESCAPE '\\' OR PipeName LIKE '\\\\583da945-62af-10e8-4902-a8f205c72b2e' ESCAPE '\\' OR PipeName LIKE '\\\\6e7645c4-32c5-4fe3-aabf-e94c2f4370e7' ESCAPE '\\' OR PipeName LIKE '\\\\9f81f59bc58452127884ce513865ed20' ESCAPE '\\' OR PipeName LIKE '\\\\adschemerpc' ESCAPE '\\' OR PipeName LIKE '\\\\ahexec' ESCAPE '\\' OR PipeName LIKE '\\\\AnonymousPipe' ESCAPE '\\' OR PipeName LIKE '\\\\bc31a7' ESCAPE '\\' OR PipeName LIKE '\\\\bc367' ESCAPE '\\' OR PipeName LIKE '\\\\bizkaz' ESCAPE '\\' OR PipeName LIKE '\\\\csexecsvc' ESCAPE '\\' OR PipeName LIKE '\\\\dce\\_3d' ESCAPE '\\' OR PipeName LIKE '\\\\e710f28d59aa529d6792ca6ff0ca1b34' ESCAPE '\\' OR PipeName LIKE '\\\\gruntsvc' ESCAPE '\\' OR PipeName LIKE '\\\\isapi\\_dg' ESCAPE '\\' OR PipeName LIKE '\\\\isapi\\_dg2' ESCAPE '\\' OR PipeName LIKE '\\\\isapi\\_http' ESCAPE '\\' OR PipeName LIKE '\\\\jaccdpqnvbrrxlaf' ESCAPE '\\' OR PipeName LIKE '\\\\lsassw' ESCAPE '\\' OR PipeName LIKE '\\\\NamePipe\\_MoreWindows' ESCAPE '\\' OR PipeName LIKE '\\\\pcheap\\_reuse' ESCAPE '\\' OR PipeName LIKE '\\\\Posh%' ESCAPE '\\' OR PipeName LIKE '\\\\rpchlp\\_3' ESCAPE '\\' OR PipeName LIKE '\\\\sdlrpc' ESCAPE '\\' OR PipeName LIKE '\\\\svcctl' ESCAPE '\\' OR PipeName LIKE '\\\\testPipe' ESCAPE '\\' OR PipeName LIKE '\\\\winsession' ESCAPE '\\')"
         ],
         "filename": "pipe_created_mal_namedpipes.yml"
     },
@@ -24783,23 +24903,42 @@
         "filename": "pipe_created_paexec_default_pipe.yml"
     },
     {
-        "title": "Alternate PowerShell Hosts Pipe",
-        "id": "58cb02d5-78ce-4692-b3e1-dce850aae41a",
-        "status": "test",
-        "description": "Detects alternate PowerShell hosts potentially bypassing detections looking for powershell.exe",
-        "author": "Roberto Rodriguez @Cyb3rWard0g, Tim Shelton",
+        "title": "HackTool - DiagTrackEoP Default Named Pipe",
+        "id": "1f7025a6-e747-4130-aac4-961eb47015f1",
+        "status": "experimental",
+        "description": "Detects creation of default named pipe used by the DiagTrackEoP POC, a tool that abuses \"SeImpersonate\" privilege.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
-            "attack.t1059.001"
+            "attack.privilege_escalation"
         ],
         "falsepositives": [
-            "Programs using PowerShell directly without invocation of a dedicated interpreter."
+            "Unlikely"
         ],
-        "level": "medium",
+        "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (PipeName LIKE '\\\\PSHost%' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINDOWS\\\\System32\\\\sdiagnhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINDOWS\\\\System32\\\\wsmprovhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\system32\\\\dsac.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\system32\\\\wbem\\\\wmiprvse.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ForefrontActiveDirectoryConnector.exe' ESCAPE '\\' OR NewProcessName LIKE '%c:\\\\windows\\\\system32\\\\inetsrv\\\\w3wp.exe' ESCAPE '\\')) OR (NewProcessName = '') OR (NewProcessName LIKE '%:\\\\Program Files%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Microsoft SQL Server\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Tools\\\\Binn\\\\SQLPS.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Citrix\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Exchange Server\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\ServerManager.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE PipeName LIKE '%thisispipe%' ESCAPE '\\'"
         ],
-        "filename": "pipe_created_alternate_powershell_hosts_pipe.yml"
+        "filename": "pipe_created_hktl_diagtrack_eop.yml"
+    },
+    {
+        "title": "CobaltStrike Named Pipe",
+        "id": "d5601f8c-b26f-4ab0-9035-69e11a8d4ad2",
+        "status": "test",
+        "description": "Detects the creation of a named pipe as used by CobaltStrike",
+        "author": "Florian Roth (Nextron Systems), Wojciech Lesicki",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1055"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE ((PipeName LIKE '%\\\\MSSE-%' ESCAPE '\\' AND PipeName LIKE '%-server%' ESCAPE '\\') OR PipeName LIKE '\\\\postex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\status\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\msagent\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\interprocess\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\samr\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\netlogon\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\srvsvc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\lsarpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\wkssvc\\_%' ESCAPE '\\')"
+        ],
+        "filename": "pipe_created_hktl_cobaltstrike.yml"
     },
     {
         "title": "Invoke-Obfuscation Via Use MSHTA",
@@ -28042,6 +28181,25 @@
         "filename": "proc_creation_win_lolbin_register_app.yml"
     },
     {
+        "title": "Potential Binary Proxy Execution Via VSDiagnostics.EXE",
+        "id": "ac1c92b4-ac81-405a-9978-4604d78cc47e",
+        "status": "experimental",
+        "description": "Detects execution of \"VSDiagnostics.exe\" with the \"start\" command in order to launch and proxy arbitrary binaries.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Legitimate usage for tracing and diagnostics purposes"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\VSDiagnostics.exe' ESCAPE '\\' OR OriginalFileName = 'VSDiagnostics.exe') AND CommandLine LIKE '%start%' ESCAPE '\\' AND (CommandLine LIKE '% /launch:%' ESCAPE '\\' OR CommandLine LIKE '% -launch:%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_vsdiagnostics_execution_proxy.yml"
+    },
+    {
         "title": "Tap Installer Execution",
         "id": "99793437-3e16-439b-be0f-078782cf953d",
         "status": "test",
@@ -29755,6 +29913,22 @@
         "filename": "proc_creation_win_netsh_fw_set_rule.yml"
     },
     {
+        "title": "Portable Gpg.EXE Execution",
+        "id": "77df53a5-1d78-4f32-bc5a-0e7465bd8f41",
+        "status": "experimental",
+        "description": "Detects the execution of \"gpg.exe\" from uncommon location. Often used by ransomware and loaders to decrypt/encrypt data.",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1486"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\gpg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\gpg2.exe' ESCAPE '\\') OR OriginalFileName = 'gpg.exe' OR Description = 'GnuPG’s OpenPGP tool') AND NOT (((NewProcessName LIKE '%:\\\\Program Files (x86)\\\\GnuPG\\\\bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\GNU\\\\GnuPG\\\\bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\Gpg4win\\\\bin\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_gpg4win_portable_execution.yml"
+    },
+    {
         "title": "Java Running with Remote Debugging",
         "id": "8f88e3f6-2a49-48f5-a5c4-2f7eedf78710",
         "status": "test",
@@ -31044,21 +31218,21 @@
         "filename": "proc_creation_win_sysinternals_psexec_paexec_escalate_system.yml"
     },
     {
-        "title": "DLL Sideloading by Microsoft Defender",
+        "title": "Potential Mpclient.DLL Sideloading Via Defender Binaries",
         "id": "7002aa10-b8d4-47ae-b5ba-51ab07e228b9",
         "status": "experimental",
-        "description": "Detects execution of Microsoft Defender's CLI process (MpCmdRun.exe) from the non-default directory which may be an attempt to sideload arbitrary DLL",
+        "description": "Detects potential sideloading of \"mpclient.dll\" by Windows Defender processes (\"MpCmdRun\" and \"NisSrv\") from their non-default directory.",
         "author": "Bhabesh Raj",
         "tags": [
             "attack.defense_evasion",
             "attack.t1574.002"
         ],
         "falsepositives": [
-            "Unknown"
+            "Unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\winsxs\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Security Client\\\\MpCmdRun.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\NisSrv.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Windows Defender\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Security Client\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_mpcmdrun_dll_sideload_defender.yml"
     },
@@ -34931,6 +35105,24 @@
         "filename": "proc_creation_win_winzip_password_compression.yml"
     },
     {
+        "title": "File Encryption/Decryption Via Gpg4win From Suspicious Locations",
+        "id": "e1e0b7d7-e10b-4ee4-ac49-a4bda05d320d",
+        "status": "experimental",
+        "description": "Detects usage of Gpg4win to encrypt/decrypt files located in potentially suspicious locations.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\gpg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\gpg2.exe' ESCAPE '\\') OR Product = 'GNU Privacy Guard (GnuPG)' OR Description = 'GnuPG’s OpenPGP tool') AND CommandLine LIKE '%-passphrase%' ESCAPE '\\' AND (CommandLine LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_gpg4win_susp_location.yml"
+    },
+    {
         "title": "Potential Command Line Path Traversal Evasion Attempt",
         "id": "1327381e-6ab0-4f38-b583-4c1b8346a56b",
         "status": "experimental",
@@ -35366,6 +35558,24 @@
         "filename": "proc_creation_win_sysinternals_adexplorer_susp_execution.yml"
     },
     {
+        "title": "File Encryption Using Gpg4win",
+        "id": "550bbb84-ce5d-4e61-84ad-e590f0024dcd",
+        "status": "experimental",
+        "description": "Detects usage of Gpg4win to encrypt files",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\gpg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\gpg2.exe' ESCAPE '\\') OR Description = 'GnuPG’s OpenPGP tool') AND (CommandLine LIKE '% -c %' ESCAPE '\\' AND CommandLine LIKE '%passphrase%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_gpg4win_encryption.yml"
+    },
+    {
         "title": "Powershell Defender Exclusion",
         "id": "17769c90-230e-488b-a463-e05c08e9d48f",
         "status": "experimental",
@@ -35554,6 +35764,22 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\netsh.exe' ESCAPE '\\' OR OriginalFileName = 'netsh.exe') AND (CommandLine LIKE '% i%' ESCAPE '\\' AND CommandLine LIKE '% p%' ESCAPE '\\' AND CommandLine LIKE '%=3389%' ESCAPE '\\' AND CommandLine LIKE '% c%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_netsh_port_forwarding_3389.yml"
+    },
+    {
+        "title": "Renamed Gpg.EXE Execution",
+        "id": "ec0722a3-eb5c-4a56-8ab2-bf6f20708592",
+        "status": "experimental",
+        "description": "Detects the execution of a renamed \"gpg.exe\". Often used by ransomware and loaders to decrypt/encrypt data.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), frack113",
+        "tags": [
+            "attack.impact",
+            "attack.t1486"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND OriginalFileName = 'gpg.exe' AND NOT (((NewProcessName LIKE '%\\\\gpg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\gpg2.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_renamed_gpg4win.yml"
     },
     {
         "title": "Delete All Scheduled Tasks",
@@ -38207,25 +38433,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\at.exe' ESCAPE '\\' AND CommandLine LIKE '%interactive%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_at_interactive_execution.yml"
-    },
-    {
-        "title": "Gpg4Win Decrypt Files From Suspicious Locations",
-        "id": "e1e0b7d7-e10b-4ee4-ac49-a4bda05d320d",
-        "status": "experimental",
-        "description": "Detects usage of the Gpg4win to decrypt files located in suspicious locations from CLI",
-        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1219"
-        ],
-        "falsepositives": [
-            "Legitimate use"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\gpg2.exe' ESCAPE '\\' OR Product = 'GNU Privacy Guard (GnuPG)' OR Company = 'g10 Code GmbH') AND CommandLine LIKE '%-passphrase%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Perflogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\temp%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_gpg4win_susp_usage.yml"
     },
     {
         "title": "File With Suspicious Extension Downloaded Via Bitsadmin",
@@ -42490,6 +42697,24 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%powershell%' ESCAPE '\\' AND CommandLine LIKE '%.lnk%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_susp_embed_exe_lnk.yml"
+    },
+    {
+        "title": "File Decryption Using Gpg4win",
+        "id": "037dcd71-33a8-4392-bb01-293c94663e5a",
+        "status": "experimental",
+        "description": "Detects usage of Gpg4win to decrypt files",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\gpg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\gpg2.exe' ESCAPE '\\') OR Description = 'GnuPG’s OpenPGP tool') AND (CommandLine LIKE '% -d %' ESCAPE '\\' AND CommandLine LIKE '%passphrase%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_gpg4win_decryption.yml"
     },
     {
         "title": "Execution from Suspicious Folder",
