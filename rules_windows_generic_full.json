@@ -6167,7 +6167,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Word\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Excel\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Powerpoint\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\VSTO\\\\Security\\\\Inclusion\\\\%' ESCAPE '\\')) AND NOT (((NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\integrator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winword.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\AVG\\\\Antivirus\\\\RegSvr.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\Antivirus.AsOutExt\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'SetValue' AND (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Word\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Excel\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Powerpoint\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\VSTO\\\\Security\\\\Inclusion\\\\%' ESCAPE '\\')) AND NOT (((NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\integrator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winword.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\Teams.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Program Files\\\\AVG\\\\Antivirus\\\\RegSvr.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\Antivirus.AsOutExt\\\\%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_persistence_office_vsto.yml"
     },
@@ -29454,7 +29454,7 @@
         "title": "LOLBIN Execution Of The FTP.EXE Binary",
         "id": "06b401f4-107c-4ff9-947f-9ec1e7649f1e",
         "status": "test",
-        "description": "Detects execution of ftp.exe script execution with the \"-s\" flag and any child processes ran by ftp.exe",
+        "description": "Detects execution of ftp.exe script execution with the \"-s\" or \"/s\" flag and any child processes ran by ftp.exe",
         "author": "Victor Sergeev, oscd.community",
         "tags": [
             "attack.execution",
@@ -29467,7 +29467,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR ((NewProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR OriginalFileName = 'ftp.exe') AND CommandLine LIKE '%-s:%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR ((NewProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR OriginalFileName = 'ftp.exe') AND (CommandLine LIKE '%-s:%' ESCAPE '\\' OR CommandLine LIKE '%/s:%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_lolbin_ftp.yml"
     },
