@@ -368,7 +368,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Bits-Client/Operational' AND EventID = '16403' AND (RemoteName LIKE '%.ghostbin.co/%' ESCAPE '\\' OR RemoteName LIKE '%.hastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%.paste.ee%' ESCAPE '\\' OR RemoteName LIKE '%anonfiles.com%' ESCAPE '\\' OR RemoteName LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR RemoteName LIKE '%ddns.net%' ESCAPE '\\' OR RemoteName LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%gofile.io%' ESCAPE '\\' OR RemoteName LIKE '%mediafire.com%' ESCAPE '\\' OR RemoteName LIKE '%mega.nz%' ESCAPE '\\' OR RemoteName LIKE '%paste.ee%' ESCAPE '\\' OR RemoteName LIKE '%pastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%pastebin.pl%' ESCAPE '\\' OR RemoteName LIKE '%pastetext.net%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.com%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.net%' ESCAPE '\\' OR RemoteName LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%send.exploit.in%' ESCAPE '\\' OR RemoteName LIKE '%sendspace.com%' ESCAPE '\\' OR RemoteName LIKE '%storage.googleapis.com%' ESCAPE '\\' OR RemoteName LIKE '%transfer.sh%' ESCAPE '\\' OR RemoteName LIKE '%ufile.io%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Bits-Client/Operational' AND EventID = '16403' AND (RemoteName LIKE '%.githubusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%anonfiles.com%' ESCAPE '\\' OR RemoteName LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR RemoteName LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR RemoteName LIKE '%ddns.net%' ESCAPE '\\' OR RemoteName LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR RemoteName LIKE '%ghostbin.co%' ESCAPE '\\' OR RemoteName LIKE '%gofile.io%' ESCAPE '\\' OR RemoteName LIKE '%hastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%mediafire.com%' ESCAPE '\\' OR RemoteName LIKE '%mega.nz%' ESCAPE '\\' OR RemoteName LIKE '%paste.ee%' ESCAPE '\\' OR RemoteName LIKE '%pastebin.com%' ESCAPE '\\' OR RemoteName LIKE '%pastebin.pl%' ESCAPE '\\' OR RemoteName LIKE '%pastetext.net%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.com%' ESCAPE '\\' OR RemoteName LIKE '%privatlab.net%' ESCAPE '\\' OR RemoteName LIKE '%send.exploit.in%' ESCAPE '\\' OR RemoteName LIKE '%sendspace.com%' ESCAPE '\\' OR RemoteName LIKE '%storage.googleapis.com%' ESCAPE '\\' OR RemoteName LIKE '%storjshare.io%' ESCAPE '\\' OR RemoteName LIKE '%temp.sh%' ESCAPE '\\' OR RemoteName LIKE '%transfer.sh%' ESCAPE '\\' OR RemoteName LIKE '%ufile.io%' ESCAPE '\\'))"
         ],
         "filename": "win_bits_client_new_transfer_via_file_sharing_domains.yml"
     },
@@ -2872,7 +2872,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-AppXDeploymentServer/Operational' AND EventID = '854' AND (Path LIKE '%.ghostbin.co/%' ESCAPE '\\' OR Path LIKE '%.hastebin.com%' ESCAPE '\\' OR Path LIKE '%.paste.ee%' ESCAPE '\\' OR Path LIKE '%anonfiles.com%' ESCAPE '\\' OR Path LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Path LIKE '%ddns.net%' ESCAPE '\\' OR Path LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR Path LIKE '%gofile.io%' ESCAPE '\\' OR Path LIKE '%mediafire.com%' ESCAPE '\\' OR Path LIKE '%mega.nz%' ESCAPE '\\' OR Path LIKE '%paste.ee%' ESCAPE '\\' OR Path LIKE '%pastebin.com%' ESCAPE '\\' OR Path LIKE '%pastebin.pl%' ESCAPE '\\' OR Path LIKE '%pastetext.net%' ESCAPE '\\' OR Path LIKE '%privatlab.com%' ESCAPE '\\' OR Path LIKE '%privatlab.net%' ESCAPE '\\' OR Path LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR Path LIKE '%send.exploit.in%' ESCAPE '\\' OR Path LIKE '%sendspace.com%' ESCAPE '\\' OR Path LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Path LIKE '%transfer.sh%' ESCAPE '\\' OR Path LIKE '%ufile.io%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-AppXDeploymentServer/Operational' AND EventID = '854' AND (Path LIKE '%.githubusercontent.com%' ESCAPE '\\' OR Path LIKE '%anonfiles.com%' ESCAPE '\\' OR Path LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR Path LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Path LIKE '%ddns.net%' ESCAPE '\\' OR Path LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR Path LIKE '%ghostbin.co%' ESCAPE '\\' OR Path LIKE '%gofile.io%' ESCAPE '\\' OR Path LIKE '%hastebin.com%' ESCAPE '\\' OR Path LIKE '%mediafire.com%' ESCAPE '\\' OR Path LIKE '%mega.nz%' ESCAPE '\\' OR Path LIKE '%paste.ee%' ESCAPE '\\' OR Path LIKE '%pastebin.com%' ESCAPE '\\' OR Path LIKE '%pastebin.pl%' ESCAPE '\\' OR Path LIKE '%pastetext.net%' ESCAPE '\\' OR Path LIKE '%privatlab.com%' ESCAPE '\\' OR Path LIKE '%privatlab.net%' ESCAPE '\\' OR Path LIKE '%send.exploit.in%' ESCAPE '\\' OR Path LIKE '%sendspace.com%' ESCAPE '\\' OR Path LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Path LIKE '%storjshare.io%' ESCAPE '\\' OR Path LIKE '%temp.sh%' ESCAPE '\\' OR Path LIKE '%transfer.sh%' ESCAPE '\\' OR Path LIKE '%ufile.io%' ESCAPE '\\'))"
         ],
         "filename": "win_appxdeployment_server_susp_domains.yml"
     },
@@ -5921,6 +5921,25 @@
         "filename": "registry_set_asep_reg_keys_modification_common.yml"
     },
     {
+        "title": "New BgInfo.EXE Custom DB Path Registry Configuration",
+        "id": "53330955-dc52-487f-a3a2-da24dcff99b5",
+        "status": "experimental",
+        "description": "Detects setting of a new registry database value related to BgInfo configuration. Attackers can for example set this value to save the results of the commands executed by BgInfo in order to exfiltrate information.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Legitimate use of external DB to save the results"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\Software\\\\Winternals\\\\BGInfo\\\\Database' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_bginfo_custom_db.yml"
+    },
+    {
         "title": "Disable Windows Defender Functionalities Via Registry Keys",
         "id": "0eb46774-f1ab-4a74-8238-1155855f2263",
         "status": "experimental",
@@ -7801,6 +7820,25 @@
         "filename": "registry_set_persistence_autodial_dll.yml"
     },
     {
+        "title": "New BgInfo.EXE Custom VBScript Registry Configuration",
+        "id": "992dd79f-dde8-4bb0-9085-6350ba97cfb3",
+        "status": "experimental",
+        "description": "Detects setting of a new registry value related to BgInfo configuration, which can be abused to execute custom VBScript via \"BgInfo.exe\"",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Legitimate VBScript"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\Software\\\\Winternals\\\\BGInfo\\\\UserFields\\\\%' ESCAPE '\\' AND NewValue LIKE '4%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_bginfo_custom_vbscript.yml"
+    },
+    {
         "title": "Potential Registry Persistence Attempt Via DbgManagedDebugger",
         "id": "9827ae57-3802-418f-994b-d5ecf5cd974b",
         "status": "experimental",
@@ -8375,6 +8413,25 @@
             "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\HtmlHelp Author\\\\Location%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\WOW6432Node\\\\Microsoft\\\\HtmlHelp Author\\\\Location%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_persistence_chm.yml"
+    },
+    {
+        "title": "New BgInfo.EXE Custom WMI Query Registry Configuration",
+        "id": "cd277474-5c52-4423-a52b-ac2d7969902f",
+        "status": "experimental",
+        "description": "Detects setting of a new registry value related to BgInfo configuration, which can be abused to execute custom WMI query via \"BgInfo.exe\"",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Legitimate WMI query"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\Software\\\\Winternals\\\\BGInfo\\\\UserFields\\\\%' ESCAPE '\\' AND NewValue LIKE '6%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_bginfo_custom_wmi_query.yml"
     },
     {
         "title": "Potential Persistence Via Outlook Today Pages",
@@ -11501,25 +11558,6 @@
         "filename": "posh_ps_add_windows_capability.yml"
     },
     {
-        "title": "Execution via CL_Mutexverifiers.ps1",
-        "id": "39776c99-1c7b-4ba0-b5aa-641525eee1a4",
-        "status": "test",
-        "description": "Detects Execution via runAfterCancelProcess in CL_Mutexverifiers.ps1 module",
-        "author": "oscd.community, Natalia Shornikova",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1216"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%CL\\_Mutexverifiers.ps1%' ESCAPE '\\' AND ScriptBlockText LIKE '%runAfterCancelProcess%' ESCAPE '\\')"
-        ],
-        "filename": "posh_ps_cl_mutexverifiers_lolscript.yml"
-    },
-    {
         "title": "Delete Volume Shadow Copies via WMI with PowerShell - PS Script",
         "id": "e17121b4-ef2a-4418-8a59-12fb1631fa9e",
         "status": "test",
@@ -12073,25 +12111,6 @@
             "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%Remove-ADGroupMember%' ESCAPE '\\' AND ScriptBlockText LIKE '%-Identity %' ESCAPE '\\' AND ScriptBlockText LIKE '%-Members %' ESCAPE '\\')"
         ],
         "filename": "posh_ps_susp_remove_adgroupmember.yml"
-    },
-    {
-        "title": "Execution via CL_Invocation.ps1 - Powershell",
-        "id": "4cd29327-685a-460e-9dac-c3ab96e549dc",
-        "status": "experimental",
-        "description": "Detects Execution via SyncInvoke in CL_Invocation.ps1 module",
-        "author": "oscd.community, Natalia Shornikova",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1216"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%CL\\_Invocation.ps1%' ESCAPE '\\' AND ScriptBlockText LIKE '%SyncInvoke%' ESCAPE '\\')"
-        ],
-        "filename": "posh_ps_cl_invocation_lolscript.yml"
     },
     {
         "title": "Disable-WindowsOptionalFeature Command PowerShell",
@@ -13001,7 +13020,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((Initiated = 'true' AND (DestinationHostname LIKE '%.cloudflare.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%4shared.com' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%discord.com/api/webhooks/' ESCAPE '\\' OR DestinationHostname LIKE '%docs.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%drive.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%dropbox.com' ESCAPE '\\' OR DestinationHostname LIKE '%dropmefiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%facebook.com' ESCAPE '\\' OR DestinationHostname LIKE '%feeds.rapidfeeds.com' ESCAPE '\\' OR DestinationHostname LIKE '%fotolog.com' ESCAPE '\\' OR DestinationHostname LIKE '%ghostbin.co/' ESCAPE '\\' OR DestinationHostname LIKE '%gist.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%gofile.io' ESCAPE '\\' OR DestinationHostname LIKE '%hastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%imgur.com' ESCAPE '\\' OR DestinationHostname LIKE '%livejournal.com' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%onedrive.com' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%raw.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%reddit.com' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%steamcommunity.com' ESCAPE '\\' OR DestinationHostname LIKE '%storage.googleapis.com' ESCAPE '\\' OR DestinationHostname LIKE '%t.me' ESCAPE '\\' OR DestinationHostname LIKE '%technet.microsoft.com' ESCAPE '\\' OR DestinationHostname LIKE '%temp.sh' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%twitter.com' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\' OR DestinationHostname LIKE '%vimeo.com' ESCAPE '\\' OR DestinationHostname LIKE '%wetransfer.com' ESCAPE '\\' OR DestinationHostname LIKE '%youtube.com' ESCAPE '\\')) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Program Files\\\\BraveSoftware\\\\%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Maxthon\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\Opera\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\SeaMonkey\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\SeaMonkey\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Vivaldi\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Naver\\\\Naver Whale\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Naver\\\\Naver Whale\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Tor Browser\\\\%' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Waterfox\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Waterfox\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\Waterfox.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\midori-ng\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Midori Next Generation.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\SlimBrowser\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\SlimBrowser\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\slimbrowser.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Flock\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Flock.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Phoebe\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Phoebe.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Falkon\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Falkon\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\falkon.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\QtWeb\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\QtWeb\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\QtWeb.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Avant Browser\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Avant Browser\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\avant.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\WindowsApps\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%WhatsApp.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Roaming\\\\Telegram Desktop\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Telegram.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\OneDrive.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\Dropbox.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\MEGAsync\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%MEGAsync.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%GoogleDriveFS.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Discord\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Discord.exe' ESCAPE '\\'))) AND NOT (((NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsSense.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\PRTG Probe.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Engine.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (((Initiated = 'true' AND (DestinationHostname LIKE '%.cloudflare.com' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%4shared.com' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%discord.com/api/webhooks/' ESCAPE '\\' OR DestinationHostname LIKE '%docs.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%drive.google.com' ESCAPE '\\' OR DestinationHostname LIKE '%dropbox.com' ESCAPE '\\' OR DestinationHostname LIKE '%dropmefiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%facebook.com' ESCAPE '\\' OR DestinationHostname LIKE '%feeds.rapidfeeds.com' ESCAPE '\\' OR DestinationHostname LIKE '%fotolog.com' ESCAPE '\\' OR DestinationHostname LIKE '%ghostbin.co/' ESCAPE '\\' OR DestinationHostname LIKE '%gofile.io' ESCAPE '\\' OR DestinationHostname LIKE '%hastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%imgur.com' ESCAPE '\\' OR DestinationHostname LIKE '%livejournal.com' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%onedrive.com' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%reddit.com' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%steamcommunity.com' ESCAPE '\\' OR DestinationHostname LIKE '%storage.googleapis.com' ESCAPE '\\' OR DestinationHostname LIKE '%t.me' ESCAPE '\\' OR DestinationHostname LIKE '%technet.microsoft.com' ESCAPE '\\' OR DestinationHostname LIKE '%temp.sh' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%twitter.com' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\' OR DestinationHostname LIKE '%vimeo.com' ESCAPE '\\' OR DestinationHostname LIKE '%wetransfer.com' ESCAPE '\\' OR DestinationHostname LIKE '%youtube.com' ESCAPE '\\')) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WindowsApps\\\\MicrosoftEdge.exe' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft\\\\EdgeCore\\\\%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\safari.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' AND NewProcessName LIKE 'C:\\\\Program Files\\\\BraveSoftware\\\\%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Maxthon\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\maxthon.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\Opera\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\SeaMonkey\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\SeaMonkey\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\seamonkey.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Vivaldi\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Naver\\\\Naver Whale\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Naver\\\\Naver Whale\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\whale.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Tor Browser\\\\%' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Waterfox\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Waterfox\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\Waterfox.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\midori-ng\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Midori Next Generation.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\SlimBrowser\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\SlimBrowser\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\slimbrowser.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Flock\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Flock.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Phoebe\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Phoebe.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Falkon\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Falkon\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\falkon.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\QtWeb\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\QtWeb\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\QtWeb.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Avant Browser\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Avant Browser\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\avant.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\WindowsApps\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%WhatsApp.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Roaming\\\\Telegram Desktop\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Telegram.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\OneDrive.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Client\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\Dropbox.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\MEGAsync\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%MEGAsync.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Drive File Stream\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%GoogleDriveFS.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Discord\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\Discord.exe' ESCAPE '\\'))) AND NOT (((NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsSense.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\PRTG Probe.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Engine.exe' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_dead_drop_resolvers.yml"
     },
@@ -13218,7 +13237,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((NewProcessName LIKE 'C:\\\\PerfLogs%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\') AND (Initiated = 'true' AND (DestinationHostname LIKE '%.ghostbin.co' ESCAPE '\\' OR DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%.hastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%.paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%.pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%gofile.io' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE 'C:\\\\PerfLogs%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\') AND (Initiated = 'true' AND (DestinationHostname LIKE '%.githubusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%anonfiles.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com' ESCAPE '\\' OR DestinationHostname LIKE '%cdn.discordapp.com/attachments/' ESCAPE '\\' OR DestinationHostname LIKE '%ddns.net' ESCAPE '\\' OR DestinationHostname LIKE '%dl.dropboxusercontent.com' ESCAPE '\\' OR DestinationHostname LIKE '%ghostbin.co' ESCAPE '\\' OR DestinationHostname LIKE '%gofile.io' ESCAPE '\\' OR DestinationHostname LIKE '%hastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%mediafire.com' ESCAPE '\\' OR DestinationHostname LIKE '%mega.nz' ESCAPE '\\' OR DestinationHostname LIKE '%paste.ee' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.com' ESCAPE '\\' OR DestinationHostname LIKE '%pastebin.pl' ESCAPE '\\' OR DestinationHostname LIKE '%pastetext.net' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.com' ESCAPE '\\' OR DestinationHostname LIKE '%privatlab.net' ESCAPE '\\' OR DestinationHostname LIKE '%send.exploit.in' ESCAPE '\\' OR DestinationHostname LIKE '%sendspace.com' ESCAPE '\\' OR DestinationHostname LIKE '%storage.googleapis.com' ESCAPE '\\' OR DestinationHostname LIKE '%storjshare.io' ESCAPE '\\' OR DestinationHostname LIKE '%temp.sh' ESCAPE '\\' OR DestinationHostname LIKE '%transfer.sh' ESCAPE '\\' OR DestinationHostname LIKE '%ufile.io' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_binary_susp_com.yml"
     },
@@ -16231,6 +16250,24 @@
             "SELECT * FROM logs WHERE TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\Advanced IP Scanner 2%' ESCAPE '\\'"
         ],
         "filename": "file_event_win_advanced_ip_scanner.yml"
+    },
+    {
+        "title": "Assembly DLL Creation Via AspNetCompiler",
+        "id": "4c7f49ee-2638-43bb-b85b-ce676c30b260",
+        "status": "experimental",
+        "description": "Detects the creation of new DLL assembly files by \"aspnet_compiler.exe\", which could be a sign of \"aspnet_compiler\" abuse to proxy execution through a build provider.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate assembly compilation using a build provider"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\aspnet\\_compiler.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Temporary ASP.NET Files\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\assembly\\\\tmp\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.dll%' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_aspnet_temp_files.yml"
     },
     {
         "title": "CVE-2021-44077 POC Default Dropped File",
@@ -19591,6 +19628,27 @@
         "filename": "image_load_side_load_jsschhlp.yml"
     },
     {
+        "title": "Unsigned Mfdetours.DLL Sideloading",
+        "id": "948a0953-f287-4806-bbcb-3b2e396df89f",
+        "status": "experimental",
+        "description": "Detects DLL sideloading of unsigned \"mfdetours.dll\". Executing \"mftrace.exe\" can be abused to attach to an arbitrary process and force load any DLL named \"mfdetours.dll\" from the current directory of execution.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\mfdetours.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE '%:\\\\Program Files (x86)\\\\Windows Kits\\\\10\\\\bin\\\\%' ESCAPE '\\' AND SignatureStatus = 'Valid')))"
+        ],
+        "filename": "image_load_side_load_mfdetours_unsigned.yml"
+    },
+    {
         "title": "Potential AVKkid.DLL Sideloading",
         "id": "952ed57c-8f99-453d-aee0-53a49c22f95d",
         "status": "experimental",
@@ -19743,6 +19801,12 @@
         "status": "experimental",
         "description": "Detects potential exploitation of CVE-2023-21554 (dubbed QueueJumper)",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.execution",
+            "cve.2023.21554",
+            "detection.emerging_threats"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -19881,6 +19945,12 @@
         "status": "experimental",
         "description": "Detects suspicious process executions in which Sysmon itself is the parent of a process, which could be a sign of exploitation (e.g. CVE-2022-41120)",
         "author": "Florian Roth (Nextron Systems), Tim Shelton (fp werfault)",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.t1068",
+            "cve.2022.41120",
+            "detection.emerging_threats"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -25059,6 +25129,25 @@
         "filename": "proc_creation_win_powershell_susp_parameter_variation.yml"
     },
     {
+        "title": "Potentially Suspicious ASP.NET Compilation Via AspNetCompiler",
+        "id": "9f50fe98-fe5c-4a2d-86c7-fad7f63ed622",
+        "status": "experimental",
+        "description": "Detects execution of \"aspnet_compiler.exe\" with potentially suspicious paths for compilation.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1127"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\aspnet\\_compiler.exe' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_aspnet_compiler_susp_paths.yml"
+    },
+    {
         "title": "Manage Engine Java Suspicious Sub Process",
         "id": "cea2b7ea-792b-405f-95a1-b903ea06458f",
         "status": "experimental",
@@ -25493,6 +25582,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%http://%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_winget_add_insecure_custom_source.yml"
+    },
+    {
+        "title": "AspNetCompiler Execution",
+        "id": "a01b8329-5953-4f73-ae2d-aa01e1f35f00",
+        "status": "test",
+        "description": "Detects execution of \"aspnet_compiler.exe\" which can be abused to compile and execute C# code.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1127"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\aspnet\\_compiler.exe' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_aspnet_compiler_exectuion.yml"
     },
     {
         "title": "Suspicious Microsoft Office Child Process",
@@ -26079,25 +26187,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName = 'hxtsr.exe' AND NOT (CurrentDirectory LIKE 'C:\\\\program files\\\\windowsapps\\\\microsoft.windowscommunicationsapps\\_%' ESCAPE '\\' AND CurrentDirectory LIKE '%\\\\hxtsr.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hxtsr_masquerading.yml"
-    },
-    {
-        "title": "Suspicious AgentExecutor PowerShell Execution",
-        "id": "c0b40568-b1e9-4b03-8d6c-b096da6da9ab",
-        "status": "experimental",
-        "description": "Detects execution of the AgentExecutor.exe binary. Which can be abused as a LOLBIN to execute powershell scripts with the ExecutionPolicy \"Bypass\" or any binary named \"powershell.exe\" located in the path provided by 6th positional argument",
-        "author": "Nasreddine Bencherchali (Nextron Systems), memory-shards",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\AgentExecutor.exe' ESCAPE '\\' OR OriginalFileName = 'AgentExecutor.exe') AND (CommandLine LIKE '% -powershell%' ESCAPE '\\' OR CommandLine LIKE '% -remediationScript%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_lolbin_agentexecutor_susp_usage.yml"
     },
     {
         "title": "Suspicious Child Process Created as System",
@@ -27129,6 +27218,25 @@
         "filename": "proc_creation_win_hktl_impacket_lateral_movement.yml"
     },
     {
+        "title": "Potential Process Execution Proxy Via CL_Invocation.ps1",
+        "id": "a0459f02-ac51-4c09-b511-b8c9203fc429",
+        "status": "test",
+        "description": "Detects calls to \"SyncInvoke\" that is part of the \"CL_Invocation.ps1\" script to proxy execution using \"System.Diagnostics.Process\"",
+        "author": "Nasreddine Bencherchali (Nextron Systems), oscd.community, Natalia Shornikova",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1216"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%SyncInvoke %' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_powershell_cl_invocation.yml"
+    },
+    {
         "title": "Suspicious Vsls-Agent Command With AgentExtensionPath Load",
         "id": "43103702-5886-11ed-9b6a-0242ac120002",
         "status": "experimental",
@@ -27824,25 +27932,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine REGEXP '\\w+`(\\w+|-|.)`[\\w+|\\s]' OR CommandLine REGEXP '\"(\\{\\d\\})+\"\\s*-f' OR CommandLine REGEXP '\\$\\{((e|n|v)*`(e|n|v)*)+:path\\}|\\$\\{((e|n|v)*`(e|n|v)*)+:((p|a|t|h)*`(p|a|t|h)*)+\\}|\\$\\{env:((p|a|t|h)*`(p|a|t|h)*)+\\}'))"
         ],
         "filename": "proc_creation_win_powershell_token_obfuscation.yml"
-    },
-    {
-        "title": "Execution via CL_Invocation.ps1",
-        "id": "a0459f02-ac51-4c09-b511-b8c9203fc429",
-        "status": "test",
-        "description": "Detects Execution via SyncInvoke in CL_Invocation.ps1 module",
-        "author": "oscd.community, Natalia Shornikova",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1216"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%CL\\_Invocation.ps1%' ESCAPE '\\' AND CommandLine LIKE '%SyncInvoke%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_lolbin_cl_invocation.yml"
     },
     {
         "title": "PUA - Seatbelt Execution",
@@ -28665,7 +28754,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName = 'CertUtil.exe') AND (CommandLine LIKE '%urlcache %' ESCAPE '\\' OR CommandLine LIKE '%verifyctl %' ESCAPE '\\') AND (CommandLine LIKE '%.ghostbin.co/%' ESCAPE '\\' OR CommandLine LIKE '%.hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%.paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName = 'CertUtil.exe') AND (CommandLine LIKE '%urlcache %' ESCAPE '\\' OR CommandLine LIKE '%verifyctl %' ESCAPE '\\') AND (CommandLine LIKE '%.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_certutil_download_file_sharing_domains.yml"
     },
@@ -29082,28 +29171,6 @@
         "filename": "proc_creation_win_registry_new_network_provider.yml"
     },
     {
-        "title": "Application Whitelisting Bypass via Bginfo",
-        "id": "aaf46cdc-934e-4284-b329-34aa701e3771",
-        "status": "test",
-        "description": "Execute VBscript code that is referenced within the *.bgi file.",
-        "author": "Beyu Denis, oscd.community",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.005",
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.t1202"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\bginfo.exe' ESCAPE '\\' AND CommandLine LIKE '%/popup%' ESCAPE '\\' AND CommandLine LIKE '%/nolicprompt%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_lolbin_bginfo.yml"
-    },
-    {
         "title": "Suspicious GUP Usage",
         "id": "0a4f6091-223b-41f6-8743-f322ec84930b",
         "status": "test",
@@ -29473,6 +29540,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\csexec.exe' ESCAPE '\\' OR Description = 'csexec'))"
         ],
         "filename": "proc_creation_win_pua_csexec.yml"
+    },
+    {
+        "title": "Suspicious AgentExecutor PowerShell Execution",
+        "id": "c0b40568-b1e9-4b03-8d6c-b096da6da9ab",
+        "status": "experimental",
+        "description": "Detects execution of the AgentExecutor.exe binary. Which can be abused as a LOLBIN to execute powershell scripts with the ExecutionPolicy \"Bypass\" or any binary named \"powershell.exe\" located in the path provided by 6th positional argument",
+        "author": "Nasreddine Bencherchali (Nextron Systems), memory-shards",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\AgentExecutor.exe' ESCAPE '\\' OR OriginalFileName = 'AgentExecutor.exe') AND (CommandLine LIKE '% -powershell%' ESCAPE '\\' OR CommandLine LIKE '% -remediationScript%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_agentexecutor_susp_usage.yml"
     },
     {
         "title": "Potential Browser Data Stealing",
@@ -29858,25 +29944,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\WerFault.exe' ESCAPE '\\' AND CommandLine LIKE '%WerFault.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND CommandLine LIKE '%rundll32.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regsvcs.exe' ESCAPE '\\' AND CommandLine LIKE '%regsvcs.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regasm.exe' ESCAPE '\\' AND CommandLine LIKE '%regasm.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND CommandLine LIKE '%regsvr32.exe' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\{%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\setup.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\setup.exe\" --install-archive=\"C:\\\\Users\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_bad_opsec_sacrificial_processes.yml"
-    },
-    {
-        "title": "CL_Mutexverifiers.ps1 Proxy Execution",
-        "id": "1e0e1a81-e79b-44bc-935b-ddb9c8006b3d",
-        "status": "experimental",
-        "description": "Detects the use of a Microsoft signed script to execute commands",
-        "author": "oscd.community, Natalia Shornikova, frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1216"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%\\\\CL\\_Mutexverifiers.ps1%' ESCAPE '\\' AND CommandLine LIKE '%runAfterCancelProcess %' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_lolbin_cl_mutexverifiers.yml"
     },
     {
         "title": "Abusing IEExec To Download Payloads",
@@ -34762,6 +34829,28 @@
         "filename": "proc_creation_win_netsh_port_forwarding.yml"
     },
     {
+        "title": "Uncommon Child Process Of BgInfo.EXE",
+        "id": "aaf46cdc-934e-4284-b329-34aa701e3771",
+        "status": "test",
+        "description": "Detects uncommon child processes of \"BgInfo.exe\" which could be a sign of potential abuse of the binary to proxy execution via external VBScript",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Beyu Denis, oscd.community",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.005",
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (ParentProcessName LIKE '%\\\\bginfo.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\bginfo64.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_bginfo_uncommon_child_process.yml"
+    },
+    {
         "title": "Suspicious Msbuild Execution By Uncommon Parent Process",
         "id": "33be4333-2c6b-44f4-ae28-102cdbde0a31",
         "status": "experimental",
@@ -34837,25 +34926,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '% tunnel %' ESCAPE '\\' AND CommandLine LIKE '%cleanup %' ESCAPE '\\' AND (CommandLine LIKE '% --config %' ESCAPE '\\' OR CommandLine LIKE '% --connector-id %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_cloudflared_tunnel_cleanup.yml"
-    },
-    {
-        "title": "Suspicious aspnet_compiler.exe Execution",
-        "id": "a01b8329-5953-4f73-ae2d-aa01e1f35f00",
-        "status": "test",
-        "description": "Execute C# code with the Build Provider and proper folder structure in place.",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1127"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND NewProcessName LIKE '%aspnet\\_compiler.exe%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_lolbin_aspnet_compiler.yml"
     },
     {
         "title": "Privilege Escalation via Named Pipe Impersonation",
@@ -35345,6 +35415,25 @@
         "filename": "proc_creation_win_webshell_detection.yml"
     },
     {
+        "title": "Indirect Inline Command Execution Via Bash.EXE",
+        "id": "5edc2273-c26f-406c-83f3-f4d948e740dd",
+        "status": "experimental",
+        "description": "Detects execution of Microsoft bash launcher with the \"-c\" flag. This can be used to potentially bypass defenses and execute Linux or Windows-based binaries directly via bash",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\bash.exe' ESCAPE '\\') OR OriginalFileName = 'Bash.exe') AND CommandLine LIKE '% -c %' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_bash_command_execution.yml"
+    },
+    {
         "title": "Rebuild Performance Counter Values Via Lodctr.EXE",
         "id": "cc9d3712-6310-4320-b2df-7cb408274d53",
         "status": "experimental",
@@ -35574,6 +35663,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\gpg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\gpg2.exe' ESCAPE '\\') OR Description = 'GnuPG’s OpenPGP tool') AND (CommandLine LIKE '% -c %' ESCAPE '\\' AND CommandLine LIKE '%passphrase%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_gpg4win_encryption.yml"
+    },
+    {
+        "title": "AgentExecutor PowerShell Execution",
+        "id": "7efd2c8d-8b18-45b7-947d-adfe9ed04f61",
+        "status": "experimental",
+        "description": "Detects execution of the AgentExecutor.exe binary. Which can be abused as a LOLBIN to execute powershell scripts with the ExecutionPolicy \"Bypass\" or any binary named \"powershell.exe\" located in the path provided by 6th positional argument",
+        "author": "Nasreddine Bencherchali (Nextron Systems), memory-shards",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Legitimate use via Intune management. You exclude script paths and names to reduce FP rate"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '\\\\AgentExecutor.exe' ESCAPE '\\' OR OriginalFileName = 'AgentExecutor.exe') AND (CommandLine LIKE '% -powershell%' ESCAPE '\\' OR CommandLine LIKE '% -remediationScript%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_agentexecutor_potential_abuse.yml"
     },
     {
         "title": "Powershell Defender Exclusion",
@@ -36028,7 +36136,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR OriginalFileName = 'curl.exe') AND (CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co/%' ESCAPE '\\' OR CommandLine LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\' AND (CommandLine LIKE '% -O%' ESCAPE '\\' OR CommandLine LIKE '%--remote-name%' ESCAPE '\\' OR CommandLine LIKE '%--output%' ESCAPE '\\') AND (CommandLine LIKE '%.ps1' ESCAPE '\\' OR CommandLine LIKE '%.ps1''' ESCAPE '\\' OR CommandLine LIKE '%.ps1\"' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.dat''' ESCAPE '\\' OR CommandLine LIKE '%.dat\"' ESCAPE '\\' OR CommandLine LIKE '%.msi' ESCAPE '\\' OR CommandLine LIKE '%.msi''' ESCAPE '\\' OR CommandLine LIKE '%.msi\"' ESCAPE '\\' OR CommandLine LIKE '%.bat' ESCAPE '\\' OR CommandLine LIKE '%.bat''' ESCAPE '\\' OR CommandLine LIKE '%.bat\"' ESCAPE '\\' OR CommandLine LIKE '%.exe' ESCAPE '\\' OR CommandLine LIKE '%.exe''' ESCAPE '\\' OR CommandLine LIKE '%.exe\"' ESCAPE '\\' OR CommandLine LIKE '%.vbs' ESCAPE '\\' OR CommandLine LIKE '%.vbs''' ESCAPE '\\' OR CommandLine LIKE '%.vbs\"' ESCAPE '\\' OR CommandLine LIKE '%.vbe' ESCAPE '\\' OR CommandLine LIKE '%.vbe''' ESCAPE '\\' OR CommandLine LIKE '%.vbe\"' ESCAPE '\\' OR CommandLine LIKE '%.hta' ESCAPE '\\' OR CommandLine LIKE '%.hta''' ESCAPE '\\' OR CommandLine LIKE '%.hta\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.psm1' ESCAPE '\\' OR CommandLine LIKE '%.psm1''' ESCAPE '\\' OR CommandLine LIKE '%.psm1\"' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR OriginalFileName = 'curl.exe') AND (CommandLine LIKE '%.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\' AND (CommandLine LIKE '% -O%' ESCAPE '\\' OR CommandLine LIKE '%--remote-name%' ESCAPE '\\' OR CommandLine LIKE '%--output%' ESCAPE '\\') AND (CommandLine LIKE '%.ps1' ESCAPE '\\' OR CommandLine LIKE '%.ps1''' ESCAPE '\\' OR CommandLine LIKE '%.ps1\"' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.dat''' ESCAPE '\\' OR CommandLine LIKE '%.dat\"' ESCAPE '\\' OR CommandLine LIKE '%.msi' ESCAPE '\\' OR CommandLine LIKE '%.msi''' ESCAPE '\\' OR CommandLine LIKE '%.msi\"' ESCAPE '\\' OR CommandLine LIKE '%.bat' ESCAPE '\\' OR CommandLine LIKE '%.bat''' ESCAPE '\\' OR CommandLine LIKE '%.bat\"' ESCAPE '\\' OR CommandLine LIKE '%.exe' ESCAPE '\\' OR CommandLine LIKE '%.exe''' ESCAPE '\\' OR CommandLine LIKE '%.exe\"' ESCAPE '\\' OR CommandLine LIKE '%.vbs' ESCAPE '\\' OR CommandLine LIKE '%.vbs''' ESCAPE '\\' OR CommandLine LIKE '%.vbs\"' ESCAPE '\\' OR CommandLine LIKE '%.vbe' ESCAPE '\\' OR CommandLine LIKE '%.vbe''' ESCAPE '\\' OR CommandLine LIKE '%.vbe\"' ESCAPE '\\' OR CommandLine LIKE '%.hta' ESCAPE '\\' OR CommandLine LIKE '%.hta''' ESCAPE '\\' OR CommandLine LIKE '%.hta\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.psm1' ESCAPE '\\' OR CommandLine LIKE '%.psm1''' ESCAPE '\\' OR CommandLine LIKE '%.psm1\"' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_curl_download_susp_file_sharing_domains.yml"
     },
@@ -36588,6 +36696,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND CommandLine LIKE '%.lnk' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_findstr_lnk.yml"
+    },
+    {
+        "title": "Assembly Loading Via CL_LoadAssembly.ps1",
+        "id": "c57872c7-614f-4d7f-a40d-b78c8df2d30d",
+        "status": "experimental",
+        "description": "Detects calls to \"LoadAssemblyFromPath\" or \"LoadAssemblyFromNS\" that are part of the \"CL_LoadAssembly.ps1\" script. This can be abused to load different assemblies and bypass App locker controls.",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1216"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%LoadAssemblyFromPath %' ESCAPE '\\' OR CommandLine LIKE '%LoadAssemblyFromNS %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_cl_loadassembly.yml"
     },
     {
         "title": "New Generic Credentials Added Via Cmdkey.EXE",
@@ -37770,6 +37897,25 @@
         "filename": "proc_creation_win_sysinternals_psexec_execution.yml"
     },
     {
+        "title": "Potential Script Proxy Execution Via CL_Mutexverifiers.ps1",
+        "id": "1e0e1a81-e79b-44bc-935b-ddb9c8006b3d",
+        "status": "experimental",
+        "description": "Detects the use of the Microsoft signed script \"CL_mutexverifiers\" to proxy the execution of additional PowerShell script commands",
+        "author": "Nasreddine Bencherchali (Nextron Systems), oscd.community, Natalia Shornikova, frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1216"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' AND CommandLine LIKE '% -nologo -windowstyle minimized -file %' ESCAPE '\\' AND (CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_cl_mutexverifiers.yml"
+    },
+    {
         "title": "Execution Of Non-Existing File",
         "id": "71158e3f-df67-472b-930e-7d287acaa3e1",
         "status": "experimental",
@@ -38110,7 +38256,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wslhost.exe' ESCAPE '\\') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktop\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wslhost.exe' ESCAPE '\\') AND ((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktop\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_wsl_child_processes_anomalies.yml"
     },
@@ -38686,6 +38832,28 @@
         "filename": "proc_creation_win_hktl_invoke_obfuscation_via_use_clip.yml"
     },
     {
+        "title": "Suspicious Child Process Of BgInfo.EXE",
+        "id": "811f459f-9231-45d4-959a-0266c6311987",
+        "status": "experimental",
+        "description": "Detects suspicious child processes of \"BgInfo.exe\" which could be a sign of potential abuse of the binary to proxy execution via external VBScript",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.005",
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\bginfo.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\bginfo64.exe' ESCAPE '\\') AND ((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notepad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_bginfo_suspicious_child_process.yml"
+    },
+    {
         "title": "Security Service Disabled Via Reg.EXE",
         "id": "5e95028c-5229-4214-afae-d653d573d0ec",
         "status": "test",
@@ -38764,25 +38932,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND CommandLine LIKE '%gatherNetworkInfo.vbs%' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_gather_network_info_execution.yml"
-    },
-    {
-        "title": "CL_LoadAssembly.ps1 Proxy Execution",
-        "id": "c57872c7-614f-4d7f-a40d-b78c8df2d30d",
-        "status": "experimental",
-        "description": "Detects the use of a Microsoft signed script to execute commands and bypassing AppLocker.",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1216"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%\\\\CL\\_LoadAssembly.ps1%' ESCAPE '\\' OR CommandLine LIKE '%LoadAssemblyFromPath %' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_cl_loadassembly.yml"
     },
     {
         "title": "Suspicious Parent Double Extension File Execution",
@@ -39060,6 +39209,25 @@
         "filename": "proc_creation_win_powershell_base64_reflection_assembly_load_obfusc.yml"
     },
     {
+        "title": "Indirect Command Execution From Script File Via Bash.EXE",
+        "id": "2d22a514-e024-4428-9dba-41505bd63a5b",
+        "status": "experimental",
+        "description": "Detects execution of Microsoft bash launcher without any flags to execute the content of a bash script directly. This can be used to potentially bypass defenses and execute Linux or Windows-based binaries directly via bash",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\bash.exe' ESCAPE '\\') OR OriginalFileName = 'Bash.exe') AND NOT (((CommandLine LIKE '%bash.exe -%' ESCAPE '\\' OR CommandLine LIKE '%bash -%' ESCAPE '\\')) OR (CommandLine = '') OR (CommandLine = '') OR (CommandLine IN ('bash.exe', 'bash'))))"
+        ],
+        "filename": "proc_creation_win_bash_file_execution.yml"
+    },
+    {
         "title": "Potential Arbitrary Command Execution Using Msdt.EXE",
         "id": "258fc8ce-8352-443a-9120-8a11e4857fa5",
         "status": "experimental",
@@ -39170,7 +39338,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wget.exe' ESCAPE '\\' OR OriginalFileName = 'wget.exe') AND (CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co/%' ESCAPE '\\' OR CommandLine LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\' AND (CommandLine REGEXP '\\s-O\\s' OR CommandLine LIKE '%--output-document%' ESCAPE '\\') AND (CommandLine LIKE '%.ps1' ESCAPE '\\' OR CommandLine LIKE '%.ps1''' ESCAPE '\\' OR CommandLine LIKE '%.ps1\"' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.dat''' ESCAPE '\\' OR CommandLine LIKE '%.dat\"' ESCAPE '\\' OR CommandLine LIKE '%.msi' ESCAPE '\\' OR CommandLine LIKE '%.msi''' ESCAPE '\\' OR CommandLine LIKE '%.msi\"' ESCAPE '\\' OR CommandLine LIKE '%.bat' ESCAPE '\\' OR CommandLine LIKE '%.bat''' ESCAPE '\\' OR CommandLine LIKE '%.bat\"' ESCAPE '\\' OR CommandLine LIKE '%.exe' ESCAPE '\\' OR CommandLine LIKE '%.exe''' ESCAPE '\\' OR CommandLine LIKE '%.exe\"' ESCAPE '\\' OR CommandLine LIKE '%.vbs' ESCAPE '\\' OR CommandLine LIKE '%.vbs''' ESCAPE '\\' OR CommandLine LIKE '%.vbs\"' ESCAPE '\\' OR CommandLine LIKE '%.vbe' ESCAPE '\\' OR CommandLine LIKE '%.vbe''' ESCAPE '\\' OR CommandLine LIKE '%.vbe\"' ESCAPE '\\' OR CommandLine LIKE '%.hta' ESCAPE '\\' OR CommandLine LIKE '%.hta''' ESCAPE '\\' OR CommandLine LIKE '%.hta\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.psm1' ESCAPE '\\' OR CommandLine LIKE '%.psm1''' ESCAPE '\\' OR CommandLine LIKE '%.psm1\"' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wget.exe' ESCAPE '\\' OR OriginalFileName = 'wget.exe') AND (CommandLine LIKE '%.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\' AND (CommandLine REGEXP '\\s-O\\s' OR CommandLine LIKE '%--output-document%' ESCAPE '\\') AND (CommandLine LIKE '%.ps1' ESCAPE '\\' OR CommandLine LIKE '%.ps1''' ESCAPE '\\' OR CommandLine LIKE '%.ps1\"' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.dat''' ESCAPE '\\' OR CommandLine LIKE '%.dat\"' ESCAPE '\\' OR CommandLine LIKE '%.msi' ESCAPE '\\' OR CommandLine LIKE '%.msi''' ESCAPE '\\' OR CommandLine LIKE '%.msi\"' ESCAPE '\\' OR CommandLine LIKE '%.bat' ESCAPE '\\' OR CommandLine LIKE '%.bat''' ESCAPE '\\' OR CommandLine LIKE '%.bat\"' ESCAPE '\\' OR CommandLine LIKE '%.exe' ESCAPE '\\' OR CommandLine LIKE '%.exe''' ESCAPE '\\' OR CommandLine LIKE '%.exe\"' ESCAPE '\\' OR CommandLine LIKE '%.vbs' ESCAPE '\\' OR CommandLine LIKE '%.vbs''' ESCAPE '\\' OR CommandLine LIKE '%.vbs\"' ESCAPE '\\' OR CommandLine LIKE '%.vbe' ESCAPE '\\' OR CommandLine LIKE '%.vbe''' ESCAPE '\\' OR CommandLine LIKE '%.vbe\"' ESCAPE '\\' OR CommandLine LIKE '%.hta' ESCAPE '\\' OR CommandLine LIKE '%.hta''' ESCAPE '\\' OR CommandLine LIKE '%.hta\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.psm1' ESCAPE '\\' OR CommandLine LIKE '%.psm1''' ESCAPE '\\' OR CommandLine LIKE '%.psm1\"' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wget_download_susp_file_sharing_domains.yml"
     },
@@ -40008,25 +40176,6 @@
         "filename": "proc_creation_win_registry_logon_script.yml"
     },
     {
-        "title": "AgentExecutor PowerShell Execution",
-        "id": "7efd2c8d-8b18-45b7-947d-adfe9ed04f61",
-        "status": "experimental",
-        "description": "Detects execution of the AgentExecutor.exe binary. Which can be abused as a LOLBIN to execute powershell scripts with the ExecutionPolicy \"Bypass\" or any binary named \"powershell.exe\" located in the path provided by 6th positional argument",
-        "author": "Nasreddine Bencherchali (Nextron Systems), memory-shards",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Legitimate use via Intune management. You exclude script paths and names to reduce FP rate"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '\\\\AgentExecutor.exe' ESCAPE '\\' OR OriginalFileName = 'AgentExecutor.exe') AND (CommandLine LIKE '% -powershell%' ESCAPE '\\' OR CommandLine LIKE '% -remediationScript%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_agentexecutor.yml"
-    },
-    {
         "title": "Potential RDP Tunneling Via SSH Plink",
         "id": "f38ce0b9-5e97-4b47-a211-7dc8d8b871da",
         "status": "test",
@@ -40417,25 +40566,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\InstallUtil.exe' ESCAPE '\\' AND NewProcessName LIKE '%Microsoft.NET\\\\Framework%' ESCAPE '\\' AND CommandLine LIKE '%/logfile= %' ESCAPE '\\' AND CommandLine LIKE '%/LogToConsole=false%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_instalutil_no_log_execution.yml"
-    },
-    {
-        "title": "Suspicious Subsystem for Linux Bash Execution",
-        "id": "5edc2273-c26f-406c-83f3-f4d948e740dd",
-        "status": "experimental",
-        "description": "Performs execution of specified file, can be used for defensive evasion.",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1202"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%bash.exe%' ESCAPE '\\' AND CommandLine LIKE '%-c %' ESCAPE '\\') AND NOT (((ParentCommandLine LIKE '%C:\\\\Program Files\\\\Git\\\\post-install.bat%' ESCAPE '\\' OR ParentCommandLine LIKE '%C:\\\\Program Files (x86)\\\\Git\\\\post-install.bat%' ESCAPE '\\' OR ParentCommandLine LIKE '%echo /etc/post-install/%.post%' ESCAPE '\\') OR CommandLine LIKE '%echo /etc/post-install/%.post%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_lolbin_bash.yml"
     },
     {
         "title": "PUA - NPS Tunneling Tool Execution",
@@ -41777,7 +41907,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%.ghostbin.co/%' ESCAPE '\\' OR CommandLine LIKE '%.hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%.paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_file_sharing_domains.yml"
     },
@@ -41855,6 +41985,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll') OR (NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\')) AND (CommandLine LIKE '%Set-Acl %' ESCAPE '\\' AND CommandLine LIKE '%-AclObject %' ESCAPE '\\') AND (CommandLine LIKE '%-Path \"C:\\\\Windows%' ESCAPE '\\' OR CommandLine LIKE '%-Path ''C:\\\\Windows%' ESCAPE '\\' OR CommandLine LIKE '%-Path \\%windir\\%%' ESCAPE '\\' OR CommandLine LIKE '%-Path $env:windir%' ESCAPE '\\') AND (CommandLine LIKE '%FullControl%' ESCAPE '\\' OR CommandLine LIKE '%Allow%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_set_acl_susp_location.yml"
+    },
+    {
+        "title": "Suspicious Child Process of AspNetCompiler",
+        "id": "9ccba514-7cb6-4c5c-b377-700758f2f120",
+        "status": "experimental",
+        "description": "Detects potentially suspicious child processes of \"aspnet_compiler.exe\".",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1127"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\aspnet\\_compiler.exe' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notepad.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Roaming\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_aspnet_compiler_susp_child_process.yml"
     },
     {
         "title": "UAC Bypass Using Windows Media Player - Process",
@@ -43815,11 +43964,11 @@
             "attack.t1564.004"
         ],
         "falsepositives": [
-            "Unknown"
+            "Some false positives might occur with binaries download via Github"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((Contents LIKE '%.ghostbin.co/%' ESCAPE '\\' OR Contents LIKE '%.hastebin.com%' ESCAPE '\\' OR Contents LIKE '%.paste.ee%' ESCAPE '\\' OR Contents LIKE '%anonfiles.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Contents LIKE '%ddns.net%' ESCAPE '\\' OR Contents LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%gofile.io%' ESCAPE '\\' OR Contents LIKE '%mediafire.com%' ESCAPE '\\' OR Contents LIKE '%mega.nz%' ESCAPE '\\' OR Contents LIKE '%paste.ee%' ESCAPE '\\' OR Contents LIKE '%pastebin.com%' ESCAPE '\\' OR Contents LIKE '%pastebin.pl%' ESCAPE '\\' OR Contents LIKE '%pastetext.net%' ESCAPE '\\' OR Contents LIKE '%privatlab.com%' ESCAPE '\\' OR Contents LIKE '%privatlab.net%' ESCAPE '\\' OR Contents LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%send.exploit.in%' ESCAPE '\\' OR Contents LIKE '%sendspace.com%' ESCAPE '\\' OR Contents LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Contents LIKE '%transfer.sh%' ESCAPE '\\' OR Contents LIKE '%ufile.io%' ESCAPE '\\') AND (TargetFilename LIKE '%.exe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbs:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dll:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.one:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.hta:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.lnk:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xll:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.cpl:Zone%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Contents LIKE '%.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%anonfiles.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Contents LIKE '%ddns.net%' ESCAPE '\\' OR Contents LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR Contents LIKE '%ghostbin.co%' ESCAPE '\\' OR Contents LIKE '%gofile.io%' ESCAPE '\\' OR Contents LIKE '%hastebin.com%' ESCAPE '\\' OR Contents LIKE '%mediafire.com%' ESCAPE '\\' OR Contents LIKE '%mega.nz%' ESCAPE '\\' OR Contents LIKE '%paste.ee%' ESCAPE '\\' OR Contents LIKE '%pastebin.com%' ESCAPE '\\' OR Contents LIKE '%pastebin.pl%' ESCAPE '\\' OR Contents LIKE '%pastetext.net%' ESCAPE '\\' OR Contents LIKE '%privatlab.com%' ESCAPE '\\' OR Contents LIKE '%privatlab.net%' ESCAPE '\\' OR Contents LIKE '%send.exploit.in%' ESCAPE '\\' OR Contents LIKE '%sendspace.com%' ESCAPE '\\' OR Contents LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Contents LIKE '%storjshare.io%' ESCAPE '\\' OR Contents LIKE '%temp.sh%' ESCAPE '\\' OR Contents LIKE '%transfer.sh%' ESCAPE '\\' OR Contents LIKE '%ufile.io%' ESCAPE '\\') AND (TargetFilename LIKE '%.exe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbs:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.vbe:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.dll:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.one:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.hta:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.lnk:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.xll:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.cpl:Zone%' ESCAPE '\\'))"
         ],
         "filename": "create_stream_hash_file_sharing_domains_download_susp_extension.yml"
     },
@@ -43839,7 +43988,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((Contents LIKE '%.ghostbin.co/%' ESCAPE '\\' OR Contents LIKE '%.hastebin.com%' ESCAPE '\\' OR Contents LIKE '%.paste.ee%' ESCAPE '\\' OR Contents LIKE '%anonfiles.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Contents LIKE '%ddns.net%' ESCAPE '\\' OR Contents LIKE '%gist.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%gofile.io%' ESCAPE '\\' OR Contents LIKE '%mediafire.com%' ESCAPE '\\' OR Contents LIKE '%mega.nz%' ESCAPE '\\' OR Contents LIKE '%paste.ee%' ESCAPE '\\' OR Contents LIKE '%pastebin.com%' ESCAPE '\\' OR Contents LIKE '%pastebin.pl%' ESCAPE '\\' OR Contents LIKE '%pastetext.net%' ESCAPE '\\' OR Contents LIKE '%privatlab.com%' ESCAPE '\\' OR Contents LIKE '%privatlab.net%' ESCAPE '\\' OR Contents LIKE '%raw.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%send.exploit.in%' ESCAPE '\\' OR Contents LIKE '%sendspace.com%' ESCAPE '\\' OR Contents LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Contents LIKE '%transfer.sh%' ESCAPE '\\' OR Contents LIKE '%ufile.io%' ESCAPE '\\') AND (TargetFilename LIKE '%.ps1:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.bat:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.cmd:Zone%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Contents LIKE '%.githubusercontent.com%' ESCAPE '\\' OR Contents LIKE '%anonfiles.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR Contents LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR Contents LIKE '%ddns.net%' ESCAPE '\\' OR Contents LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR Contents LIKE '%ghostbin.co%' ESCAPE '\\' OR Contents LIKE '%gofile.io%' ESCAPE '\\' OR Contents LIKE '%hastebin.com%' ESCAPE '\\' OR Contents LIKE '%mediafire.com%' ESCAPE '\\' OR Contents LIKE '%mega.nz%' ESCAPE '\\' OR Contents LIKE '%paste.ee%' ESCAPE '\\' OR Contents LIKE '%pastebin.com%' ESCAPE '\\' OR Contents LIKE '%pastebin.pl%' ESCAPE '\\' OR Contents LIKE '%pastetext.net%' ESCAPE '\\' OR Contents LIKE '%privatlab.com%' ESCAPE '\\' OR Contents LIKE '%privatlab.net%' ESCAPE '\\' OR Contents LIKE '%send.exploit.in%' ESCAPE '\\' OR Contents LIKE '%sendspace.com%' ESCAPE '\\' OR Contents LIKE '%storage.googleapis.com%' ESCAPE '\\' OR Contents LIKE '%storjshare.io%' ESCAPE '\\' OR Contents LIKE '%temp.sh%' ESCAPE '\\' OR Contents LIKE '%transfer.sh%' ESCAPE '\\' OR Contents LIKE '%ufile.io%' ESCAPE '\\') AND (TargetFilename LIKE '%.ps1:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.bat:Zone%' ESCAPE '\\' OR TargetFilename LIKE '%.cmd:Zone%' ESCAPE '\\'))"
         ],
         "filename": "create_stream_hash_file_sharing_domains_download_unusual_extension.yml"
     },
