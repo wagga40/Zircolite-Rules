@@ -31935,6 +31935,26 @@
         "filename": "proc_creation_win_csvde_export.yml"
     },
     {
+        "title": "Potentially Suspicious WebDAV LNK Execution",
+        "id": "1412aa78-a24c-4abd-83df-767dfb2c5bbe",
+        "status": "experimental",
+        "description": "Detects possible execution via LNK file accessed on a WebDAV server.",
+        "author": "Micah Babinski",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001",
+            "attack.t1204"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') AND CommandLine LIKE '%\\\\DavWWWRoot\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_webdav_lnk_execution.yml"
+    },
+    {
         "title": "HackTool - SharpLdapWhoami Execution",
         "id": "d9367cbb-c2e0-47ce-bdc0-128cb6da898d",
         "status": "experimental",
@@ -46713,6 +46733,26 @@
             "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%Security\\\\Trusted Locations\\\\Location%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Path' ESCAPE '\\')"
         ],
         "filename": "registry_set_office_trusted_location.yml"
+    },
+    {
+        "title": "WebDAV Temporary Local File Creation",
+        "id": "4c55738d-72d8-490e-a2db-7969654e375f",
+        "status": "experimental",
+        "description": "Detects the creation of WebDAV temporary files with potentially suspicious extensions",
+        "author": "Micah Babinski",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1584",
+            "attack.t1566"
+        ],
+        "falsepositives": [
+            "Legitimate use of WebDAV in an environment"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\TfsStore\\\\Tfs\\_DAV\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.7z' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.dat' ESCAPE '\\' OR TargetFilename LIKE '%.ico' ESCAPE '\\' OR TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.lnk' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_webdav_tmpfile_creation.yml"
     },
     {
         "title": "Dfsvc.EXE Network Connection To Non-Local IPs",
