@@ -1227,6 +1227,25 @@
         "filename": "proc_creation_lnx_dd_file_overwrite.yml"
     },
     {
+        "title": "Container Residence Discovery Via Proc Virtual FS",
+        "id": "746c86fb-ccda-4816-8997-01386263acc4",
+        "description": "Detects potential container discovery via listing of certain kernel features in the \"/proc\" virtual filesystem",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
+        "author": "Seth Hanford",
+        "falsepositives": [
+            "Legitimate system administrator usage of these commands",
+            "Some container tools or deployments may use these techniques natively to determine how they proceed with execution, and will need to be filtered"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%awk' ESCAPE '\\' OR Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%grep' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/less' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\' OR Image LIKE '%/nl' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\') AND (CommandLine LIKE '%/proc/2/%' ESCAPE '\\' OR (CommandLine LIKE '%/proc/%' ESCAPE '\\' AND (CommandLine LIKE '%/cgroup' ESCAPE '\\' OR CommandLine LIKE '%/sched' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_lnx_susp_container_residence_discovery.yml"
+    },
+    {
         "title": "Linux Remote System Discovery",
         "id": "11063ec2-de63-4153-935e-b1a8b9e616f1",
         "description": "Detects the enumeration of other remote systems.",
@@ -1634,6 +1653,25 @@
             "SELECT * FROM logs WHERE (ParentImage LIKE '%/java' ESCAPE '\\' AND (CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%bash%' ESCAPE '\\' OR CommandLine LIKE '%dash%' ESCAPE '\\' OR CommandLine LIKE '%ksh%' ESCAPE '\\' OR CommandLine LIKE '%zsh%' ESCAPE '\\' OR CommandLine LIKE '%csh%' ESCAPE '\\' OR CommandLine LIKE '%fish%' ESCAPE '\\' OR CommandLine LIKE '%curl%' ESCAPE '\\' OR CommandLine LIKE '%wget%' ESCAPE '\\' OR CommandLine LIKE '%python%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_susp_java_children.yml"
+    },
+    {
+        "title": "Docker Container Discovery Via Dockerenv Listing",
+        "id": "11701de9-d5a5-44aa-8238-84252f131895",
+        "description": "Detects listing or file reading of \".dockerenv\" which can be a sing of potential container discovery",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
+        "author": "Seth Hanford",
+        "falsepositives": [
+            "Legitimate system administrator usage of these commands",
+            "Some container tools or deployments may use these techniques natively to determine how they proceed with execution, and will need to be filtered"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/dir' ESCAPE '\\' OR Image LIKE '%/find' ESCAPE '\\' OR Image LIKE '%/ls' ESCAPE '\\' OR Image LIKE '%/stat' ESCAPE '\\' OR Image LIKE '%/test' ESCAPE '\\' OR Image LIKE '%grep' ESCAPE '\\') AND CommandLine LIKE '%.dockerenv' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_susp_dockerenv_recon.yml"
     },
     {
         "title": "OS Architecture Discovery Via Grep",
@@ -2504,6 +2542,25 @@
             "SELECT * FROM logs WHERE (Image LIKE '%/wget' ESCAPE '\\' AND (CommandLine REGEXP '\\s-O\\s' OR CommandLine LIKE '%--output-document%' ESCAPE '\\') AND CommandLine LIKE '%/tmp/%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_wget_download_suspicious_directory.yml"
+    },
+    {
+        "title": "Potential Container Discovery Via Inodes Listing",
+        "id": "43e26eb5-cd58-48d1-8ce9-a273f5d298d8",
+        "description": "Detects listing of the inodes of the \"/\" directory to determin if the we are running inside of a container.",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
+        "author": "Seth Hanford",
+        "falsepositives": [
+            "Legitimate system administrator usage of these commands",
+            "Some container tools or deployments may use these techniques natively to determine how they proceed with execution, and will need to be filtered"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/ls' ESCAPE '\\' AND CommandLine LIKE '% -%i%' ESCAPE '\\' AND CommandLine LIKE '% -%d%' ESCAPE '\\' AND CommandLine LIKE '% /' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_susp_inod_listing.yml"
     },
     {
         "title": "Flush Iptables Ufw Chain",

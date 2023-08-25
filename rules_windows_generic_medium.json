@@ -7236,7 +7236,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE '%.scr' ESCAPE '\\' AND NOT ((TargetFilename LIKE 'C:\\\\$WINDOWS.~BT\\\\NewOS\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR TargetFilename LIKE ':\\\\WUDownloadCache\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%.scr' ESCAPE '\\' AND NOT ((TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\NewOS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_new_src_file.yml"
     },
@@ -12633,6 +12633,66 @@
         "filename": "web_cve_2023_25717_ruckus_wireless_admin_exploit_attempt.yml"
     },
     {
+        "title": "Potential CVE-2023-36874 Exploitation - Fake Wermgr.Exe Creation",
+        "id": "ad0960eb-0015-4d16-be13-b3d9f18f1342",
+        "status": "experimental",
+        "description": "Detects the creation of a file named \"wermgr.exe\" being created in an uncommon directory. This could be a sign of potential exploitation of CVE-2023-36874.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "cve.2023.36874",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\wermgr.exe' ESCAPE '\\' AND NOT (((TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\NewOS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\servicing\\\\LCU\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "file_event_win_exploit_cve_2023_34362_wermgr_creation.yml"
+    },
+    {
+        "title": "Potential CVE-2023-36874 Exploitation - Uncommon Report.Wer Location",
+        "id": "92389a99-5215-43b0-a09f-e334453b2ed3",
+        "status": "experimental",
+        "description": "Detects the creation of a \"Report.wer\" file in an uncommon folder structure. This could be a sign of potential exploitation of CVE-2023-36874.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "cve.2023.36874",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\WER\\\\ReportArchive\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Report.wer' ESCAPE '\\') AND NOT (((TargetFilename LIKE '%\\\\ReportArchive\\\\AppCrash\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\AppHang\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\Critical\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\Kernel\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\NonCritical\\_%' ESCAPE '\\'))))"
+        ],
+        "filename": "file_event_win_exploit_cve_2023_34362_report_creation.yml"
+    },
+    {
+        "title": "Potential CVE-2023-36874 Exploitation - Fake Wermgr Execution",
+        "id": "50dbc08b-60ce-40f1-a6b6-346497e34c88",
+        "status": "experimental",
+        "description": "Detects the execution of a renamed \"cmd\", \"powershell\" or \"powershell_ise\" binary. Attackers were seen using these binaries in a renamed form as \"wermgr.exe\" in exploitation of CVE-2023-36874",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "cve.2023.36874",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (OriginalFileName LIKE 'Cmd.Exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\') AND NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2023_34362_fake_wermgr.yml"
+    },
+    {
         "title": "Potential Exploitation Attempt Of Undocumented WindowsServer RCE",
         "id": "6d5b8176-d87d-4402-8af4-53aee9db7b5d",
         "status": "experimental",
@@ -15149,17 +15209,20 @@
         "filename": "proc_creation_win_wmic_recon_system_info_discovery.yml"
     },
     {
-        "title": "Suspicious WERMGR Process Patterns",
+        "title": "Suspicious Child Process Of Wermgr.EXE",
         "id": "396f6630-f3ac-44e3-bfc8-1b161bc00c4e",
         "status": "experimental",
-        "description": "Detects suspicious Windows Error Reporting manager (wermgr.exe) process patterns - suspicious parents / children, execution folders, command lines etc.",
+        "description": "Detects suspicious Windows Error Reporting manager (wermgr.exe) child process",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((ParentProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\nslookup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ipconfig.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whoami.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\netstat.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\systeminfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ipconfig.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\netstat.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\nslookup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\systeminfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whoami.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wermgr_susp_child_process.yml"
     },
@@ -21852,6 +21915,24 @@
         "filename": "proc_creation_win_dll_sideload_vmware_xfer.yml"
     },
     {
+        "title": "Suspicious Execution Location Of Wermgr.EXE",
+        "id": "5394fcc7-aeb2-43b5-9a09-cac9fc5edcd5",
+        "status": "experimental",
+        "description": "Detects suspicious Windows Error Reporting manager (wermgr.exe) execution location.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_wermgr_susp_exec_location.yml"
+    },
+    {
         "title": "Kernel Memory Dump Via LiveKD",
         "id": "c7746f1c-47d3-43d6-8c45-cd1e54b6b0a2",
         "status": "experimental",
@@ -28194,7 +28275,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Description = 'Execute processes remotely' OR Product = 'Sysinternals PsExec' OR (Description LIKE 'Windows PowerShell%' ESCAPE '\\' OR Description LIKE 'pwsh%' ESCAPE '\\') OR (OriginalFileName LIKE 'powershell.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.c' ESCAPE '\\' OR OriginalFileName LIKE 'psexesvc.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'mshta.exe' ESCAPE '\\' OR OriginalFileName LIKE 'regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wmic.exe' ESCAPE '\\' OR OriginalFileName LIKE 'certutil.exe' ESCAPE '\\' OR OriginalFileName LIKE 'rundll32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cmstp.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'reg.exe' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PSEXESVC.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Description = 'Execute processes remotely' OR Product = 'Sysinternals PsExec' OR (Description LIKE 'Windows PowerShell%' ESCAPE '\\' OR Description LIKE 'pwsh%' ESCAPE '\\') OR (OriginalFileName LIKE 'certutil.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cmstp.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'mshta.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.c' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexesvc.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'reg.exe' ESCAPE '\\' OR OriginalFileName LIKE 'regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'rundll32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'WerMgr' ESCAPE '\\' OR OriginalFileName LIKE 'wmic.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wscript.exe' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PSEXESVC.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_renamed_binary_highly_relevant.yml"
     },
