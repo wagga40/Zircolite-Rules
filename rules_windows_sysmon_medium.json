@@ -2116,7 +2116,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Word\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Excel\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Powerpoint\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\VSTO\\\\Security\\\\Inclusion\\\\%' ESCAPE '\\') AND NOT (((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\')) OR ((Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\integrator.exe' ESCAPE '\\' OR Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\' OR Image LIKE '%\\\\winword.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\Teams.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\AVG\\\\Antivirus\\\\RegSvr.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\Antivirus.AsOutExt\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Word\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Excel\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office\\\\Powerpoint\\\\Addins\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\VSTO\\\\Security\\\\Inclusion\\\\%' ESCAPE '\\') AND NOT (((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\')) OR ((Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\integrator.exe' ESCAPE '\\' OR Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\' OR Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\visio.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\Teams.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\AVG\\\\Antivirus\\\\RegSvr.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Office\\\\Outlook\\\\Addins\\\\Antivirus.AsOutExt\\\\%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_persistence_office_vsto.yml"
     },
@@ -5738,6 +5738,10 @@
         "status": "experimental",
         "description": "Detects Windows executables that writes files with suspicious extensions",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -6576,6 +6580,10 @@
         "status": "test",
         "description": "Detects the creation of recent element file that points to an .ISO, .IMG, .VHD or .VHDX file as often used in phishing attacks.\nThis can be a false positive on server systems but on workstations users should rarely mount .iso or .img files.\n",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1566.001"
+        ],
         "falsepositives": [
             "Cases in which a user mounts an image file for legitimate reasons"
         ],
@@ -6824,6 +6832,11 @@
         "status": "experimental",
         "description": "Detects a file ending in jse, vbe, js, vba, vbs written by cscript.exe or wscript.exe",
         "author": "Tim Shelton",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.005",
+            "attack.t1059.007"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -6858,6 +6871,10 @@
         "status": "experimental",
         "description": "Detects Windows shells and scripting applications that write files to suspicious folders",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -8048,6 +8065,10 @@
         "status": "experimental",
         "description": "Detects the creation of files that indicator an interactive use of PowerShell in the SYSTEM user context",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001"
+        ],
         "falsepositives": [
             "Administrative activity",
             "PowerShell scripts running as SYSTEM user"
@@ -8427,6 +8448,10 @@
         "status": "experimental",
         "description": "Detects cases in which a file gets renamed to .dll, which often happens to bypass perimeter protection",
         "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036.008"
+        ],
         "falsepositives": [
             "Application installation"
         ],
@@ -8960,6 +8985,10 @@
         "status": "experimental",
         "description": "Detects an executable that isn't dropbox but communicates with the Dropbox API",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
         "falsepositives": [
             "Legitimate use of the API with a tool that the author wasn't aware of"
         ],
@@ -10265,7 +10294,14 @@
         "description": "Detects command line patterns used by BlackByte ransomware in different operations",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
-            "detection.emerging_threats"
+            "detection.emerging_threats",
+            "attack.execution",
+            "attack.defense_evasion",
+            "attack.impact",
+            "attack.t1485",
+            "attack.t1498",
+            "attack.t1059.001",
+            "attack.t1140"
         ],
         "falsepositives": [
             "Unknown"
@@ -10601,7 +10637,9 @@
         "author": "frack113",
         "tags": [
             "cve.2021.26858",
-            "detection.emerging_threats"
+            "detection.emerging_threats",
+            "attack.initial_access",
+            "attack.t1190"
         ],
         "falsepositives": [
             "Unlikely"
@@ -10664,7 +10702,9 @@
         "author": "Tobias Michalski (Nextron Systems), Max Altgelt (Nextron Systems)",
         "tags": [
             "cve.2021.40539",
-            "detection.emerging_threats"
+            "detection.emerging_threats",
+            "attack.initial_access",
+            "attack.t1190"
         ],
         "falsepositives": [
             "Unknown"
@@ -10830,7 +10870,11 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "cve.2021.42287",
-            "detection.emerging_threats"
+            "detection.emerging_threats",
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.t1036",
+            "attack.t1098"
         ],
         "falsepositives": [
             "Unknown"
@@ -12699,7 +12743,9 @@
         "description": "Detects potential exploitation attempt of undocumented Windows Server Pre Auth Remote Code Execution (RCE)",
         "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali",
         "tags": [
-            "detection.emerging_threats"
+            "detection.emerging_threats",
+            "attack.initial_access",
+            "attack.t1190"
         ],
         "falsepositives": [
             "Unknown"
@@ -12718,7 +12764,9 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "cve.2023.34362",
-            "detection.emerging_threats"
+            "detection.emerging_threats",
+            "attack.persistence",
+            "attack.t1505.003"
         ],
         "falsepositives": [
             "Unlikely"
@@ -12798,7 +12846,9 @@
         "description": "Detects indicators of potential exploitation of CVE-2023-27997 in Frotigate weblogs.\nTo avoid false positives it is best to look for successive requests to the endpoints mentioned as well as weird values of the \"enc\" parameter\n",
         "author": "Sergio Palacios Dominguez, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "cve.2023.27997"
+            "cve.2023.27997",
+            "attack.initial_access",
+            "attack.t1190"
         ],
         "falsepositives": [
             "Unknown"
@@ -15215,7 +15265,10 @@
         "description": "Detects suspicious Windows Error Reporting manager (wermgr.exe) child process",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
-            "attack.execution"
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1055",
+            "attack.t1036"
         ],
         "falsepositives": [
             "Unknown"
@@ -16179,6 +16232,12 @@
         "status": "experimental",
         "description": "Detects scheduled task creation events that include suspicious actions, and is run once at 00:00",
         "author": "pH-T (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1053.005"
+        ],
         "falsepositives": [
             "Software installation"
         ],
@@ -16772,6 +16831,15 @@
         "status": "experimental",
         "description": "Detects the execution of Process Hacker based on binary metadata information (Image, Hash, Imphash, etc). Process Hacker is a tool to view and manipulate processes, kernel options and other low level options. Threat actors regularly abuse it to manipulate system processes.",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.discovery",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1622",
+            "attack.t1564",
+            "attack.t1543"
+        ],
         "falsepositives": [
             "While sometimes 'Process Hacker is used by legitimate administrators, the execution of Process Hacker must be investigated and allowed on a case by case basis"
         ],
@@ -17539,6 +17607,10 @@
         "status": "experimental",
         "description": "Detects suspicious ways to run Invoke-Execution using IEX alias",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001"
+        ],
         "falsepositives": [
             "Legitimate scripts that use IEX"
         ],
@@ -18674,6 +18746,15 @@
         "status": "experimental",
         "description": "Detects the execution of System Informer, a task manager tool to view and manipulate processes, kernel options and other low level operations",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.discovery",
+            "attack.defense_evasion",
+            "attack.t1082",
+            "attack.t1564",
+            "attack.t1543"
+        ],
         "falsepositives": [
             "System Informer is regularly used legitimately by system administrators or developers. Apply additional filters accordingly"
         ],
@@ -18785,6 +18866,12 @@
         "status": "experimental",
         "description": "This rule detects suspicious processes with parent images located in the C:\\Users\\Public folder",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1564",
+            "attack.t1059"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -20833,6 +20920,10 @@
         "status": "experimental",
         "description": "Detects suspicious child processes of SysAidServer (as seen in MERCURY threat actor intrusions)",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.lateral_movement",
+            "attack.t1210"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -21003,6 +21094,19 @@
         "status": "test",
         "description": "This rule detect common flag combinations used by CrackMapExec in order to detect its use even if the binary has been replaced.",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.credential_access",
+            "attack.discovery",
+            "attack.t1047",
+            "attack.t1053",
+            "attack.t1059.003",
+            "attack.t1059.001",
+            "attack.t1110",
+            "attack.t1201"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -21297,6 +21401,10 @@
         "status": "experimental",
         "description": "Detects execution of the IEExec utility to download payloads",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -22283,6 +22391,10 @@
         "status": "experimental",
         "description": "Detects attempts of decoding encoded Gzip archives via PowerShell.",
         "author": "Hieu Tran",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1132.001"
+        ],
         "falsepositives": [
             "Legitimate administrative scripts may use this functionality. Use \"ParentImage\" in combination with the script names and allowed users and applications to filter legitimate executions"
         ],
@@ -23531,6 +23643,11 @@
         "status": "experimental",
         "description": "Detects the execution of different Windows based hacktools via PE metadata (company, product, etc.) even if the files have been renamed",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1588.002",
+            "attack.t1003"
+        ],
         "falsepositives": [
             "Unlikely"
         ],
@@ -24181,6 +24298,15 @@
         "status": "experimental",
         "description": "Detects suspicious use of PCHunter, a tool like Process Hacker to view and manipulate processes, kernel options and other low level stuff",
         "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali",
+        "tags": [
+            "attack.execution",
+            "attack.discovery",
+            "attack.t1082",
+            "attack.t1057",
+            "attack.t1012",
+            "attack.t1083",
+            "attack.t1007"
+        ],
         "falsepositives": [
             "Unlikely"
         ],
@@ -25133,6 +25259,10 @@
         "status": "experimental",
         "description": "Detects attempts of decoding a base64 Gzip archive via PowerShell. This technique is often used as a method to load malicious content into memory afterward.",
         "author": "frack113",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1132.001"
+        ],
         "falsepositives": [
             "Legitimate administrative script"
         ],
@@ -25580,6 +25710,10 @@
         "status": "experimental",
         "description": "This rule detects execution of PowerShell scripts located in the \"C:\\Users\\Public\" folder",
         "author": "Max Altgelt (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001"
+        ],
         "falsepositives": [
             "Unlikely"
         ],
@@ -25694,6 +25828,11 @@
         "status": "experimental",
         "description": "Detects the execution of AdvancedRun utility in the context of the TrustedInstaller, SYSTEM, Local Service or Network Service accounts",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1134.002"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -25807,6 +25946,14 @@
         "status": "experimental",
         "description": "Detects the execution of AdvancedRun utility",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1564.003",
+            "attack.t1134.002",
+            "attack.t1059.003"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -26450,6 +26597,10 @@
         "status": "experimental",
         "description": "Detects suspicious parent processes that should not have any children or should only have a single possible child program",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -26933,6 +27084,12 @@
         "status": "experimental",
         "description": "Detects suspicious ways to download files or content using PowerShell",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.execution",
+            "attack.t1059.001",
+            "attack.t1105"
+        ],
         "falsepositives": [
             "Scripts or tools that download files"
         ],
@@ -27975,6 +28132,10 @@
         "status": "experimental",
         "description": "Detects usage of COM objects that can be abused to download files in PowerShell by CLSID",
         "author": "frack113",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
         "falsepositives": [
             "Legitimate use of the library"
         ],
@@ -28363,6 +28524,10 @@
         "status": "experimental",
         "description": "Detects suspicious Windows Update Agent activity in which a wuauclt.exe process command line doesn't contain any command line flags",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -28378,6 +28543,15 @@
         "status": "test",
         "description": "Detects a when net.exe is called with a password in the command line",
         "author": "Tim Shelton (HAWK.IO)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.initial_access",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.lateral_movement",
+            "attack.t1021.002",
+            "attack.t1078"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -28827,6 +29001,12 @@
         "status": "experimental",
         "description": "Detects calls to cmdlets that are used to export certificates from the local certificate store. Threat actors were seen abusing this to steal private keys from compromised machines.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.execution",
+            "attack.t1552.004",
+            "attack.t1059.001"
+        ],
         "falsepositives": [
             "Legitimate certificate exports by administrators. Additional filters might be required."
         ],
@@ -29549,6 +29729,10 @@
         "status": "test",
         "description": "Detects a suspicious IIS module registration as described in Microsoft threat report on IIS backdoors",
         "author": "Florian Roth (Nextron Systems), Microsoft (idea)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.004"
+        ],
         "falsepositives": [
             "Administrative activity"
         ],
@@ -29642,6 +29826,10 @@
         "status": "test",
         "description": "Detects suspicious way to dump the kernel on Windows systems using dtrace.exe, which is available on Windows systems since Windows 10 19H1",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -29677,6 +29865,10 @@
         "status": "experimental",
         "description": "Detects inline execution of PowerShell code from a file",
         "author": "frack113",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -30197,6 +30389,11 @@
         "status": "experimental",
         "description": "Detects suspicious ways to download files from Microsoft domains that are used to store attachments in Emails or OneNote documents",
         "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105",
+            "attack.t1608"
+        ],
         "falsepositives": [
             "Scripts or tools that download attachments from these domains (OneNote, Outlook 365)"
         ],
@@ -30703,6 +30900,11 @@
         "status": "experimental",
         "description": "Detects the execution of different Windows based hacktools via their import hash (imphash) even if the files have been renamed",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1588.002",
+            "attack.t1003"
+        ],
         "falsepositives": [
             "Legitimate use of one of these tools"
         ],
@@ -31511,6 +31713,10 @@
         "status": "experimental",
         "description": "Detects the execution of rundll32 with a command line that doesn't contain a .dll file",
         "author": "Tim Shelton, Florian Roth (Nextron Systems), Yassine Oukessou (fix + fp)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.011"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -31907,6 +32113,10 @@
         "status": "experimental",
         "description": "Detect use of X509Enrollment",
         "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1553.004"
+        ],
         "falsepositives": [
             "Legitimate administrative script"
         ],
@@ -32433,6 +32643,12 @@
         "status": "experimental",
         "description": "Detects potential DLL files being downloaded using the PowerShell Invoke-WebRequest cmdlet",
         "author": "Florian Roth (Nextron Systems), Hieu Tran",
+        "tags": [
+            "attack.command_and_control",
+            "attack.execution",
+            "attack.t1059.001",
+            "attack.t1105"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -32643,6 +32859,14 @@
         "status": "test",
         "description": "Detects a suspicious process creation as SYSTEM user (suspicious program or command line parameter)",
         "author": "Florian Roth (Nextron Systems), David ANDRE (additional keywords)",
+        "tags": [
+            "attack.credential_access",
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1134",
+            "attack.t1003",
+            "attack.t1027"
+        ],
         "falsepositives": [
             "Administrative activity",
             "Scripts and administrative tools used in the monitored environment",
@@ -32875,6 +33099,10 @@
         "status": "experimental",
         "description": "Detects suspicious sub processes started by the Manage Engine ServiceDesk Plus Java web service process",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1102"
+        ],
         "falsepositives": [
             "Legitimate sub processes started by Manage Engine ServiceDesk Pro"
         ],
@@ -32928,6 +33156,10 @@
         "status": "test",
         "description": "Detects suspicious patterns in program names or folders that are often found in malicious samples or hacktools",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
         "falsepositives": [
             "Legitimate tools that accidentally match on the searched patterns"
         ],
@@ -33392,6 +33624,10 @@
         "status": "experimental",
         "description": "Detects potentially suspicious child processes spawned by PowerShell",
         "author": "Florian Roth (Nextron Systems), Tim Shelton",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001"
+        ],
         "falsepositives": [
             "Some false positive is to be expected from PowerShell scripts that might make use of additional binaries such as \"mshta\", \"bitsadmin\", etc. Apply additional filters for those scripts when needed."
         ],
@@ -34407,6 +34643,10 @@
         "status": "experimental",
         "description": "Detect use of X509Enrollment",
         "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1553.004"
+        ],
         "falsepositives": [
             "Legitimate administrative script"
         ],
@@ -34422,6 +34662,10 @@
         "status": "experimental",
         "description": "Detects attempts of decoding a base64 Gzip archive in a PowerShell script. This technique is often used as a method to load malicious content into memory afterward.",
         "author": "frack113",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1132.001"
+        ],
         "falsepositives": [
             "Legitimate administrative script"
         ],
@@ -34494,6 +34738,10 @@
         "status": "experimental",
         "description": "Detects usage of COM objects that can be abused to download files in PowerShell by CLSID",
         "author": "frack113",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
         "falsepositives": [
             "Legitimate use of the library"
         ],
@@ -37002,6 +37250,10 @@
         "status": "experimental",
         "description": "Detects usage of \"Reflection.Assembly\" load functions to dynamically load assemblies in memory",
         "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1620"
+        ],
         "falsepositives": [
             "Legitimate use of the library"
         ],
@@ -41640,6 +41892,10 @@
         "status": "experimental",
         "description": "Detects possible Kerberos Replay Attack on the domain controllers when \"KRB_AP_ERR_REPEAT\" Kerberos response is sent to the client",
         "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1558"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -41795,6 +42051,12 @@
         "status": "experimental",
         "description": "Detects the extraction of password protected ZIP archives. See the filename variable for more details on which file has been opened.",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.initial_access",
+            "attack.t1027",
+            "attack.t1566.001"
+        ],
         "falsepositives": [
             "Legitimate used of encrypted ZIP files"
         ],
@@ -41810,6 +42072,10 @@
         "status": "experimental",
         "description": "Detects an installation of a device that is forbidden by the system policy",
         "author": "frack113",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1200"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -42297,6 +42563,10 @@
         "status": "experimental",
         "description": "Detects the extraction of password protected ZIP archives. See the filename variable for more details on which file has been opened.",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1027"
+        ],
         "falsepositives": [
             "Legitimate used of encrypted ZIP files"
         ],
@@ -42663,6 +42933,13 @@
         "status": "experimental",
         "description": "Detects the extraction of password protected ZIP archives with suspicious file names. See the filename variable for more details on which file has been opened.",
         "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.defense_evasion",
+            "attack.t1027",
+            "attack.t1105",
+            "attack.t1036"
+        ],
         "falsepositives": [
             "Legitimate used of encrypted ZIP files"
         ],
@@ -43755,6 +44032,10 @@
         "status": "experimental",
         "description": "Detects when a all the rules have been deleted from the Windows Defender Firewall configuration",
         "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2033', '2059') AND NOT (((ModifyingApplication LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\'))) AND NOT ((ModifyingApplication LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')))"
@@ -43767,6 +44048,10 @@
         "status": "experimental",
         "description": "Detects the addition of a rule to the Windows Firewall exception list where the application resides in a suspicious folder",
         "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
         "falsepositives": [
             "Any legitimate application that runs from the AppData user directory"
         ],
@@ -43782,6 +44067,10 @@
         "status": "experimental",
         "description": "Detects when a single rules or all of the rules have been deleted from the Windows Defender Firewall",
         "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2006', '2052') AND NOT (((ModifyingApplication LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\') OR (ModifyingApplication = '') OR (ModifyingApplication = ''))) AND NOT ((ModifyingApplication LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')))"
@@ -43794,6 +44083,10 @@
         "status": "experimental",
         "description": "Detects when a rule has been added to the Windows Firewall exception list",
         "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2004', '2071') AND NOT ((Action = '2') OR ((ApplicationPath LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ApplicationPath LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\oobe\\\\Setup.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR (ModifyingApplication LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\')))) AND NOT ((ModifyingApplication LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')))"
