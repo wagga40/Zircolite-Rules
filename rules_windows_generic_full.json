@@ -12478,6 +12478,25 @@
         "filename": "proc_creation_win_malware_qakbot_regsvr32_calc_pattern.yml"
     },
     {
+        "title": "Qakbot Uninstaller Execution",
+        "id": "bc309b7a-3c29-4937-a4a3-e232473f9168",
+        "status": "experimental",
+        "description": "Detects the execution of the Qakbot uninstaller file mentioned in the USAO-CDCA document on the disruption of the Qakbot malware and botnet",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\QbotUninstall.exe' ESCAPE '\\' OR (Hashes LIKE '%IMPHASH=E772C815072311D6FB8C3390743E6BE5%' ESCAPE '\\' OR Hashes LIKE '%SHA256=559CAE635F0D870652B9482EF436B31D4BB1A5A0F51750836F328D749291D0B6%' ESCAPE '\\' OR Hashes LIKE '%SHA256=855EB5481F77DDE5AD8FA6E9D953D4AEBC280DDDF9461144B16ED62817CC5071%' ESCAPE '\\' OR Hashes LIKE '%SHA256=FAB408536AA37C4ABC8BE97AB9C1F86CB33B63923D423FDC2859EB9D63FA8EA0%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_malware_qakbot_uninstaller_cleanup.yml"
+    },
+    {
         "title": "Potential Qakbot Rundll32 Execution",
         "id": "cf879ffb-793a-4753-9a14-bc8f37cc90df",
         "status": "experimental",
