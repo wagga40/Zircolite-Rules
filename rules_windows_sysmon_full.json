@@ -5638,6 +5638,25 @@
         "filename": "file_delete_win_delete_prefetch.yml"
     },
     {
+        "title": "ADS Zone.Identifier Deleted By Uncommon Application",
+        "id": "3109530e-ab47-4cc6-a953-cac5ebcc93ae",
+        "status": "experimental",
+        "description": "Detects the deletion of the \"Zone.Identifier\" ADS by an uncommon process. Attackers can leverage this in order to bypass security restrictions that make use of the ADS such as Microsoft Office apps.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070.004"
+        ],
+        "falsepositives": [
+            "Other third party applications not listed."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID IN ('23', '26') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND NOT (((Image LIKE '%:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "file_delete_win_zone_identifier_ads_uncommon.yml"
+    },
+    {
         "title": "IIS WebServer Access Logs Deleted",
         "id": "3eb8c339-a765-48cc-a150-4364c04652bf",
         "status": "experimental",
@@ -29322,17 +29341,17 @@
         "title": "Suspicious Electron Application Child Processes",
         "id": "f26eb764-fd89-464b-85e2-dc4a8e6e77b8",
         "status": "experimental",
-        "description": "Detects suspicious child processes of electron apps (teams, discord, slack...).\nThis could be a potential sign of \".asar\" file tampering (See reference section for more information)\n",
+        "description": "Detects suspicious child processes of electron apps (teams, discord, slack, etc.). This could be a potential sign of \".asar\" file tampering (See reference section for more information) or binary execution proxy through specific CLI arguments (see related rule)\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution"
         ],
         "falsepositives": [
-            "Unknown"
+            "Legitimate child processes can occur in cases of debugging"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE '%\\\\Teams.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\slack.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\discord.exe' ESCAPE '\\') AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\')) AND NOT (ParentImage LIKE '%\\\\Discord.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\NVSMI\\\\nvidia-smi.exe%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentImage LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\discord.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\keybase.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msedge.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msteams.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\slack.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\Teams.exe' ESCAPE '\\') AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (Image LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Temp\\\\%' ESCAPE '\\'))) AND NOT ((ParentImage LIKE '%\\\\chrome.exe' ESCAPE '\\' AND Image LIKE '%\\\\chrome.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\discord.exe' ESCAPE '\\' AND Image LIKE '%\\\\discord.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\' AND Image LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\keybase.exe' ESCAPE '\\' AND Image LIKE '%\\\\keybase.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\msedge.exe' ESCAPE '\\' AND Image LIKE '%\\\\msedge.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' AND Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\msteams.exe' ESCAPE '\\' AND Image LIKE '%\\\\msteams.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\slack.exe' ESCAPE '\\' AND Image LIKE '%\\\\slack.exe' ESCAPE '\\') OR (ParentImage LIKE '%\\\\teams.exe' ESCAPE '\\' AND Image LIKE '%\\\\teams.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\WerFault.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\WerFault.exe' ESCAPE '\\')))) AND NOT ((ParentImage LIKE '%\\\\Discord.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\NVSMI\\\\nvidia-smi.exe%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_electron_app_children.yml"
     },
@@ -35025,6 +35044,24 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR Image LIKE '%\\\\hh.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\scrcons.exe' ESCAPE '\\' OR Image LIKE '%\\\\scriptrunner.exe' ESCAPE '\\' OR Image LIKE '%\\\\sh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\')) AND NOT ((ParentCommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkspacesConfig\\\\Scripts\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Program Files\\\\Amazon\\\\WorkspacesConfig\\\\Scripts\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_susp_child_processes.yml"
+    },
+    {
+        "title": "Potentially Suspicious Electron Application CommandLine",
+        "id": "378a05d8-963c-46c9-bcce-13c7657eac99",
+        "status": "experimental",
+        "description": "Detects potentially suspicious CommandLine of electron apps (teams, discord, slack, etc.). This could be a sign of abuse to proxy execution through a signed binary.",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate usage for debugging purposes"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\chrome.exe' ESCAPE '\\' OR Image LIKE '%\\\\code.exe' ESCAPE '\\' OR Image LIKE '%\\\\discord.exe' ESCAPE '\\' OR Image LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\' OR Image LIKE '%\\\\keybase.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedge.exe' ESCAPE '\\' OR Image LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR Image LIKE '%\\\\msteams.exe' ESCAPE '\\' OR Image LIKE '%\\\\slack.exe' ESCAPE '\\' OR Image LIKE '%\\\\Teams.exe' ESCAPE '\\') AND (CommandLine LIKE '%--browser-subprocess-path%' ESCAPE '\\' OR CommandLine LIKE '%--gpu-launcher%' ESCAPE '\\' OR CommandLine LIKE '%--renderer-cmd-prefix%' ESCAPE '\\' OR CommandLine LIKE '%--utility-cmd-prefix%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_electron_exeuction_proxy.yml"
     },
     {
         "title": "Renamed MegaSync Execution",
@@ -47153,6 +47190,25 @@
             "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%Security\\\\Trusted Locations\\\\Location%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Path' ESCAPE '\\')"
         ],
         "filename": "registry_set_office_trusted_location.yml"
+    },
+    {
+        "title": "ADS Zone.Identifier Deleted",
+        "id": "7eac0a16-5832-4e81-865f-0268a6d19e4b",
+        "status": "experimental",
+        "description": "Detects the deletion of the \"Zone.Identifier\" ADS. Attackers can leverage this in order to bypass security restrictions that make use of the ADS such as Microsoft Office apps.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1070.004"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID IN ('23', '26') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\')"
+        ],
+        "filename": "file_delete_win_zone_identifier_ads.yml"
     },
     {
         "title": "WebDAV Temporary Local File Creation",

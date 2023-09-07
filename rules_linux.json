@@ -1077,6 +1077,23 @@
         "filename": "proc_creation_lnx_bash_interactive_shell.yml"
     },
     {
+        "title": "ESXi Admin Permission Assigned To Account Via ESXCLI",
+        "id": "9691f58d-92c1-4416-8bf3-2edd753ec9cf",
+        "description": "Detects execution of the \"esxcli\" command with the \"system\" and \"permission\" flags in order to assign admin permissions to an account.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%system%' ESCAPE '\\' AND CommandLine LIKE '% permission %' ESCAPE '\\' AND CommandLine LIKE '% set%' ESCAPE '\\' AND CommandLine LIKE '%Admin%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_esxcli_permission_change_admin.yml"
+    },
+    {
         "title": "Crontab Enumeration",
         "id": "403ed92c-b7ec-4edd-9947-5b535ee12d46",
         "description": "Detects usage of crontab to list the tasks of the user",
@@ -1111,6 +1128,25 @@
             "SELECT * FROM logs WHERE (CommandLine LIKE '%IyEvYmluL2Jhc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL2Rhc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL3pza%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL2Zpc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL3No%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_base64_shebang_cli.yml"
+    },
+    {
+        "title": "ESXi VM List Discovery Via ESXCLI",
+        "id": "5f1573a7-363b-4114-9208-ad7a61de46eb",
+        "description": "Detects execution of the \"esxcli\" command with the \"vm\" flag in order to retrieve information about the installed VMs.",
+        "author": "Cedric Maurugeon",
+        "tags": [
+            "attack.discovery",
+            "attack.t1033",
+            "attack.t1007"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%vm process%' ESCAPE '\\' AND CommandLine LIKE '% list' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_esxcli_vm_discovery.yml"
     },
     {
         "title": "Capabilities Discovery - Linux",
@@ -1221,6 +1257,25 @@
             "SELECT * FROM logs WHERE Image LIKE '%/doas' ESCAPE '\\'"
         ],
         "filename": "proc_creation_lnx_doas_execution.yml"
+    },
+    {
+        "title": "ESXi Network Configuration Discovery Via ESXCLI",
+        "id": "33e814e0-1f00-4e43-9c34-31fb7ae2b174",
+        "description": "Detects execution of the \"esxcli\" command with the \"network\" flag in order to retrieve information about the network configuration.",
+        "author": "Cedric Maurugeon",
+        "tags": [
+            "attack.discovery",
+            "attack.t1033",
+            "attack.t1007"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%network%' ESCAPE '\\' AND (CommandLine LIKE '% get%' ESCAPE '\\' OR CommandLine LIKE '% list%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_esxcli_network_discovery.yml"
     },
     {
         "title": "DD File Overwrite",
@@ -1933,6 +1988,25 @@
         "filename": "proc_creation_lnx_susp_shell_child_process_from_parent_tmp_folder.yml"
     },
     {
+        "title": "ESXi VSAN Information Discovery Via ESXCLI",
+        "id": "d54c2f06-aca9-4e2b-81c9-5317858f4b79",
+        "description": "Detects execution of the \"esxcli\" command with the \"vsan\" flag in order to retrieve information about virtual storage. Seen used by malware such as DarkSide.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Cedric Maurugeon",
+        "tags": [
+            "attack.discovery",
+            "attack.t1033",
+            "attack.t1007"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%vsan%' ESCAPE '\\' AND (CommandLine LIKE '% get%' ESCAPE '\\' OR CommandLine LIKE '% list%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_esxcli_vsan_discovery.yml"
+    },
+    {
         "title": "Potentially Suspicious Named Pipe Created Via Mkfifo",
         "id": "999c3b12-0a8c-40b6-8e13-dd7d62b75c7a",
         "description": "Detects the creation of a new named pipe using the \"mkfifo\" utility in a potentially suspicious location",
@@ -2040,6 +2114,23 @@
             "SELECT * FROM logs WHERE ((CommandLine LIKE '%-ufw-init%' ESCAPE '\\' AND CommandLine LIKE '%force-stop%' ESCAPE '\\') OR (CommandLine LIKE '%ufw%' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_disable_ufw.yml"
+    },
+    {
+        "title": "ESXi VM Kill Via ESXCLI",
+        "id": "2992ac4d-31e9-4325-99f2-b18a73221bb2",
+        "description": "Detects execution of the \"esxcli\" command with the \"vm\" and \"kill\" flag in order to kill/shutdown a specific VM.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Cedric Maurugeon",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%vm process%' ESCAPE '\\' AND CommandLine LIKE '%kill%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_esxcli_vm_kill.yml"
     },
     {
         "title": "File Deletion",
@@ -2371,6 +2462,43 @@
         "filename": "proc_creation_lnx_webshell_detection.yml"
     },
     {
+        "title": "ESXi System Information Discovery Via ESXCLI",
+        "id": "e80273e1-9faf-40bc-bd85-dbaff104c4e9",
+        "description": "Detects execution of the \"esxcli\" command with the \"system\" flag in order to retrieve information about the different component of the system. Such as accounts, modules, NTP, etc.",
+        "author": "Cedric Maurugeon",
+        "tags": [
+            "attack.discovery",
+            "attack.t1033",
+            "attack.t1007"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%system%' ESCAPE '\\' AND (CommandLine LIKE '% get%' ESCAPE '\\' OR CommandLine LIKE '% list%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_esxcli_system_discovery.yml"
+    },
+    {
+        "title": "ESXi Account Creation Via ESXCLI",
+        "id": "b28e4eb3-8bbc-4f0c-819f-edfe8e2f25db",
+        "description": "Detects user account creation on ESXi system via esxcli",
+        "author": "Cedric Maurugeon",
+        "tags": [
+            "attack.persistence",
+            "attack.t1136"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%system %' ESCAPE '\\' AND CommandLine LIKE '%account %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_esxcli_user_account_creation.yml"
+    },
+    {
         "title": "File and Directory Discovery - Linux",
         "id": "d3feb4ee-ff1d-4d3d-bd10-5b28a238cc72",
         "description": "Detects usage of system utilities to discover files and directories",
@@ -2514,6 +2642,25 @@
             "SELECT * FROM logs WHERE (((Image LIKE '%/nc' ESCAPE '\\' OR Image LIKE '%/netcat' ESCAPE '\\') AND NOT (CommandLine LIKE '%l%' ESCAPE '\\')) OR (Image LIKE '%/telnet' ESCAPE '\\' OR Image LIKE '%/nmap' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_network_service_scanning.yml"
+    },
+    {
+        "title": "ESXi Storage Information Discovery Via ESXCLI",
+        "id": "f41dada5-3f56-4232-8503-3fb7f9cf2d60",
+        "description": "Detects execution of the \"esxcli\" command with the \"storage\" flag in order to retrieve information about the storage status and other related information. Seen used by malware such as DarkSide and LockBit.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Cedric Maurugeon",
+        "tags": [
+            "attack.discovery",
+            "attack.t1033",
+            "attack.t1007"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%storage%' ESCAPE '\\' AND (CommandLine LIKE '% get%' ESCAPE '\\' OR CommandLine LIKE '% list%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_esxcli_storage_discovery.yml"
     },
     {
         "title": "System Network Discovery - Linux",
