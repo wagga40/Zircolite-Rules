@@ -4055,6 +4055,24 @@
         "filename": "registry_set_asep_reg_keys_modification_currentversion.yml"
     },
     {
+        "title": "IE ZoneMap Setting Downgraded To MyComputer Zone For HTTP Protocols",
+        "id": "3fd4c8d7-8362-4557-a8e6-83b29cc0d724",
+        "status": "experimental",
+        "description": "Detects changes to Internet Explorer's (IE / Windows Internet properties) ZoneMap configuration of the \"HTTP\" and \"HTTPS\" protocols to point to the \"My Computer\" zone. This allows downloaded files from the Internet to be granted the same level of trust as files stored locally.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Michael Haag (idea)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Internet Settings\\\\ZoneMap\\\\ProtocolDefaults%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\http' ESCAPE '\\' OR TargetObject LIKE '%\\\\https' ESCAPE '\\') AND Details LIKE '%DWORD (0x00000000)%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_ie_security_zone_protocol_defaults_downgrade.yml"
+    },
+    {
         "title": "Usage of Renamed Sysinternals Tools - RegistrySet",
         "id": "8023f872-3f1d-4301-a384-801889917ab4",
         "status": "experimental",
@@ -4072,6 +4090,24 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT (((Image LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR Image LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle.exe' ESCAPE '\\' OR Image LIKE '%\\\\handle64.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp.exe' ESCAPE '\\' OR Image LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR Image LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR Image LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR Image LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR Image LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\')))) AND NOT ((Image = '')))"
         ],
         "filename": "registry_set_renamed_sysinternals_eula_accepted.yml"
+    },
+    {
+        "title": "Old TLS1.0/TLS1.1 Protocol Version Enabled",
+        "id": "439957a7-ad86-4a8f-9705-a28131c6821b",
+        "status": "experimental",
+        "description": "Detects applications or users re-enabling old TLS versions by setting the \"Enabled\" value to \"1\" for the \"Protocols\" registry key.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Legitimate enabling of the old tls versions due to incompatibility"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetObject LIKE '%\\\\Control\\\\SecurityProviders\\\\SCHANNEL\\\\Protocols\\\\TLS 1.0\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SecurityProviders\\\\SCHANNEL\\\\Protocols\\\\TLS 1.1\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\Enabled' ESCAPE '\\' AND Details = 'DWORD (0x00000001)')"
+        ],
+        "filename": "registry_set_tls_protocol_old_version_enabled.yml"
     },
     {
         "title": "Wow6432Node Classes Autorun Keys Modification",
@@ -6041,6 +6077,25 @@
         "filename": "file_event_win_ripzip_attack.yml"
     },
     {
+        "title": "LSASS Process Memory Dump Files",
+        "id": "a5a2d357-1ab8-4675-a967-ef9990a59391",
+        "status": "experimental",
+        "description": "Detects creation of files with names used by different memory dumping tools to create a memory dump of the LSASS process memory, which contains user credentials.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%\\\\lsass.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.zip' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.rar' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Andrew.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Coredump.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\NotLSASS.zip' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass\\_2%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdump%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdmp%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp%' ESCAPE '\\') OR (TargetFilename LIKE '%SQLDmpr%' ESCAPE '\\' AND TargetFilename LIKE '%.mdmp' ESCAPE '\\') OR (TargetFilename LIKE 'nanodump%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_lsass_default_dump_file_names.yml"
+    },
+    {
         "title": "Malicious DLL File Dropped in the Teams or OneDrive Folder",
         "id": "1908fcc1-1b92-4272-8214-0fbaf2fa5163",
         "status": "experimental",
@@ -6396,25 +6451,6 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND TargetFilename LIKE '%.bat' ESCAPE '\\')"
         ],
         "filename": "file_event_win_hktl_powerup_dllhijacking.yml"
-    },
-    {
-        "title": "LSASS Process Memory Dump Files",
-        "id": "a5a2d357-1ab8-4675-a967-ef9990a59391",
-        "status": "experimental",
-        "description": "Detects file names used by different memory dumping tools to create a memory dump of the LSASS process memory, which contains user credentials",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%\\\\lsass.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.zip' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsass.rar' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Andrew.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Coredump.dmp' ESCAPE '\\' OR TargetFilename LIKE '%\\\\NotLSASS.zip' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass\\_2%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdump%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\lsassdmp%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\lsass%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp%' ESCAPE '\\') OR (TargetFilename LIKE '%SQLDmpr%' ESCAPE '\\' AND TargetFilename LIKE '%.mdmp' ESCAPE '\\') OR (TargetFilename LIKE 'nanodump%' ESCAPE '\\' AND TargetFilename LIKE '%.dmp' ESCAPE '\\')))"
-        ],
-        "filename": "file_event_win_lsass_dump.yml"
     },
     {
         "title": "WMI Persistence - Script Event Consumer File Write",
@@ -6824,26 +6860,6 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\w3wp.exe' ESCAPE '\\' AND CommandLine LIKE '%MSExchange%' ESCAPE '\\' AND (TargetFilename LIKE '%FrontEnd\\\\HttpProxy\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\inetpub\\\\wwwroot\\\\aspnet\\_client\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%.aspx' ESCAPE '\\' OR TargetFilename LIKE '%.asp' ESCAPE '\\' OR TargetFilename LIKE '%.ashx' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_exchange_webshell_drop.yml"
-    },
-    {
-        "title": "LSASS Memory Dump File Creation",
-        "id": "5e3d3601-0662-4af0-b1d2-36a05e90c40a",
-        "status": "test",
-        "description": "LSASS memory dump creation using operating systems utilities. Procdump will use process name in output file if no name is specified",
-        "author": "Teymur Kheirkhabarov, oscd.community",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003.001"
-        ],
-        "falsepositives": [
-            "Dumping lsass memory for forensic investigation purposes by legitimate incident responder or forensic invetigator",
-            "Dumps of another process that contains lsass in its process name (substring)"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%lsass%' ESCAPE '\\' AND TargetFilename LIKE '%dmp' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_lsass_memory_dump_file_creation.yml"
     },
     {
         "title": "WScript or CScript Dropper - File",
@@ -9346,7 +9362,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Protocol = 'tcp' AND Initiated = 'true' AND DestinationPort = '135') AND NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\ProgramData\\\\Amazon\\\\SSM\\\\Update\\\\amazon-ssm-agent-updater%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Protocol = 'tcp' AND Initiated = 'true' AND DestinationPort = '135') AND NOT (((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\ProgramData\\\\Amazon\\\\SSM\\\\Update\\\\amazon-ssm-agent-updater%' ESCAPE '\\')) OR (Image = '') OR (Image = '')))"
         ],
         "filename": "net_connection_win_susp_epmap.yml"
     },
@@ -10008,6 +10024,26 @@
         "filename": "file_event_win_malware_goofy_guineapig_file_indicators.yml"
     },
     {
+        "title": "FoggyWeb Backdoor DLL Loading",
+        "id": "640dc51c-7713-4faa-8a0e-e7c0d9d4654c",
+        "status": "test",
+        "description": "Detects DLL hijacking technique used by NOBELIUM in their FoggyWeb backdoor. Which loads a malicious version of the expected \"version.dll\" dll",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.resource_development",
+            "attack.t1587",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded LIKE 'C:\\\\Windows\\\\ADFS\\\\version.dll' ESCAPE '\\')"
+        ],
+        "filename": "image_load_malware_foggyweb_nobelium.yml"
+    },
+    {
         "title": "Moriya Rootkit File Created",
         "id": "a1507d71-0b60-44f6-b17c-bf53220fdd88",
         "status": "test",
@@ -10047,6 +10083,26 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\updata.exe' ESCAPE '\\' AND CommandLine LIKE '%config%' ESCAPE '\\' AND CommandLine LIKE '%msdtc%' ESCAPE '\\' AND CommandLine LIKE '%start%' ESCAPE '\\' AND CommandLine LIKE '%auto%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_malware_pingback_backdoor.yml"
+    },
+    {
+        "title": "Pingback Backdoor DLL Loading Activity",
+        "id": "35a7dc42-bc6f-46e0-9f83-81f8e56c8d4b",
+        "status": "experimental",
+        "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
+        "author": "Bhabesh Raj",
+        "tags": [
+            "attack.persistence",
+            "attack.t1574.001",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\msdtc.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\Windows\\\\oci.dll' ESCAPE '\\')"
+        ],
+        "filename": "image_load_malware_pingback_backdoor.yml"
     },
     {
         "title": "Pingback Backdoor File Indicators",
@@ -12069,24 +12125,24 @@
         "filename": "web_cve_2010_5278_exploitation_attempt.yml"
     },
     {
-        "title": "Pingback Backdoor DLL Loading Activity",
-        "id": "35a7dc42-bc6f-46e0-9f83-81f8e56c8d4b",
+        "title": "IcedID Malware Suspicious Single Digit DLL Execution Via Rundll32",
+        "id": "2bd8e100-5b3b-4b6a-bbb5-b129d3ddddc5",
         "status": "experimental",
-        "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
-        "author": "Bhabesh Raj",
+        "description": "Detects RunDLL32.exe executing a single digit DLL named \"1.dll\" with the export function \"DllRegisterServer\". This behaviour was often seen used by malware and especially IcedID",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.persistence",
-            "attack.t1574.001",
+            "attack.defense_evasion",
+            "attack.t1218.011",
             "detection.emerging_threats"
         ],
         "falsepositives": [
-            "Unlikely"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\msdtc.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\Windows\\\\oci.dll' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (CommandLine LIKE '%\\\\1.dll, DllRegisterServer' ESCAPE '\\' OR CommandLine LIKE '% 1.dll, DllRegisterServer' ESCAPE '\\'))"
         ],
-        "filename": "image_load_malware_pingback_backdoor.yml"
+        "filename": "proc_creation_win_malware_icedid_rundll32_dllregisterserver.yml"
     },
     {
         "title": "Qakbot Rundll32 Fake DLL Extension Execution",
@@ -12672,6 +12728,26 @@
         "filename": "proxy_exploit_cve_2023_36884_office_windows_html_rce_url_marker_traffic.yml"
     },
     {
+        "title": "CVE-2023-40477 Potential Exploitation - WinRAR Application Crash",
+        "id": "e5a29b54-6fe7-4258-8a23-82960e31231a",
+        "status": "experimental",
+        "description": "Detects a crash of \"WinRAR.exe\" where the version is lower than 6.23. This could indicate potential exploitation of CVE-2023-40477",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "cve.2023.40477",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Legitimate crash for reasons other than exploitation of the vulnerability"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND (Provider_Name = 'Application Error' AND EventID = '1000' AND AppName = 'WinRAR.exe') AND NOT (((AppVersion LIKE '6.23.%' ESCAPE '\\' OR AppVersion LIKE '6.24.%' ESCAPE '\\' OR AppVersion LIKE '6.25.%' ESCAPE '\\' OR AppVersion LIKE '6.26.%' ESCAPE '\\' OR AppVersion LIKE '7.%' ESCAPE '\\'))))"
+        ],
+        "filename": "win_application_exploit_cve_2023_40477_winrar_crash.yml"
+    },
+    {
         "title": "Potential CVE-2023-23752 Exploitation Attempt",
         "id": "0e1ebc5a-15d0-4bf6-8199-b2535397433a",
         "status": "experimental",
@@ -12715,6 +12791,26 @@
         "filename": "web_cve_2023_25717_ruckus_wireless_admin_exploit_attempt.yml"
     },
     {
+        "title": "Potential CVE-2023-36874 Exploitation - Fake Wermgr Execution",
+        "id": "50dbc08b-60ce-40f1-a6b6-346497e34c88",
+        "status": "experimental",
+        "description": "Detects the execution of a renamed \"cmd\", \"powershell\" or \"powershell_ise\" binary. Attackers were seen using these binaries in a renamed form as \"wermgr.exe\" in exploitation of CVE-2023-36874",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "cve.2023.36874",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (OriginalFileName LIKE 'Cmd.Exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\') AND Image LIKE '%\\\\wermgr.exe' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2023_36874_fake_wermgr.yml"
+    },
+    {
         "title": "Potential CVE-2023-36874 Exploitation - Fake Wermgr.Exe Creation",
         "id": "ad0960eb-0015-4d16-be13-b3d9f18f1342",
         "status": "experimental",
@@ -12732,7 +12828,7 @@
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND TargetFilename LIKE '%\\\\wermgr.exe' ESCAPE '\\' AND NOT (((TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\NewOS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\servicing\\\\LCU\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\'))))"
         ],
-        "filename": "file_event_win_exploit_cve_2023_34362_wermgr_creation.yml"
+        "filename": "file_event_win_exploit_cve_2023_36874_wermgr_creation.yml"
     },
     {
         "title": "Potential CVE-2023-36874 Exploitation - Uncommon Report.Wer Location",
@@ -12752,27 +12848,7 @@
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetFilename LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\WER\\\\ReportArchive\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Report.wer' ESCAPE '\\') AND NOT (((TargetFilename LIKE '%\\\\ReportArchive\\\\AppCrash\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\AppHang\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\Critical\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\Kernel\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ReportArchive\\\\NonCritical\\_%' ESCAPE '\\'))))"
         ],
-        "filename": "file_event_win_exploit_cve_2023_34362_report_creation.yml"
-    },
-    {
-        "title": "Potential CVE-2023-36874 Exploitation - Fake Wermgr Execution",
-        "id": "50dbc08b-60ce-40f1-a6b6-346497e34c88",
-        "status": "experimental",
-        "description": "Detects the execution of a renamed \"cmd\", \"powershell\" or \"powershell_ise\" binary. Attackers were seen using these binaries in a renamed form as \"wermgr.exe\" in exploitation of CVE-2023-36874",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.execution",
-            "cve.2023.36874",
-            "detection.emerging_threats"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (OriginalFileName LIKE 'Cmd.Exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\') AND Image LIKE '%\\\\wermgr.exe' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_exploit_cve_2023_34362_fake_wermgr.yml"
+        "filename": "file_event_win_exploit_cve_2023_36874_report_creation.yml"
     },
     {
         "title": "Potential Exploitation Attempt Of Undocumented WindowsServer RCE",
@@ -12896,6 +12972,47 @@
             "SELECT * FROM logs WHERE ((cs-method IN ('GET', 'POST') AND (cs-uri-query LIKE '%/remote/hostcheck\\_validate%' ESCAPE '\\' OR cs-uri-query LIKE '%/remote/logincheck%' ESCAPE '\\')) AND logs MATCH ('\"enc=\"'))"
         ],
         "filename": "web_cve_2023_27997_pre_authentication_rce.yml"
+    },
+    {
+        "title": "CVE-2023-38331 Exploitation Attempt - Suspicious Double Extension File",
+        "id": "e4556676-fc5c-4e95-8c39-5ef27791541f",
+        "status": "experimental",
+        "description": "Detects the creation of a file with a double extension and a space by WinRAR. This could be a sign of exploitation of CVE-2023-38331",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "cve.2023.38331",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\WinRAR.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\Rar$%' ESCAPE '\\' AND TargetFilename REGEXP '\\.[a-zA-Z0-9]{1,4} \\.')"
+        ],
+        "filename": "file_event_win_exploit_cve_2023_38331_winrar_susp_double_ext.yml"
+    },
+    {
+        "title": "CVE-2023-38331 Exploitation Attempt - Suspicious WinRAR Child Process",
+        "id": "ec3a3c2f-9bb0-4a9b-8f4b-5ec386544343",
+        "status": "experimental",
+        "description": "Detects exploitation attempt of CVE-2023-38331 (WinRAR before v6.23), where an attacker can leverage WinRAR to execute arbitrary commands and binaries.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Andreas Braathen (mnemonic.io)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.execution",
+            "attack.t1203",
+            "cve.2023.38331"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\WinRAR.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\Rar$%' ESCAPE '\\' AND CommandLine REGEXP '\\.[a-zA-Z0-9]{1,4} \\.' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR OriginalFileName IN ('Cmd.Exe', 'cscript.exe', 'PowerShell.EXE', 'pwsh.dll', 'wscript.exe')))"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2023_38831_winrar_child_proc.yml"
     },
     {
         "title": "Potential CVE-2023-23397 Exploitation Attempt - SMB",
@@ -13446,26 +13563,6 @@
             "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%IO.Compression.DeflateStream%' ESCAPE '\\' AND ScriptBlockText LIKE '%IO.MemoryStream%' ESCAPE '\\' AND ScriptBlockText LIKE '%::FromBase64String%' ESCAPE '\\' AND ScriptBlockText LIKE '%GetDelegateForFunctionPointer%' ESCAPE '\\' AND ScriptBlockText LIKE '%.Invoke()%' ESCAPE '\\' AND ScriptBlockText LIKE '%GlobalAssemblyCache%' ESCAPE '\\')"
         ],
         "filename": "posh_ps_apt_fin7_powertrash_execution.yml"
-    },
-    {
-        "title": "FoggyWeb Backdoor DLL Loading",
-        "id": "640dc51c-7713-4faa-8a0e-e7c0d9d4654c",
-        "status": "test",
-        "description": "Detects DLL hijacking technique used by NOBELIUM in their FoggyWeb backdoor. Which loads a malicious version of the expected \"version.dll\" dll",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.resource_development",
-            "attack.t1587",
-            "detection.emerging_threats"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded LIKE 'C:\\\\Windows\\\\ADFS\\\\version.dll' ESCAPE '\\')"
-        ],
-        "filename": "image_load_malware_foggyweb_nobelium.yml"
     },
     {
         "title": "Rejetto HTTP File Server RCE",
@@ -15435,6 +15532,25 @@
         "filename": "proc_creation_win_powershell_msexchange_transport_agent.yml"
     },
     {
+        "title": "IE ZoneMap Setting Downgraded To MyComputer Zone For HTTP Protocols Via CLI",
+        "id": "10344bb3-7f65-46c2-b915-2d00d47be5b0",
+        "status": "experimental",
+        "description": "Detects changes to Internet Explorer's (IE / Windows Internet properties) ZoneMap configuration of the \"HTTP\" and \"HTTPS\" protocols to point to the \"My Computer\" zone. This allows downloaded files from the Internet to be granted the same level of trust as files stored locally.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Internet Settings\\\\ZoneMap\\\\ProtocolDefaults%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\' AND CommandLine LIKE '% 0%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_registry_ie_security_zone_protocol_defaults_downgrade.yml"
+    },
+    {
         "title": "HackTool - CrackMapExec Process Patterns",
         "id": "f26307d8-14cd-47e3-a26b-4b4769f24af6",
         "status": "experimental",
@@ -16532,6 +16648,27 @@
         "filename": "proc_creation_win_wsl_lolbin_execution.yml"
     },
     {
+        "title": "Suspicious Copy From or To System Directory",
+        "id": "fff9d2b7-e11c-4a69-93d3-40ef66189767",
+        "status": "test",
+        "description": "Detects a suspicious copy operation that tries to copy a program from system (System32, SysWOW64, WinSxS) directories to another on disk.\nOften used to move LOLBINs such as 'certutil' or 'desktopimgdownldr' to a different location with a different name in order to bypass detections based on locations.\n",
+        "author": "Florian Roth (Nextron Systems), Markus Neis, Tim Shelton (HAWK.IO), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036.003"
+        ],
+        "falsepositives": [
+            "Depend on scripts and administrative tools used in the monitored environment (For example an admin scripts like https://www.itexperience.net/sccm-batch-files-and-32-bits-processes-on-64-bits-os/)",
+            "When cmd.exe and xcopy.exe are called directly",
+            "When the command contains the keywords but not in the correct order"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '% copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\')) OR ((Image LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR Image LIKE '%\\\\xcopy.exe' ESCAPE '\\') OR OriginalFileName IN ('robocopy.exe', 'XCOPY.EXE'))) AND (CommandLine LIKE '%\\\\System32%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SysWOW64%' ESCAPE '\\' OR CommandLine LIKE '%\\\\WinSxS%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_copy_system_dir.yml"
+    },
+    {
         "title": "Suspicious Debugger Registration Cmdline",
         "id": "ae215552-081e-44c7-805f-be16f975c8a2",
         "status": "test",
@@ -16607,6 +16744,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +h %' ESCAPE '\\') AND NOT ((CommandLine LIKE '%\\\\desktop.ini %' ESCAPE '\\') OR (ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '+R +H +S +A \\\\\\*.cui' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\\\*.bat' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_attrib_hiding_files.yml"
+    },
+    {
+        "title": "LSASS Dump Keyword In CommandLine",
+        "id": "ffa6861c-4461-4f59-8a41-578c39f3f23e",
+        "status": "test",
+        "description": "Detects the presence of the keywords \"lsass\" and \".dmp\" in the commandline, which could indicate a potential attempt to dump or create a dump of the lsass process.\n",
+        "author": "E.M. Anhaus, Tony Lambert, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%lsass.dmp%' ESCAPE '\\' OR CommandLine LIKE '%lsass.zip%' ESCAPE '\\' OR CommandLine LIKE '%lsass.rar%' ESCAPE '\\' OR CommandLine LIKE '%Andrew.dmp%' ESCAPE '\\' OR CommandLine LIKE '%Coredump.dmp%' ESCAPE '\\' OR CommandLine LIKE '%NotLSASS.zip%' ESCAPE '\\' OR CommandLine LIKE '%lsass\\_2%' ESCAPE '\\' OR CommandLine LIKE '%lsassdump%' ESCAPE '\\' OR CommandLine LIKE '%lsassdmp%' ESCAPE '\\') OR (CommandLine LIKE '%lsass%' ESCAPE '\\' AND CommandLine LIKE '%.dmp%' ESCAPE '\\') OR (CommandLine LIKE '%SQLDmpr%' ESCAPE '\\' AND CommandLine LIKE '%.mdmp%' ESCAPE '\\') OR (CommandLine LIKE '%nanodump%' ESCAPE '\\' AND CommandLine LIKE '%.dmp%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_susp_lsass_dmp_cli_keywords.yml"
     },
     {
         "title": "Launch-VsDevShell.PS1 Proxy Execution",
@@ -16746,26 +16902,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\ruby.exe' ESCAPE '\\' OR OriginalFileName = 'ruby.exe') AND CommandLine LIKE '% -e%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_ruby_inline_command_execution.yml"
-    },
-    {
-        "title": "Potential Credential Dumping Via LSASS Process Clone",
-        "id": "c8da0dfd-4ed0-4b68-962d-13c9c884384e",
-        "status": "test",
-        "description": "Detects a suspicious LSASS process process clone that could be a sign of credential dumping activity",
-        "author": "Florian Roth (Nextron Systems), Samir Bousseaden",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003",
-            "attack.t1003.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' AND ParentImage LIKE '%\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_susp_lsass_clone.yml"
     },
     {
         "title": "Potential Binary Impersonating Sysinternals Tools",
@@ -18490,25 +18626,6 @@
         "filename": "proc_creation_win_reg_open_command.yml"
     },
     {
-        "title": "LSASS Memory Dumping",
-        "id": "ffa6861c-4461-4f59-8a41-578c39f3f23e",
-        "status": "test",
-        "description": "Detect creation of dump files containing the memory space of lsass.exe, which contains sensitive credentials.\nIdentifies usage of Sysinternals procdump.exe to export the memory space of lsass.exe which contains sensitive credentials.\n",
-        "author": "E.M. Anhaus (originally from Atomic Blue Detections, Tony Lambert), oscd.community",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003.001"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%lsass%' ESCAPE '\\' AND CommandLine LIKE '%.dmp%' ESCAPE '\\') AND NOT (Image LIKE '%\\\\werfault.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_susp_lsass_dump.yml"
-    },
-    {
         "title": "Suspicious Windows Service Tampering",
         "id": "ce72ef99-22f1-43d4-8695-419dcb5d9330",
         "status": "experimental",
@@ -18997,25 +19114,6 @@
         "filename": "proc_creation_win_pua_ditsnap.yml"
     },
     {
-        "title": "Wscript Execution from Non C Drive",
-        "id": "5b80cf53-3a46-4adc-960b-05ec19348d74",
-        "status": "experimental",
-        "description": "Detects Wscript or Cscript executing from a drive other than C. This has been observed with Qakbot executing from within a mounted ISO file.",
-        "author": "Aaron Herman",
-        "tags": [
-            "attack.execution",
-            "attack.t1059"
-        ],
-        "falsepositives": [
-            "Legitimate scripts located on other partitions such as \"D:\""
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\') AND CommandLine LIKE '%:\\\\%' ESCAPE '\\') AND NOT (((CommandLine LIKE '% C:\\\\\\*' ESCAPE '\\' OR CommandLine LIKE '% ''C:\\\\%' ESCAPE '\\' OR CommandLine LIKE '% \"C:\\\\\\*' ESCAPE '\\')) OR (CommandLine LIKE '%\\%%' ESCAPE '\\') OR (CommandLine LIKE '% \\\\\\\\\\*' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_susp_lolbin_non_c_drive.yml"
-    },
-    {
         "title": "Remote Access Tool - Anydesk Execution From Suspicious Folder",
         "id": "065b00ca-5d5c-4557-ac95-64a6d0b64d86",
         "status": "experimental",
@@ -19469,11 +19567,11 @@
         "filename": "proc_creation_win_net_user_add.yml"
     },
     {
-        "title": "LOLBIN From Abnormal Drive",
+        "title": "LOLBIN Execution From Abnormal Drive",
         "id": "d4ca7c59-e9e4-42d8-bf57-91a776efcb87",
         "status": "test",
-        "description": "Detects LOLBINs executing from an abnormal drive such as a mounted ISO.",
-        "author": "Christopher Peacock '@securepeacock', SCYTHE '@scythe_io', Angelo Violetti - SEC Consult '@angelo_violetti'",
+        "description": "Detects LOLBINs executing from an abnormal or uncommon drive such as a mounted ISO.",
+        "author": "Christopher Peacock '@securepeacock', SCYTHE '@scythe_io', Angelo Violetti - SEC Consult '@angelo_violetti', Aaron Herman",
         "tags": [
             "attack.defense_evasion"
         ],
@@ -19482,7 +19580,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\calc.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\installutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmstp.exe' ESCAPE '\\') OR OriginalFileName IN ('RUNDLL32.EXE', 'CALC.EXE', 'MSHTA.EXE', 'cscript.exe', 'wscript.exe', 'REGSVR32.EXE', 'installutil.exe', 'CMSTP.EXE')) AND NOT ((CurrentDirectory LIKE '%C:\\\\%' ESCAPE '\\') OR (CurrentDirectory = '') OR (CurrentDirectory = '')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\calc.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\installutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR OriginalFileName IN ('CALC.EXE', 'CertUtil.exe', 'CMSTP.EXE', 'cscript.exe', 'installutil.exe', 'MSHTA.EXE', 'REGSVR32.EXE', 'RUNDLL32.EXE', 'wscript.exe')) AND NOT ((CurrentDirectory LIKE '%C:\\\\%' ESCAPE '\\') OR (CurrentDirectory = '') OR (CurrentDirectory = '')))"
         ],
         "filename": "proc_creation_win_susp_lolbin_exec_from_non_c_drive.yml"
     },
@@ -20245,16 +20343,17 @@
         "title": "7Zip Compressing Dump Files",
         "id": "ec570e53-4c76-45a9-804d-dc3f355ff7a7",
         "status": "experimental",
-        "description": "Detects a suspicious 7zip execution that involves a file with a \".dmp\"/\".dump\" extension, which could be a step in a process of dump file exfiltration",
+        "description": "Detects execution of 7z in order to compress a file with a \".dmp\"/\".dump\" extension, which could be a step in a process of dump file exfiltration.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.collection",
             "attack.t1560.001"
         ],
         "falsepositives": [
-            "Unknown"
+            "Legitimate use of 7z with a command line in which \".dmp\" or \".dump\" appears accidentally",
+            "Legitimate use of 7z to compress WER \".dmp\" files for troubleshooting"
         ],
-        "level": "high",
+        "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Description LIKE '%7-Zip%' ESCAPE '\\' OR (Image LIKE '%\\\\7z.exe' ESCAPE '\\' OR Image LIKE '%\\\\7zr.exe' ESCAPE '\\' OR Image LIKE '%\\\\7za.exe' ESCAPE '\\') OR OriginalFileName IN ('7z.exe', '7za.exe')) AND (CommandLine LIKE '%.dmp%' ESCAPE '\\' OR CommandLine LIKE '%.dump%' ESCAPE '\\'))"
         ],
@@ -20751,7 +20850,7 @@
         "filename": "proc_creation_win_remote_access_software_ultraviewer.yml"
     },
     {
-        "title": "Suspicious Rundll32 Without Any CommandLine Params",
+        "title": "Rundll32 Execution Without CommandLine Parameters",
         "id": "1775e15e-b61b-4d14-a1a3-80981298085a",
         "status": "experimental",
         "description": "Detects suspicious start of rundll32.exe without any parameters as found in CobaltStrike beacon activity",
@@ -20765,7 +20864,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND CommandLine LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND NOT ((ParentImage LIKE '%\\\\svchost.exe' ESCAPE '\\') OR ((ParentImage LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR ParentImage LIKE '%\\\\Microsoft\\\\Edge\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR CommandLine LIKE '%\\\\rundll32.exe\"' ESCAPE '\\' OR CommandLine LIKE '%\\\\rundll32' ESCAPE '\\') AND NOT (((ParentImage LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR ParentImage LIKE '%\\\\Microsoft\\\\Edge\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_rundll32_no_params.yml"
     },
@@ -22165,7 +22264,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '%copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\' OR CommandLine LIKE '%move %' ESCAPE '\\' OR CommandLine LIKE '%move-item%' ESCAPE '\\' OR CommandLine LIKE '% mi %' ESCAPE '\\' OR CommandLine LIKE '% mv %' ESCAPE '\\') OR (Image LIKE '%\\\\xcopy.exe' ESCAPE '\\' OR Image LIKE '%\\\\robocopy.exe' ESCAPE '\\') OR OriginalFileName IN ('XCOPY.EXE', 'robocopy.exe')) AND (CommandLine LIKE '%\\\\Opera Software\\\\Opera Stable\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Mozilla\\\\Firefox\\\\Profiles%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Microsoft\\\\Edge\\\\User Data\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Google\\\\Chrome\\\\User Data\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '%copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\' OR CommandLine LIKE '%move %' ESCAPE '\\' OR CommandLine LIKE '%move-item%' ESCAPE '\\' OR CommandLine LIKE '% mi %' ESCAPE '\\' OR CommandLine LIKE '% mv %' ESCAPE '\\') OR (Image LIKE '%\\\\xcopy.exe' ESCAPE '\\' OR Image LIKE '%\\\\robocopy.exe' ESCAPE '\\') OR OriginalFileName IN ('XCOPY.EXE', 'robocopy.exe')) AND (CommandLine LIKE '%\\\\Amigo\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\BraveSoftware\\\\Brave-Browser\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\CentBrowser\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Chromium\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\CocCoc\\\\Browser\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Comodo\\\\Dragon\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Elements Browser\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Epic Privacy Browser\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Google\\\\Chrome Beta\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Google\\\\Chrome SxS\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Google\\\\Chrome\\\\User Data\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Kometa\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Maxthon5\\\\Users%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Microsoft\\\\Edge\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Mozilla\\\\Firefox\\\\Profiles%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Nichrome\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Opera Software\\\\Opera GX Stable\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Opera Software\\\\Opera Neon\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Opera Software\\\\Opera Stable\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Orbitum\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\QIP Surf\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Sputnik\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Torch\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\uCozMedia\\\\Uran\\\\User Data%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Vivaldi\\\\User Data%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_copy_browser_data.yml"
     },
@@ -22670,6 +22769,26 @@
         "filename": "proc_creation_win_powershell_remotefxvgpudisablement_abuse.yml"
     },
     {
+        "title": "Winrar Compressing Dump Files",
+        "id": "1ac14d38-3dfc-4635-92c7-e3fd1c5f5bfc",
+        "status": "experimental",
+        "description": "Detects execution of WinRAR in order to compress a file with a \".dmp\"/\".dump\" extension, which could be a step in a process of dump file exfiltration.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.collection",
+            "attack.t1560.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of WinRAR with a command line in which \".dmp\" or \".dump\" appears accidentally",
+            "Legitimate use of WinRAR to compress WER \".dmp\" files for troubleshooting"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\rar.exe' ESCAPE '\\' OR Image LIKE '%\\\\winrar.exe' ESCAPE '\\') OR Description = 'Command line RAR') AND (CommandLine LIKE '%.dmp%' ESCAPE '\\' OR CommandLine LIKE '%.dump%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_winrar_exfil_dmp_files.yml"
+    },
+    {
         "title": "PUA - AdFind Suspicious Execution",
         "id": "9a132afa-654e-11eb-ae93-0242ac130002",
         "status": "test",
@@ -22943,25 +23062,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND (CommandLine LIKE '%\"Everyone\"%' ESCAPE '\\' OR CommandLine LIKE '%''Everyone''%' ESCAPE '\\' OR CommandLine LIKE '%\"BUILTIN\\\\\"%' ESCAPE '\\' OR CommandLine LIKE '%''BUILTIN\\\\''%' ESCAPE '\\')) OR (CommandLine LIKE '%icacls %' ESCAPE '\\' AND CommandLine LIKE '%findstr %' ESCAPE '\\' AND CommandLine LIKE '%Everyone%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_findstr_recon_everyone.yml"
-    },
-    {
-        "title": "Winrar Execution in Non-Standard Folder",
-        "id": "4ede543c-e098-43d9-a28f-dd784a13132f",
-        "status": "test",
-        "description": "Detects a suspicious winrar execution in a folder which is not the default installation folder",
-        "author": "Florian Roth (Nextron Systems), Tigzy",
-        "tags": [
-            "attack.collection",
-            "attack.t1560.001"
-        ],
-        "falsepositives": [
-            "Legitimate use of WinRAR in a folder of a software that bundles WinRAR"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\rar.exe' ESCAPE '\\' OR Image LIKE '%\\\\winrar.exe' ESCAPE '\\') OR Description = 'Command line RAR') AND NOT ((Image LIKE '%\\\\WinRAR%' ESCAPE '\\' OR Image LIKE '%C:\\\\Windows\\\\Temp%' ESCAPE '\\' OR Image LIKE '%\\\\UnRAR.exe%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_winrar_execution.yml"
     },
     {
         "title": "Reg Add Suspicious Paths",
@@ -23544,10 +23644,10 @@
         "filename": "proc_creation_win_remote_access_tools_screenconnect.yml"
     },
     {
-        "title": "Rundll32 With Suspicious Parent Process",
+        "title": "Rundll32 Spawned Via Explorer.EXE",
         "id": "1723e720-616d-4ddc-ab02-f7e3685a4713",
         "status": "experimental",
-        "description": "Detects suspicious start of rundll32.exe with a parent process of Explorer.exe. Variant of Raspberry Robin, as first reported by Red Canary.",
+        "description": "Detects execution of \"rundll32.exe\" with a parent process of Explorer.exe. This has been observed by variants of Raspberry Robin, as first reported by Red Canary.",
         "author": "CD_ROM_",
         "tags": [
             "attack.defense_evasion"
@@ -23557,7 +23657,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE') AND ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\') AND NOT (CommandLine LIKE '% C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR CommandLine LIKE '% -localserver 22d8c27b-47a1-48d1-ad08-7da7abd79617' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\' AND (Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE')) AND NOT ((CommandLine LIKE '% C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR CommandLine LIKE '% -localserver 22d8c27b-47a1-48d1-ad08-7da7abd79617' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_rundll32_parent_explorer.yml"
     },
@@ -23715,6 +23815,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\cmdl32.exe' ESCAPE '\\' OR OriginalFileName = 'CMDL32.EXE') AND (CommandLine LIKE '%/vpn %' ESCAPE '\\' AND CommandLine LIKE '%/lan %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_lolbin_cmdl32.yml"
+    },
+    {
+        "title": "LOL-Binary Copied From System Directory",
+        "id": "f5d19838-41b5-476c-98d8-ba8af4929ee2",
+        "status": "experimental",
+        "description": "Detects a suspicious copy operation that tries to copy a known LOLBIN from system (System32, SysWOW64, WinSxS) directories to another on disk in order to bypass detections based on locations.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '% copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\')) OR ((Image LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR Image LIKE '%\\\\xcopy.exe' ESCAPE '\\') OR OriginalFileName IN ('robocopy.exe', 'XCOPY.EXE'))) AND ((CommandLine LIKE '%\\\\System32%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SysWOW64%' ESCAPE '\\' OR CommandLine LIKE '%\\\\WinSxS%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\bitsadmin.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\calc.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\certutil.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmdl32.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cscript.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\mshta.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\rundll32.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\wscript.exe%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_susp_copy_system_dir_lolbin.yml"
     },
     {
         "title": "Suspicious Shim Database Installation via Sdbinst.EXE",
@@ -24054,6 +24173,26 @@
         "filename": "proc_creation_win_sc_sdset_allow_service_changes.yml"
     },
     {
+        "title": "Potential Credential Dumping Via LSASS Process Clone",
+        "id": "c8da0dfd-4ed0-4b68-962d-13c9c884384e",
+        "status": "test",
+        "description": "Detects a suspicious LSASS process process clone that could be a sign of credential dumping activity",
+        "author": "Florian Roth (Nextron Systems), Samir Bousseaden",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' AND Image LIKE '%\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_lsass_process_clone.yml"
+    },
+    {
         "title": "Detected Windows Software Discovery",
         "id": "e13f668e-7f95-443d-98d2-1816a7648a7b",
         "status": "test",
@@ -24310,25 +24449,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%OjpGcm9tQmFzZTY0U3RyaW5n%' ESCAPE '\\' OR CommandLine LIKE '%o6RnJvbUJhc2U2NFN0cmluZ%' ESCAPE '\\' OR CommandLine LIKE '%6OkZyb21CYXNlNjRTdHJpbm%' ESCAPE '\\' OR (CommandLine LIKE '%OgA6AEYAcgBvAG0AQgBhAHMAZQA2ADQAUwB0AHIAaQBuAGcA%' ESCAPE '\\' OR CommandLine LIKE '%oAOgBGAHIAbwBtAEIAYQBzAGUANgA0AFMAdAByAGkAbgBnA%' ESCAPE '\\' OR CommandLine LIKE '%6ADoARgByAG8AbQBCAGEAcwBlADYANABTAHQAcgBpAG4AZw%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_base64_frombase64string.yml"
-    },
-    {
-        "title": "Suspicious Compression Tool Parameters",
-        "id": "27a72a60-7e5e-47b1-9d17-909c9abafdcd",
-        "status": "test",
-        "description": "Detects suspicious command line arguments of common data compression tools",
-        "author": "Florian Roth (Nextron Systems), Samir Bousseaden",
-        "tags": [
-            "attack.collection",
-            "attack.t1560.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((OriginalFileName LIKE '7z%.exe' ESCAPE '\\' OR OriginalFileName LIKE '%rar.exe' ESCAPE '\\' OR OriginalFileName LIKE '%Command%Line%RAR%' ESCAPE '\\') AND (CommandLine LIKE '% -p%' ESCAPE '\\' OR CommandLine LIKE '% -ta%' ESCAPE '\\' OR CommandLine LIKE '% -tb%' ESCAPE '\\' OR CommandLine LIKE '% -sdel%' ESCAPE '\\' OR CommandLine LIKE '% -dw%' ESCAPE '\\' OR CommandLine LIKE '% -hp%' ESCAPE '\\')) AND NOT (ParentImage LIKE 'C:\\\\Program%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_susp_compression_params.yml"
     },
     {
         "title": "HackTool - PCHunter Execution",
@@ -25261,6 +25381,25 @@
         "filename": "proc_creation_win_network_sniffing.yml"
     },
     {
+        "title": "Potentially Suspicious Child Process Of WinRAR.EXE",
+        "id": "146aace8-9bd6-42ba-be7a-0070d8027b76",
+        "status": "experimental",
+        "description": "Detects potentially suspicious child processes of WinRAR.exe.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1203"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\WinRAR.exe' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR OriginalFileName IN ('Cmd.Exe', 'cscript.exe', 'mshta.exe', 'PowerShell.EXE', 'pwsh.dll', 'regsvr32.exe', 'RUNDLL32.EXE', 'wscript.exe')))"
+        ],
+        "filename": "proc_creation_win_winrar_susp_child_process.yml"
+    },
+    {
         "title": "HTML Help HH.EXE Suspicious Child Process",
         "id": "52cad028-0ff0-4854-8f67-d25dfcbc78b4",
         "status": "test",
@@ -25328,6 +25467,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'OpenConsole.exe' OR Image LIKE '%\\\\OpenConsole.exe' ESCAPE '\\') AND NOT (Image LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.WindowsTerminal%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_lolbin_openconsole.yml"
+    },
+    {
+        "title": "Winrar Execution in Non-Standard Folder",
+        "id": "4ede543c-e098-43d9-a28f-dd784a13132f",
+        "status": "test",
+        "description": "Detects a suspicious winrar execution in a folder which is not the default installation folder",
+        "author": "Florian Roth (Nextron Systems), Tigzy",
+        "tags": [
+            "attack.collection",
+            "attack.t1560.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of WinRAR in a folder of a software that bundles WinRAR"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\rar.exe' ESCAPE '\\' OR Image LIKE '%\\\\winrar.exe' ESCAPE '\\') OR Description = 'Command line RAR') AND NOT ((Image LIKE '%\\\\UnRAR.exe' ESCAPE '\\') OR ((Image LIKE '%:\\\\Program Files (x86)\\\\WinRAR\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files\\\\WinRAR\\\\%' ESCAPE '\\')))) AND NOT ((Image LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_winrar_uncommon_folder_execution.yml"
     },
     {
         "title": "Sysinternals PsSuspend Suspicious Execution",
@@ -27608,20 +27766,20 @@
         "filename": "proc_creation_win_dumpminitool_execution.yml"
     },
     {
-        "title": "Suspicious Windows App Activity",
+        "title": "Potentially Suspicious Windows App Activity",
         "id": "f91ed517-a6ba-471d-9910-b3b4a398c0f3",
         "status": "experimental",
-        "description": "Detects suspicious children of application launched from inside the WindowsApps directory. This could be a sign of a rogue \".appx\" package installation/execution",
+        "description": "Detects potentially suspicious child process of applications launched from inside the WindowsApps directory. This could be a sign of a rogue \".appx\" package installation/execution",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion"
         ],
         "falsepositives": [
-            "Unknown"
+            "Legitimate packages that make use of external binaries such as Windows Terminal"
         ],
-        "level": "high",
+        "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%C:\\\\Program Files\\\\WindowsApps\\\\%' ESCAPE '\\' AND ((Image LIKE '%\\\\poweshell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%Base64%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%C:\\\\Program Files\\\\WindowsApps\\\\%' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%Base64%' ESCAPE '\\'))) AND NOT ((ParentImage LIKE '%:\\\\Program Files\\\\WindowsApps\\\\Microsoft.WindowsTerminal%' ESCAPE '\\' AND ParentImage LIKE '%\\\\WindowsTerminal.exe' ESCAPE '\\' AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_susp_appx_execution.yml"
     },
@@ -32126,27 +32284,6 @@
         "filename": "proc_creation_win_susp_crypto_mining_monero.yml"
     },
     {
-        "title": "Suspicious Copy From or To System32",
-        "id": "fff9d2b7-e11c-4a69-93d3-40ef66189767",
-        "status": "test",
-        "description": "Detects a suspicious copy operation that tries to copy a program from a system (System32 or SysWOW64) directory to another on disk.\nOften used to move LOLBINs such as 'certutil' or 'desktopimgdownldr' to a different location with a different name in order to bypass detections based on locations\n",
-        "author": "Florian Roth (Nextron Systems), Markus Neis, Tim Shelton (HAWK.IO), Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036.003"
-        ],
-        "falsepositives": [
-            "Depend on scripts and administrative tools used in the monitored environment (For example an admin scripts like https://www.itexperience.net/sccm-batch-files-and-32-bits-processes-on-64-bits-os/)",
-            "When cmd.exe and xcopy.exe are called directly",
-            "When the command contains the keywords but not in the correct order"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '% copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\')) OR ((Image LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR Image LIKE '%\\\\xcopy.exe' ESCAPE '\\') OR OriginalFileName IN ('robocopy.exe', 'XCOPY.EXE'))) AND (CommandLine LIKE '%\\\\System32%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SysWOW64%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_susp_copy_system32.yml"
-    },
-    {
         "title": "Suspicious X509Enrollment - Process Creation",
         "id": "114de787-4eb2-48cc-abdb-c0b449f93ea4",
         "status": "experimental",
@@ -33054,25 +33191,6 @@
         "filename": "proc_creation_win_powershell_mailboxexport_share.yml"
     },
     {
-        "title": "Winrar Compressing Dump Files",
-        "id": "1ac14d38-3dfc-4635-92c7-e3fd1c5f5bfc",
-        "status": "experimental",
-        "description": "Detects a suspicious winrar execution that involves a file with a \".dmp\"/\".dump\" extension, which could be a step in a process of dump file exfiltration",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.collection",
-            "attack.t1560.001"
-        ],
-        "falsepositives": [
-            "Legitimate use of WinRAR with a command line in which .dmp appears accidentally"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\rar.exe' ESCAPE '\\' OR Image LIKE '%\\\\winrar.exe' ESCAPE '\\') OR Description = 'Command line RAR') AND (CommandLine LIKE '%.dmp%' ESCAPE '\\' OR CommandLine LIKE '%.dump%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_winrar_dmp.yml"
-    },
-    {
         "title": "PowerShell Set-Acl On Windows Folder",
         "id": "0944e002-e3f6-4eb5-bf69-3a3067b53d73",
         "status": "experimental",
@@ -33133,10 +33251,10 @@
         "filename": "proc_creation_win_uac_bypass_winsat.yml"
     },
     {
-        "title": "Manage Engine Java Suspicious Sub Process",
+        "title": "Suspicious Child Process Of Manage Engine ServiceDesk",
         "id": "cea2b7ea-792b-405f-95a1-b903ea06458f",
         "status": "experimental",
-        "description": "Detects suspicious sub processes started by the Manage Engine ServiceDesk Plus Java web service process",
+        "description": "Detects suspicious child processes of the \"Manage Engine ServiceDesk Plus\" Java web service",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command_and_control",
@@ -33147,9 +33265,9 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\ManageEngine\\\\ServiceDesk\\\\%' ESCAPE '\\' AND ParentImage LIKE '%\\\\java.exe%' ESCAPE '\\' AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\sh.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\scrcons.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR Image LIKE '%\\\\mftrace.exe' ESCAPE '\\' OR Image LIKE '%\\\\AppVLP.exe' ESCAPE '\\' OR Image LIKE '%\\\\curl.exe' ESCAPE '\\' OR Image LIKE '%\\\\notepad.exe' ESCAPE '\\' OR Image LIKE '%\\\\systeminfo.exe' ESCAPE '\\' OR Image LIKE '%\\\\net.exe' ESCAPE '\\' OR Image LIKE '%\\\\net1.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\query.exe' ESCAPE '\\')) AND NOT (((Image LIKE '%\\\\net.exe' ESCAPE '\\' OR Image LIKE '%\\\\net1.exe' ESCAPE '\\') AND CommandLine LIKE '% stop%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ParentImage LIKE '%\\\\ManageEngine\\\\ServiceDesk\\\\%' ESCAPE '\\' AND ParentImage LIKE '%\\\\java.exe%' ESCAPE '\\' AND (Image LIKE '%\\\\AppVLP.exe' ESCAPE '\\' OR Image LIKE '%\\\\bash.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\calc.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\curl.exe' ESCAPE '\\' OR Image LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR Image LIKE '%\\\\mftrace.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\net.exe' ESCAPE '\\' OR Image LIKE '%\\\\net1.exe' ESCAPE '\\' OR Image LIKE '%\\\\notepad.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\query.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\scrcons.exe' ESCAPE '\\' OR Image LIKE '%\\\\sh.exe' ESCAPE '\\' OR Image LIKE '%\\\\systeminfo.exe' ESCAPE '\\' OR Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\')) AND NOT (((Image LIKE '%\\\\net.exe' ESCAPE '\\' OR Image LIKE '%\\\\net1.exe' ESCAPE '\\') AND CommandLine LIKE '% stop%' ESCAPE '\\')))"
         ],
-        "filename": "proc_creation_win_susp_manageengine_pattern.yml"
+        "filename": "proc_creation_win_java_manageengine_susp_child_process.yml"
     },
     {
         "title": "Php Inline Command Execution",
@@ -38147,6 +38265,28 @@
         "filename": "image_load_side_load_wazuh.yml"
     },
     {
+        "title": "VMMap Signed Dbghelp.DLL Potential Sideloading",
+        "id": "98ffaed4-aec2-4e04-9b07-31492fe68b3d",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of a signed dbghelp.dll by the Sysinternals VMMap.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded LIKE '%C:\\\\Debuggers\\\\dbghelp.dll%' ESCAPE '\\' AND (Image LIKE '%\\\\vmmap.exe' ESCAPE '\\' OR Image LIKE '%\\\\vmmap64.exe' ESCAPE '\\') AND Signed = 'true')"
+        ],
+        "filename": "image_load_side_load_vmmap_dbghelp_signed.yml"
+    },
+    {
         "title": "Potential appverifUI.DLL Sideloading",
         "id": "ee6cea48-c5b6-4304-a332-10fc6446f484",
         "status": "experimental",
@@ -38371,28 +38511,6 @@
         "filename": "image_load_unsigned_image_loaded_into_lsass.yml"
     },
     {
-        "title": "VMMap Dbghelp.DLL Potential Sideloading",
-        "id": "273a8dd8-3742-4302-bcc7-7df5a80fe425",
-        "status": "experimental",
-        "description": "Detects potential DLL sideloading of dbghelp.dll by the Sysinternals VMMap.",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.persistence",
-            "attack.privilege_escalation",
-            "attack.t1574.001",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%C:\\\\Debuggers\\\\dbghelp.dll%' ESCAPE '\\' AND (Image LIKE '%\\\\vmmap.exe' ESCAPE '\\' OR Image LIKE '%\\\\vmmap64.exe' ESCAPE '\\')) AND NOT ((Signed = 'true')))"
-        ],
-        "filename": "image_load_side_load_vmmap_dbghelp.yml"
-    },
-    {
         "title": "Suspicious Volume Shadow Copy VSS_PS.dll Load",
         "id": "333cdbe8-27bb-4246-bf82-b41a0dca4b70",
         "status": "experimental",
@@ -38510,6 +38628,28 @@
             "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\mspub.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenote.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenoteim.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\winword.exe' ESCAPE '\\') AND ImageLoaded LIKE '%\\\\clr.dll%' ESCAPE '\\')"
         ],
         "filename": "image_load_office_dotnet_clr_dll_load.yml"
+    },
+    {
+        "title": "VMMap Unsigned Dbghelp.DLL Potential Sideloading",
+        "id": "273a8dd8-3742-4302-bcc7-7df5a80fe425",
+        "status": "experimental",
+        "description": "Detects potential DLL sideloading of an unsigned dbghelp.dll by the Sysinternals VMMap.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%C:\\\\Debuggers\\\\dbghelp.dll%' ESCAPE '\\' AND (Image LIKE '%\\\\vmmap.exe' ESCAPE '\\' OR Image LIKE '%\\\\vmmap64.exe' ESCAPE '\\')) AND NOT ((Signed = 'true')))"
+        ],
+        "filename": "image_load_side_load_vmmap_dbghelp_unsigned.yml"
     },
     {
         "title": "Potential Rcdll.DLL Sideloading",
@@ -44605,6 +44745,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\net.exe' ESCAPE '\\' OR Image LIKE '%\\\\net1.exe' ESCAPE '\\') OR OriginalFileName IN ('net.exe', 'net1.exe')) AND CommandLine LIKE '%/TRANSPORT:QUIC%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_net_quic.yml"
+    },
+    {
+        "title": "Potentially Suspicious Compression Tool Parameters",
+        "id": "27a72a60-7e5e-47b1-9d17-909c9abafdcd",
+        "status": "test",
+        "description": "Detects potentially suspicious command line arguments of common data compression tools",
+        "author": "Florian Roth (Nextron Systems), Samir Bousseaden",
+        "tags": [
+            "attack.collection",
+            "attack.t1560.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((OriginalFileName LIKE '7z%.exe' ESCAPE '\\' OR OriginalFileName LIKE '%rar.exe' ESCAPE '\\' OR OriginalFileName LIKE '%Command%Line%RAR%' ESCAPE '\\') AND (CommandLine LIKE '% -p%' ESCAPE '\\' OR CommandLine LIKE '% -ta%' ESCAPE '\\' OR CommandLine LIKE '% -tb%' ESCAPE '\\' OR CommandLine LIKE '% -sdel%' ESCAPE '\\' OR CommandLine LIKE '% -dw%' ESCAPE '\\' OR CommandLine LIKE '% -hp%' ESCAPE '\\')) AND NOT (((ParentImage LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR ParentImage LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_susp_compression_params.yml"
     },
     {
         "title": "ClickOnce Deployment Execution - Dfsvc.EXE Child Process",

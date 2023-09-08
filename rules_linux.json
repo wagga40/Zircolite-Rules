@@ -1373,6 +1373,25 @@
         "filename": "proc_creation_lnx_cve_2022_26134_atlassian_confluence.yml"
     },
     {
+        "title": "ESXi Syslog Configuration Change Via ESXCLI",
+        "id": "38eb1dbb-011f-40b1-a126-cf03a0210563",
+        "description": "Detects changes to the ESXi syslog configuration via \"esxcli\"",
+        "author": "Cedric Maurugeon",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001",
+            "attack.t1562.003"
+        ],
+        "falsepositives": [
+            "Legitimate administrative activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/esxcli' ESCAPE '\\' AND CommandLine LIKE '%system%' ESCAPE '\\' AND CommandLine LIKE '%syslog%' ESCAPE '\\' AND CommandLine LIKE '%config%' ESCAPE '\\' AND CommandLine LIKE '% set%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_esxcli_syslog_config_change.yml"
+    },
+    {
         "title": "Cat Sudoers",
         "id": "0f79c4d2-4e1f-4683-9c36-b5469a665e06",
         "description": "Detects the execution of a cat /etc/sudoers to list all users that have sudo rights",
