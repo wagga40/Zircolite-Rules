@@ -5381,7 +5381,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID IN ('19', '20', '21') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Destination LIKE '%new-object%' ESCAPE '\\' AND Destination LIKE '%net.webclient%' ESCAPE '\\' AND Destination LIKE '%.downloadstring%' ESCAPE '\\') OR (Destination LIKE '%new-object%' ESCAPE '\\' AND Destination LIKE '%net.webclient%' ESCAPE '\\' AND Destination LIKE '%.downloadfile%' ESCAPE '\\') OR (Destination LIKE '% iex(%' ESCAPE '\\' OR Destination LIKE '%WScript.shell%' ESCAPE '\\' OR Destination LIKE '% -nop %' ESCAPE '\\' OR Destination LIKE '% -noprofile %' ESCAPE '\\' OR Destination LIKE '% -decode %' ESCAPE '\\' OR Destination LIKE '% -enc %' ESCAPE '\\') OR (Destination LIKE '%WScript.Shell%' ESCAPE '\\' OR Destination LIKE '%System.Security.Cryptography.FromBase64Transform%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID IN ('19', '20', '21') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Destination LIKE '%new-object%' ESCAPE '\\' AND Destination LIKE '%net.webclient%' ESCAPE '\\' AND Destination LIKE '%.downloadstring%' ESCAPE '\\') OR (Destination LIKE '%new-object%' ESCAPE '\\' AND Destination LIKE '%net.webclient%' ESCAPE '\\' AND Destination LIKE '%.downloadfile%' ESCAPE '\\') OR (Destination LIKE '% iex(%' ESCAPE '\\' OR Destination LIKE '% -nop %' ESCAPE '\\' OR Destination LIKE '% -noprofile %' ESCAPE '\\' OR Destination LIKE '% -decode %' ESCAPE '\\' OR Destination LIKE '% -enc %' ESCAPE '\\' OR Destination LIKE '%WScript.Shell%' ESCAPE '\\' OR Destination LIKE '%System.Security.Cryptography.FromBase64Transform%' ESCAPE '\\')))"
         ],
         "filename": "sysmon_wmi_susp_scripting.yml"
     },
@@ -19007,7 +19007,9 @@
         "author": "Ecco, E.M. Anhaus, oscd.community",
         "tags": [
             "attack.defense_evasion",
-            "attack.t1070"
+            "attack.impact",
+            "attack.t1070",
+            "attack.t1485"
         ],
         "falsepositives": [
             "Admin activity",
@@ -19015,7 +19017,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\fsutil.exe' ESCAPE '\\' OR OriginalFileName = 'fsutil.exe') AND (CommandLine LIKE '%deletejournal%' ESCAPE '\\' OR CommandLine LIKE '%createjournal%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\fsutil.exe' ESCAPE '\\' OR OriginalFileName = 'fsutil.exe') AND (CommandLine LIKE '%deletejournal%' ESCAPE '\\' OR CommandLine LIKE '%createjournal%' ESCAPE '\\' OR CommandLine LIKE '%setZeroData%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_fsutil_usage.yml"
     },
@@ -47015,7 +47017,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2004', '2071') AND NOT ((Action = '2') OR ((ApplicationPath LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ApplicationPath LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\oobe\\\\Setup.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR (ModifyingApplication LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\')))) AND NOT ((ModifyingApplication LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2004', '2071') AND NOT ((Action = '2') OR ((ApplicationPath LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ApplicationPath LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR ModifyingApplication LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR (ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\oobe\\\\Setup.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' OR ModifyingApplication LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\MsMpEng.exe' ESCAPE '\\')))) AND NOT ((ModifyingApplication LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')))"
         ],
         "filename": "win_firewall_as_add_rule.yml"
     },
