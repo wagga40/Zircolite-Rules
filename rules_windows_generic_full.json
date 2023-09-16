@@ -4611,6 +4611,46 @@
         "filename": "posh_ps_mailbox_access.yml"
     },
     {
+        "title": "Diskshadow Child Process Spawned",
+        "id": "56b1dde8-b274-435f-a73a-fb75eb81262a",
+        "status": "experimental",
+        "description": "Detects any child process spawning from \"Diskshadow.exe\". This could be due to executing Diskshadow in interpreter mode or script mode and using the \"exec\" flag to launch other applications.",
+        "author": "Harjot Singh @cyb3rjy0t",
+        "tags": [
+            "attack.execution",
+            "attack.t1218",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Likely from legitimate usage of Diskshadow in Interpreter mode."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\WerFault.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_diskshadow_child_process.yml"
+    },
+    {
+        "title": "Diskshadow Script Mode Execution",
+        "id": "0c2f8629-7129-4a8a-9897-7e0768f13ff2",
+        "status": "test",
+        "description": "Detects execution of \"Diskshadow.exe\" in script mode using the \"/s\" flag. Attackers often abuse \"diskshadow\" to execute scripts that deleted the shadow copies on the systems. Investigate the content of the scripts and its location.\n",
+        "author": "Ivan Dyachkov, oscd.community",
+        "tags": [
+            "attack.execution",
+            "attack.t1218",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Likely from legitimate backup scripts"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'diskshadow.exe' OR NewProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%-s %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_diskshadow_script_mode.yml"
+    },
+    {
         "title": "Potentially Suspicious Compression Tool Parameters",
         "id": "27a72a60-7e5e-47b1-9d17-909c9abafdcd",
         "status": "test",
@@ -22691,6 +22731,25 @@
         "filename": "proc_creation_win_pua_radmin.yml"
     },
     {
+        "title": "Diskshadow Script Mode - Uncommon Script Extension Execution",
+        "id": "1dde5376-a648-492e-9e54-4241dd9b0c7f",
+        "status": "experimental",
+        "description": "Detects execution of \"Diskshadow.exe\" in script mode to execute an script with a potentially uncommon extension.\nInitial baselining of the allowed extension list is required.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "False postitve might occur with legitimate or uncommon extensions used internally. Initial baseline is required."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((OriginalFileName = 'diskshadow.exe' OR NewProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%-s %' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%.txt%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_diskshadow_script_mode_susp_ext.yml"
+    },
+    {
         "title": "Bad Opsec Defaults Sacrificial Processes With Improper Arguments",
         "id": "a7c3d773-caef-227e-a7e7-c2f13c622329",
         "status": "experimental",
@@ -25028,25 +25087,6 @@
         "filename": "proc_creation_win_pua_chisel.yml"
     },
     {
-        "title": "Execution via Diskshadow.exe",
-        "id": "0c2f8629-7129-4a8a-9897-7e0768f13ff2",
-        "status": "test",
-        "description": "Detects using Diskshadow.exe to execute arbitrary code in text file",
-        "author": "Ivan Dyachkov, oscd.community",
-        "tags": [
-            "attack.execution",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "False postitve can be if administrators use diskshadow tool in their infrastructure as a main backup tool with scripts."
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\' AND (CommandLine LIKE '%/s%' ESCAPE '\\' OR CommandLine LIKE '%-s%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_diskshadow.yml"
-    },
-    {
         "title": "Potential Provisioning Registry Key Abuse For Binary Proxy Execution",
         "id": "2a4b3e61-9d22-4e4a-b60f-6e8f0cde6f25",
         "status": "experimental",
@@ -25967,6 +26007,25 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%taskkill%' ESCAPE '\\' AND CommandLine LIKE '% /F %' ESCAPE '\\' AND CommandLine LIKE '% /IM %' ESCAPE '\\' AND CommandLine LIKE '%ccSvcHst.exe%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_taskkill_sep.yml"
+    },
+    {
+        "title": "Potentially Suspicious Child Process Of DiskShadow.EXE",
+        "id": "9f546b25-5f12-4c8d-8532-5893dcb1e4b8",
+        "status": "experimental",
+        "description": "Detects potentially suspicious child processes of \"Diskshadow.exe\". This could be an attempt to bypass parent/child relationship detection or application whitelisting rules.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "False postitve can occur in cases where admin scripts levreage the \"exec\" flag to execute applications"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_diskshadow_child_process_susp.yml"
     },
     {
         "title": "Potential Download/Upload Activity Using Type Command",
@@ -29467,6 +29526,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '% /lockscreenurl:%' ESCAPE '\\' AND NOT ((CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\'))) OR (CommandLine LIKE '%reg delete%' ESCAPE '\\' AND CommandLine LIKE '%\\\\PersonalizationCSP%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_desktopimgdownldr_susp_execution.yml"
+    },
+    {
+        "title": "Diskshadow Script Mode - Execution From Potential Suspicious Location",
+        "id": "fa1a7e52-3d02-435b-81b8-00da14dd66c1",
+        "status": "experimental",
+        "description": "Detects execution of \"Diskshadow.exe\" in script mode using the \"/s\" flag where the script is located in a potentially suspicious location.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "False positives may occur if you execute the script from one of the paths mentioned in the rule. Apply additional filters that fits your org needs."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'diskshadow.exe' OR NewProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%-s %' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_diskshadow_script_mode_susp_location.yml"
     },
     {
         "title": "Whoami Utility Execution",
@@ -40445,10 +40523,29 @@
         "filename": "file_event_win_powershell_exploit_scripts.yml"
     },
     {
-        "title": "Suspicious Access To Browser Credential Files",
+        "title": "Access To .Reg/.Hive Files By Uncommon Application",
+        "id": "337a31c6-46c4-46be-886a-260d7aa78cac",
+        "status": "experimental",
+        "description": "Detects file access requests to files ending with either the \".hive\"/\".reg\" extension, usally associated with Windows Registry backups.",
+        "author": "frack113",
+        "tags": [
+            "attack.t1112",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Third party software installed in the user context might generate a lot of FPs. Heavy baselining and tuning might be required."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((FileName LIKE '%.hive' ESCAPE '\\' OR FileName LIKE '%.reg' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "file_access_win_reg_and_hive_access.yml"
+    },
+    {
+        "title": "Access To Browser Credential Files By Uncommon Application",
         "id": "91cb43db-302a-47e3-b3c8-7ede481e27bf",
         "status": "experimental",
-        "description": "Detects suspicious processes based on name and location that access the browser credential stores which can be the sign of credential stealing",
+        "description": "Detects file access requests to browser credential stores by uncommon processes.\nCould indicate potential attempt of credential stealing.\nRequires heavy baselining before usage\n",
         "author": "frack113",
         "tags": [
             "attack.t1003",
@@ -40460,52 +40557,14 @@
             "Legitimate software installed on partitions other than \"C:\\\"",
             "Searching software such as \"everything.exe\""
         ],
-        "level": "medium",
+        "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (((FileName LIKE '%\\\\Appdata\\\\Local\\\\Microsoft\\\\Windows\\\\WebCache\\\\WebCacheV01.dat' ESCAPE '\\' OR (FileName LIKE '%\\\\cookies.sqlite' ESCAPE '\\' OR FileName LIKE '%release\\\\key3.db' ESCAPE '\\' OR FileName LIKE '%release\\\\key4.db' ESCAPE '\\' OR FileName LIKE '%release\\\\logins.json' ESCAPE '\\') OR (FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Network\\\\Cookies%' ESCAPE '\\' OR FileName LIKE '%\\\\Appdata\\\\Local\\\\Chrome\\\\User Data\\\\Default\\\\Login Data%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Local State%' ESCAPE '\\')) AND NOT ((NewProcessName = 'System' AND ParentProcessName = 'Idle') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\SysWOW64\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCopyAccelerator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\')) OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (((FileName LIKE '%\\\\Appdata\\\\Local\\\\Microsoft\\\\Windows\\\\WebCache\\\\WebCacheV01.dat' ESCAPE '\\' OR (FileName LIKE '%\\\\cookies.sqlite' ESCAPE '\\' OR FileName LIKE '%release\\\\key3.db' ESCAPE '\\' OR FileName LIKE '%release\\\\key4.db' ESCAPE '\\' OR FileName LIKE '%release\\\\logins.json' ESCAPE '\\') OR (FileName LIKE '%\\\\Appdata\\\\Local\\\\Chrome\\\\User Data\\\\Default\\\\Login Data%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Network\\\\Cookies%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Local State%' ESCAPE '\\')) AND NOT ((NewProcessName = 'System' AND ParentProcessName = 'Idle') OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\WINDOWS\\\\SysWOW64\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCopyAccelerator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\')) OR (ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\')))"
         ],
-        "filename": "file_access_win_browser_credential_stealing.yml"
+        "filename": "file_access_win_browser_credential_access.yml"
     },
     {
-        "title": "Suspicious Access To Windows DPAPI Master Keys",
-        "id": "46612ae6-86be-4802-bc07-39b59feb1309",
-        "status": "experimental",
-        "description": "Detects suspicious processes based on name and location that access the Windows Data Protection API Master keys.\nWhich can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::masterkey\" function\n",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1555.004"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-18\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-21-%' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
-        ],
-        "filename": "file_access_win_dpapi_master_key_access.yml"
-    },
-    {
-        "title": "Suspicious Access To Windows Credential History File",
-        "id": "7a2a22ea-a203-4cd3-9abf-20eb1c5c6cd2",
-        "status": "experimental",
-        "description": "Detects suspicious processes based on name and location that access the Windows Credential History File.\nWhich can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::credhist\" function\n",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1555.004"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (FileName LIKE '%\\\\Microsoft\\\\Protect\\\\CREDHIST' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\')))"
-        ],
-        "filename": "file_access_win_susp_cred_hist_access.yml"
-    },
-    {
-        "title": "Credential Manager Access",
+        "title": "Credential Manager Access By Uncommon Application",
         "id": "407aecb1-e762-4acf-8c7b-d087bcff3bb6",
         "status": "experimental",
         "description": "Detects suspicious processes based on name and location that access the windows credential manager and vault.\nWhich can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::cred\" function\n",
@@ -40521,7 +40580,45 @@
         "rule": [
             "SELECT * FROM logs WHERE ((FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\ProgramData\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
         ],
-        "filename": "file_access_win_credential_manager_stealing.yml"
+        "filename": "file_access_win_credential_manager_access.yml"
+    },
+    {
+        "title": "Access To Windows DPAPI Master Keys By Uncommon Application",
+        "id": "46612ae6-86be-4802-bc07-39b59feb1309",
+        "status": "experimental",
+        "description": "Detects file access requests to the the Windows Data Protection API Master keys by an uncommon application.\nThis can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::masterkey\" function\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1555.004"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-18\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-21-%' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "file_access_win_dpapi_master_key_access.yml"
+    },
+    {
+        "title": "Access To Windows Credential History File By Uncommon Application",
+        "id": "7a2a22ea-a203-4cd3-9abf-20eb1c5c6cd2",
+        "status": "experimental",
+        "description": "Detects file access requests to the Windows Credential History File by an uncommon application.\nThis can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::credhist\" function\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1555.004"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (FileName LIKE '%\\\\Microsoft\\\\Protect\\\\CREDHIST' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\')))"
+        ],
+        "filename": "file_access_win_susp_cred_hist_access.yml"
     },
     {
         "title": "Suspicious Appended Extension",

@@ -14639,25 +14639,6 @@
         "filename": "proc_creation_win_pua_chisel.yml"
     },
     {
-        "title": "Execution via Diskshadow.exe",
-        "id": "0c2f8629-7129-4a8a-9897-7e0768f13ff2",
-        "status": "test",
-        "description": "Detects using Diskshadow.exe to execute arbitrary code in text file",
-        "author": "Ivan Dyachkov, oscd.community",
-        "tags": [
-            "attack.execution",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "False postitve can be if administrators use diskshadow tool in their infrastructure as a main backup tool with scripts."
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\' AND (CommandLine LIKE '%/s%' ESCAPE '\\' OR CommandLine LIKE '%-s%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_diskshadow.yml"
-    },
-    {
         "title": "Potential Provisioning Registry Key Abuse For Binary Proxy Execution",
         "id": "2a4b3e61-9d22-4e4a-b60f-6e8f0cde6f25",
         "status": "experimental",
