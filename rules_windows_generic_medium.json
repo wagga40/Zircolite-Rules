@@ -35551,6 +35551,25 @@
         "filename": "file_delete_win_delete_event_log_files.yml"
     },
     {
+        "title": "SCR File Write Event",
+        "id": "c048f047-7e2a-4888-b302-55f509d4a91d",
+        "status": "experimental",
+        "description": "Detects the creation of screensaver files (.scr) outside of system folders. Attackers may execute an application as an \".SCR\" file using \"rundll32.exe desk.cpl,InstallScreenSaver\" for example.",
+        "author": "Christopher Peacock @securepeacock, SCYTHE @scythe_io",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.011"
+        ],
+        "falsepositives": [
+            "The installation of new screen savers by third party software"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%.scr' ESCAPE '\\' AND NOT ((TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\NewOS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_new_scr_file.yml"
+    },
+    {
         "title": "CSExec Service File Creation",
         "id": "f0e2b768-5220-47dd-b891-d57b96fc0ec1",
         "status": "test",
@@ -35569,25 +35588,6 @@
             "SELECT * FROM logs WHERE TargetFilename LIKE '%\\\\csexecsvc.exe' ESCAPE '\\'"
         ],
         "filename": "file_event_win_csexec_service.yml"
-    },
-    {
-        "title": "SCR File Write Event",
-        "id": "c048f047-7e2a-4888-b302-55f509d4a91d",
-        "status": "experimental",
-        "description": "Detects the creation of screensaver files (.scr) outside of system folders. Attackers may execute an application as an \".SCR\" file using \"rundll32.exe desk.cpl,InstallScreenSaver\" for example.",
-        "author": "Christopher Peacock @securepeacock, SCYTHE @scythe_io",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218.011"
-        ],
-        "falsepositives": [
-            "The installation of new screen savers by third party software"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE '%.scr' ESCAPE '\\' AND NOT ((TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\NewOS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\')))"
-        ],
-        "filename": "file_event_win_new_src_file.yml"
     },
     {
         "title": "Powerup Write Hijack DLL",
