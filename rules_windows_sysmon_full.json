@@ -1493,6 +1493,29 @@
         "filename": "file_event_win_uac_bypass_msconfig_gui.yml"
     },
     {
+        "title": "Scheduled Task Created - FileCreation",
+        "id": "a762e74f-4dce-477c-b023-4ed81df600f9",
+        "status": "experimental",
+        "description": "Detects the creation of a scheduled task via file creation.",
+        "author": "Center for Threat Informed Defense (CTID) Summiting the Pyramid Team",
+        "tags": [
+            "attack.execution",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1053.005",
+            "attack.s0111",
+            "car.2013-08-001"
+        ],
+        "falsepositives": [
+            "Normal behaviour on Windows"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_scheduled_task_creation.yml"
+    },
+    {
         "title": "Potential SAM Database Dump",
         "id": "4e87b8e2-2ee9-4b2a-a715-4727d297ece0",
         "status": "experimental",
@@ -4728,7 +4751,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%Security\\\\Trusted Locations\\\\Location%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Path' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%Security\\\\Trusted Locations\\\\Location%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Path' ESCAPE '\\') AND NOT ((Image LIKE '%:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR ((Image LIKE '%:\\\\Program Files\\\\Microsoft Office\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\Microsoft Office\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_office_trusted_location.yml"
     },
@@ -28822,7 +28845,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE '%Security\\\\Trusted Locations\\\\Location%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Path' ESCAPE '\\') AND NOT ((Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\%' ESCAPE '\\') AND (Image LIKE '%\\\\winword.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\')))) AND NOT (((Details LIKE '\\%APPDATA\\%\\\\Microsoft\\\\Templates%' ESCAPE '\\' OR Details LIKE '\\%\\%APPDATA\\%\\%\\\\Microsoft\\\\Templates%' ESCAPE '\\' OR Details LIKE '\\%APPDATA\\%\\\\Microsoft\\\\Word\\\\Startup%' ESCAPE '\\' OR Details LIKE '\\%\\%APPDATA\\%\\%\\\\Microsoft\\\\Word\\\\Startup%' ESCAPE '\\' OR Details LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Templates\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Program Files\\\\Microsoft Office (x86)\\\\Templates%' ESCAPE '\\' OR Details LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Templates\\\\%' ESCAPE '\\' OR Details LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\Templates\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE '%Security\\\\Trusted Locations\\\\Location%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Path' ESCAPE '\\') AND NOT ((Image LIKE '%:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR ((Image LIKE '%:\\\\Program Files\\\\Microsoft Office\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\Microsoft Office\\\\%' ESCAPE '\\')))) AND NOT (((Details LIKE '%\\%APPDATA\\%\\\\Microsoft\\\\Templates%' ESCAPE '\\' OR Details LIKE '%\\%\\%APPDATA\\%\\%\\\\Microsoft\\\\Templates%' ESCAPE '\\' OR Details LIKE '%\\%APPDATA\\%\\\\Microsoft\\\\Word\\\\Startup%' ESCAPE '\\' OR Details LIKE '%\\%\\%APPDATA\\%\\%\\\\Microsoft\\\\Word\\\\Startup%' ESCAPE '\\' OR Details LIKE '%:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Templates\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Program Files\\\\Microsoft Office (x86)\\\\Templates%' ESCAPE '\\' OR Details LIKE '%:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Templates\\\\%' ESCAPE '\\' OR Details LIKE '%:\\\\Program Files\\\\Microsoft Office\\\\Templates\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_office_trusted_location_uncommon.yml"
     },
@@ -29333,6 +29356,29 @@
             "SELECT * FROM logs WHERE ((EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows x64\\\\Drivers\\\\Version-3\\\\QMS 810\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows x64\\\\Drivers\\\\Version-3\\\\mimikatz%' ESCAPE '\\') OR (TargetObject LIKE '%legitprinter%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows%' ESCAPE '\\')) OR ((TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments%' ESCAPE '\\' OR TargetObject LIKE '%\\\\CurrentVersion\\\\Print\\\\Printers%' ESCAPE '\\') AND (TargetObject LIKE '%Gentil Kiwi%' ESCAPE '\\' OR TargetObject LIKE '%mimikatz printer%' ESCAPE '\\' OR TargetObject LIKE '%Kiwi Legit Printer%' ESCAPE '\\'))))"
         ],
         "filename": "registry_event_mimikatz_printernightmare.yml"
+    },
+    {
+        "title": "Scheduled Task Created - Registry",
+        "id": "93ff0ceb-e0ef-4586-8cd8-a6c277d738e3",
+        "status": "experimental",
+        "description": "Detects the creation of a scheduled task via Registry keys.",
+        "author": "Center for Threat Informed Defense (CTID) Summiting the Pyramid Team",
+        "tags": [
+            "attack.execution",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.s0111",
+            "attack.t1053.005",
+            "car.2013-08-001"
+        ],
+        "falsepositives": [
+            "Normal behaviour on Windows"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "registry_event_scheduled_task_creation.yml"
     },
     {
         "title": "Office Application Startup - Office Test",
@@ -36448,6 +36494,27 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4672', '4964') AND NOT (SubjectUserSid = 'S-1-5-18'))"
         ],
         "filename": "win_security_admin_logon.yml"
+    },
+    {
+        "title": "Service Registry Key Read Access Request",
+        "id": "11d00fff-5dc3-428c-8184-801f292faec0",
+        "status": "experimental",
+        "description": "Detects \"read access\" requests on the services registry key.\nAdversaries may execute their own malicious payloads by hijacking the Registry entries used by services.\nAdversaries may use flaws in the permissions for Registry keys related to services to redirect from the originally specified executable to one that they control, in order to launch their own code when a service starts.\n",
+        "author": "Center for Threat Informed Defense (CTID) Summiting the Pyramid Team",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.t1574.011"
+        ],
+        "falsepositives": [
+            "Likely from legitimate applications reading their key. Requires heavy tuning"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4663' AND ObjectName LIKE '%\\\\SYSTEM\\\\%' ESCAPE '\\' AND ObjectName LIKE '%ControlSet\\\\Services\\\\%' ESCAPE '\\' AND AccessList LIKE '%\\%\\%1538%' ESCAPE '\\')"
+        ],
+        "filename": "win_security_registry_permissions_weakness_check.yml"
     },
     {
         "title": "ETW Logging Disabled In .NET Processes - Registry",
