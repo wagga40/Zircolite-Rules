@@ -6492,6 +6492,25 @@
         "filename": ""
     },
     {
+        "title": "Suspicious AddinUtil.EXE CommandLine Execution",
+        "id": "631b22a4-70f4-4e2f-9ea8-42f84d9df6d8",
+        "status": "experimental",
+        "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) with suspicious Addinroot or Pipelineroot paths. An adversary may execute AddinUtil.exe with uncommon Addinroot/Pipelineroot paths that point to the adversaries Addins.Store payload.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\addinutil.exe' ESCAPE '\\' OR OriginalFileName='AddInUtil.exe') AND (((CommandLine LIKE '%-AddInRoot:%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')) OR ((CommandLine LIKE '%-AddInRoot:.%' ESCAPE '\\' OR CommandLine LIKE '%-AddInRoot:\".\"%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:.%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:\".\"%' ESCAPE '\\') AND (CurrentDirectory LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Suspicious UltraVNC Execution",
         "id": "871b9555-69ca-4993-99d3-35a59f9f3599",
         "status": "test",
@@ -27842,6 +27861,25 @@
         "filename": ""
     },
     {
+        "title": "Remote Access Tool - ScreenConnect Temporary File",
+        "id": "0afecb6e-6223-4a82-99fb-bf5b981e92a5",
+        "status": "experimental",
+        "description": "Detects the creation of files in a specific location by ScreenConnect RMM.\nScreenConnect has feature to remotely execute binaries on a target machine. These binaries will be dropped to \":\\Users\\<username>\\Documents\\ConnectWiseControl\\Temp\\\" before execution.\n",
+        "author": "Ali Alwashali",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.003"
+        ],
+        "falsepositives": [
+            "Legitimate use of ScreenConnect"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND (Image LIKE '%\\\\ScreenConnect.WindowsClient.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Documents\\\\ConnectWiseControl\\\\Temp\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "ADS Zone.Identifier Deleted",
         "id": "7eac0a16-5832-4e81-865f-0268a6d19e4b",
         "status": "experimental",
@@ -29838,6 +29876,44 @@
         "filename": ""
     },
     {
+        "title": "Remote Access Tool - ScreenConnect Command Execution",
+        "id": "076ebe48-cc05-4d8f-9d41-89245cd93a14",
+        "status": "experimental",
+        "description": "Detects command execution via ScreenConnect RMM",
+        "author": "Ali Alwashali",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.003"
+        ],
+        "falsepositives": [
+            "Legitimate use of ScreenConnect"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Application' AND (Provider_Name='ScreenConnect' AND EventID=200 AND Data LIKE '%Executed command of length%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Remote Access Tool - ScreenConnect File Transfer",
+        "id": "5d19eb78-5b5b-4ef2-a9f0-4bfa94d58a13",
+        "status": "experimental",
+        "description": "Detects file being transferred via ScreenConnect RMM",
+        "author": "Ali Alwashali",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.003"
+        ],
+        "falsepositives": [
+            "Legitimate use of ScreenConnect"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Application' AND (Provider_Name='ScreenConnect' AND EventID=201 AND Data LIKE '%Transferred files with action%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Application Uninstalled",
         "id": "570ae5ec-33dc-427c-b815-db86228ad43e",
         "status": "experimental",
@@ -30645,6 +30721,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND (Image LIKE '%\\\\mobsync.exe' ESCAPE '\\' AND (NOT ((DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '192.168.%' ESCAPE '\\' OR DestinationIp LIKE '172.16.%' ESCAPE '\\' OR DestinationIp LIKE '172.17.%' ESCAPE '\\' OR DestinationIp LIKE '172.18.%' ESCAPE '\\' OR DestinationIp LIKE '172.19.%' ESCAPE '\\' OR DestinationIp LIKE '172.20.%' ESCAPE '\\' OR DestinationIp LIKE '172.21.%' ESCAPE '\\' OR DestinationIp LIKE '172.22.%' ESCAPE '\\' OR DestinationIp LIKE '172.23.%' ESCAPE '\\' OR DestinationIp LIKE '172.24.%' ESCAPE '\\' OR DestinationIp LIKE '172.25.%' ESCAPE '\\' OR DestinationIp LIKE '172.26.%' ESCAPE '\\' OR DestinationIp LIKE '172.27.%' ESCAPE '\\' OR DestinationIp LIKE '172.28.%' ESCAPE '\\' OR DestinationIp LIKE '172.29.%' ESCAPE '\\' OR DestinationIp LIKE '172.30.%' ESCAPE '\\' OR DestinationIp LIKE '172.31.%' ESCAPE '\\') AND DestinationIsIpv6='false'))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Network Connection Initiated By AddinUtil.EXE",
+        "id": "5205613d-2a63-4412-a895-3a2458b587b3",
+        "status": "experimental",
+        "description": "Detects network connections made by the Add-In deployment cache updating utility (AddInutil.exe), which could indicate command and control communication.",
+        "author": "Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND (Initiated='true' AND Image LIKE '%\\\\addinutil.exe' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -32568,6 +32663,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName='winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Remote Access Tool - ScreenConnect Remote Command Execution",
+        "id": "b1f73849-6329-4069-bc8f-78a604bb8b23",
+        "status": "experimental",
+        "description": "Detects the execution of a system command via the ScreenConnect RMM service.",
+        "author": "Ali Alwashali",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.003"
+        ],
+        "falsepositives": [
+            "Legitimate use of ScreenConnect. Disable this rule if ScreenConnect is heavily used."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\' AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND CommandLine LIKE '%\\\\TEMP\\\\ScreenConnect\\\\%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -37495,6 +37609,25 @@
         "filename": ""
     },
     {
+        "title": "Uncommon Child Process Of AddinUtil.EXE",
+        "id": "b5746143-59d6-4603-8d06-acbd60e166ee",
+        "status": "experimental",
+        "description": "Detects uncommon child processes of the Add-In deployment cache updating utility (AddInutil.exe) which could be a sign of potential abuse of the binary to proxy execution via a custom Addins.Store payload.\n",
+        "author": "Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\addinutil.exe' ESCAPE '\\' AND (NOT (Image LIKE '%:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\werfault.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\werfault.exe' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Suspicious Driver Install by pnputil.exe",
         "id": "a2ea3ae7-d3d0-40a0-a55c-25a45c87cac1",
         "status": "test",
@@ -37940,6 +38073,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\gpg.exe' ESCAPE '\\' OR Image LIKE '%\\\\gpg2.exe' ESCAPE '\\') OR Description='GnuPG\u2019s OpenPGP tool') AND (CommandLine LIKE '% -c %' ESCAPE '\\' AND CommandLine LIKE '%passphrase%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "AddinUtil.EXE Execution From Uncommon Directory",
+        "id": "6120ac2a-a34b-42c0-a9bd-1fb9f459f348",
+        "status": "experimental",
+        "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) from a non-standard directory.",
+        "author": "Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\addinutil.exe' ESCAPE '\\' OR OriginalFileName='AddInUtil.exe') AND (NOT (Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -39698,6 +39850,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\curl.exe' ESCAPE '\\' OR OriginalFileName='curl.exe') AND (CommandLine LIKE '%--doh-insecure%' ESCAPE '\\' OR CommandLine LIKE '%--proxy-insecure%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Uncommon AddinUtil.EXE CommandLine Execution",
+        "id": "4f2cd9b6-4a17-440f-bb2a-687abb65993a",
+        "status": "experimental",
+        "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) with uncommon Addinroot or Pipelineroot paths. An adversary may execute AddinUtil.exe with uncommon Addinroot/Pipelineroot paths that point to the adversaries Addins.Store payload.\n",
+        "author": "Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\addinutil.exe' ESCAPE '\\' OR OriginalFileName='AddInUtil.exe') AND (CommandLine LIKE '%-AddInRoot:%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:%' ESCAPE '\\')) AND (NOT (CommandLine LIKE '%-AddInRoot:\"C:\\\\Program Files (x86)\\\\Common Files\\\\Microsoft Shared\\\\VSTA%' ESCAPE '\\' OR CommandLine LIKE '%-AddInRoot:C:\\\\Program Files (x86)\\\\Common Files\\\\Microsoft Shared\\\\VSTA%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:\"C:\\\\Program Files (x86)\\\\Common Files\\\\Microsoft Shared\\\\VSTA%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:C:\\\\Program Files (x86)\\\\Common Files\\\\Microsoft Shared\\\\VSTA%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },

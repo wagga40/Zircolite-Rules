@@ -3427,6 +3427,25 @@
         "filename": "proc_creation_win_wuauclt_no_cli_flags_execution.yml"
     },
     {
+        "title": "Suspicious AddinUtil.EXE CommandLine Execution",
+        "id": "631b22a4-70f4-4e2f-9ea8-42f84d9df6d8",
+        "status": "experimental",
+        "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) with suspicious Addinroot or Pipelineroot paths. An adversary may execute AddinUtil.exe with uncommon Addinroot/Pipelineroot paths that point to the adversaries Addins.Store payload.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\addinutil.exe' ESCAPE '\\' OR OriginalFileName = 'AddInUtil.exe') AND (((CommandLine LIKE '%-AddInRoot:%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')) OR ((CommandLine LIKE '%-AddInRoot:.%' ESCAPE '\\' OR CommandLine LIKE '%-AddInRoot:\".\"%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:.%' ESCAPE '\\' OR CommandLine LIKE '%-PipelineRoot:\".\"%' ESCAPE '\\') AND (CurrentDirectory LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_addinutil_suspicious_cmdline.yml"
+    },
+    {
         "title": "Suspicious UltraVNC Execution",
         "id": "871b9555-69ca-4993-99d3-35a59f9f3599",
         "status": "test",
