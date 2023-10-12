@@ -2330,6 +2330,25 @@
         "filename": "file_event_win_new_scr_file.yml"
     },
     {
+        "title": "Potential Hidden Directory Creation Via NTFS INDEX_ALLOCATION Stream",
+        "id": "a8f866e1-bdd4-425e-a27a-37619238d9c7",
+        "status": "experimental",
+        "description": "Detects the creation of hidden file/folder with the \"::$index_allocation\" stream. Which can be used as a technique to prevent access to folder and files from tooling such as \"explorer.exe\" and \"cmd.exe\"\n",
+        "author": "Scoubi (@ScoubiMtl)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1564.004"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%::$index\\_allocation%' ESCAPE '\\'"
+        ],
+        "filename": "file_event_win_susp_hidden_dir_index_allocation.yml"
+    },
+    {
         "title": "Potential DCOM InternetExplorer.Application DLL Hijack",
         "id": "2f7979ae-f82b-45af-ac1d-2b10e93b0baa",
         "status": "test",
@@ -4052,6 +4071,26 @@
             "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\dns.exe' ESCAPE '\\' AND NOT (TargetFilename LIKE '%\\\\dns.log' ESCAPE '\\'))"
         ],
         "filename": "file_change_win_unusual_modification_by_dns_exe.yml"
+    },
+    {
+        "title": "Mail Forwarding/Redirecting Activity In O365",
+        "id": "c726e007-2cd0-4a55-abfb-79730fbedee5",
+        "status": "experimental",
+        "description": "Detects email forwarding or redirecting acitivty in O365 Audit logs.",
+        "author": "RedCanary Team (idea), Harjot Singh @cyb3rjy0t",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1020",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "False positives are expected from legitimate mail forwarding rules. You need organisation specific knowledge. Filter out the domains that are allowed as forwarding targets as well as any additional metadata that you can use for exclusion from trusted sources/targets in order to promote this to a potential detection rule."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Operation LIKE '%UpdateInboxRules%' ESCAPE '\\' AND (OperationProperties LIKE '%Forward%' ESCAPE '\\' OR OperationProperties LIKE '%Recipients%' ESCAPE '\\')) OR (Operation LIKE '%Set-Mailbox%' ESCAPE '\\' AND (Parameters LIKE '%ForwardingSmtpAddress%' ESCAPE '\\' OR Parameters LIKE '%ForwardingAddress%' ESCAPE '\\')) OR ((Operation LIKE '%New-InboxRule%' ESCAPE '\\' OR Operation LIKE '%Set-InboxRule%' ESCAPE '\\') AND (Parameters LIKE '%ForwardTo%' ESCAPE '\\' OR Parameters LIKE '%ForwardAsAttachmentTo%' ESCAPE '\\' OR Parameters LIKE '%RedirectTo%' ESCAPE '\\')))"
+        ],
+        "filename": "microsoft365_susp_email_forwarding_activity.yml"
     },
     {
         "title": "Dfsvc.EXE Network Connection To Non-Local IPs",
@@ -15881,6 +15920,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND CommandLine LIKE '% 385201%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_findstr_sysmon_discovery_via_default_altitude.yml"
+    },
+    {
+        "title": "Potential Hidden Directory Creation Via NTFS INDEX_ALLOCATION Stream - CLI",
+        "id": "0900463c-b33b-49a8-be1d-552a3b553dae",
+        "status": "experimental",
+        "description": "Detects command line containing reference to the \"::$index_allocation\" stream, which can be used as a technique to prevent access to folders or files from tooling such as \"explorer.exe\" or \"cmd.exe\"\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Scoubi (@ScoubiMtl)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1564.004"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%::$index\\_allocation%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_susp_hidden_dir_index_allocation.yml"
     },
     {
         "title": "Visual Studio NodejsTools PressAnyKey Renamed Execution",
@@ -31582,6 +31640,25 @@
         "filename": "win_firewall_as_delete_rule.yml"
     },
     {
+        "title": "Certificate Use With No Strong Mapping",
+        "id": "993c2665-e6ef-40e3-a62a-e1a97686af79",
+        "status": "experimental",
+        "description": "Detects a user certificate that was valid but could not be mapped to a user in a strong way (such as via explicit mapping, key trust mapping, or a SID)\nThis could be a sign of exploitation of the elevation of privilege vulnerabilities (CVE-2022-34691, CVE-2022-26931, CVE-2022-26923) that can occur when the KDC allows certificate spoofing by not requiring a strong mapping.\nEvents where the AccountName and CN of the Subject do not match, or where the CN ends in a dollar sign indicating a machine, may indicate certificate spoofing.\n",
+        "author": "@br4dy5",
+        "tags": [
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "If prevalent in the environment, filter on events where the AccountName and CN of the Subject do not reference the same user",
+            "If prevalent in the environment, filter on CNs that end in a dollar sign indicating it is a machine name"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Kerberos-Key-Distribution-Center' AND EventID IN ('39', '41'))"
+        ],
+        "filename": "win_system_kdcsvc_cert_use_no_strong_mapping.yml"
+    },
+    {
         "title": "KDC RC4-HMAC Downgrade CVE-2022-37966",
         "id": "e6f81941-b1cd-4766-87db-9fc156f658ee",
         "status": "experimental",
@@ -35647,6 +35724,25 @@
         "filename": "win_mssql_disable_audit_settings.yml"
     },
     {
+        "title": "MSSQL Server Failed Logon From External Network",
+        "id": "ebfe73c2-5bc9-4ed9-aaa8-8b54b2b4777d",
+        "status": "experimental",
+        "description": "Detects failed logon attempts from clients with external network IP to an MSSQL server. This can be a sign of a bruteforce attack.",
+        "author": "j4son",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1110"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND (Provider_Name = 'MSSQLSERVER' AND EventID = '18456') AND NOT (((Data LIKE '%CLIENT: 10.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.16.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.17.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.18.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.19.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.20.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.21.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.22.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.23.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.24.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.25.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.26.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.27.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.28.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.29.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.30.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 172.31.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 192.168.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 127.%' ESCAPE '\\' OR Data LIKE '%CLIENT: 169.254.%' ESCAPE '\\'))))"
+        ],
+        "filename": "win_mssql_failed_logon_from_external_network.yml"
+    },
+    {
         "title": "MSSQL SPProcoption Set",
         "id": "b3d57a5c-c92e-4b48-9a79-5f124b7cf964",
         "status": "experimental",
@@ -39106,6 +39202,25 @@
         "filename": "create_remote_thread_win_malware_bumblebee.yml"
     },
     {
+        "title": "BlueSky Ransomware Artefacts",
+        "id": "eee8311f-a752-44f0-bf2f-6b007db16300",
+        "status": "experimental",
+        "description": "Detect access to files and shares with names and extensions used by BlueSky ransomware which could indicate a current or previous encryption attempt.",
+        "author": "j4son",
+        "tags": [
+            "attack.impact",
+            "attack.t1486"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID IN ('4663', '4656') AND (ObjectName LIKE '%.bluesky' ESCAPE '\\' OR ObjectName LIKE '%DECRYPT FILES BLUESKY%' ESCAPE '\\')) OR (EventID = '5145' AND (RelativeTargetName LIKE '%.bluesky' ESCAPE '\\' OR RelativeTargetName LIKE '%DECRYPT FILES BLUESKY%' ESCAPE '\\'))))"
+        ],
+        "filename": "win_security_malware_bluesky_ransomware_files_indicators.yml"
+    },
+    {
         "title": "MSSQL Extended Stored Procedure Backdoor Maggie",
         "id": "711ab2fe-c9ba-4746-8840-5228a58c3cb8",
         "status": "experimental",
@@ -39645,6 +39760,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\WinRAR.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\Rar$%' ESCAPE '\\' AND CommandLine REGEXP '\\.[a-zA-Z0-9]{1,4} \\.' AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR OriginalFileName IN ('Cmd.Exe', 'cscript.exe', 'PowerShell.EXE', 'pwsh.dll', 'wscript.exe')))"
         ],
         "filename": "proc_creation_win_exploit_cve_2023_38831_winrar_child_proc.yml"
+    },
+    {
+        "title": "Potential CVE-2023-27363 Exploitation - HTA File Creation By FoxitPDFReader",
+        "id": "9cae055f-e1d2-4f81-b8a5-1986a68cdd84",
+        "status": "experimental",
+        "description": "Detects suspicious \".hta\" file creation in the startup folder by Foxit Reader. This can be an indication of CVE-2023-27363 exploitation.",
+        "author": "Gregory",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.001",
+            "cve.2023.27363"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\FoxitPDFReader.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.hta' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_cve_2023_27363_foxit_rce.yml"
     },
     {
         "title": "Griffon Malware Attack Pattern",

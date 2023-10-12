@@ -23911,6 +23911,25 @@
         "filename": "create_remote_thread_win_malware_bumblebee.yml"
     },
     {
+        "title": "BlueSky Ransomware Artefacts",
+        "id": "eee8311f-a752-44f0-bf2f-6b007db16300",
+        "status": "experimental",
+        "description": "Detect access to files and shares with names and extensions used by BlueSky ransomware which could indicate a current or previous encryption attempt.",
+        "author": "j4son",
+        "tags": [
+            "attack.impact",
+            "attack.t1486"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID IN ('4663', '4656') AND (ObjectName LIKE '%.bluesky' ESCAPE '\\' OR ObjectName LIKE '%DECRYPT FILES BLUESKY%' ESCAPE '\\')) OR (EventID = '5145' AND (RelativeTargetName LIKE '%.bluesky' ESCAPE '\\' OR RelativeTargetName LIKE '%DECRYPT FILES BLUESKY%' ESCAPE '\\'))))"
+        ],
+        "filename": "win_security_malware_bluesky_ransomware_files_indicators.yml"
+    },
+    {
         "title": "MSSQL Extended Stored Procedure Backdoor Maggie",
         "id": "711ab2fe-c9ba-4746-8840-5228a58c3cb8",
         "status": "experimental",
@@ -24310,6 +24329,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\WinRAR.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\Rar$%' ESCAPE '\\' AND CommandLine REGEXP '\\.[a-zA-Z0-9]{1,4} \\.' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR OriginalFileName IN ('Cmd.Exe', 'cscript.exe', 'PowerShell.EXE', 'pwsh.dll', 'wscript.exe')))"
         ],
         "filename": "proc_creation_win_exploit_cve_2023_38831_winrar_child_proc.yml"
+    },
+    {
+        "title": "Potential CVE-2023-27363 Exploitation - HTA File Creation By FoxitPDFReader",
+        "id": "9cae055f-e1d2-4f81-b8a5-1986a68cdd84",
+        "status": "experimental",
+        "description": "Detects suspicious \".hta\" file creation in the startup folder by Foxit Reader. This can be an indication of CVE-2023-27363 exploitation.",
+        "author": "Gregory",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.001",
+            "cve.2023.27363"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\FoxitPDFReader.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.hta' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_cve_2023_27363_foxit_rce.yml"
     },
     {
         "title": "Griffon Malware Attack Pattern",
