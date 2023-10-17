@@ -3971,25 +3971,6 @@
         "filename": ""
     },
     {
-        "title": "Windows Webshell Creation",
-        "id": "39f1f9f2-9636-45de-98f6-a4046aa8e4b9",
-        "status": "test",
-        "description": "Possible webshell file creation on a static web site",
-        "author": "Beyu Denis, oscd.community, Tim Shelton",
-        "tags": [
-            "attack.persistence",
-            "attack.t1505.003"
-        ],
-        "falsepositives": [
-            "Legitimate administrator or developer creating legitimate executable files in a web application folder"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND (((TargetFilename LIKE '%\\\\inetpub\\\\wwwroot\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.asp%' ESCAPE '\\' OR TargetFilename LIKE '%.ashx%' ESCAPE '\\' OR TargetFilename LIKE '%.ph%' ESCAPE '\\')) OR ((TargetFilename LIKE '%\\\\www\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\htdocs\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\html\\\\%' ESCAPE '\\') AND TargetFilename LIKE '%.ph%' ESCAPE '\\')) AND (NOT ((TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') OR Image='System' OR TargetFilename LIKE '%\\\\xampp%' ESCAPE '\\'))))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "UAC Bypass Using MSConfig Token Modification - File",
         "id": "41bb431f-56d8-4691-bb56-ed34e390906f",
         "status": "test",
@@ -25206,7 +25187,26 @@
         "filename": ""
     },
     {
-        "title": "DarkGate User Created Via Net.EXE",
+        "title": "DarkGate - Autoit3.EXE Execution Parameters",
+        "id": "f8e9aa1c-14f2-4dbd-aa59-b98968ed650d",
+        "status": "experimental",
+        "description": "Detects execution of the legitimate Autoit3 utility from a suspicious parent process. AutoIt3.exe is used within \nthe DarkGate infection chain to execute shellcode that performs process injection and connects to the DarkGate \ncommand-and-control server.\n",
+        "author": "Micah Babinski",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\Autoit3.exe' ESCAPE '\\' OR OriginalFileName='AutoIt3.exe') AND (ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\KeyScramblerLogon.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msiexec.exe' ESCAPE '\\')) AND (NOT (Image LIKE '%:\\\\Program Files (x86)\\\\AutoIt3\\\\AutoIt3.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files\\\\AutoIt3\\\\AutoIt3.exe' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "DarkGate - User Created Via Net.EXE",
         "id": "bf906d7b-7070-4642-8383-e404cf26eba5",
         "status": "experimental",
         "description": "Detects creation of local users via the net.exe command with the name of \"DarkGate\"",
@@ -31279,6 +31279,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\drivers\\\\LiveKdD.SYS' ESCAPE '\\' AND (Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livek64.exe' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential Webshell Creation On Static Website",
+        "id": "39f1f9f2-9636-45de-98f6-a4046aa8e4b9",
+        "status": "test",
+        "description": "Detects the creation of files with certain extensions on a static web site. This can be indicative of potential uploads of a web shell.",
+        "author": "Beyu Denis, oscd.community, Tim Shelton, Thurein Oo",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.003"
+        ],
+        "falsepositives": [
+            "Legitimate administrator or developer creating legitimate executable files in a web application folder"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND (((TargetFilename LIKE '%\\\\inetpub\\\\wwwroot\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.ashx%' ESCAPE '\\' OR TargetFilename LIKE '%.asp%' ESCAPE '\\' OR TargetFilename LIKE '%.ph%' ESCAPE '\\' OR TargetFilename LIKE '%.soap%' ESCAPE '\\')) OR ((TargetFilename LIKE '%\\\\www\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\htdocs\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\html\\\\%' ESCAPE '\\') AND TargetFilename LIKE '%.ph%' ESCAPE '\\')) AND (NOT ((TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') OR Image='System' OR TargetFilename LIKE '%\\\\xampp%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -46115,6 +46134,27 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='RUNDLL32.EXE' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\') AND CommandLine LIKE '%nsis\\_uns%' ESCAPE '\\' AND CommandLine LIKE '%PrintUIEntry%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "DarkGate - Autoit3.EXE File Creation By Uncommon Process",
+        "id": "1a433e1d-03d2-47a6-8063-ece992cf4e73",
+        "status": "experimental",
+        "description": "Detects the usage of curl.exe, KeyScramblerLogon, or other non-standard/suspicious processes used to create Autoit3.exe. \nThis activity has been associated with DarkGate malware, which uses Autoit3.exe to execute shellcode that performs \nprocess injection and connects to the DarkGate command-and-control server. Curl, KeyScramblerLogon, and these other \nprocesses consitute non-standard and suspicious ways to retrieve the Autoit3 executable.\n",
+        "author": "Micah Babinski",
+        "tags": [
+            "attack.command_and_control",
+            "attack.execution",
+            "attack.t1105",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND ((Image LIKE '%\\\\Autoit3.exe' ESCAPE '\\' OR Image LIKE '%\\\\curl.exe' ESCAPE '\\' OR Image LIKE '%\\\\ExtExport.exe' ESCAPE '\\' OR Image LIKE '%\\\\KeyScramblerLogon.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmprph.exe' ESCAPE '\\') AND TargetFilename LIKE '%\\\\Autoit3.exe' ESCAPE '\\'))"
         ],
         "filename": ""
     },
