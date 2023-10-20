@@ -2184,6 +2184,25 @@
         "filename": "file_event_win_powershell_module_susp_creation.yml"
     },
     {
+        "title": "LSASS Process Memory Dump Creation Via Taskmgr.EXE",
+        "id": "69ca12af-119d-44ed-b50f-a47af0ebc364",
+        "status": "experimental",
+        "description": "Detects the creation of an \"lsass.dmp\" file by the taskmgr process. This indicates a manual dumping of the LSASS.exe process memory using Windows Task Manager.",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Rare case of troubleshooting by an administrator or support that has to be investigated regardless"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%:\\\\Windows\\\\system32\\\\taskmgr.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\taskmgr.exe' ESCAPE '\\') AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\lsass%' ESCAPE '\\' AND TargetFilename LIKE '%.DMP%' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_taskmgr_lsass_dump.yml"
+    },
+    {
         "title": "UAC Bypass Using NTFS Reparse Point - File",
         "id": "7fff6773-2baa-46de-a24a-b6eec1aba2d1",
         "status": "test",
