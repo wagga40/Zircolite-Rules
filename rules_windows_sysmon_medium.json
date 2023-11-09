@@ -36899,7 +36899,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '\\\\Software\\\\Microsoft\\\\Office test\\\\Special\\\\Perf' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Office test\\\\Special\\\\Perf%' ESCAPE '\\')"
         ],
         "filename": "registry_event_office_test_regadd.yml"
     },
@@ -44178,10 +44178,10 @@
         "filename": "win_security_powershell_script_installed_as_service.yml"
     },
     {
-        "title": "AD User Enumeration",
+        "title": "Potential AD User Enumeration From Non-Machine Account",
         "id": "ab6bffca-beff-4baa-af11-6733f296d57a",
         "status": "test",
-        "description": "Detects access to a domain user from a non-machine account",
+        "description": "Detects read access to a domain user from a non-machine account",
         "author": "Maxime Thiebaut (@0xThiebaut)",
         "tags": [
             "attack.discovery",
@@ -44192,7 +44192,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '4662' AND ObjectType LIKE '%bf967aba-0de6-11d0-a285-00aa003049e2%' ESCAPE '\\') AND NOT (SubjectUserName LIKE '%$' ESCAPE '\\' OR SubjectUserName LIKE 'MSOL\\_%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '4662' AND ObjectType LIKE '%bf967aba-0de6-11d0-a285-00aa003049e2%' ESCAPE '\\' AND (AccessMask LIKE '%1_' ESCAPE '\\' OR AccessMask LIKE '%3_' ESCAPE '\\' OR AccessMask LIKE '%4_' ESCAPE '\\' OR AccessMask LIKE '%7_' ESCAPE '\\' OR AccessMask LIKE '%9_' ESCAPE '\\' OR AccessMask LIKE '%B_' ESCAPE '\\' OR AccessMask LIKE '%D_' ESCAPE '\\' OR AccessMask LIKE '%F_' ESCAPE '\\')) AND NOT ((SubjectUserName LIKE '%$' ESCAPE '\\') OR (SubjectUserName LIKE 'MSOL\\_%' ESCAPE '\\')))"
         ],
         "filename": "win_security_ad_user_enumeration.yml"
     },
