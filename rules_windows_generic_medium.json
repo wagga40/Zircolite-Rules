@@ -4652,17 +4652,17 @@
         "filename": "net_connection_win_susp_outbound_mobsync_connection.yml"
     },
     {
-        "title": "Download a File with IMEWDBLD.exe",
+        "title": "Network Connection Initiated By IMEWDBLD.EXE",
         "id": "8d7e392e-9b28-49e1-831d-5949c6281228",
         "status": "test",
-        "description": "Use IMEWDBLD.exe (built-in to windows) to download a file",
+        "description": "Detects network connections initiated by IMEWDBLD. This might indicate potential abuse to download arbitrary files via this utility",
         "author": "frack113",
         "tags": [
             "attack.command_and_control",
             "attack.t1105"
         ],
         "falsepositives": [
-            "Legitimate script"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
@@ -7807,27 +7807,6 @@
         "filename": "proc_creation_win_lolbin_wfc.yml"
     },
     {
-        "title": "Windows Defender Download Activity",
-        "id": "46123129-1024-423e-9fae-43af4a0fa9a5",
-        "status": "test",
-        "description": "Detect the use of Windows Defender to download payloads",
-        "author": "Matthew Matchen",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%MpCmdRun.exe%' ESCAPE '\\' OR Description = 'Microsoft Malware Protection Command Line Utility') AND (CommandLine LIKE '%DownloadFile%' ESCAPE '\\' AND CommandLine LIKE '%url%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_susp_mpcmdrun_download.yml"
-    },
-    {
         "title": "Process Reconnaissance Via Wmic.EXE",
         "id": "221b251a-357a-49a9-920a-271802777cc0",
         "status": "experimental",
@@ -8644,7 +8623,7 @@
         "filename": "proc_creation_win_winrar_uncommon_folder_execution.yml"
     },
     {
-        "title": "File Download From Browser Process Via Inline Link",
+        "title": "File Download From Browser Process Via Inline URL",
         "id": "94771a71-ba41-4b6e-a757-b531372eaab6",
         "status": "test",
         "description": "Detects execution of a browser process with a URL argument pointing to a file with a potentially interesting extension. This can be abused to download arbitrary files or to hide from the user for example by launching the browser in a minimized state.",
@@ -8658,7 +8637,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') AND CommandLine LIKE '% http%' ESCAPE '\\' AND (CommandLine LIKE '%.dat%' ESCAPE '\\' OR CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine LIKE '%.exe%' ESCAPE '\\' OR CommandLine LIKE '%.hta%' ESCAPE '\\' OR CommandLine LIKE '%.ps1%' ESCAPE '\\' OR CommandLine LIKE '%.txt%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.zip%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\' AND (CommandLine LIKE '%.7z' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.exe' ESCAPE '\\' OR CommandLine LIKE '%.hta' ESCAPE '\\' OR CommandLine LIKE '%.ps1' ESCAPE '\\' OR CommandLine LIKE '%.psm1' ESCAPE '\\' OR CommandLine LIKE '%.txt' ESCAPE '\\' OR CommandLine LIKE '%.vbe' ESCAPE '\\' OR CommandLine LIKE '%.vbs' ESCAPE '\\' OR CommandLine LIKE '%.zip' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_browsers_inline_file_download.yml"
     },
@@ -8977,6 +8956,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((Product LIKE '%SharpHound%' ESCAPE '\\' OR Description LIKE '%SharpHound%' ESCAPE '\\' OR (Company LIKE '%SpecterOps%' ESCAPE '\\' OR Company LIKE '%evil corp%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\Bloodhound.exe%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\SharpHound.exe%' ESCAPE '\\')) OR (CommandLine LIKE '% -CollectionMethod All %' ESCAPE '\\' OR CommandLine LIKE '% --CollectionMethods Session %' ESCAPE '\\' OR CommandLine LIKE '% --Loop --Loopduration %' ESCAPE '\\' OR CommandLine LIKE '% --PortScanTimeout %' ESCAPE '\\' OR CommandLine LIKE '%.exe -c All -d %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Bloodhound%' ESCAPE '\\' OR CommandLine LIKE '%Get-BloodHoundData%' ESCAPE '\\') OR (CommandLine LIKE '% -JsonFolder %' ESCAPE '\\' AND CommandLine LIKE '% -ZipFileName %' ESCAPE '\\') OR (CommandLine LIKE '% DCOnly %' ESCAPE '\\' AND CommandLine LIKE '% --NoSaveCache %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_bloodhound_sharphound.yml"
+    },
+    {
+        "title": "Potential File Download Via MS-AppInstaller Protocol Handler",
+        "id": "180c7c5c-d64b-4a63-86e9-68910451bc8b",
+        "status": "experimental",
+        "description": "Detects usage of the \"ms-appinstaller\" protocol handler via command line to potentially download arbitrary files via AppInstaller.EXE\nThe downloaded files are temporarly stored in \":\\Users\\%username%\\AppData\\Local\\Packages\\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\\AC\\INetCache\\<RANDOM-8-CHAR-DIRECTORY>\"\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%ms-appinstaller://_source=%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_susp_ms_appinstaller_download.yml"
     },
     {
         "title": "Renamed Jusched.EXE Execution",
@@ -11187,6 +11186,25 @@
         "filename": "proc_creation_win_iis_appcmd_susp_module_install.yml"
     },
     {
+        "title": "Remote XSL Execution Via Msxsl.EXE",
+        "id": "75d0a94e-6252-448d-a7be-d953dff527bb",
+        "status": "experimental",
+        "description": "Detects the execution of the \"msxsl\" binary with an \"http\" keyword in the command line. This might indicate a potential remote execution of XSL files.",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1220"
+        ],
+        "falsepositives": [
+            "Msxsl is not installed by default and is deprecated, so unlikely on most systems."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_msxsl_remote_execution.yml"
+    },
+    {
         "title": "Potential Adplus.EXE Abuse",
         "id": "2f869d59-7f6a-4931-992c-cce556ff2d53",
         "status": "experimental",
@@ -11379,6 +11397,26 @@
         "filename": "proc_creation_win_regsvr32_susp_extensions.yml"
     },
     {
+        "title": "Arbitrary File Download Via IMEWDBLD.EXE",
+        "id": "863218bd-c7d0-4c52-80cd-0a96c09f54af",
+        "status": "experimental",
+        "description": "Detects usage of \"IMEWDBLD.exe\" to download arbitrary files",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\IMEWDBLD.exe' ESCAPE '\\' OR OriginalFileName = 'imewdbld.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_imewbdld_download.yml"
+    },
+    {
         "title": "Suspicious AgentExecutor PowerShell Execution",
         "id": "c0b40568-b1e9-4b03-8d6c-b096da6da9ab",
         "status": "test",
@@ -11473,26 +11511,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\sqlcmd.exe' ESCAPE '\\' AND CommandLine LIKE '%SELECT%' ESCAPE '\\' AND CommandLine LIKE '%TOP%' ESCAPE '\\' AND CommandLine LIKE '%[VeeamBackup].[dbo].[Credentials]%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_sqlcmd_veeam_dump.yml"
-    },
-    {
-        "title": "Download Arbitrary Files Via MSOHTMED.EXE",
-        "id": "459f2f98-397b-4a4a-9f47-6a5ec2f1c69d",
-        "status": "test",
-        "description": "Detects usage of \"MSOHTMED\" to download arbitrary files",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.execution",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\MSOHTMED.exe' ESCAPE '\\' OR OriginalFileName = 'MsoHtmEd.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%ftp://%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_msohtmed_download.yml"
     },
     {
         "title": "Powershell Defender Exclusion",
@@ -12003,26 +12021,6 @@
         "filename": "proc_creation_win_msiexec_install_quiet.yml"
     },
     {
-        "title": "Arbitrary File Download Via MSPUB.EXE",
-        "id": "3b3c7f55-f771-4dd6-8a6e-08d057a17caf",
-        "status": "experimental",
-        "description": "Detects usage of \"MSPUB\" (Microsoft Publisher) to download arbitrary files",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.execution",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\MSPUB.exe' ESCAPE '\\' OR OriginalFileName = 'MSPUB.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%ftp://%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_mspub_download.yml"
-    },
-    {
         "title": "Potential Rundll32 Execution With DLL Stored In ADS",
         "id": "9248c7e1-2bf3-4661-a22c-600a8040b446",
         "status": "experimental",
@@ -12290,6 +12288,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND (CommandLine LIKE '%copy %' ESCAPE '\\' AND CommandLine LIKE '% \\\\\\\\\\*' ESCAPE '\\' AND (CommandLine LIKE '%.dmp%' ESCAPE '\\' OR CommandLine LIKE '%.dump%' ESCAPE '\\' OR CommandLine LIKE '%.hdmp%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_cmd_copy_dmp_from_share.yml"
+    },
+    {
+        "title": "Msxsl.EXE Execution",
+        "id": "9e50a8b3-dd05-4eb8-9153-bdb6b79d50b0",
+        "status": "test",
+        "description": "Detects the execution of the MSXSL utility. This can be used to execute Extensible Stylesheet Language (XSL) files. These files are commonly used to describe the processing and rendering of data within XML files.\nAdversaries can abuse this functionality to execute arbitrary files while potentially bypassing application whitelisting defenses.\n",
+        "author": "Timur Zinniatullin, oscd.community",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1220"
+        ],
+        "falsepositives": [
+            "Msxsl is not installed by default and is deprecated, so unlikely on most systems."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_msxsl_execution.yml"
     },
     {
         "title": "Suspicious SYSVOL Domain Group Policy Access",
@@ -13186,9 +13203,30 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\code.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\discord.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\keybase.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msteams.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\slack.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Teams.exe' ESCAPE '\\') AND (CommandLine LIKE '%--browser-subprocess-path%' ESCAPE '\\' OR CommandLine LIKE '%--gpu-launcher%' ESCAPE '\\' OR CommandLine LIKE '%--renderer-cmd-prefix%' ESCAPE '\\' OR CommandLine LIKE '%--utility-cmd-prefix%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\code.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\discord.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\GitHubDesktop.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\keybase.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge\\_proxy.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedgewebview2.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msteams.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\slack.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Teams.exe' ESCAPE '\\') OR (OriginalFileName LIKE 'chrome.exe' ESCAPE '\\' OR OriginalFileName LIKE 'code.exe' ESCAPE '\\' OR OriginalFileName LIKE 'discord.exe' ESCAPE '\\' OR OriginalFileName LIKE 'GitHubDesktop.exe' ESCAPE '\\' OR OriginalFileName LIKE 'keybase.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msedge\\_proxy.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msedge.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msedgewebview2.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msteams.exe' ESCAPE '\\' OR OriginalFileName LIKE 'slack.exe' ESCAPE '\\' OR OriginalFileName LIKE 'Teams.exe' ESCAPE '\\')) AND (CommandLine LIKE '%--browser-subprocess-path%' ESCAPE '\\' OR CommandLine LIKE '%--gpu-launcher%' ESCAPE '\\' OR CommandLine LIKE '%--renderer-cmd-prefix%' ESCAPE '\\' OR CommandLine LIKE '%--utility-cmd-prefix%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_electron_exeuction_proxy.yml"
+    },
+    {
+        "title": "File Download Via Windows Defender MpCmpRun.EXE",
+        "id": "46123129-1024-423e-9fae-43af4a0fa9a5",
+        "status": "test",
+        "description": "Detects the use of Windows Defender MpCmdRun.EXE to download files",
+        "author": "Matthew Matchen",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'MpCmdRun.exe' OR NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' OR CommandLine LIKE '%MpCmdRun.exe%' ESCAPE '\\' OR Description = 'Microsoft Malware Protection Command Line Utility') AND (CommandLine LIKE '%DownloadFile%' ESCAPE '\\' AND CommandLine LIKE '%url%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mpcmdrun_download_arbitrary_file.yml"
     },
     {
         "title": "Suspicious Splwow64 Without Params",
@@ -13267,25 +13305,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Windows\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\%TEMP\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%TMP\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%LocalAppData\\%\\\\Temp%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% >%' ESCAPE '\\' OR CommandLine LIKE '%Out-File%' ESCAPE '\\' OR CommandLine LIKE '%ConvertTo-Json%' ESCAPE '\\' OR CommandLine LIKE '%-WindowStyle hidden -Verb runAs%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\system32\\\\config\\\\systemprofile\\\\AppData\\\\Local\\\\Temp\\\\Amazon\\\\EC2-Windows\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_script_exec_from_temp.yml"
-    },
-    {
-        "title": "File Download Using ProtocolHandler.exe",
-        "id": "104cdb48-a7a8-4ca7-a453-32942c6e5dcb",
-        "status": "test",
-        "description": "Detects usage of \"ProtocolHandler\" to download files. Downloaded files will be located in the cache folder (for example - %LOCALAPPDATA%\\Microsoft\\Windows\\INetCache\\IE)",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\protocolhandler.exe' ESCAPE '\\' OR OriginalFileName = 'ProtocolHandler.exe') AND ((CommandLine LIKE '%\"ms-word%' ESCAPE '\\' AND CommandLine LIKE '%.docx\"%' ESCAPE '\\') OR CommandLine LIKE '% http%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_protocolhandler_download.yml"
     },
     {
         "title": "Boot Configuration Tampering Via Bcdedit.EXE",
@@ -14497,6 +14516,25 @@
         "filename": "proc_creation_win_hktl_zipexec.yml"
     },
     {
+        "title": "File Download And Execution Via IEExec.EXE",
+        "id": "9801abb8-e297-4dbf-9fbd-57dde0e830ad",
+        "status": "test",
+        "description": "Detects execution of the IEExec utility to download and execute files",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\IEExec.exe' ESCAPE '\\' OR OriginalFileName = 'IEExec.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_ieexec_download.yml"
+    },
+    {
         "title": "Suspicious Git Clone",
         "id": "aef9d1f1-7396-4e92-a927-4567c7a495c1",
         "status": "experimental",
@@ -14553,6 +14591,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\WMIC.exe' ESCAPE '\\' OR OriginalFileName = 'wmic.exe') AND (CommandLine LIKE '%call%' ESCAPE '\\' AND CommandLine LIKE '%terminate%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wmic_terminate_application.yml"
+    },
+    {
+        "title": "Suspicious Calculator Usage",
+        "id": "737e618a-a410-49b5-bec3-9e55ff7fbc15",
+        "status": "test",
+        "description": "Detects suspicious use of 'calc.exe' with command line parameters or in a suspicious directory, which is likely caused by some PoC or detection evasion.\n",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%\\\\calc.exe %' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')))))"
+        ],
+        "filename": "proc_creation_win_calc_uncommon_exec.yml"
     },
     {
         "title": "Php Inline Command Execution",
@@ -14747,10 +14804,10 @@
         "filename": "proc_creation_win_conhost_path_traversal.yml"
     },
     {
-        "title": "XSL Script Processing",
+        "title": "XSL Script Execution Via WMIC.EXE",
         "id": "05c36dd6-79d6-4a9a-97da-3db20298ab2d",
         "status": "test",
-        "description": "Extensible Stylesheet Language (XSL) files are commonly used to describe the processing and rendering of data within XML files. Rule detects when adversaries abuse this functionality to execute arbitrary files while potentially bypassing application whitelisting defenses.",
+        "description": "Detects the execution of WMIC with the \"format\" flag to potentially load XSL files.\nAdversaries abuse this functionality to execute arbitrary files while potentially bypassing application whitelisting defenses.\nExtensible Stylesheet Language (XSL) files are commonly used to describe the processing and rendering of data within XML files.\n",
         "author": "Timur Zinniatullin, oscd.community, Swachchhanda Shrawan Poudel",
         "tags": [
             "attack.defense_evasion",
@@ -14758,12 +14815,11 @@
         ],
         "falsepositives": [
             "WMIC.exe FP depend on scripts and administrative methods used in the monitored environment.",
-            "Msxsl.exe is not installed by default, so unlikely.",
             "Static format arguments - https://petri.com/command-line-wmi-part-3"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' AND (CommandLine LIKE '%/format%' ESCAPE '\\' OR CommandLine LIKE '%-format%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%Format:List%' ESCAPE '\\' OR CommandLine LIKE '%Format:htable%' ESCAPE '\\' OR CommandLine LIKE '%Format:hform%' ESCAPE '\\' OR CommandLine LIKE '%Format:table%' ESCAPE '\\' OR CommandLine LIKE '%Format:mof%' ESCAPE '\\' OR CommandLine LIKE '%Format:value%' ESCAPE '\\' OR CommandLine LIKE '%Format:rawxml%' ESCAPE '\\' OR CommandLine LIKE '%Format:xml%' ESCAPE '\\' OR CommandLine LIKE '%Format:csv%' ESCAPE '\\'))) OR NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' AND (CommandLine LIKE '%/format%' ESCAPE '\\' OR CommandLine LIKE '%-format%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%Format:List%' ESCAPE '\\' OR CommandLine LIKE '%Format:htable%' ESCAPE '\\' OR CommandLine LIKE '%Format:hform%' ESCAPE '\\' OR CommandLine LIKE '%Format:table%' ESCAPE '\\' OR CommandLine LIKE '%Format:mof%' ESCAPE '\\' OR CommandLine LIKE '%Format:value%' ESCAPE '\\' OR CommandLine LIKE '%Format:rawxml%' ESCAPE '\\' OR CommandLine LIKE '%Format:xml%' ESCAPE '\\' OR CommandLine LIKE '%Format:csv%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_wmic_xsl_script_processing.yml"
     },
@@ -15060,25 +15116,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%reg%' ESCAPE '\\' AND CommandLine LIKE '% ADD %' ESCAPE '\\' AND CommandLine LIKE '%Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_reg_add_run_key.yml"
-    },
-    {
-        "title": "Abusing IEExec To Download Payloads",
-        "id": "9801abb8-e297-4dbf-9fbd-57dde0e830ad",
-        "status": "test",
-        "description": "Detects execution of the IEExec utility to download payloads",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\IEExec.exe' ESCAPE '\\' OR OriginalFileName = 'IEExec.exe') AND (CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_ieexec_download.yml"
     },
     {
         "title": "Diskshadow Script Mode - Uncommon Script Extension Execution",
@@ -15531,26 +15568,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%\"set%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\' AND (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hktl_invoke_obfuscation_var.yml"
-    },
-    {
-        "title": "Application Whitelisting Bypass via PresentationHost.exe",
-        "id": "d22e2925-cfd8-463f-96f6-89cec9d9bc5f",
-        "status": "test",
-        "description": "Detects usage of \"PresentationHost\" which is a utility that runs \".xbap\" (Browser Applications) files. It can be abused to run malicious \".xbap\" files any bypass AWL",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.execution",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Legitimate \".xbap\" being executed via \"PresentationHost\""
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\presentationhost.exe' ESCAPE '\\' OR OriginalFileName = 'PresentationHost.exe') AND CommandLine LIKE '%.xbap%' ESCAPE '\\') AND NOT ((CommandLine LIKE '%C:\\\\Windows\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Program Files%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_lolbin_presentationhost.yml"
     },
     {
         "title": "PowerShell Script Run in AppData",
@@ -16567,6 +16584,26 @@
         "filename": "proc_creation_win_cmd_ping_del_combined_execution.yml"
     },
     {
+        "title": "Arbitrary File Download Via MSOHTMED.EXE",
+        "id": "459f2f98-397b-4a4a-9f47-6a5ec2f1c69d",
+        "status": "test",
+        "description": "Detects usage of \"MSOHTMED\" to download arbitrary files",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\MSOHTMED.exe' ESCAPE '\\' OR OriginalFileName = 'MsoHtmEd.exe') AND (CommandLine LIKE '%ftp://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_msohtmed_download.yml"
+    },
+    {
         "title": "Sysinternals PsSuspend Execution",
         "id": "48bbc537-b652-4b4e-bd1d-281172df448f",
         "status": "experimental",
@@ -16806,25 +16843,6 @@
         "filename": "proc_creation_win_renamed_adfind.yml"
     },
     {
-        "title": "Suspicious Execution of InstallUtil To Download",
-        "id": "75edd216-1939-4c73-8d61-7f3a0d85b5cc",
-        "status": "test",
-        "description": "Detects the use the .NET InstallUtil.exe application in order to download arbitrary files. The files will be written to %LOCALAPPDATA%\\Microsoft\\Windows\\INetCache\\IE\\",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\InstallUtil.exe' ESCAPE '\\' OR OriginalFileName = 'InstallUtil.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%ftp://%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_installutil_download.yml"
-    },
-    {
         "title": "Potential DLL File Download Via PowerShell Invoke-WebRequest",
         "id": "0f0450f3-8b47-441e-a31b-15a91dc243e2",
         "status": "experimental",
@@ -16902,6 +16920,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\') AND CommandLine REGEXP '://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}')"
         ],
         "filename": "proc_creation_win_winget_add_susp_custom_source.yml"
+    },
+    {
+        "title": "Potential Excel.EXE DCOM Lateral Movement Via ActivateMicrosoftApp",
+        "id": "551d9c1f-816c-445b-a7a6-7a3864720d60",
+        "status": "experimental",
+        "description": "Detects suspicious child processes of Excel which could be an indicator of lateral movement leveraging the \"ActivateMicrosoftApp\" Excel DCOM object.\n",
+        "author": "Aaron Stratton",
+        "tags": [
+            "attack.t1021.003",
+            "attack.lateral_movement"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' AND (OriginalFileName IN ('foxprow.exe', 'schdplus.exe', 'winproj.exe') OR (NewProcessName LIKE '%\\\\foxprow.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schdplus.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winproj.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_office_excel_dcom_lateral_movement.yml"
     },
     {
         "title": "Windows Firewall Disabled via PowerShell",
@@ -19457,6 +19494,26 @@
         "filename": "proc_creation_win_lolbin_sideload_link_binary.yml"
     },
     {
+        "title": "Process Proxy Execution Via Squirrel.EXE",
+        "id": "45239e6a-b035-4aaf-b339-8ad379fcb67e",
+        "status": "experimental",
+        "description": "Detects the usage of the \"Squirrel.exe\" binary to execute arbitrary processes. This binary is part of multiple Electron based software installations (Slack, Teams, Discord, etc.)\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Karneades / Markus Neis, Jonhnathan Ribeiro, oscd.community",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Expected FP with some Electron based applications such as (1Clipboard, Beaker Browser, Caret, Discord, GitHub Desktop, etc.)"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\squirrel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\update.exe' ESCAPE '\\') AND (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--processStartAndWait%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Discord\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '% --processStart%' ESCAPE '\\' AND CommandLine LIKE '%Discord.exe%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\GitHubDesktop\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '%GitHubDesktop.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--createShortcut%' ESCAPE '\\' OR CommandLine LIKE '%--processStartAndWait%' ESCAPE '\\')) OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '%Teams.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\')) OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\yammerdesktop\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '%Yammer.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_squirrel_proxy_execution.yml"
+    },
+    {
         "title": "Suspicious Hacktool Execution - PE Metadata",
         "id": "37c1333a-a0db-48be-b64b-7393b2386e3b",
         "status": "experimental",
@@ -19475,25 +19532,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND Company = 'Cube0x0')"
         ],
         "filename": "proc_creation_win_hktl_execution_via_pe_metadata.yml"
-    },
-    {
-        "title": "Suspicious Calculator Usage",
-        "id": "737e618a-a410-49b5-bec3-9e55ff7fbc15",
-        "status": "test",
-        "description": "Detects suspicious use of 'calc.exe' with command line parameters or in a suspicious directory, which is likely caused by some PoC or detection evasion",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%\\\\calc.exe %' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')))))"
-        ],
-        "filename": "proc_creation_win_susp_calc.yml"
     },
     {
         "title": "Renamed Mavinject.EXE Execution",
@@ -19556,6 +19594,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '% add %' ESCAPE '\\' AND CommandLine LIKE '%\\\\CurrentControlSet\\\\Control\\\\Terminal Server%' ESCAPE '\\' AND CommandLine LIKE '%REG\\_DWORD%' ESCAPE '\\' AND CommandLine LIKE '% /f%' ESCAPE '\\')) AND ((CommandLine LIKE '%Licensing Core%' ESCAPE '\\' AND CommandLine LIKE '%EnableConcurrentSessions%' ESCAPE '\\') OR (CommandLine LIKE '%WinStations\\\\RDP-Tcp%' ESCAPE '\\' OR CommandLine LIKE '%MaxInstanceCount%' ESCAPE '\\' OR CommandLine LIKE '%fEnableWinStation%' ESCAPE '\\' OR CommandLine LIKE '%TSUserEnabled%' ESCAPE '\\' OR CommandLine LIKE '%TSEnabled%' ESCAPE '\\' OR CommandLine LIKE '%TSAppCompat%' ESCAPE '\\' OR CommandLine LIKE '%IdleWinStationPoolCount%' ESCAPE '\\' OR CommandLine LIKE '%TSAdvertise%' ESCAPE '\\' OR CommandLine LIKE '%AllowTSConnections%' ESCAPE '\\' OR CommandLine LIKE '%fSingleSessionPerUser%' ESCAPE '\\' OR CommandLine LIKE '%fDenyTSConnections%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_reg_rdp_keys_tamper.yml"
+    },
+    {
+        "title": "Arbitrary File Download Via Squirrel.EXE",
+        "id": "1e75c1cc-c5d4-42aa-ac3d-91b0b68b3b4c",
+        "status": "experimental",
+        "description": "Detects the usage of the \"Squirrel.exe\" to download arbitrary files. This binary is part of multiple Electron based software installations (Slack, Teams, Discord, etc.)\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Karneades / Markus Neis, Jonhnathan Ribeiro, oscd.community",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Expected FP with some Electron based applications such as (1Clipboard, Beaker Browser, Caret, Discord, GitHub Desktop, etc.)"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\squirrel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\update.exe' ESCAPE '\\') AND (CommandLine LIKE '% --download %' ESCAPE '\\' OR CommandLine LIKE '% --update %' ESCAPE '\\' OR CommandLine LIKE '% --updateRollback=%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_squirrel_download.yml"
     },
     {
         "title": "File Decryption Using Gpg4win",
@@ -20181,6 +20239,25 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\dnx.exe' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_lolbin_dnx.yml"
+    },
+    {
+        "title": "File Download Via InstallUtil.EXE",
+        "id": "75edd216-1939-4c73-8d61-7f3a0d85b5cc",
+        "status": "test",
+        "description": "Detects use of .NET InstallUtil.exe in order to download arbitrary files. The files will be written to \"%LOCALAPPDATA%\\Microsoft\\Windows\\INetCache\\IE\\\"\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\InstallUtil.exe' ESCAPE '\\' OR OriginalFileName = 'InstallUtil.exe') AND (CommandLine LIKE '%ftp://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_installutil_download.yml"
     },
     {
         "title": "Suspicious Schtasks Schedule Types",
@@ -21244,26 +21321,6 @@
         "filename": "proc_creation_win_powershell_invoke_webrequest_direct_ip.yml"
     },
     {
-        "title": "Use of Squirrel.exe",
-        "id": "45239e6a-b035-4aaf-b339-8ad379fcb67e",
-        "status": "experimental",
-        "description": "Detects the usage of the \"Squirrel.exe\" binary as a LOLBIN. This binary is part of multiple software installations (Slack, Teams, Discord, etc.)",
-        "author": "Nasreddine Bencherchali (Nextron Systems), Karneades / Markus Neis, Jonhnathan Ribeiro, oscd.community",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.execution",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Expected FP with some electron based applications such as (1Clipboard, Beaker Browser, Caret, Discord, GitHub Desktop,...Etc)"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\squirrel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\update.exe' ESCAPE '\\') AND (((CommandLine LIKE '% --download %' ESCAPE '\\' OR CommandLine LIKE '% --update %' ESCAPE '\\' OR CommandLine LIKE '% --updateRollback=%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\') OR (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--processStartAndWait%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\'))) AND NOT ((CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Discord\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '% --processStart%' ESCAPE '\\' AND CommandLine LIKE '%Discord.exe%' ESCAPE '\\') OR (CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\GitHubDesktop\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '%GitHubDesktop.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--createShortcut%' ESCAPE '\\' OR CommandLine LIKE '%--processStartAndWait%' ESCAPE '\\')) OR (CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '%Teams.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\')) OR (CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\yammerdesktop\\\\Update.exe%' ESCAPE '\\' AND CommandLine LIKE '%Yammer.exe%' ESCAPE '\\' AND (CommandLine LIKE '%--processStart%' ESCAPE '\\' OR CommandLine LIKE '%--createShortcut%' ESCAPE '\\'))))"
-        ],
-        "filename": "proc_creation_win_lolbin_squirrel.yml"
-    },
-    {
         "title": "DLL Execution Via Register-cimprovider.exe",
         "id": "a2910908-e86f-4687-aeba-76a5f996e652",
         "status": "test",
@@ -21765,6 +21822,45 @@
         "filename": "proc_creation_win_certmgr_certificate_installation.yml"
     },
     {
+        "title": "Arbitrary File Download Via MSEDGE_PROXY.EXE",
+        "id": "e84d89c4-f544-41ca-a6af-4b92fd38b023",
+        "status": "experimental",
+        "description": "Detects usage of \"msedge_proxy.exe\" to download arbitrary files",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msedge\\_proxy.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msedge\\_proxy.exe' ESCAPE '\\') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_msedge_proxy_download.yml"
+    },
+    {
+        "title": "File Download Using ProtocolHandler.exe",
+        "id": "104cdb48-a7a8-4ca7-a453-32942c6e5dcb",
+        "status": "test",
+        "description": "Detects usage of \"ProtocolHandler\" to download files. Downloaded files will be located in the cache folder (for example - %LOCALAPPDATA%\\Microsoft\\Windows\\INetCache\\IE)\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\protocolhandler.exe' ESCAPE '\\' OR OriginalFileName = 'ProtocolHandler.exe') AND (CommandLine LIKE '%ftp://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_protocolhandler_download.yml"
+    },
+    {
         "title": "Potential ReflectDebugger Content Execution Via WerFault.EXE",
         "id": "fabfb3a7-3ce1-4445-9c7c-3c27f1051cdd",
         "status": "experimental",
@@ -22023,6 +22119,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%new-object%' ESCAPE '\\' AND CommandLine LIKE '%net.webclient).%' ESCAPE '\\' AND CommandLine LIKE '%download%' ESCAPE '\\' AND (CommandLine LIKE '%string(%' ESCAPE '\\' OR CommandLine LIKE '%file(%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_download_patterns.yml"
+    },
+    {
+        "title": "XBAP Execution From Uncommon Locations Via PresentationHost.EXE",
+        "id": "d22e2925-cfd8-463f-96f6-89cec9d9bc5f",
+        "status": "test",
+        "description": "Detects the execution of \".xbap\" (Browser Applications) files via PresentationHost.EXE from an uncommon location. These files can be abused to run malicious \".xbap\" files any bypass AWL\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Legitimate \".xbap\" being executed via \"PresentationHost\""
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\presentationhost.exe' ESCAPE '\\' OR OriginalFileName = 'PresentationHost.exe') AND CommandLine LIKE '%.xbap%' ESCAPE '\\') AND NOT (((CommandLine LIKE '% C:\\\\Windows\\\\%' ESCAPE '\\' OR CommandLine LIKE '% C:\\\\Program Files%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_presentationhost_uncommon_location_exec.yml"
     },
     {
         "title": "Renamed MegaSync Execution",
@@ -23827,26 +23943,6 @@
         "filename": "proc_creation_win_powershell_webclient_casing.yml"
     },
     {
-        "title": "Download Arbitrary Files Via PresentationHost.exe",
-        "id": "b124ddf4-778d-418e-907f-6dd3fc0d31cd",
-        "status": "test",
-        "description": "Detects usage of \"PresentationHost\" which is a utility that runs \".xbap\" (Browser Applications) files to download arbitrary files",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.execution",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\presentationhost.exe' ESCAPE '\\' OR OriginalFileName = 'PresentationHost.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%ftp://%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_presentationhost_download.yml"
-    },
-    {
         "title": "UAC Bypass WSReset",
         "id": "89a9a0e0-f61a-42e5-8957-b1479565a658",
         "status": "test",
@@ -23883,6 +23979,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\client32.exe' ESCAPE '\\' OR Product LIKE '%NetSupport Remote Control%' ESCAPE '\\' OR OriginalFileName LIKE '%client32.exe%' ESCAPE '\\' OR Imphash = 'a9d50692e95b79723f3e76fcf70d023e' OR Hashes LIKE '%IMPHASH=a9d50692e95b79723f3e76fcf70d023e%' ESCAPE '\\') AND NOT ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_remote_access_tools_netsupport_susp_exec.yml"
+    },
+    {
+        "title": "Arbitrary File Download Via PresentationHost.EXE",
+        "id": "b124ddf4-778d-418e-907f-6dd3fc0d31cd",
+        "status": "test",
+        "description": "Detects usage of \"PresentationHost\" which is a utility that runs \".xbap\" (Browser Applications) files to download arbitrary files",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\presentationhost.exe' ESCAPE '\\' OR OriginalFileName = 'PresentationHost.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%ftp://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_presentationhost_download.yml"
     },
     {
         "title": "PowerShell Execution With Potential Decryption Capabilities",
@@ -25143,6 +25259,26 @@
         "filename": "proc_creation_win_hktl_covenant.yml"
     },
     {
+        "title": "Uncommon Child Process Of Appvlp.EXE",
+        "id": "9c7e131a-0f2c-4ae0-9d43-b04f4e266d43",
+        "status": "test",
+        "description": "Detects uncommon child processes of Appvlp.EXE\nAppvlp or the Application Virtualization Utility is included with Microsoft Office. Attackers are able to abuse \"AppVLP\" to execute shell commands.\nNormally, this binary is used for Application Virtualization, but it can also be abused to circumvent the ASR file path rule folder\nor to mark a file as a system file.\n",
+        "author": "Sreeman",
+        "tags": [
+            "attack.t1218",
+            "attack.defense_evasion",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\appvlp.exe' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\rundll32.exe' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%:\\\\Program Files\\\\Microsoft Office%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\msoasb.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\Program Files\\\\Microsoft Office%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\SkypeSrv\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\SKYPESERVER.EXE' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\Program Files\\\\Microsoft Office%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\MSOUC.EXE' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_appvlp_uncommon_child_process.yml"
+    },
+    {
         "title": "Suspicious ScreenSave Change by Reg.exe",
         "id": "0fc35fc3-efe6-4898-8a37-0b233339524f",
         "status": "test",
@@ -25461,26 +25597,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wget.exe' ESCAPE '\\' OR OriginalFileName = 'wget.exe') AND (CommandLine LIKE '%.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\' AND (CommandLine REGEXP '\\s-O\\s' OR CommandLine LIKE '%--output-document%' ESCAPE '\\') AND (CommandLine LIKE '%.ps1' ESCAPE '\\' OR CommandLine LIKE '%.ps1''' ESCAPE '\\' OR CommandLine LIKE '%.ps1\"' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.dat''' ESCAPE '\\' OR CommandLine LIKE '%.dat\"' ESCAPE '\\' OR CommandLine LIKE '%.msi' ESCAPE '\\' OR CommandLine LIKE '%.msi''' ESCAPE '\\' OR CommandLine LIKE '%.msi\"' ESCAPE '\\' OR CommandLine LIKE '%.bat' ESCAPE '\\' OR CommandLine LIKE '%.bat''' ESCAPE '\\' OR CommandLine LIKE '%.bat\"' ESCAPE '\\' OR CommandLine LIKE '%.exe' ESCAPE '\\' OR CommandLine LIKE '%.exe''' ESCAPE '\\' OR CommandLine LIKE '%.exe\"' ESCAPE '\\' OR CommandLine LIKE '%.vbs' ESCAPE '\\' OR CommandLine LIKE '%.vbs''' ESCAPE '\\' OR CommandLine LIKE '%.vbs\"' ESCAPE '\\' OR CommandLine LIKE '%.vbe' ESCAPE '\\' OR CommandLine LIKE '%.vbe''' ESCAPE '\\' OR CommandLine LIKE '%.vbe\"' ESCAPE '\\' OR CommandLine LIKE '%.hta' ESCAPE '\\' OR CommandLine LIKE '%.hta''' ESCAPE '\\' OR CommandLine LIKE '%.hta\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.psm1' ESCAPE '\\' OR CommandLine LIKE '%.psm1''' ESCAPE '\\' OR CommandLine LIKE '%.psm1\"' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wget_download_susp_file_sharing_domains.yml"
-    },
-    {
-        "title": "Using AppVLP To Circumvent ASR File Path Rule",
-        "id": "9c7e131a-0f2c-4ae0-9d43-b04f4e266d43",
-        "status": "test",
-        "description": "Application Virtualization Utility is included with Microsoft Office. We are able to abuse \"AppVLP\" to execute shell commands.\nNormally, this binary is used for Application Virtualization, but we can use it as an abuse binary to circumvent the ASR file path rule folder\nor to mark a file as a system file.\n",
-        "author": "Sreeman",
-        "tags": [
-            "attack.t1218",
-            "attack.defense_evasion",
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\appvlp.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%\\\\msoasb.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_lolbin_appvlp.yml"
     },
     {
         "title": "Potentially Suspicious Regsvr32 HTTP IP Pattern",
@@ -26022,6 +26138,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\bash.exe' ESCAPE '\\') OR OriginalFileName = 'Bash.exe') AND CommandLine LIKE '% -c %' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_bash_command_execution.yml"
+    },
+    {
+        "title": "Arbitrary File Download Via MSPUB.EXE",
+        "id": "3b3c7f55-f771-4dd6-8a6e-08d057a17caf",
+        "status": "experimental",
+        "description": "Detects usage of \"MSPUB\" (Microsoft Publisher) to download arbitrary files",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\MSPUB.exe' ESCAPE '\\' OR OriginalFileName = 'MSPUB.exe') AND (CommandLine LIKE '%ftp://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mspub_download.yml"
     },
     {
         "title": "Remote PowerShell Session Host Process (WinRM)",
@@ -27867,8 +28003,8 @@
     {
         "title": "Potential CVE-2021-26084 Exploitation Attempt",
         "id": "38825179-3c78-4fed-b222-2e2166b926b1",
-        "description": "Detects potential exploitation of CVE-2021-260841 a Confluence RCE using OGNL injection",
         "status": "experimental",
+        "description": "Detects potential exploitation of CVE-2021-260841 a Confluence RCE using OGNL injection",
         "author": "Sittikorn S, Nuttakorn T",
         "tags": [
             "attack.initial_access",
@@ -28191,7 +28327,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((cs-uri-query LIKE '%/owa/calendar/a%' ESCAPE '\\' AND cs-method = 'POST') AND NOT (sc-status = '503'))"
+            "SELECT * FROM logs WHERE ((cs-uri-query LIKE '%/owa/calendar/a%' ESCAPE '\\' AND cs-method = 'POST') AND NOT ((sc-status = '503')))"
         ],
         "filename": "web_cve_2021_28480_exchange_exploit.yml"
     },
@@ -28638,7 +28774,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND sc-status = '200' AND cs-uri-query LIKE '%/owa/%' ESCAPE '\\' AND cs-uri-query LIKE '%/powershell%' ESCAPE '\\' AND (cs-uri-query LIKE '%@%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%40%' ESCAPE '\\')) AND NOT (cs-user-agent IN ('ClientInfo', 'Microsoft WinRM Client', 'Exchange BackEnd Probes')))"
+            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND sc-status = '200' AND cs-uri-query LIKE '%/owa/%' ESCAPE '\\' AND cs-uri-query LIKE '%/powershell%' ESCAPE '\\' AND (cs-uri-query LIKE '%@%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%40%' ESCAPE '\\')) AND NOT ((cs-user-agent IN ('ClientInfo', 'Microsoft WinRM Client', 'Exchange BackEnd Probes'))))"
         ],
         "filename": "web_exchange_owassrf_exploitation.yml"
     },
@@ -32077,6 +32213,48 @@
             "SELECT * FROM logs WHERE (cs-method = 'GET' AND cs-uri-query LIKE '%/geoserver/ows%' ESCAPE '\\' AND cs-uri-query LIKE '%CQL\\_FILTER=%' ESCAPE '\\' AND (cs-uri-query LIKE '%PropertyIsLike%' ESCAPE '\\' OR cs-uri-query LIKE '%strEndsWith%' ESCAPE '\\' OR cs-uri-query LIKE '%strStartsWith%' ESCAPE '\\' OR cs-uri-query LIKE '%FeatureId%' ESCAPE '\\' OR cs-uri-query LIKE '%jsonArrayContains%' ESCAPE '\\' OR cs-uri-query LIKE '%DWithin%' ESCAPE '\\') AND (cs-uri-query LIKE '%+--%' ESCAPE '\\' OR cs-uri-query LIKE '%+AS+%' ESCAPE '\\' OR cs-uri-query LIKE '%+OR+%' ESCAPE '\\' OR cs-uri-query LIKE '%FROM%' ESCAPE '\\' OR cs-uri-query LIKE '%ORDER+BY%' ESCAPE '\\' OR cs-uri-query LIKE '%SELECT%' ESCAPE '\\' OR cs-uri-query LIKE '%sleep\\%28%' ESCAPE '\\' OR cs-uri-query LIKE '%substring\\%28%' ESCAPE '\\' OR cs-uri-query LIKE '%UNION%' ESCAPE '\\' OR cs-uri-query LIKE '%WHERE%' ESCAPE '\\'))"
         ],
         "filename": "web_cve_2023_25157_geoserver_sql_injection.yml"
+    },
+    {
+        "title": "CVE-2023-46747 Exploitation Activity - Proxy",
+        "id": "f195b2ff-e542-41bf-8d91-864fb81e5c20",
+        "status": "experimental",
+        "description": "Detects exploitation activity of CVE-2023-46747 an unauthenticated remote code execution vulnerability in F5 BIG-IP.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190",
+            "detection.emerging_threats",
+            "cve.2023.46747"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND c-uri LIKE '%/mgmt/tm/util/bash%' ESCAPE '\\') AND (( = '2f746d75692f436f6e74726f6c2f666f726d' AND  = '666f726d5f706167653d253266746d756925326673797374656d253266757365722532666372656174652e6a7370') OR ( = '/tmui/Control/form' AND  LIKE 'form\\_page=\\%2ftmui\\%2fsystem\\%2fuser\\%2fcreate.jsp' ESCAPE '\\')))"
+        ],
+        "filename": "proxy_cve_2023_46747_f5_remote_code_execution.yml"
+    },
+    {
+        "title": "CVE-2023-46747 Exploitation Activity - Webserver",
+        "id": "e9928831-ba14-42ea-a4bc-33d352b9929a",
+        "status": "experimental",
+        "description": "Detects exploitation activity of CVE-2023-46747 an unauthenticated remote code execution vulnerability in F5 BIG-IP.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190",
+            "detection.emerging_threats",
+            "cve.2023.46747"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND cs-uri-stem LIKE '%/mgmt/tm/util/bash%' ESCAPE '\\') AND (( = '2f746d75692f436f6e74726f6c2f666f726d' AND  = '666f726d5f706167653d253266746d756925326673797374656d253266757365722532666372656174652e6a7370') OR ( = '/tmui/Control/form' AND  LIKE 'form\\_page=\\%2ftmui\\%2fsystem\\%2fuser\\%2fcreate.jsp' ESCAPE '\\')))"
+        ],
+        "filename": "web_cve_2023_46747_f5_remote_code_execution.yml"
     },
     {
         "title": "CVE-2023-40477 Potential Exploitation - WinRAR Application Crash",
@@ -36041,10 +36219,10 @@
         "filename": "dns_query_win_mega_nz.yml"
     },
     {
-        "title": "AppX Package Installation Attempts Via AppInstaller",
+        "title": "AppX Package Installation Attempts Via AppInstaller.EXE",
         "id": "7cff77e1-9663-46a3-8260-17f2e1aa9d0a",
         "status": "test",
-        "description": "AppInstaller.exe is spawned by the default handler for the \"ms-appinstaller\" URI. It attempts to load/install a package from the referenced URL",
+        "description": "Detects DNS queries made by \"AppInstaller.EXE\". The AppInstaller is the default handler for the \"ms-appinstaller\" URI. It attempts to load/install a package from the referenced URL\n",
         "author": "frack113",
         "tags": [
             "attack.command_and_control",
@@ -36057,7 +36235,7 @@
         "rule": [
             "SELECT * FROM logs WHERE (NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.DesktopAppInstaller\\_%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\AppInstaller.exe' ESCAPE '\\')"
         ],
-        "filename": "dns_query_win_lolbin_appinstaller.yml"
+        "filename": "dns_query_win_appinstaller.yml"
     },
     {
         "title": "DNS Query Tor .Onion Address - Sysmon",

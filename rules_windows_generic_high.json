@@ -1816,17 +1816,17 @@
         "filename": "net_connection_win_certutil_initiated_connection.yml"
     },
     {
-        "title": "Download a File with IMEWDBLD.exe",
+        "title": "Network Connection Initiated By IMEWDBLD.EXE",
         "id": "8d7e392e-9b28-49e1-831d-5949c6281228",
         "status": "test",
-        "description": "Use IMEWDBLD.exe (built-in to windows) to download a file",
+        "description": "Detects network connections initiated by IMEWDBLD. This might indicate potential abuse to download arbitrary files via this utility",
         "author": "frack113",
         "tags": [
             "attack.command_and_control",
             "attack.t1105"
         ],
         "falsepositives": [
-            "Legitimate script"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
@@ -3747,27 +3747,6 @@
         "filename": "proc_creation_win_aspnet_compiler_susp_child_process.yml"
     },
     {
-        "title": "Windows Defender Download Activity",
-        "id": "46123129-1024-423e-9fae-43af4a0fa9a5",
-        "status": "test",
-        "description": "Detect the use of Windows Defender to download payloads",
-        "author": "Matthew Matchen",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%MpCmdRun.exe%' ESCAPE '\\' OR Description = 'Microsoft Malware Protection Command Line Utility') AND (CommandLine LIKE '%DownloadFile%' ESCAPE '\\' AND CommandLine LIKE '%url%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_susp_mpcmdrun_download.yml"
-    },
-    {
         "title": "Suspicious Child Process Of Veeam Dabatase",
         "id": "d55b793d-f847-4eea-b59a-5ab09908ac90",
         "status": "experimental",
@@ -5634,6 +5613,25 @@
         "filename": "proc_creation_win_susp_inline_win_api_access.yml"
     },
     {
+        "title": "Remote XSL Execution Via Msxsl.EXE",
+        "id": "75d0a94e-6252-448d-a7be-d953dff527bb",
+        "status": "experimental",
+        "description": "Detects the execution of the \"msxsl\" binary with an \"http\" keyword in the command line. This might indicate a potential remote execution of XSL files.",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1220"
+        ],
+        "falsepositives": [
+            "Msxsl is not installed by default and is deprecated, so unlikely on most systems."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_msxsl_remote_execution.yml"
+    },
+    {
         "title": "Potential Adplus.EXE Abuse",
         "id": "2f869d59-7f6a-4931-992c-cce556ff2d53",
         "status": "experimental",
@@ -5768,6 +5766,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName = 'REGSVR32.EXE') AND (CommandLine LIKE '%.bin' ESCAPE '\\' OR CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\' OR CommandLine LIKE '%.temp' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\' OR CommandLine LIKE '%.tmp' ESCAPE '\\' OR CommandLine LIKE '%.rtf' ESCAPE '\\' OR CommandLine LIKE '%.txt' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_regsvr32_susp_extensions.yml"
+    },
+    {
+        "title": "Arbitrary File Download Via IMEWDBLD.EXE",
+        "id": "863218bd-c7d0-4c52-80cd-0a96c09f54af",
+        "status": "experimental",
+        "description": "Detects usage of \"IMEWDBLD.exe\" to download arbitrary files",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\IMEWDBLD.exe' ESCAPE '\\' OR OriginalFileName = 'imewdbld.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_imewbdld_download.yml"
     },
     {
         "title": "Suspicious AgentExecutor PowerShell Execution",
@@ -6713,6 +6731,27 @@
         "filename": "proc_creation_win_browsers_chromium_susp_load_extension.yml"
     },
     {
+        "title": "File Download Via Windows Defender MpCmpRun.EXE",
+        "id": "46123129-1024-423e-9fae-43af4a0fa9a5",
+        "status": "test",
+        "description": "Detects the use of Windows Defender MpCmdRun.EXE to download files",
+        "author": "Matthew Matchen",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'MpCmdRun.exe' OR NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' OR CommandLine LIKE '%MpCmdRun.exe%' ESCAPE '\\' OR Description = 'Microsoft Malware Protection Command Line Utility') AND (CommandLine LIKE '%DownloadFile%' ESCAPE '\\' AND CommandLine LIKE '%url%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mpcmdrun_download_arbitrary_file.yml"
+    },
+    {
         "title": "Suspicious Splwow64 Without Params",
         "id": "1f1a8509-2cbb-44f5-8751-8e1571518ce2",
         "status": "test",
@@ -7520,6 +7559,44 @@
         "filename": "proc_creation_win_susp_non_exe_image.yml"
     },
     {
+        "title": "File Download And Execution Via IEExec.EXE",
+        "id": "9801abb8-e297-4dbf-9fbd-57dde0e830ad",
+        "status": "test",
+        "description": "Detects execution of the IEExec utility to download and execute files",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\IEExec.exe' ESCAPE '\\' OR OriginalFileName = 'IEExec.exe') AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_ieexec_download.yml"
+    },
+    {
+        "title": "Suspicious Calculator Usage",
+        "id": "737e618a-a410-49b5-bec3-9e55ff7fbc15",
+        "status": "test",
+        "description": "Detects suspicious use of 'calc.exe' with command line parameters or in a suspicious directory, which is likely caused by some PoC or detection evasion.\n",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%\\\\calc.exe %' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')))))"
+        ],
+        "filename": "proc_creation_win_calc_uncommon_exec.yml"
+    },
+    {
         "title": "Tor Client/Browser Execution",
         "id": "62f7c9bf-9135-49b2-8aeb-1e54a6ecc13c",
         "status": "test",
@@ -7711,25 +7788,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_cmstp_execution_by_creation.yml"
-    },
-    {
-        "title": "Abusing IEExec To Download Payloads",
-        "id": "9801abb8-e297-4dbf-9fbd-57dde0e830ad",
-        "status": "test",
-        "description": "Detects execution of the IEExec utility to download payloads",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\IEExec.exe' ESCAPE '\\' OR OriginalFileName = 'IEExec.exe') AND (CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_ieexec_download.yml"
     },
     {
         "title": "Service Registry Key Deleted Via Reg.EXE",
@@ -8784,6 +8842,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\winget.exe' ESCAPE '\\' OR OriginalFileName = 'winget.exe') AND (CommandLine LIKE '%source %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\') AND CommandLine REGEXP '://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}')"
         ],
         "filename": "proc_creation_win_winget_add_susp_custom_source.yml"
+    },
+    {
+        "title": "Potential Excel.EXE DCOM Lateral Movement Via ActivateMicrosoftApp",
+        "id": "551d9c1f-816c-445b-a7a6-7a3864720d60",
+        "status": "experimental",
+        "description": "Detects suspicious child processes of Excel which could be an indicator of lateral movement leveraging the \"ActivateMicrosoftApp\" Excel DCOM object.\n",
+        "author": "Aaron Stratton",
+        "tags": [
+            "attack.t1021.003",
+            "attack.lateral_movement"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' AND (OriginalFileName IN ('foxprow.exe', 'schdplus.exe', 'winproj.exe') OR (NewProcessName LIKE '%\\\\foxprow.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schdplus.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winproj.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_office_excel_dcom_lateral_movement.yml"
     },
     {
         "title": "Suspicious Download From Direct IP Via Bitsadmin",
@@ -10223,25 +10300,6 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND Company = 'Cube0x0')"
         ],
         "filename": "proc_creation_win_hktl_execution_via_pe_metadata.yml"
-    },
-    {
-        "title": "Suspicious Calculator Usage",
-        "id": "737e618a-a410-49b5-bec3-9e55ff7fbc15",
-        "status": "test",
-        "description": "Detects suspicious use of 'calc.exe' with command line parameters or in a suspicious directory, which is likely caused by some PoC or detection evasion",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%\\\\calc.exe %' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')))))"
-        ],
-        "filename": "proc_creation_win_susp_calc.yml"
     },
     {
         "title": "Renamed Mavinject.EXE Execution",
@@ -15249,8 +15307,8 @@
     {
         "title": "Potential CVE-2021-26084 Exploitation Attempt",
         "id": "38825179-3c78-4fed-b222-2e2166b926b1",
-        "description": "Detects potential exploitation of CVE-2021-260841 a Confluence RCE using OGNL injection",
         "status": "experimental",
+        "description": "Detects potential exploitation of CVE-2021-260841 a Confluence RCE using OGNL injection",
         "author": "Sittikorn S, Nuttakorn T",
         "tags": [
             "attack.initial_access",
@@ -15573,7 +15631,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((cs-uri-query LIKE '%/owa/calendar/a%' ESCAPE '\\' AND cs-method = 'POST') AND NOT (sc-status = '503'))"
+            "SELECT * FROM logs WHERE ((cs-uri-query LIKE '%/owa/calendar/a%' ESCAPE '\\' AND cs-method = 'POST') AND NOT ((sc-status = '503')))"
         ],
         "filename": "web_cve_2021_28480_exchange_exploit.yml"
     },
@@ -15977,7 +16035,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND sc-status = '200' AND cs-uri-query LIKE '%/owa/%' ESCAPE '\\' AND cs-uri-query LIKE '%/powershell%' ESCAPE '\\' AND (cs-uri-query LIKE '%@%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%40%' ESCAPE '\\')) AND NOT (cs-user-agent IN ('ClientInfo', 'Microsoft WinRM Client', 'Exchange BackEnd Probes')))"
+            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND sc-status = '200' AND cs-uri-query LIKE '%/owa/%' ESCAPE '\\' AND cs-uri-query LIKE '%/powershell%' ESCAPE '\\' AND (cs-uri-query LIKE '%@%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%40%' ESCAPE '\\')) AND NOT ((cs-user-agent IN ('ClientInfo', 'Microsoft WinRM Client', 'Exchange BackEnd Probes'))))"
         ],
         "filename": "web_exchange_owassrf_exploitation.yml"
     },
@@ -19169,6 +19227,48 @@
             "SELECT * FROM logs WHERE (cs-method = 'GET' AND cs-uri-query LIKE '%/geoserver/ows%' ESCAPE '\\' AND cs-uri-query LIKE '%CQL\\_FILTER=%' ESCAPE '\\' AND (cs-uri-query LIKE '%PropertyIsLike%' ESCAPE '\\' OR cs-uri-query LIKE '%strEndsWith%' ESCAPE '\\' OR cs-uri-query LIKE '%strStartsWith%' ESCAPE '\\' OR cs-uri-query LIKE '%FeatureId%' ESCAPE '\\' OR cs-uri-query LIKE '%jsonArrayContains%' ESCAPE '\\' OR cs-uri-query LIKE '%DWithin%' ESCAPE '\\') AND (cs-uri-query LIKE '%+--%' ESCAPE '\\' OR cs-uri-query LIKE '%+AS+%' ESCAPE '\\' OR cs-uri-query LIKE '%+OR+%' ESCAPE '\\' OR cs-uri-query LIKE '%FROM%' ESCAPE '\\' OR cs-uri-query LIKE '%ORDER+BY%' ESCAPE '\\' OR cs-uri-query LIKE '%SELECT%' ESCAPE '\\' OR cs-uri-query LIKE '%sleep\\%28%' ESCAPE '\\' OR cs-uri-query LIKE '%substring\\%28%' ESCAPE '\\' OR cs-uri-query LIKE '%UNION%' ESCAPE '\\' OR cs-uri-query LIKE '%WHERE%' ESCAPE '\\'))"
         ],
         "filename": "web_cve_2023_25157_geoserver_sql_injection.yml"
+    },
+    {
+        "title": "CVE-2023-46747 Exploitation Activity - Proxy",
+        "id": "f195b2ff-e542-41bf-8d91-864fb81e5c20",
+        "status": "experimental",
+        "description": "Detects exploitation activity of CVE-2023-46747 an unauthenticated remote code execution vulnerability in F5 BIG-IP.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190",
+            "detection.emerging_threats",
+            "cve.2023.46747"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND c-uri LIKE '%/mgmt/tm/util/bash%' ESCAPE '\\') AND (( = '2f746d75692f436f6e74726f6c2f666f726d' AND  = '666f726d5f706167653d253266746d756925326673797374656d253266757365722532666372656174652e6a7370') OR ( = '/tmui/Control/form' AND  LIKE 'form\\_page=\\%2ftmui\\%2fsystem\\%2fuser\\%2fcreate.jsp' ESCAPE '\\')))"
+        ],
+        "filename": "proxy_cve_2023_46747_f5_remote_code_execution.yml"
+    },
+    {
+        "title": "CVE-2023-46747 Exploitation Activity - Webserver",
+        "id": "e9928831-ba14-42ea-a4bc-33d352b9929a",
+        "status": "experimental",
+        "description": "Detects exploitation activity of CVE-2023-46747 an unauthenticated remote code execution vulnerability in F5 BIG-IP.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190",
+            "detection.emerging_threats",
+            "cve.2023.46747"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND cs-uri-stem LIKE '%/mgmt/tm/util/bash%' ESCAPE '\\') AND (( = '2f746d75692f436f6e74726f6c2f666f726d' AND  = '666f726d5f706167653d253266746d756925326673797374656d253266757365722532666372656174652e6a7370') OR ( = '/tmui/Control/form' AND  LIKE 'form\\_page=\\%2ftmui\\%2fsystem\\%2fuser\\%2fcreate.jsp' ESCAPE '\\')))"
+        ],
+        "filename": "web_cve_2023_46747_f5_remote_code_execution.yml"
     },
     {
         "title": "Potential MOVEit Transfer CVE-2023-34362 Exploitation",
