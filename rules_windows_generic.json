@@ -4185,7 +4185,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND CommandLine LIKE '%lsass%' ESCAPE '\\') OR (CommandLine LIKE '% /i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% /i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '%findstr \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe lsass%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((((NewProcessName LIKE '%\\\\find.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\') OR OriginalFileName IN ('FIND.EXE', 'FINDSTR.EXE')) AND CommandLine LIKE '%lsass%' ESCAPE '\\') OR (CommandLine LIKE '% /i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% /i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '%findstr \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe lsass%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_findstr_lsass.yml"
     },
@@ -6610,7 +6610,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\WINDOWS\\\\explorer.exe' ESCAPE '\\'))) AND NOT (((CommandLine LIKE '%netlogon.bat%' ESCAPE '\\' OR CommandLine LIKE '%UsrLogon.cmd%' ESCAPE '\\')) OR (CommandLine = 'PowerShell.exe') OR ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\proquota.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\proquota.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\Citrix\\\\System32\\\\icast.exe' ESCAPE '\\') OR (NewProcessName = '')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE '%:\\\\WINDOWS\\\\explorer.exe' ESCAPE '\\'))) AND NOT (((CommandLine LIKE '%netlogon.bat%' ESCAPE '\\' OR CommandLine LIKE '%UsrLogon.cmd%' ESCAPE '\\')) OR (CommandLine = 'PowerShell.exe') OR ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\proquota.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\proquota.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%:\\\\Program Files (x86)\\\\Citrix\\\\HDX\\\\bin\\\\cmstart.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\Citrix\\\\HDX\\\\bin\\\\icast.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\Citrix\\\\System32\\\\icast.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\Citrix\\\\HDX\\\\bin\\\\cmstart.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\Citrix\\\\HDX\\\\bin\\\\icast.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\Citrix\\\\System32\\\\icast.exe' ESCAPE '\\')) OR (NewProcessName = '')))"
         ],
         "filename": "proc_creation_win_userinit_uncommon_child_processes.yml"
     },
@@ -7709,26 +7709,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName = 'msdt.exe') AND (CommandLine LIKE '%IT\\_BrowseForFile=%' ESCAPE '\\' OR (CommandLine LIKE '% PCWDiagnostic%' ESCAPE '\\' AND (CommandLine LIKE '% /af %' ESCAPE '\\' OR CommandLine LIKE '% -af %' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_msdt_arbitrary_command_execution.yml"
-    },
-    {
-        "title": "Proxy Execution via Wuauclt",
-        "id": "af77cf95-c469-471c-b6a0-946c685c4798",
-        "status": "test",
-        "description": "Detects the use of the Windows Update Client binary (wuauclt.exe) to proxy execute code.",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), Florian Roth (Nextron Systems), Sreeman, FPT.EagleEye Team",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\wuauclt.exe' ESCAPE '\\' OR OriginalFileName = 'wuauclt.exe') AND (CommandLine LIKE '%UpdateDeploymentProvider%' ESCAPE '\\' AND CommandLine LIKE '%.dll%' ESCAPE '\\' AND CommandLine LIKE '%RunHandlerComServer%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% /UpdateDeploymentProvider UpdateDeploymentProvider.dll %' ESCAPE '\\' OR CommandLine LIKE '% wuaueng.dll %' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_lolbin_wuauclt.yml"
     },
     {
         "title": "Suspicious Windows Defender Registry Key Tampering Via Reg.EXE",
@@ -9100,7 +9080,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\WerFault.exe' ESCAPE '\\' AND CommandLine LIKE '%WerFault.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND CommandLine LIKE '%rundll32.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regsvcs.exe' ESCAPE '\\' AND CommandLine LIKE '%regsvcs.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regasm.exe' ESCAPE '\\' AND CommandLine LIKE '%regasm.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND CommandLine LIKE '%regsvr32.exe' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\{%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\setup.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ((NewProcessName LIKE '%\\\\WerFault.exe' ESCAPE '\\' AND CommandLine LIKE '%WerFault.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND CommandLine LIKE '%rundll32.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regsvcs.exe' ESCAPE '\\' AND CommandLine LIKE '%regsvcs.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regasm.exe' ESCAPE '\\' AND CommandLine LIKE '%regasm.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND CommandLine LIKE '%regsvr32.exe' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\{%' ESCAPE '\\')) AND ParentProcessName LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\Application\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\Installer\\\\setup.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%--uninstall --channel=stable%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND CommandLine LIKE '%rundll32.exe' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_susp_bad_opsec_sacrificial_processes.yml"
     },
@@ -10140,7 +10120,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND (CommandLine LIKE '%cpassword%' ESCAPE '\\' AND CommandLine LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.xml%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\find.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\') OR OriginalFileName IN ('FIND.EXE', 'FINDSTR.EXE')) AND (CommandLine LIKE '%cpassword%' ESCAPE '\\' AND CommandLine LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.xml%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_findstr_gpp_passwords.yml"
     },
@@ -10182,27 +10162,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\createdump.exe' ESCAPE '\\' OR OriginalFileName LIKE 'FX\\_VER\\_INTERNALNAME\\_STR' ESCAPE '\\') AND (CommandLine LIKE '% -u %' ESCAPE '\\' OR CommandLine LIKE '% --full %' ESCAPE '\\' OR CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% --name %' ESCAPE '\\' OR CommandLine LIKE '%.dmp %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_createdump_lolbin_execution.yml"
-    },
-    {
-        "title": "Windows Update Client LOLBIN",
-        "id": "d7825193-b70a-48a4-b992-8b5b3015cc11",
-        "status": "test",
-        "description": "Detects code execution via the Windows Update client (wuauclt)",
-        "author": "FPT.EagleEye Team",
-        "tags": [
-            "attack.command_and_control",
-            "attack.execution",
-            "attack.t1105",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\wuauclt.exe' ESCAPE '\\' OR OriginalFileName = 'wuauclt.exe') AND (CommandLine LIKE '%/UpdateDeploymentProvider%' ESCAPE '\\' AND CommandLine LIKE '%/RunHandlerComServer%' ESCAPE '\\' AND CommandLine LIKE '%.dll%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% /ClassId %' ESCAPE '\\' OR CommandLine LIKE '% wuaueng.dll %' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_wuauclt_execution.yml"
     },
     {
         "title": "Format.com FileSystem LOLBIN",
@@ -10941,7 +10900,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\' OR OriginalFileName = 'FINDSTR.EXE') AND CommandLine LIKE '% 385201%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\find.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\findstr.exe' ESCAPE '\\') OR OriginalFileName IN ('FIND.EXE', 'FINDSTR.EXE')) AND CommandLine LIKE '% 385201%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_findstr_sysmon_discovery_via_default_altitude.yml"
     },
@@ -11473,6 +11432,26 @@
         "filename": "proc_creation_win_renamed_megasync.yml"
     },
     {
+        "title": "Proxy Execution Via Wuauclt.EXE",
+        "id": "af77cf95-c469-471c-b6a0-946c685c4798",
+        "status": "test",
+        "description": "Detects the use of the Windows Update Client binary (wuauclt.exe) for proxy execution.",
+        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), Florian Roth (Nextron Systems), Sreeman, FPT.EagleEye Team",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\wuauclt.exe' ESCAPE '\\' OR OriginalFileName = 'wuauclt.exe') AND (CommandLine LIKE '%UpdateDeploymentProvider%' ESCAPE '\\' AND CommandLine LIKE '%RunHandlerComServer%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% /UpdateDeploymentProvider UpdateDeploymentProvider.dll %' ESCAPE '\\') OR (CommandLine LIKE '% wuaueng.dll %' ESCAPE '\\') OR ((CommandLine LIKE '%:\\\\Windows\\\\UUS\\\\Packages\\\\Preview\\\\amd64\\\\updatedeploy.dll /ClassId%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\UUS\\\\amd64\\\\UpdateDeploy.dll /ClassId%' ESCAPE '\\')) OR (CommandLine LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\UpdateDeploy.dll /ClassId %' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_wuauclt_dll_loading.yml"
+    },
+    {
         "title": "Suspicious Child Process Of BgInfo.EXE",
         "id": "811f459f-9231-45d4-959a-0266c6311987",
         "status": "experimental",
@@ -11568,7 +11547,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\sdbinst.exe' ESCAPE '\\' OR OriginalFileName = 'sdbinst.exe') AND NOT ((CommandLine LIKE '%.sdb%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\sdbinst.exe' ESCAPE '\\' AND CommandLine LIKE '% -m -bg%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\sdbinst.exe' ESCAPE '\\' AND CommandLine LIKE '% -mm' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\sdbinst.exe' ESCAPE '\\' OR OriginalFileName = 'sdbinst.exe') AND NOT ((CommandLine LIKE '%.sdb%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\sdbinst.exe' ESCAPE '\\' AND CommandLine LIKE '% -m -bg%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\sdbinst.exe' ESCAPE '\\' AND CommandLine LIKE '% -mm' ESCAPE '\\') OR (CommandLine = '') OR (CommandLine = '')))"
         ],
         "filename": "proc_creation_win_sdbinst_susp_extension.yml"
     },
@@ -13009,7 +12988,7 @@
         "title": "Suspicious Windows Update Agent Empty Cmdline",
         "id": "52d097e2-063e-4c9c-8fbb-855c8948d135",
         "status": "test",
-        "description": "Detects suspicious Windows Update Agent activity in which a wuauclt.exe process command line doesn't contain any command line flags",
+        "description": "Detects suspicious Windows Update Agent activity in which a wuauclt.exe process command line doesn't contain any command line flags\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -13020,7 +12999,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\Wuauclt.exe' ESCAPE '\\' OR OriginalFileName = 'Wuauclt.exe') AND CommandLine LIKE '%\\\\Wuauclt.exe' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\Wuauclt.exe' ESCAPE '\\' OR OriginalFileName = 'Wuauclt.exe') AND (CommandLine LIKE '%Wuauclt' ESCAPE '\\' OR CommandLine LIKE '%Wuauclt.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wuauclt_no_cli_flags_execution.yml"
     },
@@ -14159,7 +14138,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('Excel.exe', 'MSACCESS.EXE', 'OneNote.exe', 'POWERPNT.EXE', 'WinWord.exe') OR Description IN ('Microsoft Access', 'Microsoft Excel', 'Microsoft OneNote', 'Microsoft PowerPoint', 'Microsoft Word')) AND NOT ((NewProcessName LIKE '%\\\\EXCEL.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MSACCESS.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ONENOTE.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\POWERPNT.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINWORD.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('Excel.exe', 'MSACCESS.EXE', 'MSPUB.EXE', 'OneNote.exe', 'OneNoteM.exe', 'OUTLOOK.EXE', 'POWERPNT.EXE', 'WinWord.exe') OR Description IN ('Microsoft Access', 'Microsoft Excel', 'Microsoft OneNote', 'Microsoft Outlook', 'Microsoft PowerPoint', 'Microsoft Publisher', 'Microsoft Word', 'Sent to OneNote Tool')) AND NOT (((NewProcessName LIKE '%\\\\EXCEL.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\excelcnv.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MSACCESS.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MSPUB.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ONENOTE.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ONENOTEM.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\OUTLOOK.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\POWERPNT.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINWORD.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_renamed_office_processes.yml"
     },
@@ -19003,27 +18982,6 @@
         "filename": "proxy_exploit_cve_2023_36884_office_windows_html_rce_url_marker_traffic.yml"
     },
     {
-        "title": "Potential Information Disclosure CVE-2023-43261 Exploitation - Proxy",
-        "id": "f48f5368-355c-4a1b-8bf5-11c13d589eaa",
-        "status": "experimental",
-        "description": "Detects exploitation attempts of CVE-2023-43261 and information disclosure in Milesight UR5X, UR32L, UR32, UR35, UR41 before v35.3.0.7 that allows attackers to access sensitive router components in proxy logs.\n",
-        "author": "Nasreddine Bencherchali (Nextron Systems), Thurein Oo",
-        "tags": [
-            "attack.initial_access",
-            "attack.t1190",
-            "cve.2023.43621",
-            "detection.emerging_threats"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (cs-method = 'GET' AND c-uri LIKE '%/lang/log/httpd.log%' ESCAPE '\\' AND sc-status = '200')"
-        ],
-        "filename": "proxy_cve_2023_43261_milesight_information_disclosure.yml"
-    },
-    {
         "title": "Potential Information Disclosure CVE-2023-43261 Exploitation - Web",
         "id": "a2bcca38-9f3a-4d5e-b603-0c587e8569d7",
         "status": "experimental",
@@ -19042,7 +19000,28 @@
         "rule": [
             "SELECT * FROM logs WHERE (cs-method = 'GET' AND cs-uri-stem LIKE '%/lang/log/httpd.log%' ESCAPE '\\' AND sc-status = '200')"
         ],
-        "filename": "web_cve_2023_43261_milesight_information_disclosure.yml"
+        "filename": "web_exploit_cve_2023_43261_milesight_information_disclosure.yml"
+    },
+    {
+        "title": "Potential Information Disclosure CVE-2023-43261 Exploitation - Proxy",
+        "id": "f48f5368-355c-4a1b-8bf5-11c13d589eaa",
+        "status": "experimental",
+        "description": "Detects exploitation attempts of CVE-2023-43261 and information disclosure in Milesight UR5X, UR32L, UR32, UR35, UR41 before v35.3.0.7 that allows attackers to access sensitive router components in proxy logs.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Thurein Oo",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190",
+            "cve.2023.43621",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-method = 'GET' AND c-uri LIKE '%/lang/log/httpd.log%' ESCAPE '\\' AND sc-status = '200')"
+        ],
+        "filename": "proxy_exploit_cve_2023_43261_milesight_information_disclosure.yml"
     },
     {
         "title": "Potential CVE-2023-27363 Exploitation - HTA File Creation By FoxitPDFReader",
@@ -19311,6 +19290,29 @@
             "SELECT * FROM logs WHERE (cs-method = 'GET' AND (cs-uri-stem LIKE '%/human2.aspx%' ESCAPE '\\' OR cs-uri-stem LIKE '%/\\_human2.aspx%' ESCAPE '\\'))"
         ],
         "filename": "web_cve_2023_34362_known_payload_request.yml.yml"
+    },
+    {
+        "title": "CVE-2023-22518 Exploitation Attempt - Suspicious Confluence Child Process (Linux)",
+        "id": "f8987c03-4290-4c96-870f-55e75ee377f4",
+        "status": "experimental",
+        "description": "Detects exploitation attempt of CVE-2023-22518 (Confluence Data Center / Confluence Server), where an attacker can exploit vulnerable endpoints to e.g. create admin accounts and execute arbitrary commands.\n",
+        "author": "Andreas Braathen (mnemonic.io)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.execution",
+            "attack.t1059",
+            "attack.initial_access",
+            "attack.t1190",
+            "cve.2023.22518"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((ParentProcessName LIKE '%/java' ESCAPE '\\' AND ParentCommandLine LIKE '%confluence%' ESCAPE '\\' AND (NewProcessName LIKE '%/bash' ESCAPE '\\' OR NewProcessName LIKE '%/curl' ESCAPE '\\' OR NewProcessName LIKE '%/echo' ESCAPE '\\' OR NewProcessName LIKE '%/wget' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%ulimit -u%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_lnx_exploit_cve_2023_22518_confluence_java_child_proc.yml"
     },
     {
         "title": "Potential MuddyWater APT Activity",
@@ -19851,7 +19853,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((SourceImage LIKE '%\\\\bash.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cscript.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cvtres.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\defrag.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\dnx.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\excel.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\expand.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\explorer.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\find.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\findstr.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\gpupdate.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\hh.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\installutil.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\lync.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\makecab.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mDNSResponder.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mshta.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mspaint.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\outlook.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\ping.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\provtool.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\python.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\runonce.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\sapcimc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\tstheme.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\userinit.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssadmin.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\w3wp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winscp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winword.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wmic.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wscript.exe' ESCAPE '\\') AND NOT ((SourceImage LIKE '%:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\' AND (TargetImage LIKE '%:\\\\Windows\\\\System32\\\\services.exe' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\System32\\\\wininit.exe' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\System32\\\\csrss.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\' AND TargetParentImage = 'System' AND TargetParentProcessId = '4') OR ((SourceImage LIKE '%:\\\\Windows\\\\System32\\\\schtasks.exe' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\SysWOW64\\\\schtasks.exe' ESCAPE '\\') AND TargetImage LIKE '%:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR (SourceImage LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND (TargetImage LIKE '%:\\\\Windows\\\\System32\\\\mmc.exe' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Program Files\\\\NVIDIA Corporation\\\\NVIDIA GeForce Experience\\\\NVIDIA GeForce Experience.exe' ESCAPE '\\')) OR (TargetImage = 'System'))) AND NOT ((SourceImage LIKE '%\\\\Microsoft Office\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\POWERPNT.EXE' ESCAPE '\\' AND TargetImage LIKE '%:\\\\Windows\\\\System32\\\\csrss.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (((SourceImage LIKE '%\\\\bash.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cscript.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cvtres.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\defrag.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\dnx.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\excel.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\expand.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\explorer.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\find.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\findstr.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\gpupdate.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\hh.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\iexplore.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\installutil.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\lync.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\makecab.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mDNSResponder.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mshta.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mspaint.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\outlook.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\ping.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\provtool.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\python.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\runonce.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\sapcimc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\tstheme.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\userinit.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssadmin.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\w3wp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winscp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winword.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wmic.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wscript.exe' ESCAPE '\\') AND NOT ((SourceImage LIKE '%:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\' AND (TargetImage LIKE '%:\\\\Windows\\\\System32\\\\services.exe' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\System32\\\\wininit.exe' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\System32\\\\csrss.exe' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\System32\\\\LogonUI.exe' ESCAPE '\\')) OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\' AND TargetParentProcessId = '4') OR ((SourceImage LIKE '%:\\\\Windows\\\\System32\\\\schtasks.exe' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\SysWOW64\\\\schtasks.exe' ESCAPE '\\') AND TargetImage LIKE '%:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR (SourceImage LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND (TargetImage LIKE '%:\\\\Program Files (x86)\\\\' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Program Files\\\\' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\System32\\\\' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\SysWOW64\\\\' ESCAPE '\\')) OR (TargetImage = 'System') OR (SourceImage LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (TargetImage LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\')))) AND NOT ((SourceImage LIKE '%\\\\Microsoft Office\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\POWERPNT.EXE' ESCAPE '\\' AND TargetImage LIKE '%:\\\\Windows\\\\System32\\\\csrss.exe' ESCAPE '\\')))"
         ],
         "filename": "create_remote_thread_win_uncommon_source_image.yml"
     },
@@ -21478,7 +21480,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE '%.evtx' ESCAPE '\\' AND NOT ((TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\Containers\\\\BaseImages\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\dllhost.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%.evtx' ESCAPE '\\' AND NOT ((TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\Containers\\\\BaseImages\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\' ESCAPE '\\') OR ((NewProcessName LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\dllhost.exe' ESCAPE '\\'))))"
         ],
         "filename": "file_event_win_create_evtx_non_common_locations.yml"
     },
@@ -27308,25 +27310,6 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID IN ('4663', '4656') AND AccessMask IN ('0x40', '0x1400', '0x100000', '0x1410', '0x1010', '0x1438', '0x143a', '0x1418', '0x1f0fff', '0x1f1fff', '0x1f2fff', '0x1f3fff', '40', '1400', '1000', '100000', '1410', '1010', '1438', '143a', '1418', '1f0fff', '1f1fff', '1f2fff', '1f3fff') AND ObjectType = 'Process' AND ObjectName LIKE '%\\\\lsass.exe' ESCAPE '\\') AND NOT ((SubjectUserName LIKE '%$' ESCAPE '\\') OR (ProcessName LIKE 'C:\\\\Program Files%' ESCAPE '\\') OR (ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\wbem\\\\WmiPrvSE.exe' ESCAPE '\\' AND AccessMask = '0x1410') OR (ProcessName LIKE '%\\\\SteamLibrary\\\\steamapps\\\\%' ESCAPE '\\')))"
         ],
         "filename": "win_security_lsass_access_non_system_account.yml"
-    },
-    {
-        "title": "Windows Defender Exclusion Set",
-        "id": "e9c8808f-4cfb-4ba9-97d4-e5f3beaa244d",
-        "status": "test",
-        "description": "Detects scenarios where an Windows Defender exclusion was added in registry where an entity would want to bypass antivirus scanning from Windows Defender",
-        "author": "@BarryShooshooga",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1562.001"
-        ],
-        "falsepositives": [
-            "Intended inclusions by administrator"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4657', '4656', '4660', '4663') AND ObjectName LIKE '%\\\\Microsoft\\\\Windows Defender\\\\Exclusions\\\\%' ESCAPE '\\')"
-        ],
-        "filename": "win_security_defender_bypass.yml"
     },
     {
         "title": "Important Scheduled Task Deleted/Disabled",
