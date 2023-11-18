@@ -1514,6 +1514,25 @@
         "filename": "posh_pc_delete_volume_shadow_copies.yml"
     },
     {
+        "title": "Communication To Ngrok Domains",
+        "id": "18249279-932f-45e2-b37a-8925f2597670",
+        "status": "test",
+        "description": "Detects an executable accessing ngrok domains, which could be a sign of forbidden data exfiltration by malicious actors",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1567.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of ngrok domains"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Initiated = 'true' AND (DestinationHostname LIKE '%.ngrok-free.app' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok-free.dev' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok.app' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok.dev' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok.io' ESCAPE '\\'))"
+        ],
+        "filename": "net_connection_win_ngrok_domains.yml"
+    },
+    {
         "title": "Suspicious Outbound Kerberos Connection",
         "id": "e54979bd-c5f9-4d6c-967b-a04b19ac4c74",
         "status": "test",
@@ -1554,25 +1573,6 @@
             "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Image LIKE '%\\\\notepad.exe' ESCAPE '\\' AND NOT (DestinationPort = '9100'))"
         ],
         "filename": "net_connection_win_notepad_network_connection.yml"
-    },
-    {
-        "title": "Communication To Ngrok.Io",
-        "id": "18249279-932f-45e2-b37a-8925f2597670",
-        "status": "test",
-        "description": "Detects an executable accessing ngrok.io, which could be a sign of forbidden exfiltration of data exfiltration by malicious actors",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1567.001"
-        ],
-        "falsepositives": [
-            "Legitimate use of ngrok.io"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Initiated = 'true' AND DestinationHostname LIKE '%.ngrok.io' ESCAPE '\\')"
-        ],
-        "filename": "net_connection_win_ngrok_io.yml"
     },
     {
         "title": "Potential Dead Drop Resolvers",

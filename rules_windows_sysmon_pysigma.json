@@ -4694,6 +4694,25 @@
         "filename": ""
     },
     {
+        "title": "Communication To Ngrok Domains",
+        "id": "18249279-932f-45e2-b37a-8925f2597670",
+        "status": "test",
+        "description": "Detects an executable accessing ngrok domains, which could be a sign of forbidden data exfiltration by malicious actors",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1567.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of ngrok domains"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND (Initiated='true' AND (DestinationHostname LIKE '%.ngrok-free.app' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok-free.dev' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok.app' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok.dev' ESCAPE '\\' OR DestinationHostname LIKE '%.ngrok.io' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Suspicious Outbound Kerberos Connection",
         "id": "e54979bd-c5f9-4d6c-967b-a04b19ac4c74",
         "status": "test",
@@ -4732,25 +4751,6 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND (Image LIKE '%\\\\notepad.exe' ESCAPE '\\' AND (NOT DestinationPort=9100)))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Communication To Ngrok.Io",
-        "id": "18249279-932f-45e2-b37a-8925f2597670",
-        "status": "test",
-        "description": "Detects an executable accessing ngrok.io, which could be a sign of forbidden exfiltration of data exfiltration by malicious actors",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1567.001"
-        ],
-        "falsepositives": [
-            "Legitimate use of ngrok.io"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND (Initiated='true' AND DestinationHostname LIKE '%.ngrok.io' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -33831,7 +33831,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND ((Image LIKE '%wuauclt%' ESCAPE '\\' AND CommandLine LIKE '% /RunHandlerComServer%' ESCAPE '\\') AND (NOT ((DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '169.254.%' ESCAPE '\\' OR DestinationIp LIKE '172.16%' ESCAPE '\\' OR DestinationIp LIKE '172.17%' ESCAPE '\\' OR DestinationIp LIKE '172.18%' ESCAPE '\\' OR DestinationIp LIKE '172.19%' ESCAPE '\\' OR DestinationIp LIKE '172.20%' ESCAPE '\\' OR DestinationIp LIKE '172.21%' ESCAPE '\\' OR DestinationIp LIKE '172.22%' ESCAPE '\\' OR DestinationIp LIKE '172.23%' ESCAPE '\\' OR DestinationIp LIKE '172.24%' ESCAPE '\\' OR DestinationIp LIKE '172.25%' ESCAPE '\\' OR DestinationIp LIKE '172.26%' ESCAPE '\\' OR DestinationIp LIKE '172.27%' ESCAPE '\\' OR DestinationIp LIKE '172.28%' ESCAPE '\\' OR DestinationIp LIKE '172.29%' ESCAPE '\\' OR DestinationIp LIKE '172.30%' ESCAPE '\\' OR DestinationIp LIKE '172.31%' ESCAPE '\\' OR DestinationIp LIKE '192.168%' ESCAPE '\\') OR (DestinationIp LIKE '::1%' ESCAPE '\\' OR DestinationIp LIKE '0:0:0:0:0:0:0:1%' ESCAPE '\\' OR DestinationIp LIKE 'fe80:%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\') OR (DestinationIp LIKE '20.184.%' ESCAPE '\\' OR DestinationIp LIKE '20.185.%' ESCAPE '\\' OR DestinationIp LIKE '20.186.%' ESCAPE '\\' OR DestinationIp LIKE '20.187.%' ESCAPE '\\' OR DestinationIp LIKE '20.188.%' ESCAPE '\\' OR DestinationIp LIKE '20.189.%' ESCAPE '\\' OR DestinationIp LIKE '20.190.%' ESCAPE '\\' OR DestinationIp LIKE '20.191.%' ESCAPE '\\' OR DestinationIp LIKE '20.220.%' ESCAPE '\\' OR DestinationIp LIKE '20.221.%' ESCAPE '\\' OR DestinationIp LIKE '23.79.%' ESCAPE '\\' OR DestinationIp LIKE '51.10.%' ESCAPE '\\' OR DestinationIp LIKE '51.103.%' ESCAPE '\\' OR DestinationIp LIKE '51.104.%' ESCAPE '\\' OR DestinationIp LIKE '51.105.%' ESCAPE '\\' OR DestinationIp LIKE '52.239.%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Windows\\\\UUS\\\\Packages\\\\Preview\\\\amd64\\\\updatedeploy.dll /ClassId%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\UUS\\\\amd64\\\\UpdateDeploy.dll /ClassId%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\UpdateDeploy.dll /ClassId %' ESCAPE '\\') OR CommandLine IS NULL OR CommandLine=''))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND ((Image LIKE '%wuauclt%' ESCAPE '\\' AND CommandLine LIKE '% /RunHandlerComServer%' ESCAPE '\\') AND (NOT ((DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '169.254.%' ESCAPE '\\' OR DestinationIp LIKE '172.16%' ESCAPE '\\' OR DestinationIp LIKE '172.17%' ESCAPE '\\' OR DestinationIp LIKE '172.18%' ESCAPE '\\' OR DestinationIp LIKE '172.19%' ESCAPE '\\' OR DestinationIp LIKE '172.20%' ESCAPE '\\' OR DestinationIp LIKE '172.21%' ESCAPE '\\' OR DestinationIp LIKE '172.22%' ESCAPE '\\' OR DestinationIp LIKE '172.23%' ESCAPE '\\' OR DestinationIp LIKE '172.24%' ESCAPE '\\' OR DestinationIp LIKE '172.25%' ESCAPE '\\' OR DestinationIp LIKE '172.26%' ESCAPE '\\' OR DestinationIp LIKE '172.27%' ESCAPE '\\' OR DestinationIp LIKE '172.28%' ESCAPE '\\' OR DestinationIp LIKE '172.29%' ESCAPE '\\' OR DestinationIp LIKE '172.30%' ESCAPE '\\' OR DestinationIp LIKE '172.31%' ESCAPE '\\' OR DestinationIp LIKE '192.168%' ESCAPE '\\') OR (DestinationIp LIKE '::1%' ESCAPE '\\' OR DestinationIp LIKE '0:0:0:0:0:0:0:1%' ESCAPE '\\' OR DestinationIp LIKE 'fe80:%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\') OR (DestinationIp LIKE '20.184.%' ESCAPE '\\' OR DestinationIp LIKE '20.185.%' ESCAPE '\\' OR DestinationIp LIKE '20.186.%' ESCAPE '\\' OR DestinationIp LIKE '20.187.%' ESCAPE '\\' OR DestinationIp LIKE '20.188.%' ESCAPE '\\' OR DestinationIp LIKE '20.189.%' ESCAPE '\\' OR DestinationIp LIKE '20.190.%' ESCAPE '\\' OR DestinationIp LIKE '20.191.%' ESCAPE '\\' OR DestinationIp LIKE '20.220.%' ESCAPE '\\' OR DestinationIp LIKE '20.221.%' ESCAPE '\\' OR DestinationIp LIKE '23.79.%' ESCAPE '\\' OR DestinationIp LIKE '51.10.%' ESCAPE '\\' OR DestinationIp LIKE '51.103.%' ESCAPE '\\' OR DestinationIp LIKE '51.104.%' ESCAPE '\\' OR DestinationIp LIKE '51.105.%' ESCAPE '\\' OR DestinationIp LIKE '52.239.%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Windows\\\\UUS\\\\Packages\\\\Preview\\\\amd64\\\\updatedeploy.dll /ClassId%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\UUS\\\\amd64\\\\UpdateDeploy.dll /ClassId%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\UpdateDeploy.dll /ClassId %' ESCAPE '\\') OR CommandLine IS NULL OR CommandLine=''))))"
         ],
         "filename": ""
     },
