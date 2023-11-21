@@ -25479,7 +25479,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE') AND (NOT (CommandLine IS NULL OR (CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine='') OR CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe C:\\\\Windows\\\\system32\\\\inetcpl.cpl,ClearMyTracksByProcess%' ESCAPE '\\' OR (ParentProcessName LIKE '%:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' AND CommandLine LIKE '%.cpl%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\syswow64\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND ParentCommandLine LIKE '% C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\%' ESCAPE '\\') OR CommandLine LIKE '% -localserver %' ESCAPE '\\' OR (ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe\" \"C:\\\\Program Files\\\\McAfee\\\\MSC\\\\mcmscins.dll\",DllUninstallFunction %' ESCAPE '\\' OR CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe\" /uninstall /longpath \"C:\\\\Program Files\\\\McAfee\\\\MSC\\\\mscrem.inf%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\{%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\setup.exe' ESCAPE '\\') OR ((CommandLine LIKE '%C:\\\\Windows\\\\Installer\\\\MSI%' ESCAPE '\\' AND CommandLine LIKE '%.tmp%' ESCAPE '\\' AND CommandLine LIKE '%zzzzInvokeManagedCustomActionOutOfProc%' ESCAPE '\\') AND (CommandLine LIKE '%Avira.OE.Setup%' ESCAPE '\\' OR CommandLine LIKE '%FindOldJetBrainsProduct%' ESCAPE '\\'))))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE') AND (NOT (CommandLine IS NULL OR (CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine='') OR CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe C:\\\\Windows\\\\system32\\\\inetcpl.cpl,ClearMyTracksByProcess%' ESCAPE '\\' OR (ParentProcessName LIKE '%:\\\\Program Files\\\\Internet Explorer\\\\iexplore.exe' ESCAPE '\\' AND CommandLine LIKE '%.cpl%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\syswow64\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\MsiExec.exe -Embedding%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Windows\\\\System32\\\\cmd.exe' ESCAPE '\\' AND ParentCommandLine LIKE '% C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\%' ESCAPE '\\') OR CommandLine LIKE '% -localserver %' ESCAPE '\\' OR (ParentCommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe\" \"C:\\\\Program Files\\\\McAfee\\\\MSC\\\\mcmscins.dll\",DllUninstallFunction %' ESCAPE '\\' OR CommandLine LIKE 'C:\\\\Windows\\\\system32\\\\rundll32.exe\" /uninstall /longpath \"C:\\\\Program Files\\\\McAfee\\\\MSC\\\\mscrem.inf%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\{%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\setup.exe' ESCAPE '\\') OR (CommandLine LIKE '%C:\\\\Windows\\\\Installer\\\\MSI%' ESCAPE '\\' AND CommandLine LIKE '%.tmp%' ESCAPE '\\' AND CommandLine LIKE '%zzzzInvokeManagedCustomActionOutOfProc%' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -32464,7 +32464,7 @@
         "id": "e2482f8d-3443-4237-b906-cc145d87a076",
         "status": "experimental",
         "description": "Detects registry modifications that change features of internal Windows tools (malware like Agent Tesla uses this technique)",
-        "author": "frack113, Nasreddine Bencherchali",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems), CrimpSec",
         "tags": [
             "attack.defense_evasion",
             "attack.t1112"
@@ -32474,7 +32474,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND (((TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableRegistryTools' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\System\\\\DisableCMD' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableTaskmgr' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\Explorer\\\\DisableNotificationCenter' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableChangePassword' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableLockWorkstation' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\Explorer\\\\StartMenuLogOff' ESCAPE '\\') AND NewValue='DWORD (0x00000001)') OR ((TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\shutdownwithoutlogon' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\ConsentPromptBehaviorAdmin' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\PushNotifications\\\\ToastEnabled' ESCAPE '\\' OR TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Storage\\\\Write Protection' ESCAPE '\\' OR TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\StorageDevicePolicies\\\\WriteProtect' ESCAPE '\\') AND NewValue='DWORD (0x00000000)')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND (((TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\Explorer\\\\StartMenuLogOff' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableChangePassword' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableLockWorkstation' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableRegistryTools' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\DisableTaskmgr' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\NoDispBackgroundPage' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\NoDispCPL' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\Explorer\\\\DisableNotificationCenter' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\System\\\\DisableCMD' ESCAPE '\\') AND NewValue='DWORD (0x00000001)') OR ((TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\ConsentPromptBehaviorAdmin' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\shutdownwithoutlogon' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\PushNotifications\\\\ToastEnabled' ESCAPE '\\' OR TargetObject LIKE '%SYSTEM\\\\CurrentControlSet\\\\Control\\\\Storage\\\\Write Protection' ESCAPE '\\' OR TargetObject LIKE '%SYSTEM\\\\CurrentControlSet\\\\Control\\\\StorageDevicePolicies\\\\WriteProtect' ESCAPE '\\') AND NewValue='DWORD (0x00000000)')))"
         ],
         "filename": ""
     },
@@ -34999,21 +34999,40 @@
         "filename": ""
     },
     {
-        "title": "DNS Query To Devtunnels And VsCode Tunnels",
-        "id": "b3e6418f-7c7a-4fad-993a-93b65027a9f1",
+        "title": "DNS Query To Devtunnels Domain",
+        "id": "1cb0c6ce-3d00-44fc-ab9c-6d6d577bf20b",
         "status": "experimental",
-        "description": "Detects DNS query to Devtunnels and Visual Studio Code tunnel domains. Attackers can be abuse these features to establish a reverse shell.\n",
+        "description": "Detects DNS query requests to Devtunnels domains. Attackers can abuse that feature to establish a reverse shell or persistence on a machine.\n",
         "author": "citron_ninja",
         "tags": [
             "attack.command_and_control",
             "attack.t1071.001"
         ],
         "falsepositives": [
-            "Legitimate use of Visual Studio Code tunnel will also trigger this"
+            "Legitimate use of Devtunnels will also trigger this."
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE QueryName LIKE '%.tunnels.api.visualstudio.com' ESCAPE '\\' OR QueryName LIKE '%.devtunnels.ms' ESCAPE '\\'"
+            "SELECT * FROM logs WHERE QueryName LIKE '%.devtunnels.ms' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "DNS Query To Visual Studio Code Tunnels Domain",
+        "id": "b3e6418f-7c7a-4fad-993a-93b65027a9f1",
+        "status": "experimental",
+        "description": "Detects DNS query requests to Visual Studio Code tunnel domains. Attackers can abuse that feature to establish a reverse shell or persistence on a machine.\n",
+        "author": "citron_ninja",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1071.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of Visual Studio Code tunnel will also trigger this."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE QueryName LIKE '%.tunnels.api.visualstudio.com' ESCAPE '\\'"
         ],
         "filename": ""
     },
@@ -36334,6 +36353,26 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' AND CommandLine LIKE '%/noconfig /fullpaths @%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "EventLog Query Requests By Builtin Utilities",
+        "id": "9cd55b6c-430a-4fa9-96f4-7cadf5229e9f",
+        "status": "experimental",
+        "description": "Detect attempts to query the contents of the event log using command line utilities. Attackers use this technique in order to look for sensitive information in the logs such as passwords, usernames, IPs, etc.\n",
+        "author": "Ali Alwashali, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.t1552",
+            "attack.credential_access",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Legitimate log access by administrators or troubleshooting tools"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%Select%' ESCAPE '\\' AND CommandLine LIKE '%Win32\\_NTLogEvent%' ESCAPE '\\') OR ((NewProcessName LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName='wevtutil.exe') AND (CommandLine LIKE '% qe %' ESCAPE '\\' OR CommandLine LIKE '% query-events %' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName='wevtutil.exe') AND CommandLine LIKE '% ntevent%' ESCAPE '\\') OR (CommandLine LIKE '%Get-WinEvent %' ESCAPE '\\' OR CommandLine LIKE '%get-eventlog %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -40239,6 +40278,25 @@
         "filename": ""
     },
     {
+        "title": "Network Connection Initiated To DevTunnels Domain",
+        "id": "9501f8e6-8e3d-48fc-a8a6-1089dd5d7ef4",
+        "status": "experimental",
+        "description": "Detects network connections to Devtunnels domains initiated by a process on a system. Attackers can abuse that feature to establish a reverse shell or persistence on a machine.\n",
+        "author": "Kamran Saifullah",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1567.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of Devtunnels will also trigger this."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Initiated='true' AND DestinationHostname LIKE '%.devtunnels.ms' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Network Connection Initiated By Regsvr32.EXE",
         "id": "c7e91a02-d771-4a6d-a700-42587e0b1095",
         "status": "test",
@@ -40334,6 +40392,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE ((DestinationPort=25 OR DestinationPort=587 OR DestinationPort=465 OR DestinationPort=2525) AND Initiated='true') AND (NOT ((Image LIKE '%\\\\thunderbird.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Program Files\\\\Microsoft\\\\Exchange Server\\\\%' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\microsoft.windowscommunicationsapps\\_%' ESCAPE '\\' AND Image LIKE '%\\\\HxTsr.exe' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Network Connection Initiated To Visual Studio Code Tunnels Domain",
+        "id": "4b657234-038e-4ad5-997c-4be42340bce4",
+        "status": "experimental",
+        "description": "Detects network connections to Visual Studio Code tunnel domains initiated by a process on a system. Attackers can abuse that feature to establish a reverse shell or persistence on a machine.\n",
+        "author": "Kamran Saifullah",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1567.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of Visual Studio Code tunnel will also trigger this."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Initiated='true' AND DestinationHostname LIKE '%.tunnels.api.visualstudio.com' ESCAPE '\\'"
         ],
         "filename": ""
     },
@@ -42477,24 +42554,6 @@
         "filename": ""
     },
     {
-        "title": "Potential Recon Activity Using Wevtutil",
-        "id": "beaa66d6-aa1b-4e3c-80f5-e0145369bfaf",
-        "status": "experimental",
-        "description": "Detects usage of the wevtutil utility to perform reconnaissance",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.discovery"
-        ],
-        "falsepositives": [
-            "Legitimate usage of the utility by administrators to query the event log"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\wevtutil.exe' ESCAPE '\\' AND (CommandLine LIKE '% qe %' ESCAPE '\\' OR CommandLine LIKE '% query-events %' ESCAPE '\\')) AND (CommandLine LIKE '%Microsoft-Windows-TerminalServices-LocalSessionManager/Operational%' ESCAPE '\\' OR CommandLine LIKE '%Microsoft-Windows-Terminal-Services-RemoteConnectionManager/Operational%' ESCAPE '\\' OR CommandLine LIKE '%Security%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Suspicious Execution of Powershell with Base64",
         "id": "fb843269-508c-4b76-8b8d-88679db22ce7",
         "status": "test",
@@ -43593,6 +43652,26 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '% tunnel %' ESCAPE '\\' AND CommandLine LIKE '%cleanup %' ESCAPE '\\') AND (CommandLine LIKE '% --config %' ESCAPE '\\' OR CommandLine LIKE '% --connector-id %' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potentially Suspicious EventLog Recon Activity Using Log Query Utilities",
+        "id": "beaa66d6-aa1b-4e3c-80f5-e0145369bfaf",
+        "status": "experimental",
+        "description": "Detects execution of different log query utilities to search and dump the content of specific event logs or look for specific event IDs.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.discovery",
+            "attack.t1552"
+        ],
+        "falsepositives": [
+            "Legitimate usage of the utility by administrators to query the event log"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((CommandLine LIKE '%Microsoft-Windows-TerminalServices-LocalSessionManager/Operational%' ESCAPE '\\' OR CommandLine LIKE '%Microsoft-Windows-Terminal-Services-RemoteConnectionManager/Operational%' ESCAPE '\\' OR CommandLine LIKE '%Security%' ESCAPE '\\') OR (CommandLine LIKE '%-InstanceId 4624%' ESCAPE '\\' OR CommandLine LIKE '%System[EventID=4624]%' ESCAPE '\\' OR CommandLine LIKE '%EventCode=_4624_%' ESCAPE '\\' OR CommandLine LIKE '%EventIdentifier=_4624_%' ESCAPE '\\' OR CommandLine LIKE '%-InstanceId 4778%' ESCAPE '\\' OR CommandLine LIKE '%System[EventID=4778]%' ESCAPE '\\' OR CommandLine LIKE '%EventCode=_4778_%' ESCAPE '\\' OR CommandLine LIKE '%EventIdentifier=_4778_%' ESCAPE '\\' OR CommandLine LIKE '%-InstanceId 25%' ESCAPE '\\' OR CommandLine LIKE '%System[EventID=25]%' ESCAPE '\\' OR CommandLine LIKE '%EventCode=_25_%' ESCAPE '\\' OR CommandLine LIKE '%EventIdentifier=_25_%' ESCAPE '\\')) AND ((CommandLine LIKE '%Select%' ESCAPE '\\' AND CommandLine LIKE '%Win32\\_NTLogEvent%' ESCAPE '\\') OR ((NewProcessName LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName='wevtutil.exe') AND (CommandLine LIKE '% qe %' ESCAPE '\\' OR CommandLine LIKE '% query-events %' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName='wevtutil.exe') AND CommandLine LIKE '% ntevent%' ESCAPE '\\') OR (CommandLine LIKE '%Get-WinEvent %' ESCAPE '\\' OR CommandLine LIKE '%get-eventlog %' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
