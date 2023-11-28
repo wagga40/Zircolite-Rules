@@ -5078,25 +5078,6 @@
         "filename": ""
     },
     {
-        "title": "Enabling COR Profiler Environment Variables",
-        "id": "ad89044a-8f49-4673-9a55-cbd88a1b374f",
-        "status": "test",
-        "description": "This rule detects cor_enable_profiling and cor_profiler environment variables being set and configured.",
-        "author": "Jose Rodriguez (@Cyb3rPandaH), OTR (Open Threat Research)",
-        "tags": [
-            "attack.persistence",
-            "attack.privilege_escalation",
-            "attack.defense_evasion",
-            "attack.t1574.012"
-        ],
-        "falsepositives": [],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=13 AND (TargetObject LIKE '%\\\\COR\\_ENABLE\\_PROFILING' ESCAPE '\\' OR TargetObject LIKE '%\\\\COR\\_PROFILER' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Persistence Via Hhctrl.ocx",
         "id": "f10ed525-97fe-4fed-be7c-2feecca941b1",
         "status": "experimental",
@@ -8492,7 +8473,8 @@
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
-            "attack.t1055"
+            "attack.t1055",
+            "stp.1k"
         ],
         "falsepositives": [
             "Chrome instances using the exact same pipe name \"mojo.xxx\""
@@ -13026,6 +13008,27 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Application' AND (Provider_Name='MSMQ' AND EventID=2027 AND Level=2)"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Exploitation Attempt Of CVE-2023-46214 Using Public POC Code",
+        "id": "ba5268de-4dd4-4d5c-8a90-2b5e6dc1aff8",
+        "status": "experimental",
+        "description": "Detects exploitation attempt of CVE-2023-46214, a remote code execution (RCE) in Splunk Enterprise through insecure XML parsing using known public proof of concept code\n",
+        "author": "Lars B. P. Frydenskov(Trifork Security)",
+        "tags": [
+            "cve.2023.46214",
+            "detection.emerging_threats",
+            "attack.lateral_movement",
+            "attack.t1210"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (`cs-method`='POST' AND (`sc-status`=200 OR `sc-status`=302)) AND ((`cs-uri-stem` LIKE '%/splunkd/\\_\\_upload/indexing/preview%' ESCAPE '\\' AND (`cs-uri-query` LIKE '%NO\\_BINARY\\_CHECK=1%' ESCAPE '\\' AND `cs-uri-query` LIKE '%input.path=shell.xsl%' ESCAPE '\\')) OR ((`cs-uri-stem` LIKE '%/api/search/jobs%' ESCAPE '\\' AND `cs-uri-stem` LIKE '%/results%' ESCAPE '\\') AND (`cs-uri-query` LIKE '%/opt/splunk/var/run/splunk/dispatch/%' ESCAPE '\\' AND `cs-uri-query` LIKE '%/shell.xsl%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -20260,7 +20263,8 @@
             "attack.t1018",
             "attack.t1087.002",
             "attack.t1482",
-            "attack.t1069.002"
+            "attack.t1069.002",
+            "stp.1u"
         ],
         "falsepositives": [
             "Legitimate admin activity"
@@ -24923,7 +24927,8 @@
         "author": "_pete_0, TheDFIRReport",
         "tags": [
             "attack.execution",
-            "attack.t1059.003"
+            "attack.t1059.003",
+            "stp.1u"
         ],
         "falsepositives": [
             "Unknown"
@@ -28830,7 +28835,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=7 AND ((ImageLoaded LIKE '%\\\\fastprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemcomn.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WmiApRpl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WMINet\\_Utils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiprov.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiutils.dll' ESCAPE '\\') AND (NOT (Image LIKE '%:\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Microsoft\\\\Teams\\\\Update.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\explorer.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Sysmon.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Sysmon64.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) AND (NOT ((Image LIKE '%\\\\WindowsAzureGuestAgent.exe' ESCAPE '\\' OR Image LIKE '%\\\\WaAppAgent.exe' ESCAPE '\\') OR (Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\') OR Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR ((Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\ngentask.exe' ESCAPE '\\') OR (Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=7 AND ((ImageLoaded LIKE '%\\\\fastprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemcomn.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemprox.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wbemsvc.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WmiApRpl.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiclnt.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WMINet\\_Utils.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiprov.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\wmiutils.dll' ESCAPE '\\') AND (NOT (Image LIKE '%:\\\\Windows\\\\explorer.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Sysmon.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Sysmon64.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe%' ESCAPE '\\' OR Image LIKE '%\\\\Microsoft\\\\Teams\\\\Update.exe%' ESCAPE '\\')) AND (NOT ((Image LIKE '%\\\\WindowsAzureGuestAgent.exe' ESCAPE '\\' OR Image LIKE '%\\\\WaAppAgent.exe' ESCAPE '\\') OR (Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\') OR Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR ((Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\ngentask.exe' ESCAPE '\\') OR (Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -30913,7 +30918,8 @@
             "attack.privilege_escalation",
             "attack.t1053.005",
             "attack.s0111",
-            "car.2013-08-001"
+            "car.2013-08-001",
+            "stp.1u"
         ],
         "falsepositives": [
             "Administrative activity",
@@ -32343,6 +32349,25 @@
         "filename": ""
     },
     {
+        "title": "Enabling COR Profiler Environment Variables",
+        "id": "ad89044a-8f49-4673-9a55-cbd88a1b374f",
+        "status": "test",
+        "description": "Detects .NET Framework CLR and .NET Core CLR \"cor_enable_profiling\" and \"cor_profiler\" variables being set and configured.",
+        "author": "Jose Rodriguez (@Cyb3rPandaH), OTR (Open Threat Research), Jimmy Bayne (@bohops)",
+        "tags": [
+            "attack.persistence",
+            "attack.privilege_escalation",
+            "attack.defense_evasion",
+            "attack.t1574.012"
+        ],
+        "falsepositives": [],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=13 AND ((TargetObject LIKE '%\\\\COR\\_ENABLE\\_PROFILING' ESCAPE '\\' OR TargetObject LIKE '%\\\\COR\\_PROFILER' ESCAPE '\\' OR TargetObject LIKE '%\\\\CORECLR\\_ENABLE\\_PROFILING' ESCAPE '\\') OR TargetObject LIKE '%\\\\CORECLR\\_PROFILER\\_PATH%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Wow6432Node Windows NT CurrentVersion Autorun Keys Modification",
         "id": "480421f9-417f-4d3b-9552-fd2728443ec8",
         "status": "experimental",
@@ -33763,7 +33788,8 @@
         "author": "frack113",
         "tags": [
             "attack.persistence",
-            "attack.t1574.011"
+            "attack.t1574.011",
+            "stp.2a"
         ],
         "falsepositives": [
             "Legitimate administrative script"
@@ -38013,6 +38039,27 @@
         "filename": ""
     },
     {
+        "title": "Potential CVE-2023-46214 Exploitation Attempt",
+        "id": "04017cd5-621e-4ec4-a762-1f042fe3d3e5",
+        "status": "experimental",
+        "description": "Detects potential exploitation of CVE-2023-46214, a remote code execution (RCE) in Splunk Enterprise through insecure XML parsing\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Bhavin Patel (STRT)",
+        "tags": [
+            "attack.lateral_movement",
+            "attack.t1210",
+            "cve.2023.46214",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE `cs-method`='POST' AND (`cs-uri-query` LIKE '%NO\\_BINARY\\_CHECK=1%' ESCAPE '\\' AND `cs-uri-query` LIKE '%input.path%' ESCAPE '\\') AND `cs-uri-query` LIKE '%.xsl' ESCAPE '\\' AND (`sc-status`=200 OR `sc-status`=302)"
+        ],
+        "filename": ""
+    },
+    {
         "title": "CVE-2023-22518 Exploitation Attempt - Suspicious Confluence Child Process (Windows)",
         "id": "1ddaa9a4-eb0b-4398-a9fe-7b018f9e23db",
         "status": "experimental",
@@ -39378,7 +39425,8 @@
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
-            "attack.t1134.001"
+            "attack.t1134.001",
+            "stp.4u"
         ],
         "falsepositives": [
             "Anti-Virus"

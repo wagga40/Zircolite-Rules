@@ -1834,24 +1834,6 @@
         "filename": "registry_set_persistence_xll.yml"
     },
     {
-        "title": "Enabling COR Profiler Environment Variables",
-        "id": "ad89044a-8f49-4673-9a55-cbd88a1b374f",
-        "status": "test",
-        "description": "This rule detects cor_enable_profiling and cor_profiler environment variables being set and configured.",
-        "author": "Jose Rodriguez (@Cyb3rPandaH), OTR (Open Threat Research)",
-        "tags": [
-            "attack.persistence",
-            "attack.privilege_escalation",
-            "attack.defense_evasion",
-            "attack.t1574.012"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND (TargetObject LIKE '%\\\\COR\\_ENABLE\\_PROFILING' ESCAPE '\\' OR TargetObject LIKE '%\\\\COR\\_PROFILER' ESCAPE '\\'))"
-        ],
-        "filename": "registry_set_enabling_cor_profiler_env_variables.yml"
-    },
-    {
         "title": "Persistence Via Hhctrl.ocx",
         "id": "f10ed525-97fe-4fed-be7c-2feecca941b1",
         "status": "experimental",
@@ -5667,7 +5649,8 @@
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
-            "attack.t1055"
+            "attack.t1055",
+            "stp.1k"
         ],
         "falsepositives": [
             "Chrome instances using the exact same pipe name \"mojo.xxx\""
@@ -11793,6 +11776,27 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\pc-app.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scriptrunner.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_papercut_print_management_exploitation_pc_app.yml"
+    },
+    {
+        "title": "Exploitation Attempt Of CVE-2023-46214 Using Public POC Code",
+        "id": "ba5268de-4dd4-4d5c-8a90-2b5e6dc1aff8",
+        "status": "experimental",
+        "description": "Detects exploitation attempt of CVE-2023-46214, a remote code execution (RCE) in Splunk Enterprise through insecure XML parsing using known public proof of concept code\n",
+        "author": "Lars B. P. Frydenskov(Trifork Security)",
+        "tags": [
+            "cve.2023.46214",
+            "detection.emerging_threats",
+            "attack.lateral_movement",
+            "attack.t1210"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((cs-method = 'POST' AND sc-status IN ('200', '302')) AND ((cs-uri-stem LIKE '%/splunkd/\\_\\_upload/indexing/preview%' ESCAPE '\\' AND cs-uri-query LIKE '%NO\\_BINARY\\_CHECK=1%' ESCAPE '\\' AND cs-uri-query LIKE '%input.path=shell.xsl%' ESCAPE '\\') OR (cs-uri-stem LIKE '%/api/search/jobs%' ESCAPE '\\' AND cs-uri-stem LIKE '%/results%' ESCAPE '\\' AND cs-uri-query LIKE '%/opt/splunk/var/run/splunk/dispatch/%' ESCAPE '\\' AND cs-uri-query LIKE '%/shell.xsl%' ESCAPE '\\')))"
+        ],
+        "filename": "web_cve_2023_46214_rce_splunk_enterprise_poc.yml"
     },
     {
         "title": "Potential CVE-2023-23752 Exploitation Attempt",
@@ -20069,7 +20073,8 @@
             "attack.t1018",
             "attack.t1087.002",
             "attack.t1482",
-            "attack.t1069.002"
+            "attack.t1069.002",
+            "stp.1u"
         ],
         "falsepositives": [
             "Legitimate admin activity"
@@ -24964,7 +24969,8 @@
         "author": "_pete_0, TheDFIRReport",
         "tags": [
             "attack.execution",
-            "attack.t1059.003"
+            "attack.t1059.003",
+            "stp.1u"
         ],
         "falsepositives": [
             "Unknown"
