@@ -1337,6 +1337,7 @@
             "attack.persistence",
             "attack.t1546",
             "attack.t1053",
+            "attack.g0125",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -3777,6 +3778,25 @@
         "filename": ""
     },
     {
+        "title": "Suspicious Path In Keyboard Layout IME File Registry Value",
+        "id": "9d8f9bb8-01af-4e15-a3a2-349071530530",
+        "status": "experimental",
+        "description": "Detects usage of Windows Input Method Editor (IME) keyboard layout feature, which allows an attacker to load a DLL into the process after sending the WM_INPUTLANGCHANGEREQUEST message.\nBefore doing this, the client needs to register the DLL in a special registry key that is assumed to implement this keyboard layout. This registry key should store a value named \"Ime File\" with a DLL path.\nIMEs are essential for languages that have more characters than can be represented on a standard keyboard, such as Chinese, Japanese, and Korean.\n",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND ((TargetObject LIKE '%\\\\Control\\\\Keyboard Layouts\\\\%' ESCAPE '\\' AND TargetObject LIKE '%Ime File%' ESCAPE '\\') AND ((NewValue LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR NewValue LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewValue LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Temporary Internet%' ESCAPE '\\') OR ((NewValue LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (NewValue LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (NewValue LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Contacts\\\\%' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "New RUN Key Pointing to Suspicious Folder",
         "id": "02ee49e2-e294-4d0f-9278-f5b3212fc588",
         "status": "experimental",
@@ -4557,6 +4577,25 @@
         "filename": ""
     },
     {
+        "title": "New Netsh Helper DLL Registered From A Suspicious Location",
+        "id": "e7b18879-676e-4a0e-ae18-27039185a8e7",
+        "status": "experimental",
+        "description": "Detects changes to the Netsh registry key to add a new DLL value that is located on a suspicious location. This change might be an indication of a potential persistence attempt by adding a malicious Netsh helper\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546.007"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\NetSh%' ESCAPE '\\' AND ((NewValue LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR NewValue LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewValue LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Temporary Internet%' ESCAPE '\\') OR ((NewValue LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (NewValue LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (NewValue LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (NewValue LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Registry Disable System Restore",
         "id": "5de03871-5d46-4539-a82d-3aa992a69a83",
         "status": "experimental",
@@ -5092,6 +5131,25 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND (TargetObject LIKE '%\\\\CLSID\\\\{52A2AAAE-085D-4187-97EA-8C30DB990436}\\\\InprocServer32\\\\(Default)%' ESCAPE '\\' AND (NOT NewValue LIKE 'C:\\\\Windows\\\\System32\\\\hhctrl.ocx' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Uncommon Extension In Keyboard Layout IME File Registry Value",
+        "id": "b888e3f2-224d-4435-b00b-9dd66e9ea1f1",
+        "status": "experimental",
+        "description": "Detects usage of Windows Input Method Editor (IME) keyboard layout feature, which allows an attacker to load a DLL into the process after sending the WM_INPUTLANGCHANGEREQUEST message.\nBefore doing this, the client needs to register the DLL in a special registry key that is assumed to implement this keyboard layout. This registry key should store a value named \"Ime File\" with a DLL path.\nIMEs are essential for languages that have more characters than can be represented on a standard keyboard, such as Chinese, Japanese, and Korean.\n",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "IMEs are essential for languages that have more characters than can be represented on a standard keyboard, such as Chinese, Japanese, and Korean."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND ((TargetObject LIKE '%\\\\Control\\\\Keyboard Layouts\\\\%' ESCAPE '\\' AND TargetObject LIKE '%Ime File%' ESCAPE '\\') AND (NOT NewValue LIKE '%.ime' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -7777,6 +7835,27 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\RjvPlatform.dll' ESCAPE '\\' AND Image LIKE '\\\\SystemResetPlatform.exe' ESCAPE '\\') AND (NOT Image LIKE 'C:\\\\Windows\\\\System32\\\\SystemResetPlatform\\\\%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Load Of RstrtMgr.DLL By A Suspicious Process",
+        "id": "b48492dc-c5ef-4572-8dff-32bc241c15c8",
+        "status": "experimental",
+        "description": "Detects the load of RstrtMgr DLL (Restart Manager) by a suspicious process.\nThis library has been used during ransomware campaigns to kill processes that would prevent file encryption by locking them (e.g. Conti ransomware, Cactus ransomware). It has also recently been seen used by the BiBi wiper for Windows.\nIt could also be used for anti-analysis purposes by shut downing specific processes.\n",
+        "author": "Luc G\u00e9naux",
+        "tags": [
+            "attack.impact",
+            "attack.defense_evasion",
+            "attack.t1486",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Processes related to software installation"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\RstrtMgr.dll' ESCAPE '\\' OR OriginalFileName='RstrtMgr.dll') AND ((Image LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Temporary Internet%' ESCAPE '\\') OR ((Image LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\Contacts\\\\%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -11054,6 +11133,7 @@
         "tags": [
             "attack.initial_access",
             "attack.t1190",
+            "attack.g0125",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12564,6 +12644,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command_and_control",
+            "attack.g0020",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12583,6 +12664,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command_and_control",
+            "attack.g0020",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12707,6 +12789,7 @@
             "attack.privilege_escalation",
             "attack.t1574.001",
             "attack.t1574.002",
+            "attack.g0032",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12726,6 +12809,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.g0129",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12746,6 +12830,7 @@
         "tags": [
             "attack.execution",
             "attack.t1059.001",
+            "attack.g0046",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12766,6 +12851,7 @@
         "tags": [
             "attack.execution",
             "attack.t1059.001",
+            "attack.g0046",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12785,6 +12871,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.g0046",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -12804,6 +12891,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.g0046",
             "detection.emerging_threats"
         ],
         "falsepositives": [
@@ -13174,6 +13262,48 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=5140 AND ((ShareName LIKE '%\\\\MSHTML\\_C7\\\\%' ESCAPE '\\' AND ShareName REGEXP '[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}') OR (ShareLocalPath LIKE '%\\\\MSHTML\\_C7\\\\%' ESCAPE '\\' AND ShareLocalPath REGEXP '[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "CVE-2023-4966 Exploitation Attempt - Citrix ADC Sensitive Information Disclosure - Webserver",
+        "id": "a4e068b5-e27c-4f21-85b3-e69e5a4f7ce1",
+        "status": "experimental",
+        "description": "Detects exploitation attempt of CVE-2023-4966 a Citrix ADC and NetScaler Gateway sensitive information disclosure vulnerability via webserver logs by looking for a very long host header string.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.initial_access",
+            "attack.t1190",
+            "cve.2023.4966"
+        ],
+        "falsepositives": [
+            "Vulnerability scanners"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE `cs-method`='GET' AND `cs-uri-stem` LIKE '%/oauth/idp/.well-known/openid-configuration%' ESCAPE '\\' AND `cs-host` REGEXP '.{150}'"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "CVE-2023-4966 Exploitation Attempt - Citrix ADC Sensitive Information Disclosure - Proxy",
+        "id": "aee7681f-b53d-4594-a9de-ac51e6ad3362",
+        "status": "experimental",
+        "description": "Detects exploitation attempt of CVE-2023-4966 a Citrix ADC and NetScaler Gateway sensitive information disclosure vulnerability via proxy logs by looking for a very long host header string.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.initial_access",
+            "attack.t1190",
+            "cve.2023.4966"
+        ],
+        "falsepositives": [
+            "Vulnerability scanners"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE `cs-method`='GET' AND `cs-uri` LIKE '%/oauth/idp/.well-known/openid-configuration%' ESCAPE '\\' AND `cs-host` REGEXP '.{150}'"
         ],
         "filename": ""
     },
@@ -20020,27 +20150,6 @@
         "filename": ""
     },
     {
-        "title": "Potential Persistence Via Netsh Helper DLL",
-        "id": "56321594-9087-49d9-bf10-524fe8479452",
-        "status": "test",
-        "description": "Detects the execution of netsh with \"add helper\" flag in order to add a custom helper DLL. This technique can be abused to add a malicious helper DLL that can be used as a persistence proxy that gets called when netsh.exe is executed.",
-        "author": "Victor Sergeev, oscd.community",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.persistence",
-            "attack.t1546.007",
-            "attack.s0108"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\netsh.exe' ESCAPE '\\' AND (CommandLine LIKE '%add%' ESCAPE '\\' AND CommandLine LIKE '%helper%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Suspicious Windows Service Tampering",
         "id": "ce72ef99-22f1-43d4-8695-419dcb5d9330",
         "status": "experimental",
@@ -20094,6 +20203,24 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%lockoutduration%' ESCAPE '\\' OR CommandLine LIKE '%lockoutthreshold%' ESCAPE '\\' OR CommandLine LIKE '%lockoutobservationwindow%' ESCAPE '\\' OR CommandLine LIKE '%maxpwdage%' ESCAPE '\\' OR CommandLine LIKE '%minpwdage%' ESCAPE '\\' OR CommandLine LIKE '%minpwdlength%' ESCAPE '\\' OR CommandLine LIKE '%pwdhistorylength%' ESCAPE '\\' OR CommandLine LIKE '%pwdproperties%' ESCAPE '\\') OR CommandLine LIKE '%-sc admincountdmp%' ESCAPE '\\' OR CommandLine LIKE '%-sc exchaddresses%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Wusa.EXE Executed By Parent Process Located In Suspicious Location",
+        "id": "ef64fc9c-a45e-43cc-8fd8-7d75d73b4c99",
+        "status": "experimental",
+        "description": "Detects execution of the \"wusa.exe\" (Windows Update Standalone Installer) utility by a parent process that is located in a suspicious location.\n",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\wusa.exe' ESCAPE '\\' AND ((ParentProcessName LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Appdata\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Temporary Internet%' ESCAPE '\\') OR ((ParentProcessName LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -24052,7 +24179,7 @@
         "filename": ""
     },
     {
-        "title": "Wusa Extracting Cab Files From Suspicious Paths",
+        "title": "Wusa.EXE Extracting Cab Files From Suspicious Paths",
         "id": "c74c0390-3e20-41fd-a69a-128f0275a5ea",
         "status": "test",
         "description": "Detects usage of the \"wusa.exe\" (Windows Update Standalone Installer) utility to extract cab using the \"/extract\" argument from suspicious paths",
@@ -24065,7 +24192,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\wusa.exe' ESCAPE '\\' AND CommandLine LIKE '%/extract:%' ESCAPE '\\') AND (CommandLine LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Appdata\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\wusa.exe' ESCAPE '\\' AND CommandLine LIKE '%/extract:%' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Appdata\\\\Local\\\\Temp\\\\%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -24553,10 +24680,10 @@
         "filename": ""
     },
     {
-        "title": "Suspicious Chromium Browser Instance Executed With Custom Extensions",
+        "title": "Suspicious Chromium Browser Instance Executed With Custom Extension",
         "id": "27ba3207-dd30-4812-abbf-5d20c57d474e",
         "status": "experimental",
-        "description": "Detects a suspicious process spawning a Chromium based browser process with the 'load-extension' flag to start a instance with custom extensions",
+        "description": "Detects a suspicious process spawning a Chromium based browser process with the 'load-extension' flag to start an instance with a custom extension",
         "author": "Aedan Russell, frack113, X__Junior (Nextron Systems)",
         "tags": [
             "attack.persistence",
@@ -28860,6 +28987,28 @@
         "filename": ""
     },
     {
+        "title": "Load Of RstrtMgr.DLL By An Uncommon Process",
+        "id": "3669afd2-9891-4534-a626-e5cf03810a61",
+        "status": "experimental",
+        "description": "Detects the load of RstrtMgr DLL (Restart Manager) by an uncommon process.\nThis library has been used during ransomware campaigns to kill processes that would prevent file encryption by locking them (e.g. Conti ransomware, Cactus ransomware). It has also recently been seen used by the BiBi wiper for Windows.\nIt could also be used for anti-analysis purposes by shut downing specific processes.\n",
+        "author": "Luc G\u00e9naux",
+        "tags": [
+            "attack.impact",
+            "attack.defense_evasion",
+            "attack.t1486",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Other legitimate Windows processes not currently listed",
+            "Processes related to software installation"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\RstrtMgr.dll' ESCAPE '\\' OR OriginalFileName='RstrtMgr.dll') AND (NOT ((Image LIKE '%:\\\\$WINDOWS.~BT\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\$WinREAgent\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\explorer.exe%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SoftwareDistribution\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysNative\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\') OR ((Image LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\is-%' ESCAPE '\\' AND Image LIKE '%.tmp\\\\%' ESCAPE '\\') AND Image LIKE '%.tmp' ESCAPE '\\') OR Image LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Potential 7za.DLL Sideloading",
         "id": "4f6edb78-5c21-42ab-a558-fd2a6fc1fd57",
         "status": "experimental",
@@ -32443,6 +32592,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND ((TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Event Viewer\\\\MicrosoftRedirectionProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Event Viewer\\\\MicrosoftRedirectionURL%' ESCAPE '\\') AND (NOT ((NewProcessName LIKE '%C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Event Viewer\\\\MicrosoftRedirectionProgram' ESCAPE '\\' AND NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\PCHealth\\\\HelpCtr\\\\Binaries\\\\HelpCtr.exe' ESCAPE '\\') OR (NewProcessName LIKE '%C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Event Viewer\\\\MicrosoftRedirectionProgramCommandLineParameters' ESCAPE '\\' AND NewValue LIKE '-url hcp://services/centers/support_topic=\\%\\%s' ESCAPE '\\') OR NewValue='http://go.microsoft.com/fwlink/events.asp' OR NewValue='(Empty)'))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential Persistence Via Netsh Helper DLL - Registry",
+        "id": "c90362e0-2df3-4e61-94fe-b37615814cb1",
+        "status": "experimental",
+        "description": "Detects changes to the Netsh registry key to add a new DLL value. This change might be an indication of a potential persistence attempt by adding a malicious Netsh helper\n",
+        "author": "Anish Bogati",
+        "tags": [
+            "attack.persistence",
+            "attack.t1546.007"
+        ],
+        "falsepositives": [
+            "Legitimate helper added by different programs and the OS"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\NetSh%' ESCAPE '\\' AND NewValue LIKE '%.dll%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -38186,6 +38354,48 @@
         "filename": ""
     },
     {
+        "title": "CVE-2023-4966 Potential Exploitation Attempt - Citrix ADC Sensitive Information Disclosure - Proxy",
+        "id": "ff349b81-617f-4af4-924f-dbe8ea9bab41",
+        "status": "experimental",
+        "description": "Detects potential exploitation attempt of CVE-2023-4966 a Citrix ADC and NetScaler Gateway sensitive information disclosure vulnerability via proxy logs.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Michael Haag (STRT)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.initial_access",
+            "attack.t1190",
+            "cve.2023.4966"
+        ],
+        "falsepositives": [
+            "Vulnerability scanners"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE `cs-method`='GET' AND `cs-uri` LIKE '%/oauth/idp/.well-known/openid-configuration%' ESCAPE '\\' AND `sc-status`=200"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "CVE-2023-4966 Potential Exploitation Attempt - Citrix ADC Sensitive Information Disclosure - Webserver",
+        "id": "87c83d8e-5390-44ce-aa4a-d3b37e54d0a0",
+        "status": "experimental",
+        "description": "Detects potential exploitation attempt of CVE-2023-4966 a Citrix ADC and NetScaler Gateway sensitive information disclosure vulnerability via webserver logs.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Michael Haag (STRT)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.initial_access",
+            "attack.t1190",
+            "cve.2023.4966"
+        ],
+        "falsepositives": [
+            "Vulnerability scanners"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE `cs-method`='GET' AND `cs-uri-stem` LIKE '%/oauth/idp/.well-known/openid-configuration%' ESCAPE '\\' AND `sc-status`=200"
+        ],
+        "filename": ""
+    },
+    {
         "title": "CVE-2023-40477 Potential Exploitation - WinRAR Application Crash",
         "id": "e5a29b54-6fe7-4258-8a23-82960e31231a",
         "status": "experimental",
@@ -42736,6 +42946,27 @@
         "filename": ""
     },
     {
+        "title": "Potential Persistence Via Netsh Helper DLL",
+        "id": "56321594-9087-49d9-bf10-524fe8479452",
+        "status": "test",
+        "description": "Detects the execution of netsh with \"add helper\" flag in order to add a custom helper DLL. This technique can be abused to add a malicious helper DLL that can be used as a persistence proxy that gets called when netsh.exe is executed.\n",
+        "author": "Victor Sergeev, oscd.community",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.persistence",
+            "attack.t1546.007",
+            "attack.s0108"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((OriginalFileName='netsh.exe' OR NewProcessName LIKE '%\\\\netsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%add%' ESCAPE '\\' AND CommandLine LIKE '%helper%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Launch-VsDevShell.PS1 Proxy Execution",
         "id": "45d3a03d-f441-458c-8883-df101a3bb146",
         "status": "test",
@@ -44679,6 +44910,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName='ATTRIB.EXE') AND CommandLine LIKE '% +h %' ESCAPE '\\') AND (NOT (CommandLine LIKE '%\\\\desktop.ini %' ESCAPE '\\' OR (ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '+R +H +S +A \\\\*.cui' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\*.bat' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Chromium Browser Instance Executed With Custom Extension",
+        "id": "88d6e60c-759d-4ac1-a447-c0f1466c2d21",
+        "status": "experimental",
+        "description": "Detects a Chromium based browser process with the 'load-extension' flag to start a instance with a custom extension",
+        "author": "Aedan Russell, frack113, X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1176"
+        ],
+        "falsepositives": [
+            "Usage of Chrome Extensions in testing tools such as BurpSuite will trigger this alert"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\opera.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vivaldi.exe' ESCAPE '\\') AND CommandLine LIKE '%--load-extension=%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
