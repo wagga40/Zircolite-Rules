@@ -6516,6 +6516,36 @@
         "filename": ""
     },
     {
+        "title": "HackTool - WinPwn Execution - ScriptBlock",
+        "id": "851fd622-b675-4d26-b803-14bc7baa517a",
+        "status": "experimental",
+        "description": "Detects scriptblock text keywords indicative of potential usge of the tool WinPwn. A tool for Windows and Active Directory reconnaissance and exploitation.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.credential_access",
+            "attack.defense_evasion",
+            "attack.discovery",
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.t1046",
+            "attack.t1082",
+            "attack.t1106",
+            "attack.t1518",
+            "attack.t1548.002",
+            "attack.t1552.001",
+            "attack.t1555",
+            "attack.t1555.003"
+        ],
+        "falsepositives": [
+            "As the script block is a blob of text. False positive may occur with scripts that contain the keyword as a reference or simply use it for detection."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%Offline\\_Winpwn%' ESCAPE '\\' OR ScriptBlockText LIKE '%WinPwn %' ESCAPE '\\' OR ScriptBlockText LIKE '%WinPwn.exe%' ESCAPE '\\' OR ScriptBlockText LIKE '%WinPwn.ps1%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "AADInternals PowerShell Cmdlets Execution - PsScript",
         "id": "91e69562-2426-42ce-a647-711b8152ced6",
         "status": "test",
@@ -23725,6 +23755,36 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\Crassus.exe' ESCAPE '\\' OR OriginalFileName='Crassus.exe' OR Description LIKE '%Crassus%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "HackTool - WinPwn Execution",
+        "id": "d557dc06-62e8-4468-a8e8-7984124908ce",
+        "status": "experimental",
+        "description": "Detects commandline keywords indicative of potential usge of the tool WinPwn. A tool for Windows and Active Directory reconnaissance and exploitation.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.credential_access",
+            "attack.defense_evasion",
+            "attack.discovery",
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.t1046",
+            "attack.t1082",
+            "attack.t1106",
+            "attack.t1518",
+            "attack.t1548.002",
+            "attack.t1552.001",
+            "attack.t1555",
+            "attack.t1555.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (CommandLine LIKE '%Offline\\_Winpwn%' ESCAPE '\\' OR CommandLine LIKE '%WinPwn %' ESCAPE '\\' OR CommandLine LIKE '%WinPwn.exe%' ESCAPE '\\' OR CommandLine LIKE '%WinPwn.ps1%' ESCAPE '\\'))"
         ],
         "filename": ""
     },

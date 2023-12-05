@@ -6169,6 +6169,36 @@
         "filename": "posh_ps_get_adreplaccount.yml"
     },
     {
+        "title": "HackTool - WinPwn Execution - ScriptBlock",
+        "id": "851fd622-b675-4d26-b803-14bc7baa517a",
+        "status": "experimental",
+        "description": "Detects scriptblock text keywords indicative of potential usge of the tool WinPwn. A tool for Windows and Active Directory reconnaissance and exploitation.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.credential_access",
+            "attack.defense_evasion",
+            "attack.discovery",
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.t1046",
+            "attack.t1082",
+            "attack.t1106",
+            "attack.t1518",
+            "attack.t1548.002",
+            "attack.t1552.001",
+            "attack.t1555",
+            "attack.t1555.003"
+        ],
+        "falsepositives": [
+            "As the script block is a blob of text. False positive may occur with scripts that contain the keyword as a reference or simply use it for detection."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '%Offline\\_Winpwn%' ESCAPE '\\' OR ScriptBlockText LIKE '%WinPwn %' ESCAPE '\\' OR ScriptBlockText LIKE '%WinPwn.exe%' ESCAPE '\\' OR ScriptBlockText LIKE '%WinPwn.ps1%' ESCAPE '\\'))"
+        ],
+        "filename": "posh_ps_hktl_winpwn.yml"
+    },
+    {
         "title": "AADInternals PowerShell Cmdlets Execution - PsScript",
         "id": "91e69562-2426-42ce-a647-711b8152ced6",
         "status": "test",
@@ -41371,6 +41401,36 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' AND NOT ((CommandLine LIKE '%\\\\netlogon\\\\%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' OR OriginalFileName = 'explorer.exe')))"
         ],
         "filename": "proc_creation_win_susp_userinit_child.yml"
+    },
+    {
+        "title": "HackTool - WinPwn Execution",
+        "id": "d557dc06-62e8-4468-a8e8-7984124908ce",
+        "status": "experimental",
+        "description": "Detects commandline keywords indicative of potential usge of the tool WinPwn. A tool for Windows and Active Directory reconnaissance and exploitation.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.credential_access",
+            "attack.defense_evasion",
+            "attack.discovery",
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.t1046",
+            "attack.t1082",
+            "attack.t1106",
+            "attack.t1518",
+            "attack.t1548.002",
+            "attack.t1552.001",
+            "attack.t1555",
+            "attack.t1555.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%Offline\\_Winpwn%' ESCAPE '\\' OR CommandLine LIKE '%WinPwn %' ESCAPE '\\' OR CommandLine LIKE '%WinPwn.exe%' ESCAPE '\\' OR CommandLine LIKE '%WinPwn.ps1%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_hktl_winpwn.yml"
     },
     {
         "title": "Suspicious WMIC Execution Via Office Process",
