@@ -37655,6 +37655,27 @@
         "filename": "proc_creation_win_sdbinst_shim_persistence.yml"
     },
     {
+        "title": "Compressed File Creation Via Tar.EXE",
+        "id": "418a3163-3247-4b7b-9933-dcfcb7c52ea9",
+        "status": "experimental",
+        "description": "Detects execution of \"tar.exe\" in order to create a compressed file.\nAdversaries may abuse various utilities to compress or encrypt data before exfiltration.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), AdmU3",
+        "tags": [
+            "attack.collection",
+            "attack.exfiltration",
+            "attack.t1560",
+            "attack.t1560.001"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\tar.exe' ESCAPE '\\' OR OriginalFileName = 'bsdtar') AND (CommandLine LIKE '%-c%' ESCAPE '\\' OR CommandLine LIKE '%-r%' ESCAPE '\\' OR CommandLine LIKE '%-u%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_tar_compression.yml"
+    },
+    {
         "title": "Renamed Plink Execution",
         "id": "1c12727d-02bf-45ff-a9f3-d49806a3cf43",
         "status": "test",
@@ -38768,6 +38789,27 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\dsacls.exe' ESCAPE '\\' OR OriginalFileName = 'DSACLS.EXE') AND CommandLine LIKE '% /G %' ESCAPE '\\' AND (CommandLine LIKE '%GR%' ESCAPE '\\' OR CommandLine LIKE '%GE%' ESCAPE '\\' OR CommandLine LIKE '%GW%' ESCAPE '\\' OR CommandLine LIKE '%GA%' ESCAPE '\\' OR CommandLine LIKE '%WP%' ESCAPE '\\' OR CommandLine LIKE '%WD%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_dsacls_abuse_permissions.yml"
+    },
+    {
+        "title": "Compressed File Extraction Via Tar.EXE",
+        "id": "bf361876-6620-407a-812f-bfe11e51e924",
+        "status": "experimental",
+        "description": "Detects execution of \"tar.exe\" in order to extract compressed file.\nAdversaries may abuse various utilities in order to decompress data to avoid detection.\n",
+        "author": "AdmU3",
+        "tags": [
+            "attack.collection",
+            "attack.exfiltration",
+            "attack.t1560",
+            "attack.t1560.001"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\tar.exe' ESCAPE '\\' OR OriginalFileName = 'bsdtar') AND CommandLine LIKE '%-x%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_tar_extraction.yml"
     },
     {
         "title": "Suspicious Usage Of Active Directory Diagnostic Tool (ntdsutil.exe)",

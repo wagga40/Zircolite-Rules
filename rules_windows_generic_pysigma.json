@@ -30498,6 +30498,27 @@
         "filename": ""
     },
     {
+        "title": "Compressed File Creation Via Tar.EXE",
+        "id": "418a3163-3247-4b7b-9933-dcfcb7c52ea9",
+        "status": "experimental",
+        "description": "Detects execution of \"tar.exe\" in order to create a compressed file.\nAdversaries may abuse various utilities to compress or encrypt data before exfiltration.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), AdmU3",
+        "tags": [
+            "attack.collection",
+            "attack.exfiltration",
+            "attack.t1560",
+            "attack.t1560.001"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\tar.exe' ESCAPE '\\' OR OriginalFileName='bsdtar') AND (CommandLine LIKE '%-c%' ESCAPE '\\' OR CommandLine LIKE '%-r%' ESCAPE '\\' OR CommandLine LIKE '%-u%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Files And Subdirectories Listing Using Dir",
         "id": "7c9340a9-e2ee-4e43-94c5-c54ebbea1006",
         "status": "experimental",
@@ -30513,6 +30534,27 @@
         "level": "low",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%dir %' ESCAPE '\\' AND CommandLine LIKE '% /s%' ESCAPE '\\' AND CommandLine LIKE '% /b%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Compressed File Extraction Via Tar.EXE",
+        "id": "bf361876-6620-407a-812f-bfe11e51e924",
+        "status": "experimental",
+        "description": "Detects execution of \"tar.exe\" in order to extract compressed file.\nAdversaries may abuse various utilities in order to decompress data to avoid detection.\n",
+        "author": "AdmU3",
+        "tags": [
+            "attack.collection",
+            "attack.exfiltration",
+            "attack.t1560",
+            "attack.t1560.001"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\tar.exe' ESCAPE '\\' OR OriginalFileName='bsdtar') AND CommandLine LIKE '%-x%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
