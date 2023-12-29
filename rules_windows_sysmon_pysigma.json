@@ -21484,6 +21484,25 @@
         "filename": ""
     },
     {
+        "title": "Suspicious Redirection to Local Admin Share",
+        "id": "ab9e3b40-0c85-4ba1-aede-455d226fd124",
+        "status": "test",
+        "description": "Detects a suspicious output redirection to the local admins share, this technique is often found in malicious scripts or hacktool stagers",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1048"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (CommandLine LIKE '%>%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\\\\\127.0.0.1\\\\admin$\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\\\\\localhost\\\\admin$\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Taskmgr as LOCAL_SYSTEM",
         "id": "9fff585c-c33e-4a86-b3cd-39312079a65f",
         "status": "test",
