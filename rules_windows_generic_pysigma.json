@@ -7033,27 +7033,6 @@
         "filename": ""
     },
     {
-        "title": "Remote PowerShell Session (PS Classic)",
-        "id": "60167e5c-84b2-4c95-a7ac-86281f27c445",
-        "status": "test",
-        "description": "Detects remote PowerShell sessions",
-        "author": "Roberto Rodriguez @Cyb3rWard0g",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.001",
-            "attack.lateral_movement",
-            "attack.t1021.006"
-        ],
-        "falsepositives": [
-            "Legitimate use remote PowerShell sessions"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Windows PowerShell' AND (EventID=400 AND (Data LIKE '%HostName=ServerRemoteHost%' ESCAPE '\\' AND Data LIKE '%wsmprovhost.exe%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Delete Volume Shadow Copies Via WMI With PowerShell",
         "id": "87df9ee1-5416-453a-8a08-e8d4a51e9ce1",
         "status": "stable",
@@ -28591,6 +28570,27 @@
         "level": "low",
         "rule": [
             "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%get-ADPrincipalGroupMembership%' ESCAPE '\\' OR (ScriptBlockText LIKE '%get-aduser%' ESCAPE '\\' AND ScriptBlockText LIKE '%-f %' ESCAPE '\\' AND ScriptBlockText LIKE '%-pr %' ESCAPE '\\' AND ScriptBlockText LIKE '%DoesNotRequirePreAuth%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Remote PowerShell Session (PS Classic)",
+        "id": "60167e5c-84b2-4c95-a7ac-86281f27c445",
+        "status": "test",
+        "description": "Detects remote PowerShell sessions",
+        "author": "Roberto Rodriguez @Cyb3rWard0g",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.001",
+            "attack.lateral_movement",
+            "attack.t1021.006"
+        ],
+        "falsepositives": [
+            "Legitimate use remote PowerShell sessions"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Windows PowerShell' AND (EventID=400 AND (Data LIKE '%HostName=ServerRemoteHost%' ESCAPE '\\' AND Data LIKE '%wsmprovhost.exe%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
