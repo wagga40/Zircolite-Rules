@@ -1714,7 +1714,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\MyComputer%' ESCAPE '\\' AND TargetObject LIKE '%(Default)' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\MyComputer%' ESCAPE '\\' AND TargetObject LIKE '%(Default)' ESCAPE '\\')"
         ],
         "filename": "registry_set_persistence_mycomputer.yml"
     },
@@ -12905,6 +12905,25 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND (ServiceFileName LIKE '%powershell%' ESCAPE '\\' OR ServiceFileName LIKE '%pwsh%' ESCAPE '\\'))"
         ],
         "filename": "win_security_powershell_script_installed_as_service.yml"
+    },
+    {
+        "title": "Windows Filtering Platform Blocked Connection From EDR Agent Binary",
+        "id": "bacf58c6-e199-4040-a94f-95dea0f1e45a",
+        "status": "experimental",
+        "description": "Detects a Windows Filtering Platform (WFP) blocked connection event involving common Endpoint Detection and Response (EDR) agents.\nAdversaries may use WFP filters to prevent Endpoint Detection and Response (EDR) agents from reporting security events.\n",
+        "author": "@gott_cyber",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5157' AND (Application LIKE '%\\\\AmSvc.exe' ESCAPE '\\' OR Application LIKE '%\\\\cb.exe' ESCAPE '\\' OR Application LIKE '%\\\\CETASvc.exe' ESCAPE '\\' OR Application LIKE '%\\\\CNTAoSMgr.exe' ESCAPE '\\' OR Application LIKE '%\\\\CrAmTray.exe' ESCAPE '\\' OR Application LIKE '%\\\\CrsSvc.exe' ESCAPE '\\' OR Application LIKE '%\\\\CSFalconContainer.exe' ESCAPE '\\' OR Application LIKE '%\\\\CSFalconService.exe' ESCAPE '\\' OR Application LIKE '%\\\\CybereasonAV.exe' ESCAPE '\\' OR Application LIKE '%\\\\CylanceSvc.exe' ESCAPE '\\' OR Application LIKE '%\\\\cyserver.exe' ESCAPE '\\' OR Application LIKE '%\\\\CyveraService.exe' ESCAPE '\\' OR Application LIKE '%\\\\CyvrFsFlt.exe' ESCAPE '\\' OR Application LIKE '%\\\\EIConnector.exe' ESCAPE '\\' OR Application LIKE '%\\\\elastic-agent.exe' ESCAPE '\\' OR Application LIKE '%\\\\elastic-endpoint.exe' ESCAPE '\\' OR Application LIKE '%\\\\EndpointBasecamp.exe' ESCAPE '\\' OR Application LIKE '%\\\\ExecutionPreventionSvc.exe' ESCAPE '\\' OR Application LIKE '%\\\\filebeat.exe' ESCAPE '\\' OR Application LIKE '%\\\\fortiedr.exe' ESCAPE '\\' OR Application LIKE '%\\\\hmpalert.exe' ESCAPE '\\' OR Application LIKE '%\\\\hurukai.exe' ESCAPE '\\' OR Application LIKE '%\\\\LogProcessorService.exe' ESCAPE '\\' OR Application LIKE '%\\\\mcsagent.exe' ESCAPE '\\' OR Application LIKE '%\\\\mcsclient.exe' ESCAPE '\\' OR Application LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' OR Application LIKE '%\\\\MsSense.exe' ESCAPE '\\' OR Application LIKE '%\\\\Ntrtscan.exe' ESCAPE '\\' OR Application LIKE '%\\\\PccNTMon.exe' ESCAPE '\\' OR Application LIKE '%\\\\QualysAgent.exe' ESCAPE '\\' OR Application LIKE '%\\\\RepMgr.exe' ESCAPE '\\' OR Application LIKE '%\\\\RepUtils.exe' ESCAPE '\\' OR Application LIKE '%\\\\RepUx.exe' ESCAPE '\\' OR Application LIKE '%\\\\RepWAV.exe' ESCAPE '\\' OR Application LIKE '%\\\\RepWSC.exe' ESCAPE '\\' OR Application LIKE '%\\\\sedservice.exe' ESCAPE '\\' OR Application LIKE '%\\\\SenseCncProxy.exe' ESCAPE '\\' OR Application LIKE '%\\\\SenseIR.exe' ESCAPE '\\' OR Application LIKE '%\\\\SenseNdr.exe' ESCAPE '\\' OR Application LIKE '%\\\\SenseSampleUploader.exe' ESCAPE '\\' OR Application LIKE '%\\\\SentinelAgent.exe' ESCAPE '\\' OR Application LIKE '%\\\\SentinelAgentWorker.exe' ESCAPE '\\' OR Application LIKE '%\\\\SentinelBrowserNativeHost.exe' ESCAPE '\\' OR Application LIKE '%\\\\SentinelHelperService.exe' ESCAPE '\\' OR Application LIKE '%\\\\SentinelServiceHost.exe' ESCAPE '\\' OR Application LIKE '%\\\\SentinelStaticEngine.exe' ESCAPE '\\' OR Application LIKE '%\\\\SentinelStaticEngineScanner.exe' ESCAPE '\\' OR Application LIKE '%\\\\sfc.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophos ui.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophosfilescanner.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophosfs.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophoshealth.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophosips.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophosLivequeryservice.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophosnetfilter.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophosntpservice.exe' ESCAPE '\\' OR Application LIKE '%\\\\sophososquery.exe' ESCAPE '\\' OR Application LIKE '%\\\\sspservice.exe' ESCAPE '\\' OR Application LIKE '%\\\\TaniumClient.exe' ESCAPE '\\' OR Application LIKE '%\\\\TaniumCX.exe' ESCAPE '\\' OR Application LIKE '%\\\\TaniumDetectEngine.exe' ESCAPE '\\' OR Application LIKE '%\\\\TMBMSRV.exe' ESCAPE '\\' OR Application LIKE '%\\\\TmCCSF.exe' ESCAPE '\\' OR Application LIKE '%\\\\TmListen.exe' ESCAPE '\\' OR Application LIKE '%\\\\TmWSCSvc.exe' ESCAPE '\\' OR Application LIKE '%\\\\Traps.exe' ESCAPE '\\' OR Application LIKE '%\\\\winlogbeat.exe' ESCAPE '\\' OR Application LIKE '%\\\\WSCommunicator.exe' ESCAPE '\\' OR Application LIKE '%\\\\xagt.exe' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_wfp_endpoint_agent_blocked.yml"
     },
     {
         "title": "Invoke-Obfuscation RUNDLL LAUNCHER - Security",
@@ -43896,6 +43915,25 @@
             "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\ttdrecord.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ttdwriter.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\ttdloader.dll' ESCAPE '\\')"
         ],
         "filename": "image_load_dll_tttracer_module_load.yml"
+    },
+    {
+        "title": "System Control Panel Item Loaded From Uncommon Location",
+        "id": "2b140a5c-dc02-4bb8-b6b1-8bdb45714cde",
+        "status": "experimental",
+        "description": "Detects image load events of system control panel items (.cpl) from uncommon or non-system locations which might be the result of sideloading.",
+        "author": "Anish Bogati",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\hdwwiz.cpl' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appwiz.cpl' ESCAPE '\\') AND NOT (((ImageLoaded LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_side_load_cpl_from_non_system_location.yml"
     },
     {
         "title": "VMMap Signed Dbghelp.DLL Potential Sideloading",
