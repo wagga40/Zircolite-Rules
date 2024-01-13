@@ -22271,6 +22271,25 @@
         "filename": "proc_creation_win_calc_uncommon_exec.yml"
     },
     {
+        "title": "PUA - PingCastle Execution From Potentially Suspicious Parent",
+        "id": "b37998de-a70b-4f33-b219-ec36bf433dc0",
+        "status": "experimental",
+        "description": "Detects the execution of PingCastle, a tool designed to quickly assess the Active Directory security level via a script located in a potentially suspicious or uncommon location.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.reconnaissance",
+            "attack.t1595"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentCommandLine LIKE '%.bat%' ESCAPE '\\' OR ParentCommandLine LIKE '%.chm%' ESCAPE '\\' OR ParentCommandLine LIKE '%.cmd%' ESCAPE '\\' OR ParentCommandLine LIKE '%.hta%' ESCAPE '\\' OR ParentCommandLine LIKE '%.htm%' ESCAPE '\\' OR ParentCommandLine LIKE '%.html%' ESCAPE '\\' OR ParentCommandLine LIKE '%.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%.vbe%' ESCAPE '\\' OR ParentCommandLine LIKE '%.vbs%' ESCAPE '\\' OR ParentCommandLine LIKE '%.wsf%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR ParentCommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (ParentCommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\')) AND (ParentCommandLine LIKE '%.bat%' ESCAPE '\\' OR ParentCommandLine LIKE '%.chm%' ESCAPE '\\' OR ParentCommandLine LIKE '%.cmd%' ESCAPE '\\' OR ParentCommandLine LIKE '%.hta%' ESCAPE '\\' OR ParentCommandLine LIKE '%.htm%' ESCAPE '\\' OR ParentCommandLine LIKE '%.html%' ESCAPE '\\' OR ParentCommandLine LIKE '%.js%' ESCAPE '\\' OR ParentCommandLine LIKE '%.lnk%' ESCAPE '\\' OR ParentCommandLine LIKE '%.ps1%' ESCAPE '\\' OR ParentCommandLine LIKE '%.vbe%' ESCAPE '\\' OR ParentCommandLine LIKE '%.vbs%' ESCAPE '\\' OR ParentCommandLine LIKE '%.wsf%' ESCAPE '\\')) AND (Image LIKE '%\\\\PingCastle.exe' ESCAPE '\\' OR OriginalFileName = 'PingCastle.exe' OR Product = 'Ping Castle' OR (CommandLine LIKE '%--scanner aclcheck%' ESCAPE '\\' OR CommandLine LIKE '%--scanner antivirus%' ESCAPE '\\' OR CommandLine LIKE '%--scanner computerversion%' ESCAPE '\\' OR CommandLine LIKE '%--scanner foreignusers%' ESCAPE '\\' OR CommandLine LIKE '%--scanner laps\\_bitlocker%' ESCAPE '\\' OR CommandLine LIKE '%--scanner localadmin%' ESCAPE '\\' OR CommandLine LIKE '%--scanner nullsession%' ESCAPE '\\' OR CommandLine LIKE '%--scanner nullsession-trust%' ESCAPE '\\' OR CommandLine LIKE '%--scanner oxidbindings%' ESCAPE '\\' OR CommandLine LIKE '%--scanner remote%' ESCAPE '\\' OR CommandLine LIKE '%--scanner share%' ESCAPE '\\' OR CommandLine LIKE '%--scanner smb%' ESCAPE '\\' OR CommandLine LIKE '%--scanner smb3querynetwork%' ESCAPE '\\' OR CommandLine LIKE '%--scanner spooler%' ESCAPE '\\' OR CommandLine LIKE '%--scanner startup%' ESCAPE '\\' OR CommandLine LIKE '%--scanner zerologon%' ESCAPE '\\') OR CommandLine LIKE '%--no-enum-limit%' ESCAPE '\\' OR (CommandLine LIKE '%--healthcheck%' ESCAPE '\\' AND CommandLine LIKE '%--level Full%' ESCAPE '\\') OR (CommandLine LIKE '%--healthcheck%' ESCAPE '\\' AND CommandLine LIKE '%--server %' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_pua_pingcastle_script_parent.yml"
+    },
+    {
         "title": "Suspicious Child Process Of Wermgr.EXE",
         "id": "396f6630-f3ac-44e3-bfc8-1b161bc00c4e",
         "status": "experimental",
@@ -23410,6 +23429,27 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\hh.exe' ESCAPE '\\' AND (Image LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR Image LIKE '%\\\\CertUtil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\installutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\MSbuild.exe' ESCAPE '\\' OR Image LIKE '%\\\\MSHTA.EXE' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hh_html_help_susp_child_process.yml"
+    },
+    {
+        "title": "Renamed PingCastle Binary Execution",
+        "id": "2433a154-bb3d-42e4-86c3-a26bdac91c45",
+        "status": "experimental",
+        "description": "Detects the execution of a renamed \"PingCastle\" binary based on the PE metadata fields.",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059",
+            "attack.defense_evasion",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName IN ('PingCastleReporting.exe', 'PingCastleCloud.exe', 'PingCastle.exe') OR (CommandLine LIKE '%--scanner aclcheck%' ESCAPE '\\' OR CommandLine LIKE '%--scanner antivirus%' ESCAPE '\\' OR CommandLine LIKE '%--scanner computerversion%' ESCAPE '\\' OR CommandLine LIKE '%--scanner foreignusers%' ESCAPE '\\' OR CommandLine LIKE '%--scanner laps\\_bitlocker%' ESCAPE '\\' OR CommandLine LIKE '%--scanner localadmin%' ESCAPE '\\' OR CommandLine LIKE '%--scanner nullsession%' ESCAPE '\\' OR CommandLine LIKE '%--scanner nullsession-trust%' ESCAPE '\\' OR CommandLine LIKE '%--scanner oxidbindings%' ESCAPE '\\' OR CommandLine LIKE '%--scanner remote%' ESCAPE '\\' OR CommandLine LIKE '%--scanner share%' ESCAPE '\\' OR CommandLine LIKE '%--scanner smb%' ESCAPE '\\' OR CommandLine LIKE '%--scanner smb3querynetwork%' ESCAPE '\\' OR CommandLine LIKE '%--scanner spooler%' ESCAPE '\\' OR CommandLine LIKE '%--scanner startup%' ESCAPE '\\' OR CommandLine LIKE '%--scanner zerologon%' ESCAPE '\\') OR CommandLine LIKE '%--no-enum-limit%' ESCAPE '\\' OR (CommandLine LIKE '%--healthcheck%' ESCAPE '\\' AND CommandLine LIKE '%--level Full%' ESCAPE '\\') OR (CommandLine LIKE '%--healthcheck%' ESCAPE '\\' AND CommandLine LIKE '%--server %' ESCAPE '\\')) AND NOT (((Image LIKE '%\\\\PingCastleReporting.exe' ESCAPE '\\' OR Image LIKE '%\\\\PingCastleCloud.exe' ESCAPE '\\' OR Image LIKE '%\\\\PingCastle.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_renamed_pingcastle.yml"
     },
     {
         "title": "Abuse of Service Permissions to Hide Services Via Set-Service",
