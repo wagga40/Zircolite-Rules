@@ -37501,6 +37501,25 @@
         "filename": "proc_creation_win_sysinternals_procdump_evasion.yml"
     },
     {
+        "title": "CodePage Modification Via MODE.COM To Russian Language",
+        "id": "12fbff88-16b5-4b42-9754-cd001a789fb3",
+        "status": "experimental",
+        "description": "Detects a CodePage modification using the \"mode.com\" utility to Russian language.\nThis behavior has been used by threat actors behind Dharma ransomware.\n",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
+        "falsepositives": [
+            "Russian speaking people changing the CodePage"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\mode.com' ESCAPE '\\' OR OriginalFileName = 'MODE.COM') AND (CommandLine LIKE '% con %' ESCAPE '\\' AND CommandLine LIKE '% cp %' ESCAPE '\\' AND CommandLine LIKE '% select=%' ESCAPE '\\' AND (CommandLine LIKE '%=1251' ESCAPE '\\' OR CommandLine LIKE '%=866' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_mode_codepage_russian.yml"
+    },
+    {
         "title": "Non Interactive PowerShell Process Spawned",
         "id": "f4bbd493-b796-416e-bbf2-121235348529",
         "status": "test",
@@ -46131,25 +46150,6 @@
         "filename": "image_load_side_load_abused_dlls_susp_paths.yml"
     },
     {
-        "title": "Possible Process Hollowing Image Loading",
-        "id": "e32ce4f5-46c6-4c47-ba69-5de3c9193cd7",
-        "status": "test",
-        "description": "Detects Loading of samlib.dll, WinSCard.dll from untypical process e.g. through process hollowing by Mimikatz",
-        "author": "Markus Neis",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Very likely, needs more tuning"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\notepad.exe' ESCAPE '\\' AND (ImageLoaded LIKE '%\\\\samlib.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WinSCard.dll' ESCAPE '\\'))"
-        ],
-        "filename": "image_load_susp_uncommon_image_load.yml"
-    },
-    {
         "title": "UAC Bypass With Fake DLL",
         "id": "a5ea83a7-05a5-44c1-be2e-addccbbd8c03",
         "status": "test",
@@ -46852,6 +46852,26 @@
             "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%\\\\hdwwiz.cpl' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\appwiz.cpl' ESCAPE '\\') AND NOT (((ImageLoaded LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "image_load_side_load_cpl_from_non_system_location.yml"
+    },
+    {
+        "title": "Unsigned DLL Loaded by RunDLL32/RegSvr32",
+        "id": "b5de0c9a-6f19-43e0-af4e-55ad01f550af",
+        "status": "experimental",
+        "description": "Detects RunDLL32/RegSvr32 loading an unsigned or untrusted DLL.\nAdversaries often abuse those programs to proxy execution of malicious code.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.t1218.011",
+            "attack.t1218.010",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\') AND NOT ((Signed = 'true' OR (SignatureStatus LIKE 'errorChaining' ESCAPE '\\' OR SignatureStatus LIKE 'errorCode\\_endpoint' ESCAPE '\\' OR SignatureStatus LIKE 'errorExpired' ESCAPE '\\' OR SignatureStatus LIKE 'trusted' ESCAPE '\\'))))"
+        ],
+        "filename": "image_load_susp_unsigned_dll.yml"
     },
     {
         "title": "VMMap Signed Dbghelp.DLL Potential Sideloading",
@@ -49292,6 +49312,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\taskkill.exe' ESCAPE '\\' OR OriginalFileName = 'taskkill.exe') AND (CommandLine LIKE '% /f%' ESCAPE '\\' AND CommandLine LIKE '% /im %' ESCAPE '\\')) AND NOT (((ParentImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR ParentImage LIKE '%:\\\\Windows\\\\Temp%' ESCAPE '\\') AND ParentImage LIKE '%.tmp' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_taskkill_execution.yml"
+    },
+    {
+        "title": "CodePage Modification Via MODE.COM",
+        "id": "d48c5ffa-3b02-4c0f-9a9e-3c275650dd0e",
+        "status": "experimental",
+        "description": "Detects a CodePage modification using the \"mode.com\" utility.\nThis behavior has been used by threat actors behind Dharma ransomware.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\mode.com' ESCAPE '\\' OR OriginalFileName = 'MODE.COM') AND (CommandLine LIKE '% con %' ESCAPE '\\' AND CommandLine LIKE '% cp %' ESCAPE '\\' AND CommandLine LIKE '% select=%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mode_codepage_change.yml"
     },
     {
         "title": "PsExec Default Named Pipe",

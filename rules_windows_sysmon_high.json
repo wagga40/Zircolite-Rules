@@ -26117,25 +26117,6 @@
         "filename": "image_load_side_load_abused_dlls_susp_paths.yml"
     },
     {
-        "title": "Possible Process Hollowing Image Loading",
-        "id": "e32ce4f5-46c6-4c47-ba69-5de3c9193cd7",
-        "status": "test",
-        "description": "Detects Loading of samlib.dll, WinSCard.dll from untypical process e.g. through process hollowing by Mimikatz",
-        "author": "Markus Neis",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Very likely, needs more tuning"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\notepad.exe' ESCAPE '\\' AND (ImageLoaded LIKE '%\\\\samlib.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\WinSCard.dll' ESCAPE '\\'))"
-        ],
-        "filename": "image_load_susp_uncommon_image_load.yml"
-    },
-    {
         "title": "UAC Bypass With Fake DLL",
         "id": "a5ea83a7-05a5-44c1-be2e-addccbbd8c03",
         "status": "test",
