@@ -2138,25 +2138,6 @@
         "filename": ""
     },
     {
-        "title": "QuarksPwDump Clearing Access History",
-        "id": "39f919f3-980b-4e6f-a975-8af7e507ef2b",
-        "status": "test",
-        "description": "Detects QuarksPwDump clearing access history in hive",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1003.002"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='System' AND (EventID=16 AND Provider_Name='Microsoft-Windows-Kernel-General' AND HiveName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\SAM%' ESCAPE '\\' AND HiveName LIKE '%.dmp' ESCAPE '\\')"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Win Susp Computer Name Containing Samtheadmin",
         "id": "39698b3f-da92-4bc6-bfb5-645a98386e45",
         "status": "test",
@@ -3094,27 +3075,6 @@
         "filename": ""
     },
     {
-        "title": "Dnscat Execution",
-        "id": "a6d67db4-6220-436d-8afc-f3842fe05d43",
-        "status": "test",
-        "description": "Dnscat exfiltration tool execution",
-        "author": "Daniil Yugoslavskiy, oscd.community",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1048",
-            "attack.execution",
-            "attack.t1059.001"
-        ],
-        "falsepositives": [
-            "Legitimate usage of PowerShell Dnscat2 \u2014 DNS Exfiltration tool (unlikely)"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND ScriptBlockText LIKE '%Start-Dnscat2%' ESCAPE '\\')"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Silence.EDA Detection",
         "id": "3ceb2083-a27f-449a-be33-14ec1b7cc973",
         "status": "test",
@@ -3750,11 +3710,12 @@
             "stp.1k"
         ],
         "falsepositives": [
-            "Chrome instances using the exact same pipe name \"mojo.xxx\""
+            "Chrome instances using the exact same pipe name \"mojo.xxx\"",
+            "Websense Endpoint using the pipe name \"DserNamePipe(R|W)\\d{1,5}\""
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((PipeName LIKE '\\\\DserNamePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\f4c3%' ESCAPE '\\' OR PipeName LIKE '\\\\f53f%' ESCAPE '\\' OR PipeName LIKE '\\\\fullduplex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo.5688.8052.183894939787088877%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo.5688.8052.35780273329370473%' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds%' ESCAPE '\\' OR PipeName LIKE '\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-f%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-h%' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs%' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\rpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc%' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester%' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\_svc%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\windows.update.manager%' ESCAPE '\\' OR PipeName LIKE '\\\\wkssvc%' ESCAPE '\\') OR (PipeName LIKE '\\\\demoagent\\_11' ESCAPE '\\' OR PipeName LIKE '\\\\demoagent\\_22' ESCAPE '\\')) OR (PipeName LIKE '\\\\Winsock2\\\\CatalogChangeListener-%' ESCAPE '\\' AND PipeName LIKE '%-0,' ESCAPE '\\')) AND (NOT (PipeName LIKE '\\\\wkssvc' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (((PipeName LIKE '\\\\DserNamePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\f4c3%' ESCAPE '\\' OR PipeName LIKE '\\\\f53f%' ESCAPE '\\' OR PipeName LIKE '\\\\fullduplex\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo.5688.8052.183894939787088877%' ESCAPE '\\' OR PipeName LIKE '\\\\mojo.5688.8052.35780273329370473%' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds%' ESCAPE '\\' OR PipeName LIKE '\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-f%' ESCAPE '\\' OR PipeName LIKE '\\\\mypipe-h%' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs%' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe%' ESCAPE '\\' OR PipeName LIKE '\\\\rpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc%' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester%' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\_svc%' ESCAPE '\\' OR PipeName LIKE '\\\\win\\\\msrpc\\_%' ESCAPE '\\' OR PipeName LIKE '\\\\windows.update.manager%' ESCAPE '\\' OR PipeName LIKE '\\\\wkssvc%' ESCAPE '\\') OR (PipeName LIKE '\\\\demoagent\\_11' ESCAPE '\\' OR PipeName LIKE '\\\\demoagent\\_22' ESCAPE '\\')) OR (PipeName LIKE '\\\\Winsock2\\\\CatalogChangeListener-%' ESCAPE '\\' AND PipeName LIKE '%-0,' ESCAPE '\\')) AND (NOT (PipeName LIKE '\\\\wkssvc' ESCAPE '\\' OR PipeName LIKE '\\\\spoolss' ESCAPE '\\' OR PipeName LIKE '\\\\scerpc' ESCAPE '\\' OR PipeName LIKE '\\\\ntsvcs' ESCAPE '\\' OR PipeName LIKE '\\\\SearchTextHarvester' ESCAPE '\\' OR PipeName LIKE '\\\\PGMessagePipe' ESCAPE '\\' OR PipeName LIKE '\\\\MsFteWds' ESCAPE '\\')) AND (NOT ((Image LIKE '%:\\\\Program Files\\\\Websense\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\Websense\\\\%' ESCAPE '\\') AND (PipeName LIKE '\\\\DserNamePipeR%' ESCAPE '\\' OR PipeName LIKE '\\\\DserNamePipeW%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -5077,7 +5038,7 @@
         "filename": ""
     },
     {
-        "title": "Potential Pikabot C2 Activity - Suspicious Process Created By Rundll32.EXE",
+        "title": "Potential Pikabot C2 Activity",
         "id": "cae6cee6-0244-44d2-84ed-e65f548eb7dc",
         "status": "experimental",
         "description": "Detects the execution of rundll32 that leads to an external network connection.\nThe malware Pikabot has been seen to use this technique to initiate C2-communication through hard-coded Windows binaries.\n",
@@ -5092,15 +5053,35 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ParentImage LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (Image LIKE '%\\\\searchprotocolhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\sndvol.exe' ESCAPE '\\' OR Image LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR Image LIKE '%\\\\wwahost.exe' ESCAPE '\\') AND Protocol='tcp' AND Initiated='true'"
+            "SELECT * FROM logs WHERE ParentImage LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (Image LIKE '%\\\\SearchFilterHost.exe' ESCAPE '\\' OR Image LIKE '%\\\\SearchProtocolHost.exe' ESCAPE '\\' OR Image LIKE '%\\\\sndvol.exe' ESCAPE '\\' OR Image LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR Image LIKE '%\\\\wwahost.exe' ESCAPE '\\') AND Protocol='tcp' AND Initiated='true'"
         ],
         "filename": ""
     },
     {
-        "title": "Potential Pikabot Discovery Activity - Suspicious Process Created By Rundll32.EXE",
+        "title": "Pikabot Fake DLL Extension Execution Via Rundll32.EXE",
+        "id": "1bf0ba65-9a39-42a2-9271-31d31bf2f0bf",
+        "status": "experimental",
+        "description": "Detects specific process tree behavior linked to \"rundll32\" executions, wherein the associated DLL lacks a common \".dll\" extension, often signaling potential Pikabot activity.\n",
+        "author": "Swachchhanda Shrawan Poudel, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.defense_evasion",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') AND NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (CommandLine LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Installer\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\')) AND (NOT ((CommandLine LIKE '%.cpl %' ESCAPE '\\' OR CommandLine LIKE '%.cpl,%' ESCAPE '\\' OR CommandLine LIKE '%.dll %' ESCAPE '\\' OR CommandLine LIKE '%.dll,%' ESCAPE '\\' OR CommandLine LIKE '%.inf %' ESCAPE '\\' OR CommandLine LIKE '%.inf,%' ESCAPE '\\') OR (CommandLine LIKE '%.cpl' ESCAPE '\\' OR CommandLine LIKE '%.cpl\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.inf' ESCAPE '\\' OR CommandLine LIKE '%.inf\"' ESCAPE '\\' OR CommandLine LIKE '%.cpl''' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\' OR CommandLine LIKE '%.inf''' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential Pikabot Discovery Activity",
         "id": "698d4431-514f-4c82-af4d-cf573872a9f5",
         "status": "experimental",
-        "description": "Detects the execution of rundll32 that leads to system discovery activity, such as incl. network, user info and domain groups.\nThe malware Pikabot has been seen to use this technique as part of its C2-botnet registration with a short collection time frame (less than 1 minute).\n",
+        "description": "Detects system discovery activity carried out by Pikabot, such as incl. network, user info and domain groups.\nThe malware Pikabot has been seen to use this technique as part of its C2-botnet registration with a short collection time frame (less than 1 minute).\n",
         "author": "Andreas Braathen (mnemonic.io)",
         "tags": [
             "attack.discovery",
@@ -5114,12 +5095,12 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (GrandParentImage LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (CommandLine='ipconfig.exe /all' OR CommandLine='netstat.exe -aon' OR CommandLine='whoami.exe /all')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((GrandParentImage LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR (ParentProcessName LIKE '%\\\\SearchFilterHost.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\SearchProtocolHost.exe' ESCAPE '\\')) AND (CommandLine='ipconfig.exe /all' OR CommandLine='netstat.exe -aon' OR CommandLine='whoami.exe /all')))"
         ],
         "filename": ""
     },
     {
-        "title": "Potential Pikabot Hollowing Activity - Suspicious Process Created By Rundll32.EXE",
+        "title": "Potential Pikabot Hollowing Activity",
         "id": "d8937fe7-42d5-4b4d-8178-e089c908f63f",
         "status": "experimental",
         "description": "Detects the execution of rundll32 that leads to the invocation of legitimate Windows binaries.\nThe malware Pikabot has been seen to use this technique for process hollowing through hard-coded Windows binaries\n",
@@ -5134,7 +5115,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((ParentProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\searchprotocolhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sndvol.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wwahost.exe' ESCAPE '\\')) AND (NOT (NewProcessName LIKE '%\\\\sndvol.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%mmsys.cpl%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((ParentProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\SearchFilterHost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\SearchProtocolHost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sndvol.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wwahost.exe' ESCAPE '\\')) AND (NOT (NewProcessName LIKE '%\\\\sndvol.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%mmsys.cpl%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -5662,6 +5643,27 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE `cs-method`='GET' AND (`cs-uri-query` LIKE '%/forms/doLogin%' ESCAPE '\\' AND `cs-uri-query` LIKE '%login\\_username%' ESCAPE '\\' AND `cs-uri-query` LIKE '%password%' ESCAPE '\\') AND (`cs-uri-query` LIKE '%$(%' ESCAPE '\\' OR `cs-uri-query` LIKE '%\\%24\\%28%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Equation Group C2 Communication",
+        "id": "881834a4-6659-4773-821e-1c151789d873",
+        "status": "test",
+        "description": "Detects communication to C2 servers mentioned in the operational notes of the ShadowBroker leak of EquationGroup C2 tools",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.g0020",
+            "attack.t1041",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (dst_ip='69.42.98.86' OR dst_ip='89.185.234.145') OR (src_ip='69.42.98.86' OR src_ip='89.185.234.145')"
         ],
         "filename": ""
     },
@@ -7444,7 +7446,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE 'C:\\\\Windows\\\\Prefetch\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.pf' ESCAPE '\\') AND (NOT (Image LIKE 'C:\\\\windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%:\\\\Windows\\\\Prefetch\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.pf' ESCAPE '\\') AND (NOT (Image LIKE '%:\\\\windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -7472,7 +7474,7 @@
         "id": "8f0b1fb1-9bd4-4e74-8cdf-a8de4d2adfd0",
         "status": "test",
         "description": "Detects an unexpected file being deleted by dns.exe which my indicate activity related to remote code execution or other forms of exploitation as seen in CVE-2020-1350 (SigRed)",
-        "author": "Tim Rauch (Nextron Systems)",
+        "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
             "attack.initial_access",
             "attack.t1133"
@@ -7513,7 +7515,7 @@
         "id": "9f383dc0-fdeb-4d56-acbc-9f9f4f8f20f3",
         "status": "test",
         "description": "Detects an unexpected file being modified by dns.exe which my indicate activity related to remote code execution or other forms of exploitation as seen in CVE-2020-1350 (SigRed)",
-        "author": "Tim Rauch (Nextron Systems)",
+        "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
             "attack.initial_access",
             "attack.t1133"
@@ -8185,7 +8187,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\Add-ConstrainedDelegationBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-Exfiltration.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-Persistence.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-RegBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-RemoteRegBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-ScrnSaveBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ADRecon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AzureADRecon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Check-VM.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ConvertTo-ROT13.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Copy-VSS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Create-MultipleSessions.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DNS\\_TXT\\_Pwnage.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Do-Exfiltration.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DomainPasswordSpray.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Download\\_Execute.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Download-Execute-PS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Enable-DuplicateToken.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Enabled-DuplicateToken.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Execute-Command-MSSQL.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Execute-DNSTXT-Code.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Execute-OnTime.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ExetoText.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Exploit-Jboss.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-AVSignature.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-Fruit.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-GPOLocation.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-TrustedDocuments.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\FireBuster.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\FireListener.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ApplicationHost.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ChromeDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ClipboardContents.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ComputerDetail.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-FoxDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-GPPAutologon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-GPPPassword.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-IndexedItem.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-Keystrokes.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-LSASecret.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-MicrophoneAudio.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-PassHashes.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-PassHints.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-RegAlwaysInstallElevated.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-RegAutoLogon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-RickAstley.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-Screenshot.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-SecurityPackages.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ServiceFilePermission.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ServicePermission.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ServiceUnquoted.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-SiteListPassword.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-System.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-TimedScreenshot.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-UnattendedInstallFile.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-Unconstrained.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-USBKeystrokes.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-VaultCredential.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-VulnAutoRun.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-VulnSchTask.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-WebConfig.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-WebCredentials.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-WLAN-Keys.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Gupt-Backdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\HTTP-Backdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\HTTP-Login.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Install-ServiceBinary.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Install-SSP.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ACLScanner.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ADSBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-AmsiBypass.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ARPScan.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BackdoorLNK.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BadPotato.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BetterSafetyKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BruteForce.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BypassUAC.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Carbuncle.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Certify.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ConPtyShell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-CredentialInjection.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-CredentialsPhish.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DAFT.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DCSync.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Decode.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DinvokeKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DllInjection.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DNSUpdate.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DowngradeAccount.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-EgressCheck.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Encode.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-EventViewer.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Eyewitness.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-FakeLogonScreen.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Farmer.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Get-RBCD-Threaded.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Gopher.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Grouper2.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Grouper3.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-HandleKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Interceptor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Internalmonologue.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Inveigh.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-InveighRelay.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-JSRatRegsvr.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-JSRatRundll.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-KrbRelay.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-KrbRelayUp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-LdapSignCheck.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Lockless.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-MalSCCM.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Mimikatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-MimikatzWDigestDowngrade.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Mimikittenz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-MITM6.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NanoDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NetRipper.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NetworkRelay.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NinjaCopy.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-OxidResolver.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-P0wnedshell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-P0wnedshellx86.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Paranoia.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PortScan.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PoshRatHttp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PoshRatHttps.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PostExfil.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellIcmp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellTCP.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellTcpOneLine.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellTcpOneLineBind.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellUdp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellUdpOneLine.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellWMI.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerThIEf.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PPLDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Prasadhak.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsExec.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsGcat.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsGcatAgent.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PSInject.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsUaCme.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ReflectivePEInjection.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ReverseDNSLookup.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Rubeus.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-RunAs.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SafetyKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SauronEye.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SCShell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Seatbelt.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ServiceAbuse.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SessionGopher.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ShellCode.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SMBScanner.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Snaffler.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Spoolsample.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SSHCommand.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SSIDExfil.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-StandIn.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-StickyNotesExtract.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Tater.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Thunderfox.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ThunderStruck.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-TokenManipulation.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Tokenvator.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-TotalExec.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-UrbanBishop.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-UserHunter.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-VoiceTroll.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Whisker.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WinEnum.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-winPEAS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WireTap.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WmiCommand.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WScriptBypassUAC.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Zerologon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Keylogger.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MailRaider.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\New-HoneyHash.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\OfficeMemScraper.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Offline\\_Winpwn.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-CHM.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-DnsTxt.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Excel.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-HTA.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Java.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-JS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Minidump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-RundllCommand.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-SCF.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-SCT.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Shortcut.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-WebQuery.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Word.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Parse\\_Keys.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Port-Scan.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerBreach.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\powercat.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Powermad.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerRunAsSystem.psm1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerSharpPack.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerUp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerUpSQL.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerView.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PSAsyncShell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\RemoteHashRetrieval.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Remove-Persistence.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Remove-PoshRat.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Remove-Update.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Run-EXEonRemote.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Schtasks-Backdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-DCShadowPermissions.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-MacAttribute.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-RemotePSRemoting.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-RemoteWMI.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-Wallpaper.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Show-TargetScreen.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Speak.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Start-CaptureServer.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Start-WebcamRecorder.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\StringToBase64.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\TexttoExe.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\VolumeShadowCopyTools.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\WinPwn.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\WSUSpendu.ps1' ESCAPE '\\') OR (TargetFilename LIKE '%Invoke-Sharp%' ESCAPE '\\' AND TargetFilename LIKE '%.ps1' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\Add-ConstrainedDelegationBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-Exfiltration.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-Persistence.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-RegBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-RemoteRegBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Add-ScrnSaveBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ADRecon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AzureADRecon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Check-VM.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ConvertTo-ROT13.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Copy-VSS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Create-MultipleSessions.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DNS\\_TXT\\_Pwnage.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\dnscat2.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Do-Exfiltration.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\DomainPasswordSpray.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Download\\_Execute.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Download-Execute-PS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Enable-DuplicateToken.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Enabled-DuplicateToken.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Execute-Command-MSSQL.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Execute-DNSTXT-Code.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Execute-OnTime.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\ExetoText.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Exploit-Jboss.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-AVSignature.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-Fruit.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-GPOLocation.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Find-TrustedDocuments.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\FireBuster.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\FireListener.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ApplicationHost.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ChromeDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ClipboardContents.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ComputerDetail.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-FoxDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-GPPAutologon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-GPPPassword.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-IndexedItem.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-Keystrokes.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-LSASecret.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-MicrophoneAudio.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-PassHashes.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-PassHints.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-RegAlwaysInstallElevated.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-RegAutoLogon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-RickAstley.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-Screenshot.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-SecurityPackages.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ServiceFilePermission.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ServicePermission.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-ServiceUnquoted.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-SiteListPassword.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-System.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-TimedScreenshot.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-UnattendedInstallFile.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-Unconstrained.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-USBKeystrokes.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-VaultCredential.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-VulnAutoRun.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-VulnSchTask.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-WebConfig.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-WebCredentials.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Get-WLAN-Keys.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Gupt-Backdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\HTTP-Backdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\HTTP-Login.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Install-ServiceBinary.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Install-SSP.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ACLScanner.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ADSBackdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-AmsiBypass.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ARPScan.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BackdoorLNK.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BadPotato.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BetterSafetyKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BruteForce.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-BypassUAC.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Carbuncle.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Certify.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ConPtyShell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-CredentialInjection.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-CredentialsPhish.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DAFT.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DCSync.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Decode.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DinvokeKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DllInjection.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DNSUpdate.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-DowngradeAccount.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-EgressCheck.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Encode.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-EventViewer.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Eyewitness.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-FakeLogonScreen.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Farmer.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Get-RBCD-Threaded.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Gopher.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Grouper2.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Grouper3.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-HandleKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Interceptor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Internalmonologue.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Inveigh.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-InveighRelay.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-JSRatRegsvr.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-JSRatRundll.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-KrbRelay.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-KrbRelayUp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-LdapSignCheck.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Lockless.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-MalSCCM.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Mimikatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-MimikatzWDigestDowngrade.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Mimikittenz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-MITM6.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NanoDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NetRipper.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NetworkRelay.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-NinjaCopy.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-OxidResolver.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-P0wnedshell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-P0wnedshellx86.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Paranoia.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PortScan.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PoshRatHttp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PoshRatHttps.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PostExfil.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellIcmp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellTCP.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellTcpOneLine.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellTcpOneLineBind.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellUdp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellUdpOneLine.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerShellWMI.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PowerThIEf.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PPLDump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Prasadhak.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsExec.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsGcat.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsGcatAgent.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PSInject.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-PsUaCme.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ReflectivePEInjection.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ReverseDNSLookup.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Rubeus.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-RunAs.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SafetyKatz.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SauronEye.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SCShell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Seatbelt.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ServiceAbuse.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SessionGopher.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ShellCode.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SMBScanner.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Snaffler.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Spoolsample.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SSHCommand.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-SSIDExfil.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-StandIn.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-StickyNotesExtract.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Tater.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Thunderfox.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-ThunderStruck.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-TokenManipulation.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Tokenvator.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-TotalExec.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-UrbanBishop.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-UserHunter.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-VoiceTroll.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Whisker.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WinEnum.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-winPEAS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WireTap.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WmiCommand.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-WScriptBypassUAC.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Invoke-Zerologon.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Keylogger.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\MailRaider.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\New-HoneyHash.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\OfficeMemScraper.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Offline\\_Winpwn.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-CHM.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-DnsTxt.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Excel.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-HTA.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Java.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-JS.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Minidump.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-RundllCommand.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-SCF.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-SCT.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Shortcut.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-WebQuery.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Out-Word.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Parse\\_Keys.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Port-Scan.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerBreach.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\powercat.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Powermad.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerRunAsSystem.psm1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerSharpPack.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerUp.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerUpSQL.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PowerView.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\PSAsyncShell.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\RemoteHashRetrieval.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Remove-Persistence.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Remove-PoshRat.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Remove-Update.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Run-EXEonRemote.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Schtasks-Backdoor.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-DCShadowPermissions.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-MacAttribute.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-RemotePSRemoting.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-RemoteWMI.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Set-Wallpaper.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Show-TargetScreen.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Speak.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Start-CaptureServer.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Start-WebcamRecorder.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\StringToBase64.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\TexttoExe.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\VolumeShadowCopyTools.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\WinPwn.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\WSUSpendu.ps1' ESCAPE '\\') OR (TargetFilename LIKE '%Invoke-Sharp%' ESCAPE '\\' AND TargetFilename LIKE '%.ps1' ESCAPE '\\')"
         ],
         "filename": ""
     },
@@ -8765,7 +8767,7 @@
         "title": "Files With System Process Name In Unsuspected Locations",
         "id": "d5866ddf-ce8f-4aea-b28e-d96485a20d3d",
         "status": "test",
-        "description": "Detects the creation of an executable with a system process name in folders other than the system ones (System32, SysWOW64...etc).",
+        "description": "Detects the creation of an executable with a system process name in folders other than the system ones (System32, SysWOW64, etc.).\n",
         "author": "Sander Wiebing, Tim Shelton, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -10523,7 +10525,7 @@
         "id": "71c276aa-49cd-43d2-b920-2dcd3e6962d5",
         "status": "test",
         "description": "Detects a service installed by a client which has PID 0 or whose parent has PID 0",
-        "author": "Tim Rauch (Nextron Systems), Elastic",
+        "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
             "attack.privilege_escalation",
             "attack.t1543"
@@ -10863,7 +10865,26 @@
         "filename": ""
     },
     {
-        "title": "Sysmon Crash",
+        "title": "Critical Hive In Suspicious Location Access Bits Cleared",
+        "id": "39f919f3-980b-4e6f-a975-8af7e507ef2b",
+        "status": "test",
+        "description": "Detects events from the Kernel-General ETW indicating that the access bits of a hive with a system like hive name located in the temp directory have been reset.\nThis occurs when an application tries to access a hive and the hive has not be recognized since the last 7 days (by default).\nRegistry hive dumping utilities such as QuarksPwDump were seen emitting this behavior.\n",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='System' AND (EventID=16 AND Provider_Name='Microsoft-Windows-Kernel-General' AND (HiveName LIKE '%\\\\Temp\\\\SAM%' ESCAPE '\\' OR HiveName LIKE '%\\\\Temp\\\\SECURITY%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Sysmon Application Crashed",
         "id": "4d7f1827-1637-4def-8d8a-fd254f9454df",
         "status": "test",
         "description": "Detects application popup reporting a failure of the Sysmon service",
@@ -10877,7 +10898,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='System' AND (Provider_Name='Application Popup' AND EventID=26 AND Caption='sysmon64.exe - Application Error')"
+            "SELECT * FROM logs WHERE Channel='System' AND (Provider_Name='Application Popup' AND EventID=26 AND (Caption='sysmon64.exe - Application Error' OR Caption='sysmon.exe - Application Error'))"
         ],
         "filename": ""
     },
@@ -11150,7 +11171,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (((EventID=4625 OR EventID=4624) AND LogonType=3 AND AuthenticationPackageName='NTLM' AND WorkstationName REGEXP '^[A-Za-z0-9]{16}$') OR (ProcessName IS NULL AND EventID=4776 AND Workstation REGEXP '^[A-Za-z0-9]{16}$'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (((EventID=4625 OR EventID=4624) AND LogonType=3 AND AuthenticationPackageName='NTLM' AND WorkstationName REGEXP '^[A-Za-z0-9]{16}$') OR (EventID=4776 AND Workstation REGEXP '^[A-Za-z0-9]{16}$'))"
         ],
         "filename": ""
     },
@@ -11609,7 +11630,7 @@
         "id": "c4e92a97-a9ff-4392-9d2d-7a4c642768ca",
         "status": "test",
         "description": "Detects a service installed by a client which has PID 0 or whose parent has PID 0",
-        "author": "Tim Rauch (Nextron Systems), Elastic",
+        "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
             "attack.privilege_escalation",
             "attack.t1543"
@@ -11762,25 +11783,6 @@
         "filename": ""
     },
     {
-        "title": "New or Renamed User Account with '$' in Attribute 'SamAccountName'",
-        "id": "cfeed607-6aa4-4bbd-9627-b637deb723c8",
-        "status": "test",
-        "description": "Detects possible bypass EDR and SIEM via abnormal user account name.",
-        "author": "Ilyas Ochkov, oscd.community",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1036"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4720 AND SamAccountName LIKE '%$%' ESCAPE '\\') OR (EventID=4781 AND NewTargetUserName LIKE '%$%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Password Change on Directory Service Restore Mode (DSRM) Account",
         "id": "53ad8e36-f573-46bf-97e4-15ba5bf4bb51",
         "status": "stable",
@@ -11845,7 +11847,7 @@
         "title": "Kerberos Manipulation",
         "id": "f7644214-0eb0-4ace-9455-331ec4c09253",
         "status": "test",
-        "description": "This method triggers on rare Kerberos Failure Codes caused by manipulations of Kerberos messages",
+        "description": "Detects failed Kerberos TGT issue operation. This can be a sign of manipulations of TGT messages by an attacker.",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.credential_access",
@@ -11856,7 +11858,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=675 OR EventID=4768 OR EventID=4769 OR EventID=4771) AND (FailureCode='0x9' OR FailureCode='0xA' OR FailureCode='0xB' OR FailureCode='0xF' OR FailureCode='0x10' OR FailureCode='0x11' OR FailureCode='0x13' OR FailureCode='0x14' OR FailureCode='0x1A' OR FailureCode='0x1F' OR FailureCode='0x21' OR FailureCode='0x22' OR FailureCode='0x23' OR FailureCode='0x24' OR FailureCode='0x26' OR FailureCode='0x27' OR FailureCode='0x28' OR FailureCode='0x29' OR FailureCode='0x2C' OR FailureCode='0x2D' OR FailureCode='0x2E' OR FailureCode='0x2F' OR FailureCode='0x31' OR FailureCode='0x32' OR FailureCode='0x3E' OR FailureCode='0x3F' OR FailureCode='0x40' OR FailureCode='0x41' OR FailureCode='0x43' OR FailureCode='0x44'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=675 OR EventID=4768 OR EventID=4769 OR EventID=4771) AND (Status='0x9' OR Status='0xA' OR Status='0xB' OR Status='0xF' OR Status='0x10' OR Status='0x11' OR Status='0x13' OR Status='0x14' OR Status='0x1A' OR Status='0x1F' OR Status='0x21' OR Status='0x22' OR Status='0x23' OR Status='0x24' OR Status='0x26' OR Status='0x27' OR Status='0x28' OR Status='0x29' OR Status='0x2C' OR Status='0x2D' OR Status='0x2E' OR Status='0x2F' OR Status='0x31' OR Status='0x32' OR Status='0x3E' OR Status='0x3F' OR Status='0x40' OR Status='0x41' OR Status='0x43' OR Status='0x44'))"
         ],
         "filename": ""
     },
@@ -12227,6 +12229,25 @@
         "filename": ""
     },
     {
+        "title": "HackTool - EDRSilencer Execution - Filter Added",
+        "id": "98054878-5eab-434c-85d4-72d4e5a3361b",
+        "status": "experimental",
+        "description": "Detects execution of EDRSilencer, a tool that abuses the Windows Filtering Platform (WFP) to block the outbound traffic of running EDR agents based on specific hardcoded filter names.\n",
+        "author": "Thodoris Polyzos (@SmoothDeploy)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=5441 OR EventID=5447) AND FilterName LIKE '%Custom Outbound Filter%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
         "title": "AD Privileged Users or Groups Reconnaissance",
         "id": "35ba1d85-724d-42a3-889f-2e2362bcaf23",
         "status": "test",
@@ -12317,7 +12338,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4720 AND TargetUserName LIKE '%$' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4720 AND TargetUserName LIKE '%$' ESCAPE '\\') AND (NOT TargetUserName='HomeGroupUser$'))"
         ],
         "filename": ""
     },
@@ -12792,7 +12813,7 @@
         "title": "Important Scheduled Task Deleted",
         "id": "9e3cb244-bdb8-4632-8c90-6079c8f4f16d",
         "status": "test",
-        "description": "Detects when adversaries try to stop system services or processes by deleting their respective scheduled tasks in order to conduct data destructive activities",
+        "description": "Detects when adversaries try to stop system services or processes by deleting their respective scheduled tasks in order to conduct data destructive activities\n",
         "author": "frack113",
         "tags": [
             "attack.impact",
@@ -13349,7 +13370,7 @@
         "id": "49f2f17b-b4c8-4172-a68b-d5bf95d05130",
         "status": "test",
         "description": "Detects the pattern of UAC Bypass using ICMLuaUtil Elevated COM interface",
-        "author": "Florian Roth (Nextron Systems)",
+        "author": "Florian Roth (Nextron Systems), Elastic (idea)",
         "tags": [
             "attack.defense_evasion",
             "attack.privilege_escalation",
@@ -13459,27 +13480,6 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND CommandLine LIKE '% \\\\\\\\%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "WScript or CScript Dropper",
-        "id": "cea72823-df4d-4567-950c-0b579eaf0846",
-        "status": "test",
-        "description": "Detects wscript/cscript executions of scripts located in user directories",
-        "author": "Margaritis Dimitrios (idea), Florian Roth (Nextron Systems), oscd.community",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.005",
-            "attack.t1059.007"
-        ],
-        "falsepositives": [
-            "Winzip",
-            "Other self-extractors"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\')) AND (CommandLine LIKE '%.jse%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.vba%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\') AND (NOT ParentProcessName LIKE '%\\\\winzip%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -13958,7 +13958,7 @@
         "id": "97dbf6e2-e436-44d8-abee-4261b24d3e41",
         "status": "test",
         "description": "Detects use of aspnet_regiis to decrypt Microsoft IIS connection strings. An attacker with Microsoft IIS web server access via a webshell or alike can decrypt and dump any hardcoded connection strings, such as the MSSQL service account password using aspnet_regiis command.",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.credential_access",
             "attack.t1003"
@@ -14073,7 +14073,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%Add-Exfiltration%' ESCAPE '\\' OR CommandLine LIKE '%Add-Persistence%' ESCAPE '\\' OR CommandLine LIKE '%Add-RegBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Add-RemoteRegBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Add-ScrnSaveBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Check-VM%' ESCAPE '\\' OR CommandLine LIKE '%ConvertTo-Rc4ByteStream%' ESCAPE '\\' OR CommandLine LIKE '%Decrypt-Hash%' ESCAPE '\\' OR CommandLine LIKE '%Disable-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Disable-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%Do-Exfiltration%' ESCAPE '\\' OR CommandLine LIKE '%Enable-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Enable-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%Enabled-DuplicateToken%' ESCAPE '\\' OR CommandLine LIKE '%Exploit-Jboss%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADR%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRCSV%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRExcel%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRHTML%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRJSON%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRXML%' ESCAPE '\\' OR CommandLine LIKE '%Find-Fruit%' ESCAPE '\\' OR CommandLine LIKE '%Find-GPOLocation%' ESCAPE '\\' OR CommandLine LIKE '%Find-TrustedDocuments%' ESCAPE '\\' OR CommandLine LIKE '%Get-ADIDNS%' ESCAPE '\\' OR CommandLine LIKE '%Get-ApplicationHost%' ESCAPE '\\' OR CommandLine LIKE '%Get-ChromeDump%' ESCAPE '\\' OR CommandLine LIKE '%Get-ClipboardContents%' ESCAPE '\\' OR CommandLine LIKE '%Get-FoxDump%' ESCAPE '\\' OR CommandLine LIKE '%Get-GPPPassword%' ESCAPE '\\' OR CommandLine LIKE '%Get-IndexedItem%' ESCAPE '\\' OR CommandLine LIKE '%Get-KerberosAESKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-Keystrokes%' ESCAPE '\\' OR CommandLine LIKE '%Get-LSASecret%' ESCAPE '\\' OR CommandLine LIKE '%Get-MachineAccountAttribute%' ESCAPE '\\' OR CommandLine LIKE '%Get-MachineAccountCreator%' ESCAPE '\\' OR CommandLine LIKE '%Get-PassHashes%' ESCAPE '\\' OR CommandLine LIKE '%Get-RegAlwaysInstallElevated%' ESCAPE '\\' OR CommandLine LIKE '%Get-RegAutoLogon%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteBootKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteCachedCredential%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteLocalAccountHash%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteLSAKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteMachineAccountHash%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteNLKMKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RickAstley%' ESCAPE '\\' OR CommandLine LIKE '%Get-Screenshot%' ESCAPE '\\' OR CommandLine LIKE '%Get-SecurityPackages%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServiceFilePermission%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServicePermission%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServiceUnquoted%' ESCAPE '\\' OR CommandLine LIKE '%Get-SiteListPassword%' ESCAPE '\\' OR CommandLine LIKE '%Get-System%' ESCAPE '\\' OR CommandLine LIKE '%Get-TimedScreenshot%' ESCAPE '\\' OR CommandLine LIKE '%Get-UnattendedInstallFile%' ESCAPE '\\' OR CommandLine LIKE '%Get-Unconstrained%' ESCAPE '\\' OR CommandLine LIKE '%Get-USBKeystrokes%' ESCAPE '\\' OR CommandLine LIKE '%Get-VaultCredential%' ESCAPE '\\' OR CommandLine LIKE '%Get-VulnAutoRun%' ESCAPE '\\' OR CommandLine LIKE '%Get-VulnSchTask%' ESCAPE '\\' OR CommandLine LIKE '%Grant-ADIDNSPermission%' ESCAPE '\\' OR CommandLine LIKE '%Gupt-Backdoor%' ESCAPE '\\' OR CommandLine LIKE '%HTTP-Login%' ESCAPE '\\' OR CommandLine LIKE '%Install-ServiceBinary%' ESCAPE '\\' OR CommandLine LIKE '%Install-SSP%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ACLScanner%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ADRecon%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ADSBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AgentSmith%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AllChecks%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ARPScan%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AzureHound%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BackdoorLNK%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BadPotato%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BetterSafetyKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BypassUAC%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Carbuncle%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Certify%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ConPtyShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-CredentialInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DAFT%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DCSync%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DinvokeKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DllInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DNSUpdate%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DomainPasswordSpray%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DowngradeAccount%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-EgressCheck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Eyewitness%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-FakeLogonScreen%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Farmer%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Get-RBCD-Threaded%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Gopher%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Grouper%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-HandleKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ImpersonatedProcess%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ImpersonateSystem%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-InteractiveSystemPowerShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Internalmonologue%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Inveigh%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-InveighRelay%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-KrbRelay%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-LdapSignCheck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Lockless%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-MalSCCM%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Mimikatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Mimikittenz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-MITM6%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NanoDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NetRipper%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NinjaCopy%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-OfficeScrape%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-OxidResolver%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-P0wnedshell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Paranoia%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PortScan%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PoshRatHttp%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PostExfil%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerShellTCP%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerShellWMI%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PPLDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PsExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PSInject%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PsUaCme%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ReflectivePEInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ReverseDNSLookup%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Rubeus%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-RunAs%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SafetyKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SauronEye%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SCShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Seatbelt%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ServiceAbuse%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ShadowSpray%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Sharp%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Shellcode%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SMBScanner%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Snaffler%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Spoolsample%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SpraySinglePassword%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SSHCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-StandIn%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-StickyNotesExtract%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SystemCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tasksbackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tater%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Thunderfox%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ThunderStruck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-TokenManipulation%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tokenvator%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-TotalExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-UrbanBishop%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-VoiceTroll%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Whisker%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WinEnum%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-winPEAS%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WireTap%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WmiCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WMIExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WScriptBypassUAC%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Zerologon%' ESCAPE '\\' OR CommandLine LIKE '%MailRaider%' ESCAPE '\\' OR CommandLine LIKE '%New-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%New-DNSRecordArray%' ESCAPE '\\' OR CommandLine LIKE '%New-HoneyHash%' ESCAPE '\\' OR CommandLine LIKE '%New-InMemoryModule%' ESCAPE '\\' OR CommandLine LIKE '%New-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%New-SOASerialNumberArray%' ESCAPE '\\' OR CommandLine LIKE '%Out-Minidump%' ESCAPE '\\' OR CommandLine LIKE '%Port-Scan%' ESCAPE '\\' OR CommandLine LIKE '%PowerBreach%' ESCAPE '\\' OR CommandLine LIKE '%powercat %' ESCAPE '\\' OR CommandLine LIKE '%PowerUp%' ESCAPE '\\' OR CommandLine LIKE '%PowerView%' ESCAPE '\\' OR CommandLine LIKE '%Remove-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Remove-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%Remove-Update%' ESCAPE '\\' OR CommandLine LIKE '%Rename-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Revoke-ADIDNSPermission%' ESCAPE '\\' OR CommandLine LIKE '%Set-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Set-MacAttribute%' ESCAPE '\\' OR CommandLine LIKE '%Set-MachineAccountAttribute%' ESCAPE '\\' OR CommandLine LIKE '%Set-Wallpaper%' ESCAPE '\\' OR CommandLine LIKE '%Show-TargetScreen%' ESCAPE '\\' OR CommandLine LIKE '%Start-CaptureServer%' ESCAPE '\\' OR CommandLine LIKE '%Start-WebcamRecorder%' ESCAPE '\\' OR CommandLine LIKE '%VolumeShadowCopyTools%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%Add-Exfiltration%' ESCAPE '\\' OR CommandLine LIKE '%Add-Persistence%' ESCAPE '\\' OR CommandLine LIKE '%Add-RegBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Add-RemoteRegBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Add-ScrnSaveBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Check-VM%' ESCAPE '\\' OR CommandLine LIKE '%ConvertTo-Rc4ByteStream%' ESCAPE '\\' OR CommandLine LIKE '%Decrypt-Hash%' ESCAPE '\\' OR CommandLine LIKE '%Disable-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Disable-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%Do-Exfiltration%' ESCAPE '\\' OR CommandLine LIKE '%Enable-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Enable-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%Enabled-DuplicateToken%' ESCAPE '\\' OR CommandLine LIKE '%Exploit-Jboss%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADR%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRCSV%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRExcel%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRHTML%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRJSON%' ESCAPE '\\' OR CommandLine LIKE '%Export-ADRXML%' ESCAPE '\\' OR CommandLine LIKE '%Find-Fruit%' ESCAPE '\\' OR CommandLine LIKE '%Find-GPOLocation%' ESCAPE '\\' OR CommandLine LIKE '%Find-TrustedDocuments%' ESCAPE '\\' OR CommandLine LIKE '%Get-ADIDNS%' ESCAPE '\\' OR CommandLine LIKE '%Get-ApplicationHost%' ESCAPE '\\' OR CommandLine LIKE '%Get-ChromeDump%' ESCAPE '\\' OR CommandLine LIKE '%Get-ClipboardContents%' ESCAPE '\\' OR CommandLine LIKE '%Get-FoxDump%' ESCAPE '\\' OR CommandLine LIKE '%Get-GPPPassword%' ESCAPE '\\' OR CommandLine LIKE '%Get-IndexedItem%' ESCAPE '\\' OR CommandLine LIKE '%Get-KerberosAESKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-Keystrokes%' ESCAPE '\\' OR CommandLine LIKE '%Get-LSASecret%' ESCAPE '\\' OR CommandLine LIKE '%Get-MachineAccountAttribute%' ESCAPE '\\' OR CommandLine LIKE '%Get-MachineAccountCreator%' ESCAPE '\\' OR CommandLine LIKE '%Get-PassHashes%' ESCAPE '\\' OR CommandLine LIKE '%Get-RegAlwaysInstallElevated%' ESCAPE '\\' OR CommandLine LIKE '%Get-RegAutoLogon%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteBootKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteCachedCredential%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteLocalAccountHash%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteLSAKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteMachineAccountHash%' ESCAPE '\\' OR CommandLine LIKE '%Get-RemoteNLKMKey%' ESCAPE '\\' OR CommandLine LIKE '%Get-RickAstley%' ESCAPE '\\' OR CommandLine LIKE '%Get-Screenshot%' ESCAPE '\\' OR CommandLine LIKE '%Get-SecurityPackages%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServiceFilePermission%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServicePermission%' ESCAPE '\\' OR CommandLine LIKE '%Get-ServiceUnquoted%' ESCAPE '\\' OR CommandLine LIKE '%Get-SiteListPassword%' ESCAPE '\\' OR CommandLine LIKE '%Get-System%' ESCAPE '\\' OR CommandLine LIKE '%Get-TimedScreenshot%' ESCAPE '\\' OR CommandLine LIKE '%Get-UnattendedInstallFile%' ESCAPE '\\' OR CommandLine LIKE '%Get-Unconstrained%' ESCAPE '\\' OR CommandLine LIKE '%Get-USBKeystrokes%' ESCAPE '\\' OR CommandLine LIKE '%Get-VaultCredential%' ESCAPE '\\' OR CommandLine LIKE '%Get-VulnAutoRun%' ESCAPE '\\' OR CommandLine LIKE '%Get-VulnSchTask%' ESCAPE '\\' OR CommandLine LIKE '%Grant-ADIDNSPermission%' ESCAPE '\\' OR CommandLine LIKE '%Gupt-Backdoor%' ESCAPE '\\' OR CommandLine LIKE '%HTTP-Login%' ESCAPE '\\' OR CommandLine LIKE '%Install-ServiceBinary%' ESCAPE '\\' OR CommandLine LIKE '%Install-SSP%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ACLScanner%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ADRecon%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ADSBackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AgentSmith%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AllChecks%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ARPScan%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AzureHound%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BackdoorLNK%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BadPotato%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BetterSafetyKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-BypassUAC%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Carbuncle%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Certify%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ConPtyShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-CredentialInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DAFT%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DCSync%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DinvokeKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DllInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DNSUpdate%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DomainPasswordSpray%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-DowngradeAccount%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-EgressCheck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Eyewitness%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-FakeLogonScreen%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Farmer%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Get-RBCD-Threaded%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Gopher%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Grouper%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-HandleKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ImpersonatedProcess%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ImpersonateSystem%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-InteractiveSystemPowerShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Internalmonologue%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Inveigh%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-InveighRelay%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-KrbRelay%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-LdapSignCheck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Lockless%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-MalSCCM%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Mimikatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Mimikittenz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-MITM6%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NanoDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NetRipper%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-NinjaCopy%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-OfficeScrape%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-OxidResolver%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-P0wnedshell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Paranoia%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PortScan%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PoshRatHttp%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PostExfil%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerShellTCP%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PowerShellWMI%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PPLDump%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PsExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PSInject%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-PsUaCme%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ReflectivePEInjection%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ReverseDNSLookup%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Rubeus%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-RunAs%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SafetyKatz%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SauronEye%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SCShell%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Seatbelt%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ServiceAbuse%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ShadowSpray%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Sharp%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Shellcode%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SMBScanner%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Snaffler%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Spoolsample%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SpraySinglePassword%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SSHCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-StandIn%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-StickyNotesExtract%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-SystemCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tasksbackdoor%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tater%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Thunderfox%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-ThunderStruck%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-TokenManipulation%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Tokenvator%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-TotalExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-UrbanBishop%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-VoiceTroll%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Whisker%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WinEnum%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-winPEAS%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WireTap%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WmiCommand%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WMIExec%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WScriptBypassUAC%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Zerologon%' ESCAPE '\\' OR CommandLine LIKE '%MailRaider%' ESCAPE '\\' OR CommandLine LIKE '%New-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%New-DNSRecordArray%' ESCAPE '\\' OR CommandLine LIKE '%New-HoneyHash%' ESCAPE '\\' OR CommandLine LIKE '%New-InMemoryModule%' ESCAPE '\\' OR CommandLine LIKE '%New-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%New-SOASerialNumberArray%' ESCAPE '\\' OR CommandLine LIKE '%Out-Minidump%' ESCAPE '\\' OR CommandLine LIKE '%Port-Scan%' ESCAPE '\\' OR CommandLine LIKE '%PowerBreach%' ESCAPE '\\' OR CommandLine LIKE '%powercat %' ESCAPE '\\' OR CommandLine LIKE '%PowerUp%' ESCAPE '\\' OR CommandLine LIKE '%PowerView%' ESCAPE '\\' OR CommandLine LIKE '%Remove-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Remove-MachineAccount%' ESCAPE '\\' OR CommandLine LIKE '%Remove-Update%' ESCAPE '\\' OR CommandLine LIKE '%Rename-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Revoke-ADIDNSPermission%' ESCAPE '\\' OR CommandLine LIKE '%Set-ADIDNSNode%' ESCAPE '\\' OR CommandLine LIKE '%Set-MacAttribute%' ESCAPE '\\' OR CommandLine LIKE '%Set-MachineAccountAttribute%' ESCAPE '\\' OR CommandLine LIKE '%Set-Wallpaper%' ESCAPE '\\' OR CommandLine LIKE '%Show-TargetScreen%' ESCAPE '\\' OR CommandLine LIKE '%Start-CaptureServer%' ESCAPE '\\' OR CommandLine LIKE '%Start-Dnscat2%' ESCAPE '\\' OR CommandLine LIKE '%Start-WebcamRecorder%' ESCAPE '\\' OR CommandLine LIKE '%VolumeShadowCopyTools%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -15577,7 +15577,7 @@
         "filename": ""
     },
     {
-        "title": "Potential RDP Tunneling Via SSH Plink",
+        "title": "Potential RDP Tunneling Via Plink",
         "id": "f38ce0b9-5e97-4b47-a211-7dc8d8b871da",
         "status": "test",
         "description": "Execution of plink to perform data exfiltration and tunneling",
@@ -15587,7 +15587,7 @@
             "attack.t1572"
         ],
         "falsepositives": [
-            "Administrative activity"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
@@ -16460,7 +16460,7 @@
             "attack.t1572"
         ],
         "falsepositives": [
-            "Administrative activity"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
@@ -16473,7 +16473,7 @@
         "id": "9bd04a79-dabe-4f1f-a5ff-92430265c96b",
         "status": "test",
         "description": "Detects a remote file copy attempt to a hidden network share. This may indicate lateral movement or data staging activity.",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.lateral_movement",
             "attack.t1021"
@@ -16756,7 +16756,7 @@
         "id": "21ff4ca9-f13a-41ad-b828-0077b2af2e40",
         "status": "test",
         "description": "Detects deletion of Windows Volume Shadow Copies with PowerShell code and Get-WMIObject. This technique is used by numerous ransomware families such as Sodinokibi/REvil",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.impact",
             "attack.t1490"
@@ -18280,7 +18280,7 @@
         "filename": ""
     },
     {
-        "title": "Execution in Outlook Temp Folder",
+        "title": "Suspicious Execution From Outlook Temporary Folder",
         "id": "a018fdc3-46a3-44e5-9afb-2cd4af1d4b39",
         "status": "test",
         "description": "Detects a suspicious program execution in Outlook temp folder",
@@ -18877,7 +18877,7 @@
         "id": "2d3cdeec-c0db-45b4-aa86-082f7eb75701",
         "status": "test",
         "description": "Detects the Internet Information Services (IIS) command-line tool, AppCmd, being used to list passwords",
-        "author": "Tim Rauch, Janantha Marasinghe",
+        "author": "Tim Rauch, Janantha Marasinghe, Elastic (original idea)",
         "tags": [
             "attack.credential_access",
             "attack.t1003"
@@ -19540,30 +19540,11 @@
         "filename": ""
     },
     {
-        "title": "Sensitive Registry Access via Volume Shadow Copy",
-        "id": "f57f8d16-1f39-4dcb-a604-6c73d9b54b3d",
-        "status": "test",
-        "description": "Detects a command that accesses password storing registry hives via volume shadow backups",
-        "author": "Max Altgelt (Nextron Systems), Tobias Michalski (Nextron Systems)",
-        "tags": [
-            "attack.impact",
-            "attack.t1490"
-        ],
-        "falsepositives": [
-            "Some rare backup scenarios"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%\\\\\\\\?\\\\GLOBALROOT\\\\Device\\\\HarddiskVolumeShadowCopy%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\NTDS.dit%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SYSTEM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SECURITY%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\tmp\\\\log%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Unusual Child Process of dns.exe",
         "id": "a4e3d776-f12e-42c2-8510-9e6ed1f43ec3",
         "status": "test",
         "description": "Detects an unexpected process spawning from dns.exe which may indicate activity related to remote code execution or other forms of exploitation as seen in CVE-2020-1350 (SigRed)",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.initial_access",
             "attack.t1133"
@@ -19746,6 +19727,25 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\SepRemovalToolNative\\_x64.exe' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\CATClean.exe' ESCAPE '\\' AND CommandLine LIKE '%--uninstall%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\NetInstaller.exe' ESCAPE '\\' AND CommandLine LIKE '%-r%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\WFPUnins.exe' ESCAPE '\\' AND (CommandLine LIKE '%/uninstall%' ESCAPE '\\' AND CommandLine LIKE '%/enterprise%' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "HackTool - SharpMove Tool Execution",
+        "id": "055fb54c-a8f4-4aee-bd44-f74cf30a0d9d",
+        "status": "experimental",
+        "description": "Detects the execution of SharpMove, a .NET utility performing multiple tasks such as \"Task Creation\", \"SCM\" query, VBScript execution using WMI via its PE metadata and command line options.\n",
+        "author": "Luca Di Bartolomeo (CrimpSec)",
+        "tags": [
+            "attack.lateral_movement",
+            "attack.t1021.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\SharpMove.exe' ESCAPE '\\' OR OriginalFileName='SharpMove.exe') OR (CommandLine LIKE '%computername=%' ESCAPE '\\' AND (CommandLine LIKE '%action=create%' ESCAPE '\\' OR CommandLine LIKE '%action=dcom%' ESCAPE '\\' OR CommandLine LIKE '%action=executevbs%' ESCAPE '\\' OR CommandLine LIKE '%action=hijackdcom%' ESCAPE '\\' OR CommandLine LIKE '%action=modschtask%' ESCAPE '\\' OR CommandLine LIKE '%action=modsvc%' ESCAPE '\\' OR CommandLine LIKE '%action=query%' ESCAPE '\\' OR CommandLine LIKE '%action=scm%' ESCAPE '\\' OR CommandLine LIKE '%action=startservice%' ESCAPE '\\' OR CommandLine LIKE '%action=taskscheduler%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -21584,7 +21584,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\java.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\AppVLP.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mftrace.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\query.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scrcons.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scriptrunner.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\systeminfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whoami.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\java.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\AppVLP.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mftrace.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\query.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scrcons.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scriptrunner.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\systeminfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whoami.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -22367,6 +22367,25 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((IntegrityLevel='High' OR IntegrityLevel='System') AND ParentProcessName LIKE '%\\\\ieinstal.exe' ESCAPE '\\' AND NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%consent.exe' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Sensitive File Access Via Volume Shadow Copy Backup",
+        "id": "f57f8d16-1f39-4dcb-a604-6c73d9b54b3d",
+        "status": "test",
+        "description": "Detects a command that accesses the VolumeShadowCopy in order to extract sensitive files such as the Security or SAM registry hives or the AD database (ntds.dit)\n",
+        "author": "Max Altgelt (Nextron Systems), Tobias Michalski (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1490"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%\\\\\\\\?\\\\GLOBALROOT\\\\Device\\\\HarddiskVolumeShadowCopy%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\NTDS.dit%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SYSTEM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SECURITY%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -26295,7 +26314,7 @@
         "id": "41025fd7-0466-4650-a813-574aaacbe7f4",
         "status": "test",
         "description": "Detects the execution of known offensive powershell scripts used for exploitation or reconnaissance",
-        "author": "frack113, Nasreddine Bencherchali",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.t1059.001"
@@ -26305,7 +26324,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4103 AND ((ContextInfo LIKE '%Add-ConstrainedDelegationBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-Exfiltration.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-Persistence.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-RegBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-RemoteRegBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-ScrnSaveBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Check-VM.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%ConvertTo-ROT13.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Copy-VSS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Create-MultipleSessions.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%DNS\\_TXT\\_Pwnage.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Do-Exfiltration.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%DomainPasswordSpray.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Download\\_Execute.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Download-Execute-PS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Enabled-DuplicateToken.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Enable-DuplicateToken.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Execute-Command-MSSQL.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Execute-DNSTXT-Code.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Execute-OnTime.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%ExetoText.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Exploit-Jboss.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-AVSignature.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-Fruit.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-GPOLocation.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-TrustedDocuments.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%FireBuster.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%FireListener.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ApplicationHost.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ChromeDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ClipboardContents.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ComputerDetail.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-FoxDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-GPPAutologon.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-GPPPassword.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-IndexedItem.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-Keystrokes.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-LSASecret.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-MicrophoneAudio.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-PassHashes.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-PassHints.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-RegAlwaysInstallElevated.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-RegAutoLogon.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-RickAstley.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-Screenshot.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-SecurityPackages.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ServiceFilePermission.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ServicePermission.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ServiceUnquoted.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-SiteListPassword.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-System.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-TimedScreenshot.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-UnattendedInstallFile.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-Unconstrained.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-USBKeystrokes.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-VaultCredential.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-VulnAutoRun.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-VulnSchTask.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-WebConfig.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-WebCredentials.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-WLAN-Keys.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Gupt-Backdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%HTTP-Backdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%HTTP-Login.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Install-ServiceBinary.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Install-SSP.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ACLScanner.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ADSBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-AmsiBypass.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ARPScan.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BackdoorLNK.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BadPotato.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BetterSafetyKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BruteForce.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BypassUAC.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Carbuncle.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Certify.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ConPtyShell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-CredentialInjection.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-CredentialsPhish.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DAFT.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DCSync.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Decode.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DinvokeKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DllInjection.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DowngradeAccount.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-EgressCheck.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Encode.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-EventViewer.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Eyewitness.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-FakeLogonScreen.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Farmer.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Get-RBCD-Threaded.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Gopher.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Grouper2.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Grouper3.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-HandleKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Interceptor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Internalmonologue.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Inveigh.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-InveighRelay.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-JSRatRegsvr.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-JSRatRundll.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-KrbRelay.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-KrbRelayUp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-LdapSignCheck.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Lockless.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-MalSCCM.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Mimikatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-MimikatzWDigestDowngrade.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Mimikittenz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-MITM6.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NanoDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NetRipper.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NetworkRelay.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NinjaCopy.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-OxidResolver.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-P0wnedshell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-P0wnedshellx86.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Paranoia.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PortScan.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PoshRatHttp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PoshRatHttps.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PostExfil.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellIcmp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellTCP.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellTcpOneLine.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellTcpOneLineBind.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellUdp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellUdpOneLine.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellWMI.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerThIEf.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PPLDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Prasadhak.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsExec.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsGcat.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsGcatAgent.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PSInject.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsUaCme.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ReflectivePEInjection.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ReverseDNSLookup.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Rubeus.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-RunAs.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SafetyKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SauronEye.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SCShell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Seatbelt.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ServiceAbuse.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SessionGopher.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ShellCode.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SMBScanner.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Snaffler.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Spoolsample.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SSHCommand.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SSIDExfil.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-StandIn.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-StickyNotesExtract.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Tater.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Thunderfox.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ThunderStruck.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-TokenManipulation.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Tokenvator.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-TotalExec.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-UrbanBishop.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-UserHunter.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-VoiceTroll.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Whisker.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WinEnum.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-winPEAS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WireTap.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WmiCommand.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WScriptBypassUAC.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Zerologon.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Keylogger.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%MailRaider.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%New-HoneyHash.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%OfficeMemScraper.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Offline\\_Winpwn.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-CHM.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-DnsTxt.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Excel.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-HTA.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Java.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-JS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Minidump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-RundllCommand.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-SCF.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-SCT.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Shortcut.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-WebQuery.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Word.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Parse\\_Keys.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Port-Scan.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerBreach.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%powercat.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerRunAsSystem.psm1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerSharpPack.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerUp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerUpSQL.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerView.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PSAsyncShell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%RemoteHashRetrieval.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Remove-Persistence.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Remove-PoshRat.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Remove-Update.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Run-EXEonRemote.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Schtasks-Backdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-DCShadowPermissions.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-MacAttribute.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-RemotePSRemoting.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-RemoteWMI.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-Wallpaper.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Show-TargetScreen.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Speak.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Start-CaptureServer.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Start-WebcamRecorder.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%StringToBase64.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%TexttoExe.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%VolumeShadowCopyTools.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%WinPwn.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%WSUSpendu.ps1%' ESCAPE '\\') OR (ContextInfo LIKE '%Invoke-Sharp%' ESCAPE '\\' AND ContextInfo LIKE '%.ps1%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4103 AND ((ContextInfo LIKE '%Add-ConstrainedDelegationBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-Exfiltration.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-Persistence.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-RegBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-RemoteRegBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Add-ScrnSaveBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Check-VM.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%ConvertTo-ROT13.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Copy-VSS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Create-MultipleSessions.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%DNS\\_TXT\\_Pwnage.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%dnscat2.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Do-Exfiltration.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%DomainPasswordSpray.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Download\\_Execute.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Download-Execute-PS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Enabled-DuplicateToken.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Enable-DuplicateToken.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Execute-Command-MSSQL.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Execute-DNSTXT-Code.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Execute-OnTime.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%ExetoText.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Exploit-Jboss.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-AVSignature.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-Fruit.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-GPOLocation.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Find-TrustedDocuments.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%FireBuster.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%FireListener.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ApplicationHost.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ChromeDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ClipboardContents.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ComputerDetail.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-FoxDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-GPPAutologon.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-GPPPassword.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-IndexedItem.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-Keystrokes.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-LSASecret.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-MicrophoneAudio.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-PassHashes.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-PassHints.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-RegAlwaysInstallElevated.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-RegAutoLogon.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-RickAstley.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-Screenshot.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-SecurityPackages.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ServiceFilePermission.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ServicePermission.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-ServiceUnquoted.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-SiteListPassword.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-System.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-TimedScreenshot.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-UnattendedInstallFile.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-Unconstrained.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-USBKeystrokes.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-VaultCredential.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-VulnAutoRun.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-VulnSchTask.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-WebConfig.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-WebCredentials.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Get-WLAN-Keys.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Gupt-Backdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%HTTP-Backdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%HTTP-Login.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Install-ServiceBinary.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Install-SSP.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ACLScanner.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ADSBackdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-AmsiBypass.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ARPScan.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BackdoorLNK.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BadPotato.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BetterSafetyKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BruteForce.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-BypassUAC.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Carbuncle.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Certify.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ConPtyShell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-CredentialInjection.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-CredentialsPhish.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DAFT.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DCSync.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Decode.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DinvokeKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DllInjection.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-DowngradeAccount.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-EgressCheck.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Encode.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-EventViewer.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Eyewitness.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-FakeLogonScreen.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Farmer.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Get-RBCD-Threaded.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Gopher.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Grouper2.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Grouper3.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-HandleKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Interceptor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Internalmonologue.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Inveigh.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-InveighRelay.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-JSRatRegsvr.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-JSRatRundll.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-KrbRelay.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-KrbRelayUp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-LdapSignCheck.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Lockless.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-MalSCCM.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Mimikatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-MimikatzWDigestDowngrade.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Mimikittenz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-MITM6.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NanoDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NetRipper.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NetworkRelay.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-NinjaCopy.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-OxidResolver.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-P0wnedshell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-P0wnedshellx86.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Paranoia.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PortScan.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PoshRatHttp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PoshRatHttps.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PostExfil.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellIcmp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellTCP.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellTcpOneLine.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellTcpOneLineBind.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellUdp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellUdpOneLine.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerShellWMI.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PowerThIEf.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PPLDump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Prasadhak.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsExec.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsGcat.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsGcatAgent.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PSInject.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-PsUaCme.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ReflectivePEInjection.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ReverseDNSLookup.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Rubeus.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-RunAs.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SafetyKatz.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SauronEye.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SCShell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Seatbelt.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ServiceAbuse.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SessionGopher.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ShellCode.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SMBScanner.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Snaffler.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Spoolsample.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SSHCommand.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-SSIDExfil.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-StandIn.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-StickyNotesExtract.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Tater.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Thunderfox.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-ThunderStruck.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-TokenManipulation.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Tokenvator.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-TotalExec.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-UrbanBishop.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-UserHunter.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-VoiceTroll.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Whisker.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WinEnum.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-winPEAS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WireTap.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WmiCommand.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-WScriptBypassUAC.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Invoke-Zerologon.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Keylogger.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%MailRaider.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%New-HoneyHash.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%OfficeMemScraper.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Offline\\_Winpwn.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-CHM.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-DnsTxt.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Excel.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-HTA.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Java.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-JS.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Minidump.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-RundllCommand.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-SCF.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-SCT.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Shortcut.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-WebQuery.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Out-Word.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Parse\\_Keys.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Port-Scan.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerBreach.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%powercat.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerRunAsSystem.psm1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerSharpPack.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerUp.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerUpSQL.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PowerView.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%PSAsyncShell.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%RemoteHashRetrieval.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Remove-Persistence.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Remove-PoshRat.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Remove-Update.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Run-EXEonRemote.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Schtasks-Backdoor.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-DCShadowPermissions.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-MacAttribute.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-RemotePSRemoting.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-RemoteWMI.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Set-Wallpaper.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Show-TargetScreen.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Speak.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Start-CaptureServer.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%Start-WebcamRecorder.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%StringToBase64.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%TexttoExe.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%VolumeShadowCopyTools.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%WinPwn.ps1%' ESCAPE '\\' OR ContextInfo LIKE '%WSUSpendu.ps1%' ESCAPE '\\') OR (ContextInfo LIKE '%Invoke-Sharp%' ESCAPE '\\' AND ContextInfo LIKE '%.ps1%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -26477,7 +26496,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4103 AND (Payload LIKE '%Add-Exfiltration%' ESCAPE '\\' OR Payload LIKE '%Add-Persistence%' ESCAPE '\\' OR Payload LIKE '%Add-RegBackdoor%' ESCAPE '\\' OR Payload LIKE '%Add-RemoteRegBackdoor%' ESCAPE '\\' OR Payload LIKE '%Add-ScrnSaveBackdoor%' ESCAPE '\\' OR Payload LIKE '%Check-VM%' ESCAPE '\\' OR Payload LIKE '%ConvertTo-Rc4ByteStream%' ESCAPE '\\' OR Payload LIKE '%Decrypt-Hash%' ESCAPE '\\' OR Payload LIKE '%Disable-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Disable-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%Do-Exfiltration%' ESCAPE '\\' OR Payload LIKE '%Enable-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Enable-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%Enabled-DuplicateToken%' ESCAPE '\\' OR Payload LIKE '%Exploit-Jboss%' ESCAPE '\\' OR Payload LIKE '%Export-ADR%' ESCAPE '\\' OR Payload LIKE '%Export-ADRCSV%' ESCAPE '\\' OR Payload LIKE '%Export-ADRExcel%' ESCAPE '\\' OR Payload LIKE '%Export-ADRHTML%' ESCAPE '\\' OR Payload LIKE '%Export-ADRJSON%' ESCAPE '\\' OR Payload LIKE '%Export-ADRXML%' ESCAPE '\\' OR Payload LIKE '%Find-Fruit%' ESCAPE '\\' OR Payload LIKE '%Find-GPOLocation%' ESCAPE '\\' OR Payload LIKE '%Find-TrustedDocuments%' ESCAPE '\\' OR Payload LIKE '%Get-ADIDNS%' ESCAPE '\\' OR Payload LIKE '%Get-ApplicationHost%' ESCAPE '\\' OR Payload LIKE '%Get-ChromeDump%' ESCAPE '\\' OR Payload LIKE '%Get-ClipboardContents%' ESCAPE '\\' OR Payload LIKE '%Get-FoxDump%' ESCAPE '\\' OR Payload LIKE '%Get-GPPPassword%' ESCAPE '\\' OR Payload LIKE '%Get-IndexedItem%' ESCAPE '\\' OR Payload LIKE '%Get-KerberosAESKey%' ESCAPE '\\' OR Payload LIKE '%Get-Keystrokes%' ESCAPE '\\' OR Payload LIKE '%Get-LSASecret%' ESCAPE '\\' OR Payload LIKE '%Get-MachineAccountAttribute%' ESCAPE '\\' OR Payload LIKE '%Get-MachineAccountCreator%' ESCAPE '\\' OR Payload LIKE '%Get-PassHashes%' ESCAPE '\\' OR Payload LIKE '%Get-RegAlwaysInstallElevated%' ESCAPE '\\' OR Payload LIKE '%Get-RegAutoLogon%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteBootKey%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteCachedCredential%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteLocalAccountHash%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteLSAKey%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteMachineAccountHash%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteNLKMKey%' ESCAPE '\\' OR Payload LIKE '%Get-RickAstley%' ESCAPE '\\' OR Payload LIKE '%Get-Screenshot%' ESCAPE '\\' OR Payload LIKE '%Get-SecurityPackages%' ESCAPE '\\' OR Payload LIKE '%Get-ServiceFilePermission%' ESCAPE '\\' OR Payload LIKE '%Get-ServicePermission%' ESCAPE '\\' OR Payload LIKE '%Get-ServiceUnquoted%' ESCAPE '\\' OR Payload LIKE '%Get-SiteListPassword%' ESCAPE '\\' OR Payload LIKE '%Get-System%' ESCAPE '\\' OR Payload LIKE '%Get-TimedScreenshot%' ESCAPE '\\' OR Payload LIKE '%Get-UnattendedInstallFile%' ESCAPE '\\' OR Payload LIKE '%Get-Unconstrained%' ESCAPE '\\' OR Payload LIKE '%Get-USBKeystrokes%' ESCAPE '\\' OR Payload LIKE '%Get-VaultCredential%' ESCAPE '\\' OR Payload LIKE '%Get-VulnAutoRun%' ESCAPE '\\' OR Payload LIKE '%Get-VulnSchTask%' ESCAPE '\\' OR Payload LIKE '%Grant-ADIDNSPermission%' ESCAPE '\\' OR Payload LIKE '%Gupt-Backdoor%' ESCAPE '\\' OR Payload LIKE '%HTTP-Login%' ESCAPE '\\' OR Payload LIKE '%Install-ServiceBinary%' ESCAPE '\\' OR Payload LIKE '%Install-SSP%' ESCAPE '\\' OR Payload LIKE '%Invoke-ACLScanner%' ESCAPE '\\' OR Payload LIKE '%Invoke-ADRecon%' ESCAPE '\\' OR Payload LIKE '%Invoke-ADSBackdoor%' ESCAPE '\\' OR Payload LIKE '%Invoke-AgentSmith%' ESCAPE '\\' OR Payload LIKE '%Invoke-AllChecks%' ESCAPE '\\' OR Payload LIKE '%Invoke-ARPScan%' ESCAPE '\\' OR Payload LIKE '%Invoke-AzureHound%' ESCAPE '\\' OR Payload LIKE '%Invoke-BackdoorLNK%' ESCAPE '\\' OR Payload LIKE '%Invoke-BadPotato%' ESCAPE '\\' OR Payload LIKE '%Invoke-BetterSafetyKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-BypassUAC%' ESCAPE '\\' OR Payload LIKE '%Invoke-Carbuncle%' ESCAPE '\\' OR Payload LIKE '%Invoke-Certify%' ESCAPE '\\' OR Payload LIKE '%Invoke-ConPtyShell%' ESCAPE '\\' OR Payload LIKE '%Invoke-CredentialInjection%' ESCAPE '\\' OR Payload LIKE '%Invoke-DAFT%' ESCAPE '\\' OR Payload LIKE '%Invoke-DCSync%' ESCAPE '\\' OR Payload LIKE '%Invoke-DinvokeKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-DllInjection%' ESCAPE '\\' OR Payload LIKE '%Invoke-DNSUpdate%' ESCAPE '\\' OR Payload LIKE '%Invoke-DomainPasswordSpray%' ESCAPE '\\' OR Payload LIKE '%Invoke-DowngradeAccount%' ESCAPE '\\' OR Payload LIKE '%Invoke-EgressCheck%' ESCAPE '\\' OR Payload LIKE '%Invoke-Eyewitness%' ESCAPE '\\' OR Payload LIKE '%Invoke-FakeLogonScreen%' ESCAPE '\\' OR Payload LIKE '%Invoke-Farmer%' ESCAPE '\\' OR Payload LIKE '%Invoke-Get-RBCD-Threaded%' ESCAPE '\\' OR Payload LIKE '%Invoke-Gopher%' ESCAPE '\\' OR Payload LIKE '%Invoke-Grouper%' ESCAPE '\\' OR Payload LIKE '%Invoke-HandleKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-ImpersonatedProcess%' ESCAPE '\\' OR Payload LIKE '%Invoke-ImpersonateSystem%' ESCAPE '\\' OR Payload LIKE '%Invoke-InteractiveSystemPowerShell%' ESCAPE '\\' OR Payload LIKE '%Invoke-Internalmonologue%' ESCAPE '\\' OR Payload LIKE '%Invoke-Inveigh%' ESCAPE '\\' OR Payload LIKE '%Invoke-InveighRelay%' ESCAPE '\\' OR Payload LIKE '%Invoke-KrbRelay%' ESCAPE '\\' OR Payload LIKE '%Invoke-LdapSignCheck%' ESCAPE '\\' OR Payload LIKE '%Invoke-Lockless%' ESCAPE '\\' OR Payload LIKE '%Invoke-MalSCCM%' ESCAPE '\\' OR Payload LIKE '%Invoke-Mimikatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-Mimikittenz%' ESCAPE '\\' OR Payload LIKE '%Invoke-MITM6%' ESCAPE '\\' OR Payload LIKE '%Invoke-NanoDump%' ESCAPE '\\' OR Payload LIKE '%Invoke-NetRipper%' ESCAPE '\\' OR Payload LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR Payload LIKE '%Invoke-NinjaCopy%' ESCAPE '\\' OR Payload LIKE '%Invoke-OfficeScrape%' ESCAPE '\\' OR Payload LIKE '%Invoke-OxidResolver%' ESCAPE '\\' OR Payload LIKE '%Invoke-P0wnedshell%' ESCAPE '\\' OR Payload LIKE '%Invoke-Paranoia%' ESCAPE '\\' OR Payload LIKE '%Invoke-PortScan%' ESCAPE '\\' OR Payload LIKE '%Invoke-PoshRatHttp%' ESCAPE '\\' OR Payload LIKE '%Invoke-PostExfil%' ESCAPE '\\' OR Payload LIKE '%Invoke-PowerDump%' ESCAPE '\\' OR Payload LIKE '%Invoke-PowerShellTCP%' ESCAPE '\\' OR Payload LIKE '%Invoke-PowerShellWMI%' ESCAPE '\\' OR Payload LIKE '%Invoke-PPLDump%' ESCAPE '\\' OR Payload LIKE '%Invoke-PsExec%' ESCAPE '\\' OR Payload LIKE '%Invoke-PSInject%' ESCAPE '\\' OR Payload LIKE '%Invoke-PsUaCme%' ESCAPE '\\' OR Payload LIKE '%Invoke-ReflectivePEInjection%' ESCAPE '\\' OR Payload LIKE '%Invoke-ReverseDNSLookup%' ESCAPE '\\' OR Payload LIKE '%Invoke-Rubeus%' ESCAPE '\\' OR Payload LIKE '%Invoke-RunAs%' ESCAPE '\\' OR Payload LIKE '%Invoke-SafetyKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-SauronEye%' ESCAPE '\\' OR Payload LIKE '%Invoke-SCShell%' ESCAPE '\\' OR Payload LIKE '%Invoke-Seatbelt%' ESCAPE '\\' OR Payload LIKE '%Invoke-ServiceAbuse%' ESCAPE '\\' OR Payload LIKE '%Invoke-ShadowSpray%' ESCAPE '\\' OR Payload LIKE '%Invoke-Sharp%' ESCAPE '\\' OR Payload LIKE '%Invoke-Shellcode%' ESCAPE '\\' OR Payload LIKE '%Invoke-SMBScanner%' ESCAPE '\\' OR Payload LIKE '%Invoke-Snaffler%' ESCAPE '\\' OR Payload LIKE '%Invoke-Spoolsample%' ESCAPE '\\' OR Payload LIKE '%Invoke-SpraySinglePassword%' ESCAPE '\\' OR Payload LIKE '%Invoke-SSHCommand%' ESCAPE '\\' OR Payload LIKE '%Invoke-StandIn%' ESCAPE '\\' OR Payload LIKE '%Invoke-StickyNotesExtract%' ESCAPE '\\' OR Payload LIKE '%Invoke-SystemCommand%' ESCAPE '\\' OR Payload LIKE '%Invoke-Tasksbackdoor%' ESCAPE '\\' OR Payload LIKE '%Invoke-Tater%' ESCAPE '\\' OR Payload LIKE '%Invoke-Thunderfox%' ESCAPE '\\' OR Payload LIKE '%Invoke-ThunderStruck%' ESCAPE '\\' OR Payload LIKE '%Invoke-TokenManipulation%' ESCAPE '\\' OR Payload LIKE '%Invoke-Tokenvator%' ESCAPE '\\' OR Payload LIKE '%Invoke-TotalExec%' ESCAPE '\\' OR Payload LIKE '%Invoke-UrbanBishop%' ESCAPE '\\' OR Payload LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR Payload LIKE '%Invoke-VoiceTroll%' ESCAPE '\\' OR Payload LIKE '%Invoke-Whisker%' ESCAPE '\\' OR Payload LIKE '%Invoke-WinEnum%' ESCAPE '\\' OR Payload LIKE '%Invoke-winPEAS%' ESCAPE '\\' OR Payload LIKE '%Invoke-WireTap%' ESCAPE '\\' OR Payload LIKE '%Invoke-WmiCommand%' ESCAPE '\\' OR Payload LIKE '%Invoke-WMIExec%' ESCAPE '\\' OR Payload LIKE '%Invoke-WScriptBypassUAC%' ESCAPE '\\' OR Payload LIKE '%Invoke-Zerologon%' ESCAPE '\\' OR Payload LIKE '%MailRaider%' ESCAPE '\\' OR Payload LIKE '%New-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%New-DNSRecordArray%' ESCAPE '\\' OR Payload LIKE '%New-HoneyHash%' ESCAPE '\\' OR Payload LIKE '%New-InMemoryModule%' ESCAPE '\\' OR Payload LIKE '%New-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%New-SOASerialNumberArray%' ESCAPE '\\' OR Payload LIKE '%Out-Minidump%' ESCAPE '\\' OR Payload LIKE '%Port-Scan%' ESCAPE '\\' OR Payload LIKE '%PowerBreach%' ESCAPE '\\' OR Payload LIKE '%powercat %' ESCAPE '\\' OR Payload LIKE '%PowerUp%' ESCAPE '\\' OR Payload LIKE '%PowerView%' ESCAPE '\\' OR Payload LIKE '%Remove-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Remove-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%Remove-Update%' ESCAPE '\\' OR Payload LIKE '%Rename-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Revoke-ADIDNSPermission%' ESCAPE '\\' OR Payload LIKE '%Set-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Set-MacAttribute%' ESCAPE '\\' OR Payload LIKE '%Set-MachineAccountAttribute%' ESCAPE '\\' OR Payload LIKE '%Set-Wallpaper%' ESCAPE '\\' OR Payload LIKE '%Show-TargetScreen%' ESCAPE '\\' OR Payload LIKE '%Start-CaptureServer%' ESCAPE '\\' OR Payload LIKE '%Start-WebcamRecorder%' ESCAPE '\\' OR Payload LIKE '%VolumeShadowCopyTools%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4103 AND (Payload LIKE '%Add-Exfiltration%' ESCAPE '\\' OR Payload LIKE '%Add-Persistence%' ESCAPE '\\' OR Payload LIKE '%Add-RegBackdoor%' ESCAPE '\\' OR Payload LIKE '%Add-RemoteRegBackdoor%' ESCAPE '\\' OR Payload LIKE '%Add-ScrnSaveBackdoor%' ESCAPE '\\' OR Payload LIKE '%Check-VM%' ESCAPE '\\' OR Payload LIKE '%ConvertTo-Rc4ByteStream%' ESCAPE '\\' OR Payload LIKE '%Decrypt-Hash%' ESCAPE '\\' OR Payload LIKE '%Disable-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Disable-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%Do-Exfiltration%' ESCAPE '\\' OR Payload LIKE '%Enable-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Enable-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%Enabled-DuplicateToken%' ESCAPE '\\' OR Payload LIKE '%Exploit-Jboss%' ESCAPE '\\' OR Payload LIKE '%Export-ADR%' ESCAPE '\\' OR Payload LIKE '%Export-ADRCSV%' ESCAPE '\\' OR Payload LIKE '%Export-ADRExcel%' ESCAPE '\\' OR Payload LIKE '%Export-ADRHTML%' ESCAPE '\\' OR Payload LIKE '%Export-ADRJSON%' ESCAPE '\\' OR Payload LIKE '%Export-ADRXML%' ESCAPE '\\' OR Payload LIKE '%Find-Fruit%' ESCAPE '\\' OR Payload LIKE '%Find-GPOLocation%' ESCAPE '\\' OR Payload LIKE '%Find-TrustedDocuments%' ESCAPE '\\' OR Payload LIKE '%Get-ADIDNS%' ESCAPE '\\' OR Payload LIKE '%Get-ApplicationHost%' ESCAPE '\\' OR Payload LIKE '%Get-ChromeDump%' ESCAPE '\\' OR Payload LIKE '%Get-ClipboardContents%' ESCAPE '\\' OR Payload LIKE '%Get-FoxDump%' ESCAPE '\\' OR Payload LIKE '%Get-GPPPassword%' ESCAPE '\\' OR Payload LIKE '%Get-IndexedItem%' ESCAPE '\\' OR Payload LIKE '%Get-KerberosAESKey%' ESCAPE '\\' OR Payload LIKE '%Get-Keystrokes%' ESCAPE '\\' OR Payload LIKE '%Get-LSASecret%' ESCAPE '\\' OR Payload LIKE '%Get-MachineAccountAttribute%' ESCAPE '\\' OR Payload LIKE '%Get-MachineAccountCreator%' ESCAPE '\\' OR Payload LIKE '%Get-PassHashes%' ESCAPE '\\' OR Payload LIKE '%Get-RegAlwaysInstallElevated%' ESCAPE '\\' OR Payload LIKE '%Get-RegAutoLogon%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteBootKey%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteCachedCredential%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteLocalAccountHash%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteLSAKey%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteMachineAccountHash%' ESCAPE '\\' OR Payload LIKE '%Get-RemoteNLKMKey%' ESCAPE '\\' OR Payload LIKE '%Get-RickAstley%' ESCAPE '\\' OR Payload LIKE '%Get-Screenshot%' ESCAPE '\\' OR Payload LIKE '%Get-SecurityPackages%' ESCAPE '\\' OR Payload LIKE '%Get-ServiceFilePermission%' ESCAPE '\\' OR Payload LIKE '%Get-ServicePermission%' ESCAPE '\\' OR Payload LIKE '%Get-ServiceUnquoted%' ESCAPE '\\' OR Payload LIKE '%Get-SiteListPassword%' ESCAPE '\\' OR Payload LIKE '%Get-System%' ESCAPE '\\' OR Payload LIKE '%Get-TimedScreenshot%' ESCAPE '\\' OR Payload LIKE '%Get-UnattendedInstallFile%' ESCAPE '\\' OR Payload LIKE '%Get-Unconstrained%' ESCAPE '\\' OR Payload LIKE '%Get-USBKeystrokes%' ESCAPE '\\' OR Payload LIKE '%Get-VaultCredential%' ESCAPE '\\' OR Payload LIKE '%Get-VulnAutoRun%' ESCAPE '\\' OR Payload LIKE '%Get-VulnSchTask%' ESCAPE '\\' OR Payload LIKE '%Grant-ADIDNSPermission%' ESCAPE '\\' OR Payload LIKE '%Gupt-Backdoor%' ESCAPE '\\' OR Payload LIKE '%HTTP-Login%' ESCAPE '\\' OR Payload LIKE '%Install-ServiceBinary%' ESCAPE '\\' OR Payload LIKE '%Install-SSP%' ESCAPE '\\' OR Payload LIKE '%Invoke-ACLScanner%' ESCAPE '\\' OR Payload LIKE '%Invoke-ADRecon%' ESCAPE '\\' OR Payload LIKE '%Invoke-ADSBackdoor%' ESCAPE '\\' OR Payload LIKE '%Invoke-AgentSmith%' ESCAPE '\\' OR Payload LIKE '%Invoke-AllChecks%' ESCAPE '\\' OR Payload LIKE '%Invoke-ARPScan%' ESCAPE '\\' OR Payload LIKE '%Invoke-AzureHound%' ESCAPE '\\' OR Payload LIKE '%Invoke-BackdoorLNK%' ESCAPE '\\' OR Payload LIKE '%Invoke-BadPotato%' ESCAPE '\\' OR Payload LIKE '%Invoke-BetterSafetyKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-BypassUAC%' ESCAPE '\\' OR Payload LIKE '%Invoke-Carbuncle%' ESCAPE '\\' OR Payload LIKE '%Invoke-Certify%' ESCAPE '\\' OR Payload LIKE '%Invoke-ConPtyShell%' ESCAPE '\\' OR Payload LIKE '%Invoke-CredentialInjection%' ESCAPE '\\' OR Payload LIKE '%Invoke-DAFT%' ESCAPE '\\' OR Payload LIKE '%Invoke-DCSync%' ESCAPE '\\' OR Payload LIKE '%Invoke-DinvokeKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-DllInjection%' ESCAPE '\\' OR Payload LIKE '%Invoke-DNSUpdate%' ESCAPE '\\' OR Payload LIKE '%Invoke-DomainPasswordSpray%' ESCAPE '\\' OR Payload LIKE '%Invoke-DowngradeAccount%' ESCAPE '\\' OR Payload LIKE '%Invoke-EgressCheck%' ESCAPE '\\' OR Payload LIKE '%Invoke-Eyewitness%' ESCAPE '\\' OR Payload LIKE '%Invoke-FakeLogonScreen%' ESCAPE '\\' OR Payload LIKE '%Invoke-Farmer%' ESCAPE '\\' OR Payload LIKE '%Invoke-Get-RBCD-Threaded%' ESCAPE '\\' OR Payload LIKE '%Invoke-Gopher%' ESCAPE '\\' OR Payload LIKE '%Invoke-Grouper%' ESCAPE '\\' OR Payload LIKE '%Invoke-HandleKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-ImpersonatedProcess%' ESCAPE '\\' OR Payload LIKE '%Invoke-ImpersonateSystem%' ESCAPE '\\' OR Payload LIKE '%Invoke-InteractiveSystemPowerShell%' ESCAPE '\\' OR Payload LIKE '%Invoke-Internalmonologue%' ESCAPE '\\' OR Payload LIKE '%Invoke-Inveigh%' ESCAPE '\\' OR Payload LIKE '%Invoke-InveighRelay%' ESCAPE '\\' OR Payload LIKE '%Invoke-KrbRelay%' ESCAPE '\\' OR Payload LIKE '%Invoke-LdapSignCheck%' ESCAPE '\\' OR Payload LIKE '%Invoke-Lockless%' ESCAPE '\\' OR Payload LIKE '%Invoke-MalSCCM%' ESCAPE '\\' OR Payload LIKE '%Invoke-Mimikatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-Mimikittenz%' ESCAPE '\\' OR Payload LIKE '%Invoke-MITM6%' ESCAPE '\\' OR Payload LIKE '%Invoke-NanoDump%' ESCAPE '\\' OR Payload LIKE '%Invoke-NetRipper%' ESCAPE '\\' OR Payload LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR Payload LIKE '%Invoke-NinjaCopy%' ESCAPE '\\' OR Payload LIKE '%Invoke-OfficeScrape%' ESCAPE '\\' OR Payload LIKE '%Invoke-OxidResolver%' ESCAPE '\\' OR Payload LIKE '%Invoke-P0wnedshell%' ESCAPE '\\' OR Payload LIKE '%Invoke-Paranoia%' ESCAPE '\\' OR Payload LIKE '%Invoke-PortScan%' ESCAPE '\\' OR Payload LIKE '%Invoke-PoshRatHttp%' ESCAPE '\\' OR Payload LIKE '%Invoke-PostExfil%' ESCAPE '\\' OR Payload LIKE '%Invoke-PowerDump%' ESCAPE '\\' OR Payload LIKE '%Invoke-PowerShellTCP%' ESCAPE '\\' OR Payload LIKE '%Invoke-PowerShellWMI%' ESCAPE '\\' OR Payload LIKE '%Invoke-PPLDump%' ESCAPE '\\' OR Payload LIKE '%Invoke-PsExec%' ESCAPE '\\' OR Payload LIKE '%Invoke-PSInject%' ESCAPE '\\' OR Payload LIKE '%Invoke-PsUaCme%' ESCAPE '\\' OR Payload LIKE '%Invoke-ReflectivePEInjection%' ESCAPE '\\' OR Payload LIKE '%Invoke-ReverseDNSLookup%' ESCAPE '\\' OR Payload LIKE '%Invoke-Rubeus%' ESCAPE '\\' OR Payload LIKE '%Invoke-RunAs%' ESCAPE '\\' OR Payload LIKE '%Invoke-SafetyKatz%' ESCAPE '\\' OR Payload LIKE '%Invoke-SauronEye%' ESCAPE '\\' OR Payload LIKE '%Invoke-SCShell%' ESCAPE '\\' OR Payload LIKE '%Invoke-Seatbelt%' ESCAPE '\\' OR Payload LIKE '%Invoke-ServiceAbuse%' ESCAPE '\\' OR Payload LIKE '%Invoke-ShadowSpray%' ESCAPE '\\' OR Payload LIKE '%Invoke-Sharp%' ESCAPE '\\' OR Payload LIKE '%Invoke-Shellcode%' ESCAPE '\\' OR Payload LIKE '%Invoke-SMBScanner%' ESCAPE '\\' OR Payload LIKE '%Invoke-Snaffler%' ESCAPE '\\' OR Payload LIKE '%Invoke-Spoolsample%' ESCAPE '\\' OR Payload LIKE '%Invoke-SpraySinglePassword%' ESCAPE '\\' OR Payload LIKE '%Invoke-SSHCommand%' ESCAPE '\\' OR Payload LIKE '%Invoke-StandIn%' ESCAPE '\\' OR Payload LIKE '%Invoke-StickyNotesExtract%' ESCAPE '\\' OR Payload LIKE '%Invoke-SystemCommand%' ESCAPE '\\' OR Payload LIKE '%Invoke-Tasksbackdoor%' ESCAPE '\\' OR Payload LIKE '%Invoke-Tater%' ESCAPE '\\' OR Payload LIKE '%Invoke-Thunderfox%' ESCAPE '\\' OR Payload LIKE '%Invoke-ThunderStruck%' ESCAPE '\\' OR Payload LIKE '%Invoke-TokenManipulation%' ESCAPE '\\' OR Payload LIKE '%Invoke-Tokenvator%' ESCAPE '\\' OR Payload LIKE '%Invoke-TotalExec%' ESCAPE '\\' OR Payload LIKE '%Invoke-UrbanBishop%' ESCAPE '\\' OR Payload LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR Payload LIKE '%Invoke-VoiceTroll%' ESCAPE '\\' OR Payload LIKE '%Invoke-Whisker%' ESCAPE '\\' OR Payload LIKE '%Invoke-WinEnum%' ESCAPE '\\' OR Payload LIKE '%Invoke-winPEAS%' ESCAPE '\\' OR Payload LIKE '%Invoke-WireTap%' ESCAPE '\\' OR Payload LIKE '%Invoke-WmiCommand%' ESCAPE '\\' OR Payload LIKE '%Invoke-WMIExec%' ESCAPE '\\' OR Payload LIKE '%Invoke-WScriptBypassUAC%' ESCAPE '\\' OR Payload LIKE '%Invoke-Zerologon%' ESCAPE '\\' OR Payload LIKE '%MailRaider%' ESCAPE '\\' OR Payload LIKE '%New-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%New-DNSRecordArray%' ESCAPE '\\' OR Payload LIKE '%New-HoneyHash%' ESCAPE '\\' OR Payload LIKE '%New-InMemoryModule%' ESCAPE '\\' OR Payload LIKE '%New-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%New-SOASerialNumberArray%' ESCAPE '\\' OR Payload LIKE '%Out-Minidump%' ESCAPE '\\' OR Payload LIKE '%Port-Scan%' ESCAPE '\\' OR Payload LIKE '%PowerBreach%' ESCAPE '\\' OR Payload LIKE '%powercat %' ESCAPE '\\' OR Payload LIKE '%PowerUp%' ESCAPE '\\' OR Payload LIKE '%PowerView%' ESCAPE '\\' OR Payload LIKE '%Remove-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Remove-MachineAccount%' ESCAPE '\\' OR Payload LIKE '%Remove-Update%' ESCAPE '\\' OR Payload LIKE '%Rename-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Revoke-ADIDNSPermission%' ESCAPE '\\' OR Payload LIKE '%Set-ADIDNSNode%' ESCAPE '\\' OR Payload LIKE '%Set-MacAttribute%' ESCAPE '\\' OR Payload LIKE '%Set-MachineAccountAttribute%' ESCAPE '\\' OR Payload LIKE '%Set-Wallpaper%' ESCAPE '\\' OR Payload LIKE '%Show-TargetScreen%' ESCAPE '\\' OR Payload LIKE '%Start-CaptureServer%' ESCAPE '\\' OR Payload LIKE '%Start-Dnscat2%' ESCAPE '\\' OR Payload LIKE '%Start-WebcamRecorder%' ESCAPE '\\' OR Payload LIKE '%VolumeShadowCopyTools%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -26824,7 +26843,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND ((ScriptBlockText LIKE '%Add-Exfiltration%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-Persistence%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-RegBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-RemoteRegBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-ScrnSaveBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%ConvertTo-Rc4ByteStream%' ESCAPE '\\' OR ScriptBlockText LIKE '%Decrypt-Hash%' ESCAPE '\\' OR ScriptBlockText LIKE '%Disable-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Do-Exfiltration%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enable-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enabled-DuplicateToken%' ESCAPE '\\' OR ScriptBlockText LIKE '%Exploit-Jboss%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRCSV%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRExcel%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRHTML%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRJSON%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRXML%' ESCAPE '\\' OR ScriptBlockText LIKE '%Find-Fruit%' ESCAPE '\\' OR ScriptBlockText LIKE '%Find-GPOLocation%' ESCAPE '\\' OR ScriptBlockText LIKE '%Find-TrustedDocuments%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSNodeAttribute%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSNodeOwner%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSNodeTombstoned%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSPermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSZone%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ChromeDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ClipboardContents%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-FoxDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-GPPPassword%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-IndexedItem%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-KerberosAESKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Keystrokes%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-LSASecret%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-PassHashes%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RegAlwaysInstallElevated%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RegAutoLogon%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteBootKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteCachedCredential%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteLocalAccountHash%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteLSAKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteMachineAccountHash%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteNLKMKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RickAstley%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-SecurityPackages%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ServiceFilePermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ServicePermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ServiceUnquoted%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-SiteListPassword%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-System%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-TimedScreenshot%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-UnattendedInstallFile%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Unconstrained%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-USBKeystrokes%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-VaultCredential%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-VulnAutoRun%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-VulnSchTask%' ESCAPE '\\' OR ScriptBlockText LIKE '%Grant-ADIDNSPermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Gupt-Backdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ACLScanner%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ADRecon%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ADSBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AgentSmith%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AllChecks%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ARPScan%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AzureHound%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BackdoorLNK%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BadPotato%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BetterSafetyKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BypassUAC%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Carbuncle%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Certify%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ConPtyShell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-CredentialInjection%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DAFT%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DCSync%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DinvokeKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DllInjection%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DNSUpdate%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DomainPasswordSpray%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DowngradeAccount%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-EgressCheck%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Eyewitness%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-FakeLogonScreen%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Farmer%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Get-RBCD-Threaded%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Gopher%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Grouper%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-HandleKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ImpersonatedProcess%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ImpersonateSystem%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-InteractiveSystemPowerShell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Internalmonologue%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Inveigh%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-InveighRelay%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-KrbRelay%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-LdapSignCheck%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Lockless%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-MalSCCM%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Mimikatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Mimikittenz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-MITM6%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NanoDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NetRipper%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NinjaCopy%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-OfficeScrape%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-OxidResolver%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-P0wnedshell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Paranoia%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PortScan%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PoshRatHttp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PostExfil%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellTCP%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellWMI%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PPLDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PsExec%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PSInject%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PsUaCme%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ReflectivePEInjection%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ReverseDNSLookup%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Rubeus%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-RunAs%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SafetyKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SauronEye%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SCShell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Seatbelt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ServiceAbuse%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ShadowSpray%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Sharp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Shellcode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SMBScanner%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Snaffler%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Spoolsample%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SpraySinglePassword%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SSHCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-StandIn%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-StickyNotesExtract%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SystemCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Tasksbackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Tater%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Thunderfox%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ThunderStruck%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-TokenManipulation%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Tokenvator%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-TotalExec%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-UrbanBishop%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-VoiceTroll%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Whisker%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WinEnum%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-winPEAS%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WireTap%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WmiCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WMIExec%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WScriptBypassUAC%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Zerologon%' ESCAPE '\\' OR ScriptBlockText LIKE '%MailRaider%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-HoneyHash%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-InMemoryModule%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-SOASerialNumberArray%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-Minidump%' ESCAPE '\\' OR ScriptBlockText LIKE '%PowerBreach%' ESCAPE '\\' OR ScriptBlockText LIKE '%powercat %' ESCAPE '\\' OR ScriptBlockText LIKE '%PowerUp%' ESCAPE '\\' OR ScriptBlockText LIKE '%PowerView%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-Update%' ESCAPE '\\' OR ScriptBlockText LIKE '%Rename-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Revoke-ADIDNSPermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Show-TargetScreen%' ESCAPE '\\' OR ScriptBlockText LIKE '%Start-CaptureServer%' ESCAPE '\\' OR ScriptBlockText LIKE '%Start-WebcamRecorder%' ESCAPE '\\' OR ScriptBlockText LIKE '%VolumeShadowCopyTools%' ESCAPE '\\') AND (NOT (ScriptBlockText LIKE '%Get-SystemDriveInfo%' ESCAPE '\\' OR ScriptBlockText LIKE '%C:\\\\ProgramData\\\\Amazon\\\\EC2-Windows\\\\Launch\\\\Module\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND ((ScriptBlockText LIKE '%Add-Exfiltration%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-Persistence%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-RegBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-RemoteRegBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Add-ScrnSaveBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%ConvertTo-Rc4ByteStream%' ESCAPE '\\' OR ScriptBlockText LIKE '%Decrypt-Hash%' ESCAPE '\\' OR ScriptBlockText LIKE '%Disable-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Do-Exfiltration%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enable-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enabled-DuplicateToken%' ESCAPE '\\' OR ScriptBlockText LIKE '%Exploit-Jboss%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRCSV%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRExcel%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRHTML%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRJSON%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-ADRXML%' ESCAPE '\\' OR ScriptBlockText LIKE '%Find-Fruit%' ESCAPE '\\' OR ScriptBlockText LIKE '%Find-GPOLocation%' ESCAPE '\\' OR ScriptBlockText LIKE '%Find-TrustedDocuments%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSNodeAttribute%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSNodeOwner%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSNodeTombstoned%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSPermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ADIDNSZone%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ChromeDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ClipboardContents%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-FoxDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-GPPPassword%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-IndexedItem%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-KerberosAESKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Keystrokes%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-LSASecret%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-PassHashes%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RegAlwaysInstallElevated%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RegAutoLogon%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteBootKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteCachedCredential%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteLocalAccountHash%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteLSAKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteMachineAccountHash%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RemoteNLKMKey%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-RickAstley%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-SecurityPackages%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ServiceFilePermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ServicePermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-ServiceUnquoted%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-SiteListPassword%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-System%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-TimedScreenshot%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-UnattendedInstallFile%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-Unconstrained%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-USBKeystrokes%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-VaultCredential%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-VulnAutoRun%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-VulnSchTask%' ESCAPE '\\' OR ScriptBlockText LIKE '%Grant-ADIDNSPermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Gupt-Backdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ACLScanner%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ADRecon%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ADSBackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AgentSmith%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AllChecks%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ARPScan%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AzureHound%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BackdoorLNK%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BadPotato%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BetterSafetyKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-BypassUAC%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Carbuncle%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Certify%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ConPtyShell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-CredentialInjection%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DAFT%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DCSync%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DinvokeKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DllInjection%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DNSUpdate%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DomainPasswordSpray%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-DowngradeAccount%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-EgressCheck%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Eyewitness%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-FakeLogonScreen%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Farmer%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Get-RBCD-Threaded%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Gopher%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Grouper%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-HandleKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ImpersonatedProcess%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ImpersonateSystem%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-InteractiveSystemPowerShell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Internalmonologue%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Inveigh%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-InveighRelay%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-KrbRelay%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-LdapSignCheck%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Lockless%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-MalSCCM%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Mimikatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Mimikittenz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-MITM6%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NanoDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NetRipper%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Nightmare%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-NinjaCopy%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-OfficeScrape%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-OxidResolver%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-P0wnedshell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Paranoia%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PortScan%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PoshRatHttp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PostExfil%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellTCP%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PowerShellWMI%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PPLDump%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PsExec%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PSInject%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-PsUaCme%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ReflectivePEInjection%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ReverseDNSLookup%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Rubeus%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-RunAs%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SafetyKatz%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SauronEye%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SCShell%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Seatbelt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ServiceAbuse%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ShadowSpray%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Sharp%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Shellcode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SMBScanner%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Snaffler%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Spoolsample%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SpraySinglePassword%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SSHCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-StandIn%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-StickyNotesExtract%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-SystemCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Tasksbackdoor%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Tater%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Thunderfox%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-ThunderStruck%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-TokenManipulation%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Tokenvator%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-TotalExec%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-UrbanBishop%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-UserHunter%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-VoiceTroll%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Whisker%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WinEnum%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-winPEAS%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WireTap%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WmiCommand%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WMIExec%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-WScriptBypassUAC%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-Zerologon%' ESCAPE '\\' OR ScriptBlockText LIKE '%MailRaider%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-HoneyHash%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-InMemoryModule%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-SOASerialNumberArray%' ESCAPE '\\' OR ScriptBlockText LIKE '%Out-Minidump%' ESCAPE '\\' OR ScriptBlockText LIKE '%PowerBreach%' ESCAPE '\\' OR ScriptBlockText LIKE '%powercat %' ESCAPE '\\' OR ScriptBlockText LIKE '%PowerUp%' ESCAPE '\\' OR ScriptBlockText LIKE '%PowerView%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-Update%' ESCAPE '\\' OR ScriptBlockText LIKE '%Rename-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Revoke-ADIDNSPermission%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-ADIDNSNode%' ESCAPE '\\' OR ScriptBlockText LIKE '%Show-TargetScreen%' ESCAPE '\\' OR ScriptBlockText LIKE '%Start-CaptureServer%' ESCAPE '\\' OR ScriptBlockText LIKE '%Start-Dnscat2%' ESCAPE '\\' OR ScriptBlockText LIKE '%Start-WebcamRecorder%' ESCAPE '\\' OR ScriptBlockText LIKE '%VolumeShadowCopyTools%' ESCAPE '\\') AND (NOT (ScriptBlockText LIKE '%Get-SystemDriveInfo%' ESCAPE '\\' OR ScriptBlockText LIKE '%C:\\\\ProgramData\\\\Amazon\\\\EC2-Windows\\\\Launch\\\\Module\\\\%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -27499,7 +27518,7 @@
         "id": "189e3b02-82b2-4b90-9662-411eb64486d4",
         "status": "test",
         "description": "Detects Invoke-Mimikatz PowerShell script and alike. Mimikatz is a credential dumper capable of obtaining plaintext Windows account logins and passwords.",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.credential_access",
             "attack.t1003"
@@ -27770,7 +27789,7 @@
         "title": "Windows Update Error",
         "id": "13cfeb75-9e33-4d04-b0f7-ab8faaa95a59",
         "status": "stable",
-        "description": "Detects Windows update errors including installation failures and connection issues. Defenders should observe this in case critical update KB aren't installed.",
+        "description": "Detects Windows update errors including installation failures and connection issues. Defenders should observe this in case critical update KBs aren't installed.\n",
         "author": "frack113",
         "tags": [
             "attack.impact",
@@ -27830,7 +27849,10 @@
         "status": "test",
         "description": "Detects a user log-off activity. Could be used for example to correlate information during forensic investigations",
         "author": "frack113",
-        "tags": [],
+        "tags": [
+            "attack.impact",
+            "attack.t1531"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -27846,7 +27868,9 @@
         "status": "stable",
         "description": "Detects locked workstation session events that occur automatically after a standard period of inactivity.",
         "author": "Alexandr Yampolskyi, SOC Prime",
-        "tags": [],
+        "tags": [
+            "attack.impact"
+        ],
         "falsepositives": [
             "Likely"
         ],
@@ -28929,7 +28953,7 @@
         "filename": ""
     },
     {
-        "title": "External Disk Drive Or USB Storage Device",
+        "title": "External Disk Drive Or USB Storage Device Was Recognized By The System",
         "id": "f69a87ea-955e-4fb4-adb2-bb9fd6685632",
         "status": "test",
         "description": "Detects external diskdrives or plugged in USB devices, EventID 6416 on Windows 10 or later",
@@ -28941,7 +28965,7 @@
             "attack.initial_access"
         ],
         "falsepositives": [
-            "Legitimate administrative activity"
+            "Likely"
         ],
         "level": "low",
         "rule": [
@@ -28971,10 +28995,10 @@
         "filename": ""
     },
     {
-        "title": "Access to ADMIN$ Share",
+        "title": "Access To ADMIN$ Network Share",
         "id": "098d7118-55bc-4912-a836-dc6483a8d150",
         "status": "test",
-        "description": "Detects access to $ADMIN share",
+        "description": "Detects access to ADMIN$ network share",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.lateral_movement",
@@ -29009,10 +29033,29 @@
         "filename": ""
     },
     {
+        "title": "Tap Driver Installation - Security",
+        "id": "9c8afa4d-0022-48f0-9456-3712466f9701",
+        "status": "test",
+        "description": "Detects the installation of a well-known TAP driver service. This could be a sign of potential preparation for data exfiltration using tunnelling techniques.\n",
+        "author": "Daniil Yugoslavskiy, Ian Davis, oscd.community",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1048"
+        ],
+        "falsepositives": [
+            "Legitimate OpenVPN TAP installation"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4697 AND ServiceFileName LIKE '%tap0901%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Local User Creation",
         "id": "66b6be3d-55d0-4f47-9855-d69df21740ea",
         "status": "test",
-        "description": "Detects local user creation on Windows servers, which shouldn't happen in an Active Directory environment. Apply this Sigma Use Case on your Windows server logs and not on your DC logs.",
+        "description": "Detects local user creation on Windows servers, which shouldn't happen in an Active Directory environment. Apply this Sigma Use Case on your Windows server logs and not on your DC logs.\n",
         "author": "Patrick Bareiss",
         "tags": [
             "attack.persistence",
@@ -29166,10 +29209,10 @@
         "filename": ""
     },
     {
-        "title": "Login with WMI",
+        "title": "Successful Account Login Via WMI",
         "id": "5af54681-df95-4c26-854f-2565e13cfab0",
         "status": "stable",
-        "description": "Detection of logins performed with WMI",
+        "description": "Detects successful logon attempts performed with WMI",
         "author": "Thomas Patzke",
         "tags": [
             "attack.execution",
@@ -29200,7 +29243,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Application' AND (Provider_Name='MsiInstaller' AND (EventID=11724 OR EventID=1034))"
+            "SELECT * FROM logs WHERE Channel='Application' AND (Provider_Name='MsiInstaller' AND (EventID=1034 OR EventID=11724))"
         ],
         "filename": ""
     },
@@ -29490,7 +29533,7 @@
         "title": "Stop Windows Service Via Net.EXE",
         "id": "88872991-7445-4a22-90b2-a3adadb0e827",
         "status": "test",
-        "description": "Detects the stopping of a Windows service",
+        "description": "Detects the stopping of a Windows service via the \"net\" utility.",
         "author": "Jakob Weinzettl, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.impact",
@@ -29695,10 +29738,10 @@
         "filename": ""
     },
     {
-        "title": "Taskmgr as Parent",
+        "title": "New Process Created Via Taskmgr.EXE",
         "id": "3d7679bd-0c00-440c-97b0-3f204273e6c7",
         "status": "test",
-        "description": "Detects the creation of a process from Windows task manager",
+        "description": "Detects the creation of a process via the Windows task manager. This might be an attempt to bypass UAC",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -29709,15 +29752,15 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\taskmgr.exe' ESCAPE '\\' AND (NOT (NewProcessName LIKE '%\\\\resmon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mmc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskmgr.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\taskmgr.exe' ESCAPE '\\' AND (NOT (NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\mmc.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\resmon.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\Taskmgr.exe' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
     {
-        "title": "Scheduled Task Creation",
+        "title": "Scheduled Task Creation Via Schtasks.EXE",
         "id": "92626ddd-662c-49e3-ac59-f6535f12d189",
         "status": "test",
-        "description": "Detects the creation of scheduled tasks in user session",
+        "description": "Detects the creation of scheduled tasks by user accounts via the \"schtasks\" utility.",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.execution",
@@ -29801,7 +29844,7 @@
         "title": "Stop Windows Service Via PowerShell Stop-Service",
         "id": "c49c5062-0966-4170-9efd-9968c913a6cf",
         "status": "test",
-        "description": "Detects the stopping of a Windows service",
+        "description": "Detects the stopping of a Windows service via the PowerShell Cmdlet \"Stop-Service\"",
         "author": "Jakob Weinzettl, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.impact",
@@ -29995,18 +30038,18 @@
         "title": "Stop Windows Service Via Sc.EXE",
         "id": "81bcb81b-5b1f-474b-b373-52c871aaa7b1",
         "status": "test",
-        "description": "Detects the stopping of a Windows service",
+        "description": "Detects the stopping of a Windows service via the \"sc.exe\" utility",
         "author": "Jakob Weinzettl, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.impact",
             "attack.t1489"
         ],
         "falsepositives": [
-            "There are many legitimate reasons to stop a service. This rule isn't looking for any suspicious behaviour in particular. Filter legitimate activity accordingly"
+            "There are many legitimate reasons to stop a service. This rule isn't looking for any suspicious behavior in particular. Filter legitimate activity accordingly"
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((OriginalFileName='sc.exe' OR NewProcessName LIKE '%\\\\sc.exe' ESCAPE '\\') AND CommandLine LIKE '% stop %' ESCAPE '\\') AND (NOT ((CommandLine='sc  stop KSCWebConsoleMessageQueue' OR CommandLine='sc  stop LGHUBUpdaterService') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((OriginalFileName='sc.exe' OR NewProcessName LIKE '%\\\\sc.exe' ESCAPE '\\') AND CommandLine LIKE '% stop %' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -31693,7 +31736,10 @@
         "status": "experimental",
         "description": "Hunts known SVR-specific DLL names.",
         "author": "CISA",
-        "tags": [],
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1574.002"
+        ],
         "falsepositives": [
             "Unknown"
         ],
@@ -32473,6 +32519,27 @@
         "filename": ""
     },
     {
+        "title": "Execution From Webserver Root Folder",
+        "id": "35efb964-e6a5-47ad-bbcd-19661854018d",
+        "status": "test",
+        "description": "Detects a program executing from a web server root folder. Use this rule to hunt for potential interesting activity such as webshell or backdoors\n",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.003",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Various applications",
+            "Tools that include ping or nslookup command invocations"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\wwwroot\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmpub\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\htdocs\\\\%' ESCAPE '\\') AND (NOT ((NewProcessName LIKE '%bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Tools\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\SMSComponent\\\\%' ESCAPE '\\') AND ParentProcessName LIKE '%\\\\services.exe' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Rundll32.EXE Calling DllRegisterServer Export Function Explicitly",
         "id": "d81a9fc6-55db-4461-b962-0e78fea5b0ad",
         "status": "experimental",
@@ -32591,6 +32658,50 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\' AND (NOT NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\WerFault.exe' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Tunneling Tool Execution",
+        "id": "c75309a3-59f8-4a8d-9c2c-4c927ad50555",
+        "status": "test",
+        "description": "Detects the execution of well known tools that can be abused for data exfiltration and tunneling.",
+        "author": "Daniil Yugoslavskiy, oscd.community",
+        "tags": [
+            "attack.exfiltration",
+            "attack.command_and_control",
+            "attack.t1041",
+            "attack.t1572",
+            "attack.t1071.001",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Legitimate administrators using one of these tools"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\httptunnel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\plink.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\socat.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\stunnel.exe' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "WSF/JSE/JS/VBA/VBE File Execution Via Cscript/Wscript",
+        "id": "1e33157c-53b1-41ad-bbcc-780b80b58288",
+        "status": "test",
+        "description": "Detects script file execution (.js, .jse, .vba, .vbe, .vbs, .wsf) by Wscript/Cscript",
+        "author": "Michael Haag",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.005",
+            "attack.t1059.007",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Some additional tuning is required. It is recommended to add the user profile path in CommandLine if it is getting too noisy."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((OriginalFileName='wscript.exe' OR OriginalFileName='cscript.exe') OR (NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\')) AND (CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.jse%' ESCAPE '\\' OR CommandLine LIKE '%.vba%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.wsf%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -34947,10 +35058,10 @@
         "filename": ""
     },
     {
-        "title": "Uncommon Service Installation",
+        "title": "Uncommon Service Installation Image Path",
         "id": "26481afe-db26-4228-b264-25a29fe6efc7",
         "status": "test",
-        "description": "Detects uncommon service installation commands",
+        "description": "Detects uncommon service installation commands by looking at suspicious or uncommon image path values containing references to encoded powershell commands, temporary paths, etc.\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.persistence",
@@ -35004,7 +35115,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='System' AND (((Provider_Name='Service Control Manager' AND EventID=7045) AND (ImagePath LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR ImagePath LIKE '%\\\\\\\\127.0.0.1%' ESCAPE '\\' OR ImagePath LIKE '%\\\\\\\\localhost%' ESCAPE '\\')) AND (NOT (ServiceName='Zoom Sharing Service' AND ImagePath LIKE '\"C:\\\\Program Files\\\\Common Files\\\\Zoom\\\\Support\\\\CptService.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='System' AND ((Provider_Name='Service Control Manager' AND EventID=7045 AND (ImagePath LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR ImagePath LIKE '%\\\\\\\\127.0.0.1%' ESCAPE '\\' OR ImagePath LIKE '%\\\\\\\\localhost%' ESCAPE '\\')) AND (NOT (ServiceName='Zoom Sharing Service' AND ImagePath LIKE '%:\\\\Program Files\\\\Common Files\\\\Zoom\\\\Support\\\\CptService.exe%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -35078,7 +35189,7 @@
             "attack.t1048"
         ],
         "falsepositives": [
-            "Legitimate OpenVPN TAP insntallation"
+            "Legitimate OpenVPN TAP installation"
         ],
         "level": "medium",
         "rule": [
@@ -35472,7 +35583,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=5145 AND (RelativeTargetName LIKE '%.pst' ESCAPE '\\' OR RelativeTargetName LIKE '%.ost' ESCAPE '\\' OR RelativeTargetName LIKE '%.msg' ESCAPE '\\' OR RelativeTargetName LIKE '%.nst' ESCAPE '\\' OR RelativeTargetName LIKE '%.oab' ESCAPE '\\' OR RelativeTargetName LIKE '%.edb' ESCAPE '\\' OR RelativeTargetName LIKE '%.nsf' ESCAPE '\\' OR RelativeTargetName LIKE '%.bak' ESCAPE '\\' OR RelativeTargetName LIKE '%.dmp' ESCAPE '\\' OR RelativeTargetName LIKE '%.kirbi' ESCAPE '\\' OR RelativeTargetName LIKE '%\\\\groups.xml' ESCAPE '\\' OR RelativeTargetName LIKE '%.rdp' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=5145 AND (RelativeTargetName LIKE '%.bak' ESCAPE '\\' OR RelativeTargetName LIKE '%.dmp' ESCAPE '\\' OR RelativeTargetName LIKE '%.edb' ESCAPE '\\' OR RelativeTargetName LIKE '%.kirbi' ESCAPE '\\' OR RelativeTargetName LIKE '%.msg' ESCAPE '\\' OR RelativeTargetName LIKE '%.nsf' ESCAPE '\\' OR RelativeTargetName LIKE '%.nst' ESCAPE '\\' OR RelativeTargetName LIKE '%.oab' ESCAPE '\\' OR RelativeTargetName LIKE '%.ost' ESCAPE '\\' OR RelativeTargetName LIKE '%.pst' ESCAPE '\\' OR RelativeTargetName LIKE '%.rdp' ESCAPE '\\' OR RelativeTargetName LIKE '%\\\\groups.xml' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -35754,6 +35865,25 @@
         "filename": ""
     },
     {
+        "title": "New or Renamed User Account with '$' Character",
+        "id": "cfeed607-6aa4-4bbd-9627-b637deb723c8",
+        "status": "test",
+        "description": "Detects the creation of a user with the \"$\" character. This can be used by attackers to hide a user or trick detection systems that lack the parsing mechanisms.\n",
+        "author": "Ilyas Ochkov, oscd.community",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1036"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (((EventID=4720 AND SamAccountName LIKE '%$%' ESCAPE '\\') OR (EventID=4781 AND NewTargetUserName LIKE '%$%' ESCAPE '\\')) AND (NOT (EventID=4720 AND TargetUserName='HomeGroupUser$')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Potential AD User Enumeration From Non-Machine Account",
         "id": "ab6bffca-beff-4baa-af11-6733f296d57a",
         "status": "test",
@@ -35870,25 +36000,6 @@
         "filename": ""
     },
     {
-        "title": "Tap Driver Installation - Security",
-        "id": "9c8afa4d-0022-48f0-9456-3712466f9701",
-        "status": "test",
-        "description": "Well-known TAP software installation. Possible preparation for data exfiltration using tunnelling techniques",
-        "author": "Daniil Yugoslavskiy, Ian Davis, oscd.community",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1048"
-        ],
-        "falsepositives": [
-            "Legitimate OpenVPN TAP insntallation"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4697 AND ServiceFileName LIKE '%tap0901%' ESCAPE '\\')"
-        ],
-        "filename": ""
-    },
-    {
         "title": "SCM Database Privileged Operation",
         "id": "dae8171c-5ec6-4396-b210-8466585b53e9",
         "status": "test",
@@ -35985,10 +36096,10 @@
         "filename": ""
     },
     {
-        "title": "User Added to Local Administrators",
+        "title": "User Added to Local Administrator Group",
         "id": "c265cf08-3f99-46c1-8d59-328247057d57",
         "status": "stable",
-        "description": "This rule triggers on user accounts that are added to the local Administrators group, which could be legitimate activity or a sign of privilege escalation activity",
+        "description": "Detects the addition of a new member to the local administrator group, which could be legitimate activity or a sign of privilege escalation activity",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.privilege_escalation",
@@ -36001,7 +36112,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4732 AND (TargetUserName LIKE 'Administr%' ESCAPE '\\' OR TargetSid='S-1-5-32-544') AND (NOT SubjectUserName LIKE '%$' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4732 AND (TargetUserName LIKE 'Administr%' ESCAPE '\\' OR TargetSid='S-1-5-32-544')) AND (NOT SubjectUserName LIKE '%$' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -36144,7 +36255,7 @@
         "filename": ""
     },
     {
-        "title": "Addition of Domain Trusts",
+        "title": "A New Trust Was Created To A Domain",
         "id": "0255a820-e564-4e40-af2b-6ac61160335c",
         "status": "stable",
         "description": "Addition of domains is seldom and should be verified for legitimacy.",
@@ -36166,7 +36277,7 @@
         "title": "Failed Logon From Public IP",
         "id": "f88e112a-21aa-44bd-9b01-6ee2a2bbbed1",
         "status": "test",
-        "description": "A login from a public IP can indicate a misconfigured firewall or network boundary.",
+        "description": "Detects a failed logon attempt from a public IP. A login from a public IP can indicate a misconfigured firewall or network boundary.",
         "author": "NVISO",
         "tags": [
             "attack.initial_access",
@@ -36821,7 +36932,7 @@
         "id": "8a3038e8-9c9d-46f8-b184-66234a160f6f",
         "status": "test",
         "description": "Detects potential use of an SSH utility to establish RDP over a reverse SSH Tunnel. This can be used by attackers to enable routing of network packets that would otherwise not reach their intended destination.",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.lateral_movement",
             "attack.t1021"
@@ -38200,7 +38311,7 @@
         "title": "Write Protect For Storage Disabled",
         "id": "75f7a0e2-7154-4c4d-9eae-5cdb4e0a5c13",
         "status": "test",
-        "description": "Looks for changes to registry to disable any write-protect property for storage devices. This could be a precursor to a ransomware attack and has been an observed technique used by cypherpunk group.",
+        "description": "Detects applications trying to modify the registry in order to disable any write-protect property for storage devices.\nThis could be a precursor to a ransomware attack and has been an observed technique used by cypherpunk group.\n",
         "author": "Sreeman",
         "tags": [
             "attack.defense_evasion",
@@ -38211,7 +38322,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%\\\\System\\\\CurrentControlSet\\\\Control%' ESCAPE '\\' AND CommandLine LIKE '%Write Protection%' ESCAPE '\\' AND CommandLine LIKE '%0%' ESCAPE '\\') AND (CommandLine LIKE '%storage%' ESCAPE '\\' OR CommandLine LIKE '%storagedevicepolicies%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%\\\\System\\\\CurrentControlSet\\\\Control%' ESCAPE '\\' AND CommandLine LIKE '%Write Protection%' ESCAPE '\\' AND CommandLine LIKE '%0%' ESCAPE '\\' AND CommandLine LIKE '%storage%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -38339,7 +38450,7 @@
             "attack.t1048"
         ],
         "falsepositives": [
-            "Legitimate OpenVPN TAP insntallation"
+            "Legitimate OpenVPN TAP installation"
         ],
         "level": "medium",
         "rule": [
@@ -38591,7 +38702,7 @@
         "id": "214641c2-c579-4ecb-8427-0cf19df6842e",
         "status": "test",
         "description": "Detects the desktopimgdownldr utility being used to download a remote file. An adversary may use desktopimgdownldr to download arbitrary files as an alternative to certutil.",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.command_and_control",
             "attack.t1105"
@@ -38664,10 +38775,10 @@
         "filename": ""
     },
     {
-        "title": "Fake Instance Of Hxtsr.exe",
+        "title": "Potential Fake Instance Of Hxtsr.EXE Executed",
         "id": "4e762605-34a8-406d-b72e-c1a089313320",
         "status": "test",
-        "description": "HxTsr.exe is a Microsoft compressed executable file called Microsoft Outlook Communications.\nHxTsr.exe is part of Outlook apps, because it resides in a hidden \"WindowsApps\" subfolder of \"C:\\Program Files\".\nIts path includes a version number, e.g., \"C:\\Program Files\\WindowsApps\\microsoft.windowscommunicationsapps_17.7466.41167.0_x64__8wekyb3d8bbwe\\HxTsr.exe\".\nAny instances of hxtsr.exe not in this folder may be malware camouflaging itself as HxTsr.exe\n",
+        "description": "HxTsr.exe is a Microsoft compressed executable file called Microsoft Outlook Communications.\nHxTsr.exe is part of Outlook apps, because it resides in a hidden \"WindowsApps\" subfolder of \"C:\\Program Files\".\nAny instances of hxtsr.exe not in this folder may be malware camouflaging itself as HxTsr.exe\n",
         "author": "Sreeman",
         "tags": [
             "attack.defense_evasion",
@@ -38678,7 +38789,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName='hxtsr.exe' AND (NOT (CurrentDirectory LIKE 'C:\\\\program files\\\\windowsapps\\\\microsoft.windowscommunicationsapps\\_%' ESCAPE '\\' AND CurrentDirectory LIKE '%\\\\hxtsr.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\hxtsr.exe' ESCAPE '\\' AND (NOT (CurrentDirectory LIKE '%:\\\\program files\\\\windowsapps\\\\microsoft.windowscommunicationsapps\\_%' ESCAPE '\\' AND CurrentDirectory LIKE '%\\\\hxtsr.exe' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -39390,26 +39501,6 @@
         "filename": ""
     },
     {
-        "title": "Execution in Webserver Root Folder",
-        "id": "35efb964-e6a5-47ad-bbcd-19661854018d",
-        "status": "test",
-        "description": "Detects a suspicious program execution in a web service root folder (filter out false positives)",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.persistence",
-            "attack.t1505.003"
-        ],
-        "falsepositives": [
-            "Various applications",
-            "Tools that include ping or nslookup command invocations"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\wwwroot\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmpub\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\htdocs\\\\%' ESCAPE '\\') AND (NOT ((NewProcessName LIKE '%bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Tools\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\SMSComponent\\\\%' ESCAPE '\\') AND ParentProcessName LIKE '%\\\\services.exe' ESCAPE '\\'))))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Remote Access Tool - ScreenConnect Execution",
         "id": "57bff678-25d1-4d6c-8211-8ca106d12053",
         "status": "test",
@@ -39545,6 +39636,26 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\rcedit-x64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rcedit-x86.exe' ESCAPE '\\') OR Description='Edit resources of exe' OR Product='rcedit') AND CommandLine LIKE '%--set-%' ESCAPE '\\' AND (CommandLine LIKE '%OriginalFileName%' ESCAPE '\\' OR CommandLine LIKE '%CompanyName%' ESCAPE '\\' OR CommandLine LIKE '%FileDescription%' ESCAPE '\\' OR CommandLine LIKE '%ProductName%' ESCAPE '\\' OR CommandLine LIKE '%ProductVersion%' ESCAPE '\\' OR CommandLine LIKE '%LegalCopyright%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential Dropper Script Execution Via WScript/CScript",
+        "id": "cea72823-df4d-4567-950c-0b579eaf0846",
+        "status": "deprecated",
+        "description": "Detects wscript/cscript executions of scripts located in user directories",
+        "author": "Margaritis Dimitrios (idea), Florian Roth (Nextron Systems), oscd.community, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.005",
+            "attack.t1059.007"
+        ],
+        "falsepositives": [
+            "Some installers might generate a similar behavior. An initial baseline is required"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Tmp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') AND (CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.jse%' ESCAPE '\\' OR CommandLine LIKE '%.vba%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.wsf%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -40203,7 +40314,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((ParentProcessName LIKE '%\\\\java.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\')) AND (NOT (ParentProcessName LIKE '%build%' ESCAPE '\\' AND CommandLine LIKE '%build%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((ParentProcessName LIKE '%\\\\java.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\')) AND (NOT (ParentProcessName LIKE '%build%' ESCAPE '\\' AND CommandLine LIKE '%build%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -40250,7 +40361,7 @@
         "title": "Monitoring For Persistence Via BITS",
         "id": "b9cbbc17-d00d-4e3d-a827-b06d03d2380d",
         "status": "test",
-        "description": "BITS will allow you to schedule a command to execute after a successful download to notify you that the job is finished. When the job runs on the system the command specified in the BITS job will be executed. This can be abused by actors to create a backdoor within the system and for persistence. It will be chained in a BITS job to schedule the download of malware/additional binaries and execute the program after being downloaded",
+        "description": "BITS will allow you to schedule a command to execute after a successful download to notify you that the job is finished.\nWhen the job runs on the system the command specified in the BITS job will be executed.\nThis can be abused by actors to create a backdoor within the system and for persistence.\nIt will be chained in a BITS job to schedule the download of malware/additional binaries and execute the program after being downloaded.\n",
         "author": "Sreeman",
         "tags": [
             "attack.defense_evasion",
@@ -40261,7 +40372,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((CommandLine LIKE '%bitsadmin%' ESCAPE '\\' AND CommandLine LIKE '%/SetNotifyCmdLine%' ESCAPE '\\') AND (CommandLine LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe%' ESCAPE '\\' OR CommandLine LIKE '%regsvr32.exe%' ESCAPE '\\')) OR ((CommandLine LIKE '%bitsadmin%' ESCAPE '\\' AND CommandLine LIKE '%/Addfile%' ESCAPE '\\') AND (CommandLine LIKE '%http:%' ESCAPE '\\' OR CommandLine LIKE '%https:%' ESCAPE '\\' OR CommandLine LIKE '%ftp:%' ESCAPE '\\' OR CommandLine LIKE '%ftps:%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName='bitsadmin.exe') AND ((CommandLine LIKE '%/SetNotifyCmdLine%' ESCAPE '\\' AND (CommandLine LIKE '%\\%COMSPEC\\%%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe%' ESCAPE '\\' OR CommandLine LIKE '%regsvr32.exe%' ESCAPE '\\')) OR (CommandLine LIKE '%/Addfile%' ESCAPE '\\' AND (CommandLine LIKE '%http:%' ESCAPE '\\' OR CommandLine LIKE '%https:%' ESCAPE '\\' OR CommandLine LIKE '%ftp:%' ESCAPE '\\' OR CommandLine LIKE '%ftps:%' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -40565,7 +40676,7 @@
         "id": "12f6b752-042d-483e-bf9c-915a6d06ad75",
         "status": "test",
         "description": "Detects attempts to disable the Windows Firewall using PowerShell",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1562"
@@ -40778,7 +40889,7 @@
         "id": "cbb9e3d1-2386-4e59-912e-62f1484f7a89",
         "status": "experimental",
         "description": "Detects when the Console Window Host (conhost.exe) process is spawned by an uncommon parent process, which could be indicative of potential code injection activity.",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.execution",
             "attack.t1059"
@@ -41709,7 +41820,7 @@
         "id": "e52cb31c-10ed-4aea-bcb7-593c9f4a315b",
         "status": "test",
         "description": "Detects attempts to bypass User Account Control (UAC) by hijacking the Microsoft Management Console (MMC) Windows Firewall snap-in",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.privilege_escalation",
             "attack.t1548"
@@ -42060,7 +42171,7 @@
         "id": "4b991083-3d0e-44ce-8fc4-b254025d8d4b",
         "status": "experimental",
         "description": "Detects suspicious parent process for cmd.exe",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.execution",
             "attack.t1059"
@@ -43113,28 +43224,6 @@
         "filename": ""
     },
     {
-        "title": "Exfiltration and Tunneling Tools Execution",
-        "id": "c75309a3-59f8-4a8d-9c2c-4c927ad50555",
-        "status": "test",
-        "description": "Execution of well known tools for data exfiltration and tunneling",
-        "author": "Daniil Yugoslavskiy, oscd.community",
-        "tags": [
-            "attack.exfiltration",
-            "attack.command_and_control",
-            "attack.t1041",
-            "attack.t1572",
-            "attack.t1071.001"
-        ],
-        "falsepositives": [
-            "Legitimate Administrator using tools"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\plink.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\socat.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\stunnel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\httptunnel.exe' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "SyncAppvPublishingServer Execute Arbitrary PowerShell Code",
         "id": "fbd7c32d-db2a-4418-b92c-566eb8911133",
         "status": "test",
@@ -43979,26 +44068,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\provlaunch.exe' ESCAPE '\\' AND (NOT ((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notepad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "WSF/JSE/JS/VBA/VBE File Execution Via Cscript/Wscript",
-        "id": "1e33157c-53b1-41ad-bbcc-780b80b58288",
-        "status": "test",
-        "description": "Detects script file execution (.js, .jse, .vba, .vbe, .vbs, .wsf) by Wscript/Cscript",
-        "author": "Michael Haag",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.005",
-            "attack.t1059.007"
-        ],
-        "falsepositives": [
-            "Some additional tuning is required. It is recommended to add the user profile path in CommandLine if it is getting too noisy."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((OriginalFileName='wscript.exe' OR OriginalFileName='cscript.exe') OR (NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\')) AND (CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.jse%' ESCAPE '\\' OR CommandLine LIKE '%.vba%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\' OR CommandLine LIKE '%.wsf%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -45718,7 +45787,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE') AND (NOT (CommandLine IS NULL OR CommandLine='' OR (CommandLine LIKE '%.cpl%' ESCAPE '\\' OR CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine LIKE '%.inf%' ESCAPE '\\') OR CommandLine LIKE '% -localserver %' ESCAPE '\\' OR (CommandLine LIKE '%C:\\\\Windows\\\\Installer\\\\MSI%' ESCAPE '\\' AND CommandLine LIKE '%.tmp%' ESCAPE '\\' AND CommandLine LIKE '%zzzzInvokeManagedCustomActionOutOfProc%' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE') AND (NOT (CommandLine IS NULL OR CommandLine='' OR ((CommandLine LIKE '%.cpl %' ESCAPE '\\' OR CommandLine LIKE '%.cpl,%' ESCAPE '\\' OR CommandLine LIKE '%.dll %' ESCAPE '\\' OR CommandLine LIKE '%.dll,%' ESCAPE '\\' OR CommandLine LIKE '%.inf %' ESCAPE '\\' OR CommandLine LIKE '%.inf,%' ESCAPE '\\') OR (CommandLine LIKE '%.cpl' ESCAPE '\\' OR CommandLine LIKE '%.cpl\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.inf' ESCAPE '\\' OR CommandLine LIKE '%.inf\"' ESCAPE '\\' OR CommandLine LIKE '%.cpl''' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\' OR CommandLine LIKE '%.inf''' ESCAPE '\\')) OR CommandLine LIKE '% -localserver %' ESCAPE '\\' OR (ParentProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '%:\\\\Windows\\\\Installer\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.tmp%' ESCAPE '\\' AND CommandLine LIKE '%zzzzInvokeManagedCustomActionOutOfProc%' ESCAPE '\\'))))))"
         ],
         "filename": ""
     },
@@ -48961,7 +49030,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%System.Net.WebClient%' ESCAPE '\\' AND (ScriptBlockText LIKE '%.DownloadFile(%' ESCAPE '\\' OR ScriptBlockText LIKE '%.DownloadString(%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%System.Net.WebClient%' ESCAPE '\\' AND (ScriptBlockText LIKE '%.DownloadFile(%' ESCAPE '\\' OR ScriptBlockText LIKE '%.DownloadFileAsync(%' ESCAPE '\\' OR ScriptBlockText LIKE '%.DownloadString(%' ESCAPE '\\' OR ScriptBlockText LIKE '%.DownloadStringAsync(%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -49659,7 +49728,7 @@
         "id": "c1344fa2-323b-4d2e-9176-84b4d4821c88",
         "status": "test",
         "description": "Detects modifications to the Windows Defender configuration settings using PowerShell to add exclusions",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, Elastic (idea)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1562",
