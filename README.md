@@ -5,7 +5,7 @@ This repository uses Github Actions to generate periodically updated Sigma rules
 ## Default rulesets
 
 With the exceptions of the last two, these rulesets have been generated with `sigmac` wich is available in the [official sigma repository](https://github.com/SigmaHQ/legacy-sigmatools).
-The rulesets with "pysigma" in their names have been generated with the new [SQLite backend](https://github.com/wagga40/pySigma-backend-sqlite) for [pySigma](https://github.com/SigmaHQ/pySigma).
+The rulesets with "pysigma" in their names have been generated with the news [SQLite backend](https://github.com/wagga40/pySigma-backend-sqlite) for [pySigma](https://github.com/SigmaHQ/pySigma).
 
 :warning: **These rulesets are given "as is" to help new analysts to discover SIGMA and Zircolite. They are not filtered for slow rules, rules with a lot of false positives etc. If you know what you do, you SHOULD generate your own rulesets.**
 
