@@ -1959,6 +1959,25 @@
         "filename": "web_cve_2010_5278_exploitation_attempt.yml"
     },
     {
+        "title": "DPRK Threat Actor - C2 Communication DNS Indicators",
+        "id": "4d16c9a6-4362-4863-9940-1dee35f1d70f",
+        "status": "experimental",
+        "description": "Detects DNS queries for C2 domains used by DPRK Threat actors.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '22' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND QueryName IN ('connection.lockscreen.kro.kr', 'updating.dothome.co.kr'))"
+        ],
+        "filename": "dns_query_win_apt_dprk_malicious_domains.yml"
+    },
+    {
         "title": "StoneDrill Service Install",
         "id": "9e987c6c-4c1e-40d8-bd85-dd26fba8fdd6",
         "status": "test",
