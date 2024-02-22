@@ -320,6 +320,46 @@
         "filename": ""
     },
     {
+        "title": "CVE-2024-1708 - ScreenConnect Path Traversal Exploitation - Security",
+        "id": "4c198a60-7d05-4daf-8bf7-4136fb6f5c62",
+        "status": "experimental",
+        "description": "This detects file modifications to ASPX and ASHX files within the root of the App_Extensions directory, which is allowed by a ZipSlip vulnerability in versions prior to 23.9.8. This occurs during exploitation of CVE-2024-1708.\nThis requires an Advanced Auditing policy to log a successful Windows Event ID 4663 events and with a SACL set on the directory.\n",
+        "author": "Matt Anderson, Caleb Stewart, Huntress",
+        "tags": [
+            "attack.initial_access",
+            "attack.persistence",
+            "cve.2024.1708"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4663 AND ObjectType='File' AND ProcessName LIKE '%ScreenConnect.Service.exe%' ESCAPE '\\' AND AccessMask='0x6' AND (ObjectName LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%.ashx' ESCAPE '\\' OR ObjectName LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%.aspx' ESCAPE '\\')) AND (NOT ObjectName LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "CVE-2024-1709 - ScreenConnect Authentication Bypass Exploitation",
+        "id": "d27eabad-9068-401a-b0d6-9eac744d6e67",
+        "status": "experimental",
+        "description": "Detects GET requests to '/SetupWizard.aspx/[anythinghere]' that indicate exploitation of the ScreenConnect vulnerability CVE-2024-1709.\n",
+        "author": "Matt Anderson, Huntress",
+        "tags": [
+            "attack.initial_access",
+            "attack.persistence",
+            "cve.2024.1709"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE `cs-uri-stem` LIKE '%/SetupWizard.aspx/%' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
         "title": "WannaCry Ransomware Activity",
         "id": "41d40bff-377a-43e2-8e1b-2e543069e079",
         "status": "test",
@@ -31607,6 +31647,63 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE `cs-method`='POST' AND (`cs-uri` LIKE '%/json/setup-restore-local.action%' ESCAPE '\\' OR `cs-uri` LIKE '%/json/setup-restore-progress.action%' ESCAPE '\\' OR `cs-uri` LIKE '%/json/setup-restore.action%' ESCAPE '\\' OR `cs-uri` LIKE '%/server-info.action%' ESCAPE '\\' OR `cs-uri` LIKE '%/setup/setupadministrator.action%' ESCAPE '\\') AND (`sc-status`=200 OR `sc-status`=302 OR `sc-status`=405)"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "CVE-2024-1708 - ScreenConnect Path Traversal Exploitation",
+        "id": "44d7af7e-88e6-4490-be11-55f7ff4d9fc1",
+        "status": "experimental",
+        "description": "This detects file modifications to ASPX and ASHX files within the root of the App_Extensions directory, which is allowed by a ZipSlip vulnerability in versions prior to 23.9.8. This occurs during exploitation of CVE-2024-1708.\n",
+        "author": "Matt Anderson, Andrew Schwartz, Caleb Stewart, Huntress",
+        "tags": [
+            "attack.persistence",
+            "cve.2024.1708"
+        ],
+        "falsepositives": [
+            "This will occur legitimately as well and will result in some benign activity."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%\\\\ScreenConnect.Service.exe' ESCAPE '\\' AND (TargetFilename LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%.ashx' ESCAPE '\\' OR TargetFilename LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%.aspx' ESCAPE '\\')) AND (NOT TargetFilename LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%\\\\%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "ScreenConnect User Database Modification",
+        "id": "1a821580-588b-4323-9422-660f7e131020",
+        "status": "experimental",
+        "description": "Detects file modifications to the temporary xml user database file indicating local user modification in the ScreenConnect server.\nThis will occur during exploitation of the ScreenConnect Authentication Bypass vulnerability (CVE-2024-1709) in versions <23.9.8, but may also be observed when making legitimate modifications to local users or permissions.\n",
+        "author": "Matt Anderson, Andrew Schwartz, Caleb Stewart, Huntress",
+        "tags": [
+            "attack.persistence",
+            "cve.2024.1709"
+        ],
+        "falsepositives": [
+            "This will occur legitimately as well and will result in some benign activity."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%.xml' ESCAPE '\\' AND (TargetFilename LIKE '%Temp%' ESCAPE '\\' AND TargetFilename LIKE '%ScreenConnect%' ESCAPE '\\') AND Image LIKE '%\\\\ScreenConnect.Service.exe' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "ScreenConnect User Database Modification - Security",
+        "id": "4109cb6a-a4af-438a-9f0c-056abba41c6f",
+        "status": "experimental",
+        "description": "This detects file modifications to the temporary xml user database file indicating local user modification in the ScreenConnect server.\nThis will occur during exploitation of the ScreenConnect Authentication Bypass vulnerability (CVE-2024-1709) in versions <23.9.8, but may also be observed when making legitimate modifications to local users or permissions.\nThis requires an Advanced Auditing policy to log a successful Windows Event ID 4663 events and with a SACL set on the directory.\n",
+        "author": "Matt Anderson, Kris Luzadre, Andrew Schwartz, Huntress",
+        "tags": [
+            "attack.defense_evasion",
+            "cve.2024.1709"
+        ],
+        "falsepositives": [
+            "This will occur legitimately as well and will result in some benign activity."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4663 AND ObjectType='File' AND AccessMask='0x6' AND ObjectName LIKE '%.xml' ESCAPE '\\' AND (ObjectName LIKE '%Temp%' ESCAPE '\\' AND ObjectName LIKE '%ScreenConnect%' ESCAPE '\\') AND ProcessName LIKE '%ScreenConnect.Service.exe%' ESCAPE '\\')"
         ],
         "filename": ""
     },

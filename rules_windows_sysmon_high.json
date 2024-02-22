@@ -1978,6 +1978,46 @@
         "filename": "dns_query_win_apt_dprk_malicious_domains.yml"
     },
     {
+        "title": "CVE-2024-1708 - ScreenConnect Path Traversal Exploitation - Security",
+        "id": "4c198a60-7d05-4daf-8bf7-4136fb6f5c62",
+        "status": "experimental",
+        "description": "This detects file modifications to ASPX and ASHX files within the root of the App_Extensions directory, which is allowed by a ZipSlip vulnerability in versions prior to 23.9.8. This occurs during exploitation of CVE-2024-1708.\nThis requires an Advanced Auditing policy to log a successful Windows Event ID 4663 events and with a SACL set on the directory.\n",
+        "author": "Matt Anderson, Caleb Stewart, Huntress",
+        "tags": [
+            "attack.initial_access",
+            "attack.persistence",
+            "cve.2024.1708"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '4663' AND ObjectType = 'File' AND ProcessName LIKE '%ScreenConnect.Service.exe%' ESCAPE '\\' AND AccessMask = '0x6' AND (ObjectName LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%.ashx' ESCAPE '\\' OR ObjectName LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%.aspx' ESCAPE '\\')) AND NOT ((ObjectName LIKE '%ScreenConnect\\\\App\\_Extensions\\\\%\\\\\\*' ESCAPE '\\')))"
+        ],
+        "filename": "win_security_exploit_cve_2024_1708_screenconnect.yml"
+    },
+    {
+        "title": "CVE-2024-1709 - ScreenConnect Authentication Bypass Exploitation",
+        "id": "d27eabad-9068-401a-b0d6-9eac744d6e67",
+        "status": "experimental",
+        "description": "Detects GET requests to '/SetupWizard.aspx/[anythinghere]' that indicate exploitation of the ScreenConnect vulnerability CVE-2024-1709.\n",
+        "author": "Matt Anderson, Huntress",
+        "tags": [
+            "attack.initial_access",
+            "attack.persistence",
+            "cve.2024.1709"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE cs-uri-stem LIKE '%/SetupWizard.aspx/%' ESCAPE '\\'"
+        ],
+        "filename": "web_exploit_cve_2024_1709_screenconnect.yml"
+    },
+    {
         "title": "StoneDrill Service Install",
         "id": "9e987c6c-4c1e-40d8-bd85-dd26fba8fdd6",
         "status": "test",
