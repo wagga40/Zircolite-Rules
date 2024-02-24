@@ -1978,6 +1978,24 @@
         "filename": "dns_query_win_apt_dprk_malicious_domains.yml"
     },
     {
+        "title": "ScreenConnect - SlashAndGrab Exploitation Indicators",
+        "id": "05164d17-8e11-4d7d-973e-9e4962436b87",
+        "status": "experimental",
+        "description": "Detects indicators of exploitation by threat actors during exploitation of the \"SlashAndGrab\" vulnerability related to ScreenConnect as reported Team Huntress\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetFilename LIKE '%C:\\\\Windows\\\\Temp\\\\ScreenConnect\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\LB3.exe%' ESCAPE '\\') OR (TargetFilename LIKE '%C:\\\\mpyutd.msi%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\perflogs\\\\RunSchedulerTaskOnce.ps1%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\ProgramData\\\\1.msi%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\mpyutd.msi%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\ProgramData\\\\update.dat%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Users\\\\oldadmin\\\\Documents\\\\MilsoftConnect\\\\Files\\\\ta.exe%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\Help\\\\Help\\\\SentinelAgentCore.dll%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\Help\\\\Help\\\\SentinelUI.exe%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\spsrv.exe%' ESCAPE '\\' OR TargetFilename LIKE '%C:\\\\Windows\\\\Temp\\\\svchost.exe%' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_apt_unknown_exploitation_indicators.yml"
+    },
+    {
         "title": "CVE-2024-1708 - ScreenConnect Path Traversal Exploitation - Security",
         "id": "4c198a60-7d05-4daf-8bf7-4136fb6f5c62",
         "status": "experimental",
@@ -16544,6 +16562,25 @@
         "filename": "proc_creation_win_rundll32_by_ordinal.yml"
     },
     {
+        "title": "User Added To Highly Privileged Group",
+        "id": "10fb649c-3600-4d37-b1e6-56ea90bb7e09",
+        "status": "test",
+        "description": "Detects addition of users to highly privileged groups via \"Net\" or \"Add-LocalGroupMember\".",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1098"
+        ],
+        "falsepositives": [
+            "Administrative activity that must be investigated"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%localgroup %' ESCAPE '\\' AND CommandLine LIKE '% /add%' ESCAPE '\\') OR (CommandLine LIKE '%Add-LocalGroupMember %' ESCAPE '\\' AND CommandLine LIKE '% -Group %' ESCAPE '\\')) AND (CommandLine LIKE '%Group Policy Creator Owners%' ESCAPE '\\' OR CommandLine LIKE '%Schema Admins%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_add_user_privileged_group.yml"
+    },
+    {
         "title": "Suspicious NTLM Authentication on the Printer Spooler Service",
         "id": "bb76d96b-821c-47cf-944b-7ce377864492",
         "status": "test",
@@ -17667,6 +17704,24 @@
         "filename": "proc_creation_win_wmi_backdoor_exchange_transport_agent.yml"
     },
     {
+        "title": "Potentially Suspicious File Download From File Sharing Domain Via PowerShell.EXE",
+        "id": "b6e04788-29e1-4557-bb14-77f761848ab8",
+        "status": "experimental",
+        "description": "Detects potentially suspicious file downloads from file sharing domains using PowerShell.exe",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com/attachments/%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%glitch.me%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%onrender.com%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%supabase.co%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\') AND (CommandLine LIKE '%.DownloadString(%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadFile(%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest %' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_download_susp_file_sharing_domains.yml"
+    },
+    {
         "title": "Potential PowerShell Execution Via DLL",
         "id": "6812a10b-60ea-420c-832f-dfcc33b646ba",
         "status": "test",
@@ -17973,6 +18028,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%taskkill %' ESCAPE '\\' AND CommandLine LIKE '%RaccineSettings.exe%' ESCAPE '\\') OR (CommandLine LIKE '%reg.exe%' ESCAPE '\\' AND CommandLine LIKE '%delete%' ESCAPE '\\' AND CommandLine LIKE '%Raccine Tray%' ESCAPE '\\') OR (CommandLine LIKE '%schtasks%' ESCAPE '\\' AND CommandLine LIKE '%/DELETE%' ESCAPE '\\' AND CommandLine LIKE '%Raccine Rules Updater%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_disable_raccine.yml"
+    },
+    {
+        "title": "Remote Access Tool - ScreenConnect Backstage Mode Anomaly 2",
+        "id": "51544ca6-51ab-48de-97e9-b1317707760c",
+        "status": "experimental",
+        "description": "Detects suspicious grand child processes started by the ScreenConnect client service.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND GrandParentImage LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\' AND (ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\curl.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wevtutil.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_remote_access_tools_screenconnect_anomaly_2.yml"
     },
     {
         "title": "Suspicious Splwow64 Without Params",
@@ -20097,10 +20171,10 @@
         "filename": "proc_creation_win_powershell_email_exfil.yml"
     },
     {
-        "title": "Suspicious Add User to Remote Desktop Users Group",
+        "title": "User Added to Remote Desktop Users Group",
         "id": "ffa28e60-bdb1-46e0-9f82-05f7a61cc06e",
         "status": "test",
-        "description": "Detects suspicious command line in which a user gets added to the local Remote Desktop Users group",
+        "description": "Detects addition of users to the local Remote Desktop Users group via \"Net\" or \"Add-LocalGroupMember\".",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.persistence",
@@ -20552,6 +20626,24 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%Offline\\_Winpwn%' ESCAPE '\\' OR CommandLine LIKE '%WinPwn %' ESCAPE '\\' OR CommandLine LIKE '%WinPwn.exe%' ESCAPE '\\' OR CommandLine LIKE '%WinPwn.ps1%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_hktl_winpwn.yml"
+    },
+    {
+        "title": "Suspicious File Download From IP Via Wget.EXE - Paths",
+        "id": "40aa399c-7b02-4715-8e5f-73572b493f33",
+        "status": "experimental",
+        "description": "Detects potentially suspicious file downloads directly from IP addresses and stored in suspicious locations using Wget.exe",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\wget.exe' ESCAPE '\\' OR OriginalFileName = 'wget.exe') AND CommandLine REGEXP '://[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}' AND CommandLine LIKE '%http%' ESCAPE '\\' AND (CommandLine REGEXP '\\s-O\\s' OR CommandLine LIKE '%--output-document%' ESCAPE '\\') AND ((CommandLine LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Help\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_wget_download_susp_locations.yml"
     },
     {
         "title": "Suspicious PowerShell Download and Execute Pattern",
@@ -21832,7 +21924,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\') AND (CommandLine LIKE '% -ur%' ESCAPE '\\' OR CommandLine LIKE '% -o%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\') AND (CommandLine LIKE '% -ur%' ESCAPE '\\' OR CommandLine LIKE '% -o%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_invoke_webrequest_download.yml"
     },
@@ -22627,7 +22719,7 @@
         "title": "Remote Access Tool - ScreenConnect Backstage Mode Anomaly",
         "id": "7b582f1a-b318-4c6a-bf4e-66fe49bf55a5",
         "status": "test",
-        "description": "Detects suspicious sub processes started by the ScreenConnect client service, which indicates the use of the so-called Backstage mode",
+        "description": "Detects suspicious child processes started by the ScreenConnect client service, which indicates the use of the so-called Backstage mode\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command_and_control",
@@ -22638,7 +22730,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%ScreenConnect.ClientService.exe' ESCAPE '\\' AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\' AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_remote_access_tools_screenconnect_anomaly.yml"
     },
@@ -23214,7 +23306,7 @@
         "id": "09576804-7a05-458e-a817-eb718ca91f54",
         "status": "test",
         "description": "Detects suspicious ways to run Invoke-Execution using IEX alias",
-        "author": "Florian Roth (Nextron Systems)",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.t1059.001"
@@ -23224,7 +23316,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '% | iex;%' ESCAPE '\\' OR CommandLine LIKE '% | iex %' ESCAPE '\\' OR CommandLine LIKE '% | iex}%' ESCAPE '\\' OR CommandLine LIKE '% | IEX ;%' ESCAPE '\\' OR CommandLine LIKE '% | IEX -Error%' ESCAPE '\\' OR CommandLine LIKE '% | IEX (new%' ESCAPE '\\' OR CommandLine LIKE '%);IEX %' ESCAPE '\\') AND (CommandLine LIKE '%::FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '%.GetString([System.Convert]::%' ESCAPE '\\')) OR (CommandLine LIKE '%)|iex;$%' ESCAPE '\\' OR CommandLine LIKE '%);iex($%' ESCAPE '\\' OR CommandLine LIKE '%);iex $%' ESCAPE '\\' OR CommandLine LIKE '% | IEX | %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '% | iex;%' ESCAPE '\\' OR CommandLine LIKE '% | iex %' ESCAPE '\\' OR CommandLine LIKE '% | iex}%' ESCAPE '\\' OR CommandLine LIKE '% | IEX ;%' ESCAPE '\\' OR CommandLine LIKE '% | IEX -Error%' ESCAPE '\\' OR CommandLine LIKE '% | IEX (new%' ESCAPE '\\' OR CommandLine LIKE '%);IEX %' ESCAPE '\\') AND (CommandLine LIKE '%::FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '%.GetString([System.Convert]::%' ESCAPE '\\')) OR (CommandLine LIKE '%)|iex;$%' ESCAPE '\\' OR CommandLine LIKE '%);iex($%' ESCAPE '\\' OR CommandLine LIKE '%);iex $%' ESCAPE '\\' OR CommandLine LIKE '% | IEX | %' ESCAPE '\\' OR CommandLine LIKE '% | iex\\\\\"%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_powershell_iex_patterns.yml"
     },
