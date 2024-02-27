@@ -1004,6 +1004,25 @@
         "filename": ""
     },
     {
+        "title": "OWASSRF Exploitation Attempt Using Public POC - Proxy",
+        "id": "fdd7e904-7304-4616-a46a-e32f917c4be4",
+        "status": "test",
+        "description": "Detects exploitation attempt of the OWASSRF variant targeting exchange servers using publicly available POC. It uses the OWA endpoint to access the powershell backend endpoint",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE `c-useragent`='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.54 Safari/537.36' AND `cs-method`='POST' AND `sc-status`=200 AND (`c-uri` LIKE '%/owa/mastermailbox%' ESCAPE '\\' AND `c-uri` LIKE '%/powershell%' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Elise Backdoor Activity",
         "id": "e507feb7-5f73-4ef6-a970-91bb6f6d744f",
         "status": "test",
@@ -1135,6 +1154,7 @@
         "description": "Detects indicators of APT 29 (Cozy Bear) phishing-campaign as reported by mandiant",
         "author": "Florian Roth (Nextron Systems), @41thexplorer",
         "tags": [
+            "attack.defense_evasion",
             "attack.execution",
             "attack.t1218.011",
             "detection.emerging_threats"
@@ -1155,7 +1175,7 @@
         "description": "Detects indicators of APT 29 (Cozy Bear) phishing-campaign as reported by mandiant",
         "author": "@41thexplorer",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218.011",
             "detection.emerging_threats"
         ],
@@ -1647,6 +1667,29 @@
         "level": "critical",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' AND (CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\')) AND (NOT ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\')) OR ((ParentProcessName LIKE '%\\\\excel.exe' ESCAPE '\\' AND NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND (CommandLine LIKE '% -s %' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')) AND (NOT CommandLine LIKE '%.dll%' ESCAPE '\\')) OR (ParentProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\whoami.exe' ESCAPE '\\' AND CommandLine LIKE '% /all%' ESCAPE '\\') OR ((NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\') AND CommandLine LIKE '% view%' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Ursnif Malware C2 URL Pattern",
+        "id": "932ac737-33ca-4afd-9869-0d48b391fcc9",
+        "status": "stable",
+        "description": "Detects Ursnif C2 traffic.",
+        "author": "Thomas Patzke",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1566.001",
+            "attack.execution",
+            "attack.t1204.002",
+            "attack.command_and_control",
+            "attack.t1071.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (`c-uri` LIKE '%\\_2f%' ESCAPE '\\' OR `c-uri` LIKE '%\\_2b%' ESCAPE '\\') AND (`c-uri` LIKE '%.avi%' ESCAPE '\\' AND `c-uri` LIKE '%/images/%' ESCAPE '\\')"
         ],
         "filename": ""
     },
@@ -5189,7 +5232,7 @@
         "description": "Detects specific process behavior observed with Devil Bait samples",
         "author": "Nasreddine Bencherchali (Nextron Systems), NCSC (Idea)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
             "detection.emerging_threats"
         ],
@@ -6074,6 +6117,45 @@
         "filename": ""
     },
     {
+        "title": "Potential OWASSRF Exploitation Attempt - Webserver",
+        "id": "181f49fa-0b21-4665-a98c-a57025ebb8c7",
+        "status": "test",
+        "description": "Detects exploitation attempt of the OWASSRF variant targeting exchange servers It uses the OWA endpoint to access the powershell backend endpoint",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Web vulnerability scanners"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (`cs-method`='POST' AND `sc-status`=200 AND (`cs-uri-query` LIKE '%/owa/%' ESCAPE '\\' AND `cs-uri-query` LIKE '%/powershell%' ESCAPE '\\') AND (`cs-uri-query` LIKE '%@%' ESCAPE '\\' OR `cs-uri-query` LIKE '%\\%40%' ESCAPE '\\')) AND (NOT (`cs-user-agent`='ClientInfo' OR `cs-user-agent`='Microsoft WinRM Client' OR `cs-user-agent`='Exchange BackEnd Probes'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential OWASSRF Exploitation Attempt - Proxy",
+        "id": "1ddf4596-1908-43c9-add2-1d2c2fcc4797",
+        "status": "test",
+        "description": "Detects exploitation attempt of the OWASSRF variant targeting exchange servers It uses the OWA endpoint to access the powershell backend endpoint",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190"
+        ],
+        "falsepositives": [
+            "Web vulnerability scanners"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (`cs-method`='POST' AND `sc-status`=200 AND (`c-uri` LIKE '%/owa/%' ESCAPE '\\' AND `c-uri` LIKE '%/powershell%' ESCAPE '\\') AND (`c-uri` LIKE '%@%' ESCAPE '\\' OR `c-uri` LIKE '%\\%40%' ESCAPE '\\')) AND (NOT (`c-useragent`='ClientInfo' OR `c-useragent`='Microsoft WinRM Client' OR `c-useragent`='Exchange BackEnd Probes'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "CVE-2022-31656 VMware Workspace ONE Access Auth Bypass",
         "id": "fcf1101d-07c9-49b2-ad81-7e421ff96d80",
         "status": "test",
@@ -6202,26 +6284,6 @@
         "filename": ""
     },
     {
-        "title": "Potential OWASSRF Exploitation Attempt - Webserver",
-        "id": "181f49fa-0b21-4665-a98c-a57025ebb8c7",
-        "status": "test",
-        "description": "Detects exploitation attempt of the OWASSRF variant targeting exchange servers It uses the OWA endpoint to access the powershell backend endpoint",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.initial_access",
-            "attack.t1190",
-            "detection.emerging_threats"
-        ],
-        "falsepositives": [
-            "Web vulnerability scanners"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (`cs-method`='POST' AND `sc-status`=200 AND (`cs-uri-query` LIKE '%/owa/%' ESCAPE '\\' AND `cs-uri-query` LIKE '%/powershell%' ESCAPE '\\') AND (`cs-uri-query` LIKE '%@%' ESCAPE '\\' OR `cs-uri-query` LIKE '%\\%40%' ESCAPE '\\')) AND (NOT (`cs-user-agent`='ClientInfo' OR `cs-user-agent`='Microsoft WinRM Client' OR `cs-user-agent`='Exchange BackEnd Probes'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Atlassian Bitbucket Command Injection Via Archive API",
         "id": "65c0a0ab-d675-4441-bd6b-d3db226a2685",
         "status": "test",
@@ -6323,6 +6385,27 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%vbscript:Close(Execute(\"CreateObject(%' ESCAPE '\\' AND CommandLine LIKE '%powershell%' ESCAPE '\\' AND CommandLine LIKE '%-w 1 -exec Bypass%' ESCAPE '\\' AND CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%Win32\\_OperatingSystem%' ESCAPE '\\' AND CommandLine LIKE '%Win32\\_NetworkAdapterConfiguration%' ESCAPE '\\' AND CommandLine LIKE '%root\\\\SecurityCenter2%' ESCAPE '\\' AND CommandLine LIKE '%[System.Net.DNS]%' ESCAPE '\\') OR (CommandLine LIKE '%[Convert]::ToBase64String%' ESCAPE '\\' AND CommandLine LIKE '%[System.Text.Encoding]::UTF8.GetString]%' ESCAPE '\\' AND CommandLine LIKE '%GetResponse().GetResponseStream()%' ESCAPE '\\' AND CommandLine LIKE '%[System.Net.HttpWebRequest]::Create(%' ESCAPE '\\' AND CommandLine LIKE '%-bxor %' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "ComRAT Network Communication",
+        "id": "7857f021-007f-4928-8b2c-7aedbe64bb82",
+        "status": "test",
+        "description": "Detects Turla ComRAT network communication.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.command_and_control",
+            "attack.t1071.001",
+            "attack.g0010"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE `c-uri` LIKE '%/index/index.php?h=%' ESCAPE '\\'"
         ],
         "filename": ""
     },
@@ -6646,6 +6729,25 @@
         "filename": ""
     },
     {
+        "title": "Ursnif Malware Download URL Pattern",
+        "id": "a36ce77e-30db-4ea0-8795-644d7af5dfb4",
+        "status": "stable",
+        "description": "Detects download of Ursnif malware done by dropper documents.",
+        "author": "Thomas Patzke",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1071.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (`c-uri` LIKE '%/%' ESCAPE '\\' AND `c-uri` LIKE '%.php?l=%' ESCAPE '\\') AND `c-uri` LIKE '%.cab' ESCAPE '\\' AND `sc-status`=200"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Potential Baby Shark Malware Activity",
         "id": "2b30fa36-3a18-402f-a22d-bf4ce2189f35",
         "status": "test",
@@ -6667,6 +6769,25 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%powershell.exe mshta.exe http%' ESCAPE '\\' AND CommandLine LIKE '%.hta%' ESCAPE '\\') OR (CommandLine LIKE '%reg query \"HKEY\\_CURRENT\\_USER\\\\Software\\\\Microsoft\\\\Terminal Server Client\\\\Default\"%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /c taskkill /im cmd.exe%' ESCAPE '\\' OR CommandLine LIKE '%(New-Object System.Net.WebClient).UploadFile(''http%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Chafer Malware URL Pattern",
+        "id": "fb502828-2db0-438e-93e6-801c7548686d",
+        "status": "test",
+        "description": "Detects HTTP request used by Chafer malware to receive data from its C2.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1071.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE `c-uri` LIKE '%/asp.asp?ui=%' ESCAPE '\\'"
         ],
         "filename": ""
     },
@@ -6769,6 +6890,27 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%/e:jscript%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Local\\\\Temp\\\\Errors.bat%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "APT40 Dropbox Tool User Agent",
+        "id": "5ba715b6-71b7-44fd-8245-f66893e81b3d",
+        "status": "test",
+        "description": "Detects suspicious user agent string of APT40 Dropbox tool",
+        "author": "Thomas Patzke",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1071.001",
+            "attack.exfiltration",
+            "attack.t1567.002"
+        ],
+        "falsepositives": [
+            "Old browsers"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE `c-useragent`='Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36' AND `cs-host`='api.dropbox.com'"
         ],
         "filename": ""
     },
@@ -7259,7 +7401,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4738 AND (NOT (AllowedToDelegateTo='-' OR AllowedToDelegateTo IS NULL))) OR ((EventID=5136 AND AttributeLDAPDisplayName='msDS-AllowedToDelegateTo') OR (EventID=5136 AND ObjectClass='user' AND AttributeLDAPDisplayName='servicePrincipalName') OR (EventID=5136 AND AttributeLDAPDisplayName='msDS-AllowedToActOnBehalfOfOtherIdentity')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4738 AND (NOT ((AllowedToDelegateTo='' OR AllowedToDelegateTo='-') OR AllowedToDelegateTo IS NULL))) OR ((EventID=5136 AND AttributeLDAPDisplayName='msDS-AllowedToDelegateTo') OR (EventID=5136 AND ObjectClass='user' AND AttributeLDAPDisplayName='servicePrincipalName') OR (EventID=5136 AND AttributeLDAPDisplayName='msDS-AllowedToActOnBehalfOfOtherIdentity')))"
         ],
         "filename": ""
     },
@@ -8096,7 +8238,7 @@
         "id": "2c99737c-585d-4431-b61a-c911d86ff32f",
         "status": "test",
         "description": "Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account using Powerview\\Add-DomainObjectAcl DCSync Extended Right cmdlet, will allow to re-obtain the pwd hashes of any user/computer",
-        "author": "Samir Bousseaden; Roberto Rodriguez @Cyb3rWard0g; oscd.community; Tim Shelton; Maxence Fossat",
+        "author": "Samir Bousseaden, Roberto Rodriguez @Cyb3rWard0g, oscd.community, Tim Shelton, Maxence Fossat",
         "tags": [
             "attack.persistence",
             "attack.t1098"
@@ -9078,7 +9220,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='System' AND ((Provider_Name='Service Control Manager' AND EventID=7045) AND ((ImagePath LIKE '% /c %' ESCAPE '\\' OR ImagePath LIKE '% /r %' ESCAPE '\\' OR ImagePath LIKE '% /k %' ESCAPE '\\') AND (ImagePath LIKE '%powershell%' ESCAPE '\\' OR ImagePath LIKE '%pwsh%' ESCAPE '\\' OR ImagePath LIKE '%wscript%' ESCAPE '\\' OR ImagePath LIKE '%cscript%' ESCAPE '\\' OR ImagePath LIKE '%mshta%' ESCAPE '\\' OR ImagePath LIKE '%rundll32%' ESCAPE '\\' OR ImagePath LIKE '%regsvr32%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='System' AND ((Provider_Name='Service Control Manager' AND EventID=7045) AND (ImagePath LIKE '% /c %' ESCAPE '\\' OR ImagePath LIKE '% -c %' ESCAPE '\\' OR ImagePath LIKE '% /r %' ESCAPE '\\' OR ImagePath LIKE '% -r %' ESCAPE '\\' OR ImagePath LIKE '% /k %' ESCAPE '\\' OR ImagePath LIKE '% -k %' ESCAPE '\\') AND (ImagePath LIKE '%cscript%' ESCAPE '\\' OR ImagePath LIKE '%mshta%' ESCAPE '\\' OR ImagePath LIKE '%powershell%' ESCAPE '\\' OR ImagePath LIKE '%pwsh%' ESCAPE '\\' OR ImagePath LIKE '%regsvr32%' ESCAPE '\\' OR ImagePath LIKE '%rundll32%' ESCAPE '\\' OR ImagePath LIKE '%wscript%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -15385,25 +15527,6 @@
         "filename": ""
     },
     {
-        "title": "Remote Access Tool - ScreenConnect Suspicious Execution",
-        "id": "75bfe6e6-cd8e-429e-91d3-03921e1d7962",
-        "status": "test",
-        "description": "Detects ScreenConnect program starts that establish a remote access to that system (not meeting, not remote support)",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.initial_access",
-            "attack.t1133"
-        ],
-        "falsepositives": [
-            "Legitimate use by administrative staff"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%e=Access&%' ESCAPE '\\' AND CommandLine LIKE '%y=Guest&%' ESCAPE '\\' AND CommandLine LIKE '%&p=%' ESCAPE '\\' AND CommandLine LIKE '%&c=%' ESCAPE '\\' AND CommandLine LIKE '%&k=%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Suspicious Command Patterns In Scheduled Task Creation",
         "id": "f2c64357-b1d2-41b7-849f-34d2682c0fad",
         "status": "experimental",
@@ -17937,24 +18060,6 @@
         "filename": ""
     },
     {
-        "title": "Rundll32 JS RunHTMLApplication Pattern",
-        "id": "9f06447a-a33a-4cbe-a94f-a3f43184a7a3",
-        "status": "test",
-        "description": "Detects suspicious command line patterns used when rundll32 is used to run JavaScript code",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%rundll32%' ESCAPE '\\' AND CommandLine LIKE '%javascript%' ESCAPE '\\' AND CommandLine LIKE '%..\\\\..\\\\mshtml,RunHTMLApplication%' ESCAPE '\\') OR CommandLine LIKE '%;document.write();GetObject(\"script%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Suspicious Ping/Del Command Combination",
         "id": "54786ddc-5b8a-11ed-9b6a-0242ac120002",
         "status": "test",
@@ -18486,7 +18591,7 @@
         "description": "Detects execution of the \"mofcomp\" utility as a child of a suspicious shell or script running utility or by having a suspicious path in the commandline.\nThe \"mofcomp\" utility parses a file containing MOF statements and adds the classes and class instances defined in the file to the WMI repository.\nAttackers abuse this utility to install malicious MOF scripts\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -18552,25 +18657,6 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%taskkill %' ESCAPE '\\' AND CommandLine LIKE '%RaccineSettings.exe%' ESCAPE '\\') OR (CommandLine LIKE '%reg.exe%' ESCAPE '\\' AND CommandLine LIKE '%delete%' ESCAPE '\\' AND CommandLine LIKE '%Raccine Tray%' ESCAPE '\\') OR (CommandLine LIKE '%schtasks%' ESCAPE '\\' AND CommandLine LIKE '%/DELETE%' ESCAPE '\\' AND CommandLine LIKE '%Raccine Rules Updater%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Remote Access Tool - ScreenConnect Backstage Mode Anomaly 2",
-        "id": "51544ca6-51ab-48de-97e9-b1317707760c",
-        "status": "experimental",
-        "description": "Detects suspicious grand child processes started by the ScreenConnect client service.",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1219"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (GrandParentImage LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\' AND (ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wevtutil.exe' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -22946,7 +23032,7 @@
         "description": "Detects the use of iexpress.exe to create binaries via Self Extraction Directive (SED) files located in potentially suspicious locations.\nThis behavior has been observed in-the-wild by different threat actors.\n",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -22983,25 +23069,6 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\crackmapexec.exe' ESCAPE '\\' OR CommandLine LIKE '% -M pe\\_inject %' ESCAPE '\\' OR (CommandLine LIKE '% --local-auth%' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -x %' ESCAPE '\\') OR (CommandLine LIKE '% --local-auth%' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\' AND CommandLine LIKE '% -H ''NTHASH''%' ESCAPE '\\') OR (CommandLine LIKE '% mssql %' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\' AND CommandLine LIKE '% -M %' ESCAPE '\\' AND CommandLine LIKE '% -d %' ESCAPE '\\') OR (CommandLine LIKE '% smb %' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -H %' ESCAPE '\\' AND CommandLine LIKE '% -M %' ESCAPE '\\' AND CommandLine LIKE '% -o %' ESCAPE '\\') OR (CommandLine LIKE '% smb %' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\' AND CommandLine LIKE '% --local-auth%' ESCAPE '\\')) OR ((CommandLine LIKE '% --local-auth%' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\') AND (CommandLine LIKE '% 10.%' ESCAPE '\\' AND CommandLine LIKE '% 192.168.%' ESCAPE '\\' AND CommandLine LIKE '%/24 %' ESCAPE '\\'))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Remote Access Tool - ScreenConnect Backstage Mode Anomaly",
-        "id": "7b582f1a-b318-4c6a-bf4e-66fe49bf55a5",
-        "status": "test",
-        "description": "Detects suspicious child processes started by the ScreenConnect client service, which indicates the use of the so-called Backstage mode\n",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1219"
-        ],
-        "falsepositives": [
-            "Case in which administrators are allowed to use ScreenConnect's Backstage mode"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -23460,20 +23527,21 @@
         "filename": ""
     },
     {
-        "title": "Mshtml DLL RunHTMLApplication Abuse",
+        "title": "Mshtml.DLL RunHTMLApplication Suspicious Usage",
         "id": "4782eb5a-a513-4523-a0ac-f3082b26ac5c",
         "status": "test",
-        "description": "Detects suspicious command line using the \"mshtml.dll\" RunHTMLApplication export to run arbitrary code via different protocol handlers (vbscript, javascript, file, htpp...)",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "description": "Detects execution of commands that leverage the \"mshtml.dll\" RunHTMLApplication export to run arbitrary code via different protocol handlers (vbscript, javascript, file, http...)\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems),  Florian Roth (Nextron Systems), Josh Nickels, frack113, Zaw Min Htun (ZETA)",
         "tags": [
-            "attack.defense_evasion"
+            "attack.defense_evasion",
+            "attack.execution"
         ],
         "falsepositives": [
             "Unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%\\\\..\\\\%' ESCAPE '\\' AND CommandLine LIKE '%mshtml%' ESCAPE '\\' AND CommandLine LIKE '%RunHTMLApplication%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%\\\\..\\\\%' ESCAPE '\\' AND CommandLine LIKE '%mshtml%' ESCAPE '\\') AND (CommandLine LIKE '%#135%' ESCAPE '\\' OR CommandLine LIKE '%RunHTMLApplication%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -23623,6 +23691,25 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND ((CommandLine LIKE '%copy %' ESCAPE '\\' AND CommandLine LIKE '% \\\\\\\\%' ESCAPE '\\') AND (CommandLine LIKE '%.dmp%' ESCAPE '\\' OR CommandLine LIKE '%.dump%' ESCAPE '\\' OR CommandLine LIKE '%.hdmp%' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Remote Access Tool - ScreenConnect Server Web Shell Execution",
+        "id": "b19146a3-25d4-41b4-928b-1e2a92641b1b",
+        "status": "experimental",
+        "description": "Detects potential web shell execution from the ScreenConnect server process.",
+        "author": "Jason Rathbun (Blackpoint Cyber)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1190"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\ScreenConnect.Service.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -24245,7 +24332,7 @@
         "description": "Adversaries can use curl to download payloads remotely and execute them. Curl is included by default in Windows 10 build 17063 and later.",
         "author": "Sreeman, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
             "attack.command_and_control",
             "attack.t1105"
@@ -24255,7 +24342,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '% /c %' ESCAPE '\\' AND CommandLine LIKE '%curl %' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\' AND CommandLine LIKE '%-o%' ESCAPE '\\' AND CommandLine LIKE '%&%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\') AND (CommandLine LIKE '%curl %' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\' AND CommandLine LIKE '%-o%' ESCAPE '\\' AND CommandLine LIKE '%&%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -30205,6 +30292,25 @@
         "filename": ""
     },
     {
+        "title": "DNS Query Request To OneLaunch Update Service",
+        "id": "df68f791-ad95-447f-a271-640a0dab9cf8",
+        "status": "experimental",
+        "description": "Detects DNS query requests to \"update.onelaunch.com\". This domain is associated with the OneLaunch adware application.\nWhen the OneLaunch application is installed it will attempt to get updates from this domain.\n",
+        "author": "Josh Nickels",
+        "tags": [
+            "attack.collection",
+            "attack.t1056"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE QueryName='update.onelaunch.com' AND Image LIKE '%\\\\OneLaunch.exe' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
         "title": "DNS Server Discovery Via LDAP Query",
         "id": "a21bcd7e-38ec-49ad-b69a-9ea17e69509e",
         "status": "experimental",
@@ -30866,7 +30972,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%dir %' ESCAPE '\\' AND CommandLine LIKE '% /s%' ESCAPE '\\' AND CommandLine LIKE '% /b%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%dir %' ESCAPE '\\' AND (CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% -s%' ESCAPE '\\') AND (CommandLine LIKE '% /b%' ESCAPE '\\' OR CommandLine LIKE '% -b%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -30907,6 +31013,25 @@
         "level": "low",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((((NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\') OR (OriginalFileName='net.exe' OR OriginalFileName='net1.exe')) AND CommandLine LIKE '%view%' ESCAPE '\\') AND (NOT CommandLine LIKE '%\\\\\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Remote Access Tool - ScreenConnect Remote Command Execution",
+        "id": "b1f73849-6329-4069-bc8f-78a604bb8b23",
+        "status": "experimental",
+        "description": "Detects the execution of a system command via the ScreenConnect RMM service.",
+        "author": "Ali Alwashali",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.003"
+        ],
+        "falsepositives": [
+            "Legitimate use of ScreenConnect. Disable this rule if ScreenConnect is heavily used."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND CommandLine LIKE '%\\\\TEMP\\\\ScreenConnect\\\\%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -31040,7 +31165,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%del %' ESCAPE '\\' OR CommandLine LIKE '%erase %' ESCAPE '\\') AND (CommandLine LIKE '% /f%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% /q%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%del %' ESCAPE '\\' OR CommandLine LIKE '%erase %' ESCAPE '\\') AND (CommandLine LIKE '% /f%' ESCAPE '\\' OR CommandLine LIKE '% -f%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% -s%' ESCAPE '\\' OR CommandLine LIKE '% /q%' ESCAPE '\\' OR CommandLine LIKE '% -q%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -31190,6 +31315,7 @@
         "description": "Windows Test Authoring and Execution Framework (TAEF) framework allows you to run automation by executing tests files written on different languages (C, C#, Microsoft COM Scripting interfaces\nAdversaries may execute malicious code (such as WSC file with VBScript, dll and so on) directly by running te.exe\n",
         "author": "Agro (@agro_sev) oscd.community",
         "tags": [
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -33014,7 +33140,7 @@
         "description": "Detects installation of a remote msi file from web.",
         "author": "Stamatis Chatzimangou",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
             "attack.t1218.007"
         ],
@@ -38009,8 +38135,9 @@
         "description": "Detects any child process spawning from \"Diskshadow.exe\". This could be due to executing Diskshadow in interpreter mode or script mode and using the \"exec\" flag to launch other applications.",
         "author": "Harjot Singh @cyb3rjy0t",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
+            "attack.execution",
             "detection.threat_hunting"
         ],
         "falsepositives": [
@@ -38049,8 +38176,9 @@
         "description": "Detects execution of \"Diskshadow.exe\" in script mode using the \"/s\" flag. Attackers often abuse \"diskshadow\" to execute scripts that deleted the shadow copies on the systems. Investigate the content of the scripts and its location.\n",
         "author": "Ivan Dyachkov, oscd.community",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
+            "attack.execution",
             "detection.threat_hunting"
         ],
         "falsepositives": [
@@ -38109,7 +38237,7 @@
         "description": "Detects execution of regsvr32 with the silent flag and no other flags on a DLL located in an uncommon or potentially suspicious location.\nWhen Regsvr32 is called in such a way, it implicitly calls the DLL export function 'DllRegisterServer'.\n",
         "author": "Andreas Braathen (mnemonic.io), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
             "detection.threat_hunting"
         ],
@@ -38129,7 +38257,7 @@
         "description": "Detects when the DLL export function 'DllRegisterServer' is called in the commandline by Rundll32 explicitly where the DLL is located in a non-standard path.\n",
         "author": "Andreas Braathen (mnemonic.io)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
             "detection.threat_hunting"
         ],
@@ -38140,6 +38268,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE') AND CommandLine LIKE '%DllRegisterServer%' ESCAPE '\\') AND (NOT (CommandLine LIKE '%:\\\\Program Files (x86)%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Remote Access Tool - ScreenConnect Remote Command Execution - Hunting",
+        "id": "d1a401ab-8c47-4e86-a7d8-2460b6a53e4a",
+        "status": "experimental",
+        "description": "Detects remote binary or command execution via the ScreenConnect Service.\nUse this rule in order to hunt for potentially anomalous executions originating from ScreenConnect\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Legitimate commands launched from ScreenConnect will also trigger this rule. Look for anomalies."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ParentProcessName LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\')"
         ],
         "filename": ""
     },
@@ -38171,7 +38318,7 @@
         "description": "Detects the \"iexpress.exe\" utility creating self-extracting packages.\nAttackers where seen leveraging \"iexpress\" to compile packages on the fly via \".sed\" files.\nInvestigate the command line options provided to \"iexpress\" and in case of a \".sed\" file, check the contents and legitimacy of it.\n",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218",
             "detection.threat_hunting"
         ],
@@ -38306,6 +38453,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND ((TargetObject LIKE '%Security\\\\Trusted Locations\\\\Location%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Path' ESCAPE '\\') AND (NOT ((NewProcessName LIKE '%:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\ClickToRun\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\OfficeClickToRun.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\Program Files\\\\Microsoft Office\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\Microsoft Office\\\\%' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": ".Class Extension URI Ending Request",
+        "id": "53c15703-b04c-42bb-9055-1937ddfb3392",
+        "status": "test",
+        "description": "Detects requests to URI ending with the \".class\" extension in proxy logs.\nThis could rules can be used to hunt for potential downloads of Java classes as seen for example in Log4shell exploitation attacks against Log4j.\n",
+        "author": "Andreas Hunkeler (@Karneades)",
+        "tags": [
+            "attack.initial_access",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE `c-uri` LIKE '%.class' ESCAPE '\\'"
         ],
         "filename": ""
     },
@@ -38817,7 +38983,7 @@
         "description": "Detects the creation of Self Extraction Directive files (.sed) in a potentially suspicious location.\nThese files are used by the \"iexpress.exe\" utility in order to create self extracting packages.\nAttackers were seen abusing this utility and creating PE files with embedded \".sed\" entries.\n",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -39373,7 +39539,7 @@
             "attack.t1552.004"
         ],
         "falsepositives": [
-            "System administrators managing certififcates."
+            "System administrators managing certificates."
         ],
         "level": "medium",
         "rule": [
@@ -39621,7 +39787,7 @@
         "description": "Detects the creation of a binary file with the \".sed\" extension. The \".sed\" extension stand for Self Extraction Directive files.\nThese files are used by the \"iexpress.exe\" utility in order to create self extracting packages.\nAttackers were seen abusing this utility and creating PE files with embedded \".sed\" entries.\nUsually \".sed\" files are simple ini files and not PE binaries.\n",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -39927,6 +40093,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\dotnet-trace.exe' ESCAPE '\\' OR OriginalFileName='dotnet-trace.dll') AND (CommandLine LIKE '%-- %' ESCAPE '\\' AND CommandLine LIKE '%collect%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Remote Access Tool - ScreenConnect Installation Execution",
+        "id": "75bfe6e6-cd8e-429e-91d3-03921e1d7962",
+        "status": "test",
+        "description": "Detects ScreenConnect program starts that establish a remote access to a system.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1133"
+        ],
+        "falsepositives": [
+            "Legitimate use by administrative staff"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%e=Access&%' ESCAPE '\\' AND CommandLine LIKE '%y=Guest&%' ESCAPE '\\' AND CommandLine LIKE '%&p=%' ESCAPE '\\' AND CommandLine LIKE '%&c=%' ESCAPE '\\' AND CommandLine LIKE '%&k=%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -40281,7 +40466,7 @@
         "description": "Detects possible password spraying attempts using Dsacls",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -40319,7 +40504,7 @@
         "description": "Detects usage of Dsacls to grant over permissive permissions",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -40512,7 +40697,7 @@
         "description": "Detects execution of \"Diskshadow.exe\" in script mode using the \"/s\" flag where the script is located in a potentially suspicious location.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -41591,7 +41776,7 @@
         "description": "Detects the expansion or decompression of cabinet files from potentially suspicious or uncommon locations, e.g. seen in Iranian MeteorExpress related attacks",
         "author": "Bhabesh Raj, X__Junior (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -42467,7 +42652,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% /c %' ESCAPE '\\' OR ParentCommandLine LIKE '% /r %' ESCAPE '\\' OR ParentCommandLine LIKE '% /k %' ESCAPE '\\') AND NewProcessName LIKE '%\\\\chcp.com' ESCAPE '\\' AND (CommandLine LIKE '%chcp' ESCAPE '\\' OR CommandLine LIKE '%chcp ' ESCAPE '\\' OR CommandLine LIKE '%chcp  ' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% /c %' ESCAPE '\\' OR ParentCommandLine LIKE '% -c %' ESCAPE '\\' OR ParentCommandLine LIKE '% /r %' ESCAPE '\\' OR ParentCommandLine LIKE '% -r %' ESCAPE '\\' OR ParentCommandLine LIKE '% /k %' ESCAPE '\\' OR ParentCommandLine LIKE '% -k %' ESCAPE '\\') AND NewProcessName LIKE '%\\\\chcp.com' ESCAPE '\\' AND (CommandLine LIKE '%chcp' ESCAPE '\\' OR CommandLine LIKE '%chcp ' ESCAPE '\\' OR CommandLine LIKE '%chcp  ' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -43168,6 +43353,25 @@
         "filename": ""
     },
     {
+        "title": "Remote Access Tool - ScreenConnect Potential Suspicious Remote Command Execution",
+        "id": "7b582f1a-b318-4c6a-bf4e-66fe49bf55a5",
+        "status": "test",
+        "description": "Detects potentially suspicious child processes launched via the ScreenConnect client service.\n",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems), @Kostastsale",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "If the script being executed make use of any of the utilities mentioned in the detection then they should filtered out or allowed."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((ParentCommandLine LIKE '%:\\\\Windows\\\\TEMP\\\\ScreenConnect\\\\%' ESCAPE '\\' AND ParentCommandLine LIKE '%run.cmd%' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wevtutil.exe' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Application Removed Via Wmic.EXE",
         "id": "b53317a0-8acf-4fd1-8de8-a5401e776b96",
         "status": "test",
@@ -43665,7 +43869,7 @@
         "description": "Detects potentially suspicious child processes of \"Diskshadow.exe\". This could be an attempt to bypass parent/child relationship detection or application whitelisting rules.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -44528,7 +44732,7 @@
         "description": "dotnet.exe will execute any DLL and execute unsigned code",
         "author": "Beyu Denis, oscd.community",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -44711,25 +44915,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%extrac32.exe%' ESCAPE '\\' AND CommandLine LIKE '%.cab%' ESCAPE '\\') AND CommandLine REGEXP ':[^\\\\]'))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Suspicious Rundll32 Script in CommandLine",
-        "id": "73fcad2e-ff14-4c38-b11d-4172c8ac86c7",
-        "status": "test",
-        "description": "Detects suspicious process related to rundll32 based on arguments",
-        "author": "frack113, Zaw Min Htun (ZETA)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218.011"
-        ],
-        "falsepositives": [
-            "False positives depend on scripts and administrative tools used in the monitored environment"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%rundll32%' ESCAPE '\\' AND (CommandLine LIKE '%mshtml,RunHTMLApplication%' ESCAPE '\\' OR CommandLine LIKE '%mshtml,#135%' ESCAPE '\\') AND (CommandLine LIKE '%javascript:%' ESCAPE '\\' OR CommandLine LIKE '%vbscript:%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -44931,7 +45116,7 @@
         "description": "Detects execution of \"Diskshadow.exe\" in script mode to execute an script with a potentially uncommon extension.\nInitial baselining of the allowed extension list is required.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -45514,7 +45699,7 @@
         "description": "Detects inline Windows shell commands redirecting output via the \">\" symbol to a suspicious location",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
@@ -46090,7 +46275,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND ((CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\') AND (CommandLine LIKE '%ping%' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\' AND CommandLine LIKE '% /y %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%ping%' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') AND (CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\') AND (CommandLine LIKE '% /y %' ESCAPE '\\' OR CommandLine LIKE '% -y %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -46804,25 +46989,6 @@
         "filename": ""
     },
     {
-        "title": "Remote Access Tool - ScreenConnect Remote Command Execution",
-        "id": "b1f73849-6329-4069-bc8f-78a604bb8b23",
-        "status": "experimental",
-        "description": "Detects the execution of a system command via the ScreenConnect RMM service.",
-        "author": "Ali Alwashali",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.003"
-        ],
-        "falsepositives": [
-            "Legitimate use of ScreenConnect. Disable this rule if ScreenConnect is heavily used."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND CommandLine LIKE '%\\\\TEMP\\\\ScreenConnect\\\\%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "PowerShell Get-Clipboard Cmdlet Via CLI",
         "id": "b9aeac14-2ffd-4ad3-b967-1354a4e628c3",
         "status": "test",
@@ -47047,24 +47213,6 @@
         "filename": ""
     },
     {
-        "title": "Remote Access Tool - ScreenConnect Remote Execution",
-        "id": "d1a401ab-8c47-4e86-a7d8-2460b6a53e4a",
-        "status": "experimental",
-        "description": "Detects remote binary or command execution via the ScreenConnect Service.",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ParentProcessName LIKE '%\\\\ScreenConnect.ClientService.exe' ESCAPE '\\')"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Chromium Browser Instance Executed With Custom Extension",
         "id": "88d6e60c-759d-4ac1-a447-c0f1466c2d21",
         "status": "experimental",
@@ -47278,7 +47426,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmdkey.exe' ESCAPE '\\' OR OriginalFileName='cmdkey.exe') AND (CommandLine LIKE '% /g%' ESCAPE '\\' AND CommandLine LIKE '% /u%' ESCAPE '\\' AND CommandLine LIKE '% /p%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmdkey.exe' ESCAPE '\\' OR OriginalFileName='cmdkey.exe') AND (CommandLine LIKE '% /g%' ESCAPE '\\' OR CommandLine LIKE '% -g%' ESCAPE '\\') AND (CommandLine LIKE '% /u%' ESCAPE '\\' OR CommandLine LIKE '% -u%' ESCAPE '\\') AND (CommandLine LIKE '% /p%' ESCAPE '\\' OR CommandLine LIKE '% -p%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -48067,7 +48215,7 @@
         "description": "Detects file execution using the msdeploy.exe lolbin",
         "author": "Beyu Denis, oscd.community",
         "tags": [
-            "attack.execution",
+            "attack.defense_evasion",
             "attack.t1218"
         ],
         "falsepositives": [
