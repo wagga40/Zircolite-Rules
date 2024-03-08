@@ -8986,6 +8986,25 @@
         "filename": ""
     },
     {
+        "title": "Potential PowerShell Execution Via DLL",
+        "id": "6812a10b-60ea-420c-832f-dfcc33b646ba",
+        "status": "test",
+        "description": "Detects potential PowerShell execution from a DLL instead of the usual PowerShell process as seen used in PowerShdll.\nThis detection assumes that PowerShell commands are passed via the CommandLine.\n",
+        "author": "Markus Neis, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\InstallUtil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RegAsm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RegSvcs.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\') OR (OriginalFileName='InstallUtil.exe' OR OriginalFileName='RegAsm.exe' OR OriginalFileName='RegSvcs.exe' OR OriginalFileName='REGSVR32.EXE' OR OriginalFileName='RUNDLL32.EXE')) AND (CommandLine LIKE '%Default.GetString%' ESCAPE '\\' OR CommandLine LIKE '%DownloadString%' ESCAPE '\\' OR CommandLine LIKE '%FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '%ICM %' ESCAPE '\\' OR CommandLine LIKE '%IEX %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Command%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Expression%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "MMC Spawning Windows Shell",
         "id": "05a2ab7e-ce11-4b63-86db-ab32e763e11d",
         "status": "test",
@@ -13626,25 +13645,6 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\logman.exe' ESCAPE '\\' OR OriginalFileName='Logman.exe') AND (CommandLine LIKE '%stop %' ESCAPE '\\' OR CommandLine LIKE '%delete %' ESCAPE '\\') AND (CommandLine LIKE '%Circular Kernel Context Logger%' ESCAPE '\\' OR CommandLine LIKE '%EventLog-%' ESCAPE '\\' OR CommandLine LIKE '%SYSMON TRACE%' ESCAPE '\\' OR CommandLine LIKE '%SysmonDnsEtwSession%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Potential PowerShell Execution Via DLL",
-        "id": "6812a10b-60ea-420c-832f-dfcc33b646ba",
-        "status": "test",
-        "description": "Detects potential PowerShell execution from a DLL instead of the usual PowerShell process as seen used in PowerShdll",
-        "author": "Markus Neis, Nasreddine Bencherchali",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218.011"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvcs.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\InstallUtil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regasm.exe' ESCAPE '\\') OR (OriginalFileName='RUNDLL32.EXE' OR OriginalFileName='RegSvcs.exe' OR OriginalFileName='InstallUtil.exe' OR OriginalFileName='RegAsm.exe')) AND (CommandLine LIKE '%Default.GetString%' ESCAPE '\\' OR CommandLine LIKE '%FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Expression%' ESCAPE '\\' OR CommandLine LIKE '%IEX %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Command%' ESCAPE '\\' OR CommandLine LIKE '%ICM %' ESCAPE '\\' OR CommandLine LIKE '%DownloadString%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -23387,6 +23387,27 @@
         "filename": ""
     },
     {
+        "title": "Potential Raspberry Robin CPL Execution Activity",
+        "id": "92020b88-9caf-464f-bad8-cd0fb0aa2a81",
+        "status": "experimental",
+        "description": "Detects the execution of a \".CPL\" file located in the user temp directory via the Shell32 DLL \"Control_RunDLL\" export function.\nThis behavior was observed in multiple Raspberry-Robin variants.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.defense_evasion",
+            "attack.execution",
+            "attack.t1218.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((ParentProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\control.exe' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE') AND (CommandLine LIKE '%shell32.dll%' ESCAPE '\\' AND CommandLine LIKE '%Control\\_RunDLL%' ESCAPE '\\' AND CommandLine LIKE '%.CPL%' ESCAPE '\\') AND CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "DPRK Threat Actor - C2 Communication DNS Indicators",
         "id": "4d16c9a6-4362-4863-9940-1dee35f1d70f",
         "status": "experimental",
@@ -29897,6 +29918,25 @@
         "filename": ""
     },
     {
+        "title": "Shell Context Menu Command Tampering",
+        "id": "868df2d1-0939-4562-83a7-27408c4a1ada",
+        "status": "experimental",
+        "description": "Detects changes to shell context menu commands. Use this rule to hunt for potential anomalies and suspicious shell commands.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Likely from new software installation suggesting to add context menu items. Such as \"PowerShell\", \"Everything\", \"Git\", etc."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND (TargetObject LIKE '%\\\\Software\\\\Classes\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\shell\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\command\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "ADS Zone.Identifier Deleted",
         "id": "7eac0a16-5832-4e81-865f-0268a6d19e4b",
         "status": "experimental",
@@ -31244,6 +31284,25 @@
         "filename": ""
     },
     {
+        "title": "Active Directory Certificate Services Denied Certificate Enrollment Request",
+        "id": "994bfd6d-0a2e-481e-a861-934069fcf5f5",
+        "status": "experimental",
+        "description": "Detects denied requests by Active Directory Certificate Services.\nExample of these requests denial include issues with permissions on the certificate template or invalid signatures.\n",
+        "author": "@SerkinValery",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1553.004"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='System' AND (Provider_Name='Microsoft-Windows-CertificationAuthority' AND EventID=53)"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Windows Service Terminated With Error",
         "id": "acfa2210-0d71-4eeb-b477-afab494d596c",
         "status": "test",
@@ -31258,6 +31317,25 @@
         "level": "low",
         "rule": [
             "SELECT * FROM logs WHERE Channel='System' AND (Provider_Name='Service Control Manager' AND EventID=7023)"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "No Suitable Encryption Key Found For Generating Kerberos Ticket",
+        "id": "b1e0b3f5-b62e-41be-886a-daffde446ad4",
+        "status": "experimental",
+        "description": "Detects errors when a target server doesn't have suitable keys for generating kerberos tickets.\nThis issue can occur for example when a service uses a user account or a computer account that is configured for only DES encryption on a computer that is running Windows 7 which has DES encryption for Kerberos authentication disabled.\n",
+        "author": "@SerkinValery",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1558.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='System' AND (Provider_Name='Microsoft-Windows-Kerberos-Key-Distribution-Center' AND (EventID=16 OR EventID=27))"
         ],
         "filename": ""
     },
@@ -42379,6 +42457,24 @@
         "filename": ""
     },
     {
+        "title": "Potential SentinelOne Shell Context Menu Scan Command Tampering",
+        "id": "6c304b02-06e6-402d-8be4-d5833cdf8198",
+        "status": "experimental",
+        "description": "Detects potentially suspicious changes to the SentinelOne context menu scan command by a process other than SentinelOne.",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4657 AND OperationType='Existing registry value modified') AND (TargetObject LIKE '%\\\\shell\\\\SentinelOneScan\\\\command\\\\%' ESCAPE '\\' AND (NOT (((NewValue LIKE 'C:\\\\Program Files\\\\SentinelOne\\\\Sentinel Agent%' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Program Files (x86)\\\\SentinelOne\\\\Sentinel Agent%' ESCAPE '\\') AND NewValue LIKE '%\\\\SentinelScanFromContextMenu.exe%' ESCAPE '\\') OR (NewProcessName LIKE '%C:\\\\Program Files\\\\SentinelOne\\\\' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\SentinelOne\\\\' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Internet Explorer DisableFirstRunCustomize Enabled",
         "id": "ab567429-1dfb-4674-b6d2-979fd2f9d125",
         "status": "experimental",
@@ -50377,10 +50473,10 @@
         "filename": ""
     },
     {
-        "title": "Unsigned DLL Loaded by RunDLL32/RegSvr32",
+        "title": "Unsigned DLL Loaded by Windows Utility",
         "id": "b5de0c9a-6f19-43e0-af4e-55ad01f550af",
         "status": "experimental",
-        "description": "Detects RunDLL32/RegSvr32 loading an unsigned or untrusted DLL.\nAdversaries often abuse those programs to proxy execution of malicious code.\n",
+        "description": "Detects windows utilities loading an unsigned or untrusted DLL.\nAdversaries often abuse those programs to proxy execution of malicious code.\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
             "attack.t1218.011",
@@ -50392,7 +50488,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\') AND (NOT (Signed='true' OR (SignatureStatus='errorChaining' OR SignatureStatus LIKE 'errorCode\\_endpoint' ESCAPE '\\' OR SignatureStatus='errorExpired' OR SignatureStatus='trusted')))"
+            "SELECT * FROM logs WHERE (Image LIKE '%\\\\InstallUtil.exe' ESCAPE '\\' OR Image LIKE '%\\\\RegAsm.exe' ESCAPE '\\' OR Image LIKE '%\\\\RegSvcs.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\') AND (NOT (Signed='true' OR (SignatureStatus='errorChaining' OR SignatureStatus LIKE 'errorCode\\_endpoint' ESCAPE '\\' OR SignatureStatus='errorExpired' OR SignatureStatus='trusted') OR Signed IS NULL OR (Signed='' OR Signed='-') OR SignatureStatus IS NULL OR (SignatureStatus='' OR SignatureStatus='-')))"
         ],
         "filename": ""
     },
