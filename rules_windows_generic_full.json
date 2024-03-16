@@ -8889,6 +8889,25 @@
         "filename": "proc_creation_win_curl_local_file_read.yml"
     },
     {
+        "title": "Remote Access Tool - Team Viewer Session Started On Windows Host",
+        "id": "ab70c354-d9ac-4e11-bbb6-ec8e3b153357",
+        "status": "experimental",
+        "description": "Detects the command line executed when TeamViewer starts a session started by a remote host.\nOnce a connection has been started, an investigator can verify the connection details by viewing the \"incoming_connections.txt\" log file in the TeamViewer folder.\n",
+        "author": "Josh Nickels, Qi Nan",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1133"
+        ],
+        "falsepositives": [
+            "Legitimate usage of TeamViewer"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE 'TeamViewer\\_Desktop.exe' ESCAPE '\\' AND ParentProcessName LIKE 'TeamViewer\\_Service.exe' ESCAPE '\\' AND CommandLine LIKE '%TeamViewer\\_Desktop.exe --IPCport 5939 --Module 1' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_remote_access_tools_teamviewer_incoming_connection.yml"
+    },
+    {
         "title": "Share And Session Enumeration Using Net.EXE",
         "id": "62510e69-616b-4078-b371-847da438cc03",
         "status": "stable",
@@ -10458,7 +10477,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '% -accepteula%' ESCAPE '\\' OR CommandLine LIKE '% /accepteula%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '% -accepteula%' ESCAPE '\\' OR CommandLine LIKE '% /accepteula%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_sysinternals_eula_accepted.yml"
     },
@@ -10553,7 +10572,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND (CommandLine LIKE '% /E %' ESCAPE '\\' OR CommandLine LIKE '% -E %' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\')) AND ((CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND (CommandLine LIKE '% -E %' ESCAPE '\\' OR CommandLine LIKE '% /E %' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\')) AND ((CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_regedit_export_keys.yml"
     },
@@ -10913,6 +10932,25 @@
         "filename": "proc_creation_win_reg_credential_access_via_password_filter.yml"
     },
     {
+        "title": "Remote Access Tool - UltraViewer Execution",
+        "id": "88656cec-6c3b-487c-82c0-f73ebb805503",
+        "status": "test",
+        "description": "An adversary may use legitimate desktop support and remote access software, such as Team Viewer, Go2Assist, LogMein, AmmyyAdmin, etc, to establish an interactive command and control channel to target systems within networks.\nThese services are commonly used as legitimate technical support software, and may be allowed by application control within a target environment.\nRemote access tools like VNC, Ammyy, and Teamviewer are used frequently when compared with other legitimate software commonly used by adversaries. (Citation: Symantec Living off the Land)\n",
+        "author": "frack113",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Legitimate use"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Product = 'UltraViewer' OR Company = 'DucFabulous Co,ltd' OR OriginalFileName LIKE 'UltraViewer\\_Desktop.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_remote_access_tools_ultraviewer.yml"
+    },
+    {
         "title": "Potential LSASS Process Dump Via Procdump",
         "id": "5afee48e-67dd-4e03-a783-f74259dcf998",
         "status": "stable",
@@ -11228,7 +11266,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rpcping.exe' ESCAPE '\\' AND (CommandLine LIKE '%-s%' ESCAPE '\\' OR CommandLine LIKE '%/s%' ESCAPE '\\')) AND ((CommandLine LIKE '%-u%' ESCAPE '\\' AND CommandLine LIKE '%NTLM%' ESCAPE '\\') OR (CommandLine LIKE '%/u%' ESCAPE '\\' AND CommandLine LIKE '%NTLM%' ESCAPE '\\') OR (CommandLine LIKE '%-t%' ESCAPE '\\' AND CommandLine LIKE '%ncacn\\_np%' ESCAPE '\\') OR (CommandLine LIKE '%/t%' ESCAPE '\\' AND CommandLine LIKE '%ncacn\\_np%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\rpcping.exe' ESCAPE '\\' AND (CommandLine LIKE '%-s%' ESCAPE '\\' OR CommandLine LIKE '%/s%' ESCAPE '\\')) AND ((CommandLine LIKE ('%-u%' OR '%/u%') ESCAPE '\\' AND CommandLine LIKE '%NTLM%' ESCAPE '\\') OR (CommandLine LIKE ('%-t%' OR '%/t%') ESCAPE '\\' AND CommandLine LIKE '%ncacn\\_np%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_rpcping_credential_capture.yml"
     },
@@ -12155,7 +12193,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\msiexec.exe' ESCAPE '\\') AND (CommandLine LIKE '% /z %' ESCAPE '\\' OR CommandLine LIKE '% -z %' ESCAPE '\\') AND CommandLine LIKE '%.dll%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\msiexec.exe' ESCAPE '\\') AND (CommandLine LIKE '% -z %' ESCAPE '\\' OR CommandLine LIKE '% /z %' ESCAPE '\\') AND CommandLine LIKE '%.dll%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_msiexec_dll.yml"
     },
@@ -13072,7 +13110,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName = 'livekd.exe') AND (CommandLine LIKE '% /m%' ESCAPE '\\' AND CommandLine LIKE '% -m%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName = 'livekd.exe') AND (CommandLine LIKE '% -m%' ESCAPE '\\' OR CommandLine LIKE '% /m%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_sysinternals_livekd_kernel_memory_dump.yml"
     },
@@ -13547,25 +13585,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' AND CommandLine LIKE '% query %' ESCAPE '\\' AND CommandLine LIKE '%/t %' ESCAPE '\\' AND CommandLine LIKE '%REG\\_SZ%' ESCAPE '\\' AND CommandLine LIKE '%/s%' ESCAPE '\\') AND ((CommandLine LIKE '%/f %' ESCAPE '\\' AND CommandLine LIKE '%HKLM%' ESCAPE '\\') OR (CommandLine LIKE '%/f %' ESCAPE '\\' AND CommandLine LIKE '%HKCU%' ESCAPE '\\') OR CommandLine LIKE '%HKCU\\\\Software\\\\SimonTatham\\\\PuTTY\\\\Sessions%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_reg_enumeration_for_credentials_in_registry.yml"
-    },
-    {
-        "title": "Use of UltraViewer Remote Access Software",
-        "id": "88656cec-6c3b-487c-82c0-f73ebb805503",
-        "status": "test",
-        "description": "An adversary may use legitimate desktop support and remote access software, such as Team Viewer, Go2Assist, LogMein, AmmyyAdmin, etc, to establish an interactive command and control channel to target systems within networks.\nThese services are commonly used as legitimate technical support software, and may be allowed by application control within a target environment.\nRemote access tools like VNC, Ammyy, and Teamviewer are used frequently when compared with other legitimate software commonly used by adversaries. (Citation: Symantec Living off the Land)\n",
-        "author": "frack113",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1219"
-        ],
-        "falsepositives": [
-            "Legitimate use"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Product = 'UltraViewer' OR Company = 'DucFabulous Co,ltd' OR OriginalFileName LIKE 'UltraViewer\\_Desktop.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_remote_access_software_ultraviewer.yml"
     },
     {
         "title": "PowerShell Script Run in AppData",
@@ -14158,25 +14177,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\sqlps.exe' ESCAPE '\\' OR ((NewProcessName LIKE '%\\\\sqlps.exe' ESCAPE '\\' OR OriginalFileName = 'sqlps.exe') AND NOT (ParentProcessName LIKE '%\\\\sqlagent.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_mssql_sqlps_susp_execution.yml"
-    },
-    {
-        "title": "Imports Registry Key From an ADS",
-        "id": "0b80ade5-6997-4b1d-99a1-71701778ea61",
-        "status": "test",
-        "description": "Detects the import of a alternate datastream to the registry with regedit.exe.",
-        "author": "Oddvar Moe, Sander Wiebing, oscd.community",
-        "tags": [
-            "attack.t1112",
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND ((CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '%.reg%' ESCAPE '\\') AND CommandLine REGEXP ':[^ \\\\]')) AND NOT ((CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% /a %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% -a %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_regedit_import_keys_ads.yml"
     },
     {
         "title": "HackTool - Certipy Execution",
@@ -14946,7 +14946,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName = 'msdt.exe') AND (CommandLine LIKE '% /cab %' ESCAPE '\\' OR CommandLine LIKE '% -cab %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName = 'msdt.exe') AND (CommandLine LIKE '% -cab %' ESCAPE '\\' OR CommandLine LIKE '% /cab %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_msdt_susp_cab_options.yml"
     },
@@ -15120,26 +15120,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND CommandLine LIKE '%txt:%' ESCAPE '\\' AND ((CommandLine LIKE '%type %' ESCAPE '\\' AND CommandLine LIKE '% > %' ESCAPE '\\') OR (CommandLine LIKE '%makecab %' ESCAPE '\\' AND CommandLine LIKE '%.cab%' ESCAPE '\\') OR (CommandLine LIKE '%reg %' ESCAPE '\\' AND CommandLine LIKE '% export %' ESCAPE '\\') OR (CommandLine LIKE '%regedit %' ESCAPE '\\' AND CommandLine LIKE '% /E %' ESCAPE '\\') OR (CommandLine LIKE '%esentutl %' ESCAPE '\\' AND CommandLine LIKE '% /y %' ESCAPE '\\' AND CommandLine LIKE '% /d %' ESCAPE '\\' AND CommandLine LIKE '% /o %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_alternate_data_streams.yml"
-    },
-    {
-        "title": "Imports Registry Key From a File",
-        "id": "73bba97f-a82d-42ce-b315-9182e76c57b1",
-        "status": "test",
-        "description": "Detects the import of the specified file to the registry with regedit.exe.",
-        "author": "Oddvar Moe, Sander Wiebing, oscd.community",
-        "tags": [
-            "attack.t1112",
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Legitimate import of keys",
-            "Evernote"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND (CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '% /s %' ESCAPE '\\' OR CommandLine LIKE '%.reg%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% /a %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% -a %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\')) AND (CommandLine REGEXP ':[^ \\\\]')))"
-        ],
-        "filename": "proc_creation_win_regedit_import_keys.yml"
     },
     {
         "title": "Use NTFS Short Name in Command Line",
@@ -15431,7 +15411,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND (CommandLine LIKE '% /E %' ESCAPE '\\' OR CommandLine LIKE '% -E %' ESCAPE '\\') AND (CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND (CommandLine LIKE '% -E %' ESCAPE '\\' OR CommandLine LIKE '% /E %' ESCAPE '\\') AND (CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_regedit_export_critical_keys.yml"
     },
@@ -17290,7 +17270,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName = 'msdt.exe') AND (CommandLine LIKE '%IT\\_BrowseForFile=%' ESCAPE '\\' OR (CommandLine LIKE '% PCWDiagnostic%' ESCAPE '\\' AND (CommandLine LIKE '% /af %' ESCAPE '\\' OR CommandLine LIKE '% -af %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName = 'msdt.exe') AND (CommandLine LIKE '%IT\\_BrowseForFile=%' ESCAPE '\\' OR (CommandLine LIKE '% PCWDiagnostic%' ESCAPE '\\' AND (CommandLine LIKE '% -af %' ESCAPE '\\' OR CommandLine LIKE '% /af %' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_msdt_arbitrary_command_execution.yml"
     },
@@ -17309,7 +17289,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% /y%' ESCAPE '\\' OR CommandLine LIKE '% -y%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% -y%' ESCAPE '\\' OR CommandLine LIKE '% /y%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_msiexec_execute_dll.yml"
     },
@@ -19302,25 +19282,6 @@
         "filename": "proc_creation_win_netsh_port_forwarding_3389.yml"
     },
     {
-        "title": "Suspicious Msiexec Quiet Install From Remote Location",
-        "id": "8150732a-0c9d-4a99-82b9-9efb9b90c40c",
-        "status": "test",
-        "description": "Detects usage of Msiexec.exe to install packages hosted remotely quietly",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218.007"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName = 'msiexec.exe') AND (CommandLine LIKE '%/i%' ESCAPE '\\' OR CommandLine LIKE '%-i%' ESCAPE '\\' OR CommandLine LIKE '%/package%' ESCAPE '\\' OR CommandLine LIKE '%-package%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/j%' ESCAPE '\\' OR CommandLine LIKE '%-j%' ESCAPE '\\') AND (CommandLine LIKE '%/q%' ESCAPE '\\' OR CommandLine LIKE '%-q%' ESCAPE '\\') AND (CommandLine LIKE '%http%' ESCAPE '\\' OR CommandLine LIKE '%\\\\\\\\\\*' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_msiexec_install_remote.yml"
-    },
-    {
         "title": "Potentially Suspicious Child Process Of VsCode",
         "id": "5a3164f2-b373-4152-93cf-090b13c12d27",
         "status": "experimental",
@@ -19709,25 +19670,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%/generic:Microsoft\\_Windows\\_Shell\\_ZipFolder:filename=%' ESCAPE '\\' AND CommandLine LIKE '%.zip%' ESCAPE '\\' AND CommandLine LIKE '%/pass:%' ESCAPE '\\' AND CommandLine LIKE '%/user:%' ESCAPE '\\') OR (CommandLine LIKE '%/delete%' ESCAPE '\\' AND CommandLine LIKE '%Microsoft\\_Windows\\_Shell\\_ZipFolder:filename=%' ESCAPE '\\' AND CommandLine LIKE '%.zip%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_zipexec.yml"
-    },
-    {
-        "title": "Msiexec Quiet Installation",
-        "id": "79a87aa6-e4bd-42fc-a5bb-5e6fbdcd62f5",
-        "status": "test",
-        "description": "Adversaries may abuse msiexec.exe to proxy execution of malicious payloads.\nMsiexec.exe is the command-line utility for the Windows Installer and is thus commonly associated with executing installation packages (.msi)\n",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218.007"
-        ],
-        "falsepositives": [
-            "WindowsApps installing updates via the quiet flag"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName = 'msiexec.exe') AND (CommandLine LIKE '%/i%' ESCAPE '\\' OR CommandLine LIKE '%-i%' ESCAPE '\\' OR CommandLine LIKE '%/package%' ESCAPE '\\' OR CommandLine LIKE '%-package%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/j%' ESCAPE '\\' OR CommandLine LIKE '%-j%' ESCAPE '\\') AND (CommandLine LIKE '%/q%' ESCAPE '\\' OR CommandLine LIKE '%-q%' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') OR (ParentProcessName LIKE 'C:\\\\Windows\\\\CCM\\\\Ccm32BitLauncher.exe' ESCAPE '\\' AND IntegrityLevel = 'System')))"
-        ],
-        "filename": "proc_creation_win_msiexec_install_quiet.yml"
     },
     {
         "title": "Uncommon One Time Only Scheduled Task At 00:00",
@@ -21620,7 +21562,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%SYSTEM\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND CommandLine LIKE '% ImagePath %' ESCAPE '\\' AND (CommandLine LIKE '% /d %' ESCAPE '\\' OR CommandLine LIKE '% -d %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' AND (CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%SYSTEM\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND CommandLine LIKE '% ImagePath %' ESCAPE '\\') AND (CommandLine LIKE '% -d %' ESCAPE '\\' OR CommandLine LIKE '% /d %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_reg_service_imagepath_change.yml"
     },
@@ -21694,7 +21636,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\tasklist.exe' ESCAPE '\\' OR OriginalFileName = 'tasklist.exe') AND (CommandLine LIKE '%/m%' ESCAPE '\\' OR CommandLine LIKE '%-m%' ESCAPE '\\') AND CommandLine LIKE '%rdpcorets.dll%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\tasklist.exe' ESCAPE '\\' OR OriginalFileName = 'tasklist.exe') AND (CommandLine LIKE '%-m%' ESCAPE '\\' OR CommandLine LIKE '%/m%' ESCAPE '\\') AND CommandLine LIKE '%rdpcorets.dll%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_tasklist_module_enumeration.yml"
     },
@@ -23985,7 +23927,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND (CommandLine LIKE '% /i:%' ESCAPE '\\' OR CommandLine LIKE '% -i:%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '% /n %' ESCAPE '\\' OR CommandLine LIKE '% -n %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND (CommandLine LIKE '% -i:%' ESCAPE '\\' OR CommandLine LIKE '% /i:%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_regsvr32_flags_anomaly.yml"
     },
@@ -25272,7 +25214,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\replace.exe' ESCAPE '\\' AND (CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\replace.exe' ESCAPE '\\' AND (CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_lolbin_replace.yml"
     },
@@ -25733,7 +25675,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\appcmd.exe' ESCAPE '\\' OR OriginalFileName = 'appcmd.exe') AND (CommandLine LIKE '%install%' ESCAPE '\\' AND CommandLine LIKE '%module%' ESCAPE '\\' AND (CommandLine LIKE '%/name:%' ESCAPE '\\' OR CommandLine LIKE '%-name:%' ESCAPE '\\'))) AND NOT ((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\appcmd.exe' ESCAPE '\\' OR OriginalFileName = 'appcmd.exe') AND ((CommandLine LIKE '%install%' ESCAPE '\\' AND CommandLine LIKE '%module%' ESCAPE '\\') AND (CommandLine LIKE '%-name:%' ESCAPE '\\' OR CommandLine LIKE '%/name:%' ESCAPE '\\'))) AND NOT ((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_iis_appcmd_susp_module_install.yml"
     },
@@ -49162,7 +49104,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'diskshadow.exe' OR NewProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%-s %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'diskshadow.exe' OR NewProcessName LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_diskshadow_script_mode.yml"
     },

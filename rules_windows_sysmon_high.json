@@ -5833,7 +5833,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName = 'livekd.exe') AND (CommandLine LIKE '% /m%' ESCAPE '\\' AND CommandLine LIKE '% -m%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName = 'livekd.exe') AND (CommandLine LIKE '% -m%' ESCAPE '\\' OR CommandLine LIKE '% /m%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_sysinternals_livekd_kernel_memory_dump.yml"
     },
@@ -6226,25 +6226,6 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((ParentImage LIKE '%\\\\wmiprvse.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\mmc.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\services.exe' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/Q%' ESCAPE '\\' AND CommandLine LIKE '%/c%' ESCAPE '\\' AND CommandLine LIKE '%\\\\\\\\127.0.0.1\\\\\\*' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\') OR ((ParentCommandLine LIKE '%svchost.exe -k netsvcs%' ESCAPE '\\' OR ParentCommandLine LIKE '%taskeng.exe%' ESCAPE '\\') AND CommandLine LIKE '%cmd.exe%' ESCAPE '\\' AND CommandLine LIKE '%/C%' ESCAPE '\\' AND CommandLine LIKE '%Windows\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%&1%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_impacket_lateral_movement.yml"
-    },
-    {
-        "title": "Imports Registry Key From an ADS",
-        "id": "0b80ade5-6997-4b1d-99a1-71701778ea61",
-        "status": "test",
-        "description": "Detects the import of a alternate datastream to the registry with regedit.exe.",
-        "author": "Oddvar Moe, Sander Wiebing, oscd.community",
-        "tags": [
-            "attack.t1112",
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND ((CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '%.reg%' ESCAPE '\\') AND CommandLine REGEXP ':[^ \\\\]')) AND NOT ((CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% /a %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% -a %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_regedit_import_keys_ads.yml"
     },
     {
         "title": "HackTool - Certipy Execution",
@@ -6898,7 +6879,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND (CommandLine LIKE '% /E %' ESCAPE '\\' OR CommandLine LIKE '% -E %' ESCAPE '\\') AND (CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName = 'REGEDIT.EXE') AND (CommandLine LIKE '% -E %' ESCAPE '\\' OR CommandLine LIKE '% /E %' ESCAPE '\\') AND (CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_regedit_export_critical_keys.yml"
     },
@@ -7975,7 +7956,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName = 'msdt.exe') AND (CommandLine LIKE '%IT\\_BrowseForFile=%' ESCAPE '\\' OR (CommandLine LIKE '% PCWDiagnostic%' ESCAPE '\\' AND (CommandLine LIKE '% /af %' ESCAPE '\\' OR CommandLine LIKE '% -af %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName = 'msdt.exe') AND (CommandLine LIKE '%IT\\_BrowseForFile=%' ESCAPE '\\' OR (CommandLine LIKE '% PCWDiagnostic%' ESCAPE '\\' AND (CommandLine LIKE '% -af %' ESCAPE '\\' OR CommandLine LIKE '% /af %' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_msdt_arbitrary_command_execution.yml"
     },

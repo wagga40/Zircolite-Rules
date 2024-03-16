@@ -1086,6 +1086,24 @@
         "filename": "proc_creation_lnx_setgid_setuid.yml"
     },
     {
+        "title": "Remote Access Tool - Team Viewer Session Started On Linux Host",
+        "id": "1f6b8cd4-3e60-47cc-b282-5aa1cbc9182d",
+        "description": "Detects the command line executed when TeamViewer starts a session started by a remote host.\nOnce a connection has been started, an investigator can verify the connection details by viewing the \"incoming_connections.txt\" log file in the TeamViewer folder.\n",
+        "author": "Josh Nickels, Qi Nan",
+        "tags": [
+            "attack.initial_access",
+            "attack.t1133"
+        ],
+        "falsepositives": [
+            "Legitimate usage of TeamViewer"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (ParentImage LIKE '%/TeamViewer\\_Service' ESCAPE '\\' AND Image LIKE '%/TeamViewer\\_Desktop' ESCAPE '\\' AND CommandLine LIKE '%/TeamViewer\\_Desktop --IPCport 5939 --Module 1' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_remote_access_tools_teamviewer_incoming_connection.yml"
+    },
+    {
         "title": "Cat Sudoers",
         "id": "0f79c4d2-4e1f-4683-9c36-b5469a665e06",
         "description": "Detects the execution of a cat /etc/sudoers to list all users that have sudo rights",
