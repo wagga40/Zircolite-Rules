@@ -30908,21 +30908,21 @@
         "filename": "win_security_susp_logon_explicit_credentials.yml"
     },
     {
-        "title": "Suspicious Outbound Kerberos Connection - Security",
+        "title": "Uncommon Outbound Kerberos Connection - Security",
         "id": "eca91c7c-9214-47b9-b4c5-cb1d7e4f2350",
         "status": "test",
-        "description": "Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.",
+        "description": "Detects uncommon outbound network activity via Kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.\n",
         "author": "Ilyas Ochkov, oscd.community",
         "tags": [
             "attack.lateral_movement",
             "attack.t1558.003"
         ],
         "falsepositives": [
-            "Web Browsers"
+            "Web Browsers and third party application might generate similar activity. An initial baseline is required."
         ],
-        "level": "high",
+        "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '5156' AND DestPort = '88') AND NOT (((Application LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID = '5156' AND DestPort = '88') AND NOT (((Application LIKE '\\\\device\\\\harddiskvolume%' ESCAPE '\\' OR Application LIKE 'C:%' ESCAPE '\\') AND Application LIKE '%\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\'))) AND NOT (((Application LIKE '\\\\device\\\\harddiskvolume%' ESCAPE '\\' OR Application LIKE 'C:%' ESCAPE '\\') AND (Application LIKE '%\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE '%\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((Application LIKE '\\\\device\\\\harddiskvolume%' ESCAPE '\\' OR Application LIKE 'C:%' ESCAPE '\\') AND (Application LIKE '%\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Application LIKE '%\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR (Application LIKE '%\\\\tomcat\\\\bin\\\\tomcat8.exe' ESCAPE '\\')))"
         ],
         "filename": "win_security_susp_outbound_kerberos_connection.yml"
     },
@@ -46755,10 +46755,10 @@
         "filename": "net_connection_win_rdp_outbound_over_non_standard_tools.yml"
     },
     {
-        "title": "Suspicious Outbound Kerberos Connection",
+        "title": "Uncommon Outbound Kerberos Connection",
         "id": "e54979bd-c5f9-4d6c-967b-a04b19ac4c74",
         "status": "test",
-        "description": "Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.",
+        "description": "Detects uncommon outbound network activity via Kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.\n",
         "author": "Ilyas Ochkov, oscd.community",
         "tags": [
             "attack.credential_access",
@@ -46767,11 +46767,11 @@
             "attack.t1550.003"
         ],
         "falsepositives": [
-            "Web Browsers"
+            "Web Browsers and third party application might generate similar activity. An initial baseline is required."
         ],
-        "level": "high",
+        "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((DestinationPort = '88' AND Initiated = 'true') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (((DestinationPort = '88' AND Initiated = 'true') AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\'))) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\tomcat\\\\bin\\\\tomcat8.exe' ESCAPE '\\')))"
         ],
         "filename": "net_connection_win_susp_outbound_kerberos_connection.yml"
     },

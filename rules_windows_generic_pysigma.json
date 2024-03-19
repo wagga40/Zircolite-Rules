@@ -18962,25 +18962,6 @@
         "filename": ""
     },
     {
-        "title": "Suspicious Outbound Kerberos Connection - Security",
-        "id": "eca91c7c-9214-47b9-b4c5-cb1d7e4f2350",
-        "status": "test",
-        "description": "Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.",
-        "author": "Ilyas Ochkov, oscd.community",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.t1558.003"
-        ],
-        "falsepositives": [
-            "Web Browsers"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=5156 AND DestPort=88) AND (NOT (Application LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Remote PowerShell Sessions Network Connections (WinRM)",
         "id": "13acf386-b8c6-4fe0-9a6e-c4756b974698",
         "status": "test",
@@ -27553,27 +27534,6 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE (DestinationPort=3389 AND Initiated='true') AND (NOT (Image LIKE 'C:\\\\Windows\\\\System32\\\\mstsc.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\mstsc.exe' ESCAPE '\\')) AND (NOT ((Image LIKE 'C:\\\\Windows\\\\System32\\\\dns.exe' ESCAPE '\\' AND SourcePort=53 AND Protocol='udp') OR (Image LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\') OR Image LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR (Image LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR Image LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR Image LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR Image LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR Image LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR Image LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR Image LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\') OR (Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Program Files\\\\TSplus\\\\Java\\\\bin\\\\HTML5service.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\TSplus\\\\Java\\\\bin\\\\HTML5service.exe' ESCAPE '\\') OR Image IS NULL OR Image='' OR Image='<unknown process>'))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Suspicious Outbound Kerberos Connection",
-        "id": "e54979bd-c5f9-4d6c-967b-a04b19ac4c74",
-        "status": "test",
-        "description": "Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.",
-        "author": "Ilyas Ochkov, oscd.community",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1558",
-            "attack.lateral_movement",
-            "attack.t1550.003"
-        ],
-        "falsepositives": [
-            "Web Browsers"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (DestinationPort=88 AND Initiated='true') AND (NOT (Image LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -45851,6 +45811,25 @@
         "filename": ""
     },
     {
+        "title": "Uncommon Outbound Kerberos Connection - Security",
+        "id": "eca91c7c-9214-47b9-b4c5-cb1d7e4f2350",
+        "status": "test",
+        "description": "Detects uncommon outbound network activity via Kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.\n",
+        "author": "Ilyas Ochkov, oscd.community",
+        "tags": [
+            "attack.lateral_movement",
+            "attack.t1558.003"
+        ],
+        "falsepositives": [
+            "Web Browsers and third party application might generate similar activity. An initial baseline is required."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=5156 AND DestPort=88) AND (NOT ((Application LIKE '\\\\device\\\\harddiskvolume%' ESCAPE '\\' OR Application LIKE 'C:%' ESCAPE '\\') AND Application LIKE '%\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\')) AND (NOT (((Application LIKE '\\\\device\\\\harddiskvolume%' ESCAPE '\\' OR Application LIKE 'C:%' ESCAPE '\\') AND (Application LIKE '%\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE '%\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\')) OR ((Application LIKE '\\\\device\\\\harddiskvolume%' ESCAPE '\\' OR Application LIKE 'C:%' ESCAPE '\\') AND (Application LIKE '%\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Application LIKE '%\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')) OR Application LIKE '%\\\\tomcat\\\\bin\\\\tomcat8.exe' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "External Remote RDP Logon from Public IP",
         "id": "259a9cdf-c4dd-4fa2-b243-2269e5ab18a2",
         "status": "test",
@@ -50824,6 +50803,27 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Initiated='true' AND DestinationHostname LIKE '%.tunnels.api.visualstudio.com' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Uncommon Outbound Kerberos Connection",
+        "id": "e54979bd-c5f9-4d6c-967b-a04b19ac4c74",
+        "status": "test",
+        "description": "Detects uncommon outbound network activity via Kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.\n",
+        "author": "Ilyas Ochkov, oscd.community",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1558",
+            "attack.lateral_movement",
+            "attack.t1550.003"
+        ],
+        "falsepositives": [
+            "Web Browsers and third party application might generate similar activity. An initial baseline is required."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (DestinationPort=88 AND Initiated='true') AND (NOT Image LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\') AND (NOT ((Image LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\') OR Image LIKE '%\\\\tomcat\\\\bin\\\\tomcat8.exe' ESCAPE '\\'))"
         ],
         "filename": ""
     },

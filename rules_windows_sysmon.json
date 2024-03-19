@@ -16627,25 +16627,6 @@
         "filename": "win_security_alert_ad_user_backdoors.yml"
     },
     {
-        "title": "Suspicious Outbound Kerberos Connection - Security",
-        "id": "eca91c7c-9214-47b9-b4c5-cb1d7e4f2350",
-        "status": "test",
-        "description": "Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.",
-        "author": "Ilyas Ochkov, oscd.community",
-        "tags": [
-            "attack.lateral_movement",
-            "attack.t1558.003"
-        ],
-        "falsepositives": [
-            "Web Browsers"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '5156' AND DestPort = '88') AND NOT (((Application LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Application LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\'))))"
-        ],
-        "filename": "win_security_susp_outbound_kerberos_connection.yml"
-    },
-    {
         "title": "Remote PowerShell Sessions Network Connections (WinRM)",
         "id": "13acf386-b8c6-4fe0-9a6e-c4756b974698",
         "status": "test",
@@ -27579,27 +27560,6 @@
             "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((DestinationPort = '3389' AND Initiated = 'true') AND NOT (((Image LIKE 'C:\\\\Windows\\\\System32\\\\mstsc.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\mstsc.exe' ESCAPE '\\')))) AND NOT ((Image LIKE 'C:\\\\Windows\\\\System32\\\\dns.exe' ESCAPE '\\' AND SourcePort = '53' AND Protocol = 'udp') OR ((Image LIKE '%\\\\Avast Software\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\Avast\\\\AvastSvc.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\RDCMan.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\') OR ((Image LIKE '%\\\\FSAssessment.exe' ESCAPE '\\' OR Image LIKE '%\\\\FSDiscovery.exe' ESCAPE '\\' OR Image LIKE '%\\\\MobaRTE.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemote.exe' ESCAPE '\\' OR Image LIKE '%\\\\mRemoteNG.exe' ESCAPE '\\' OR Image LIKE '%\\\\Passwordstate.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManager64.exe' ESCAPE '\\' OR Image LIKE '%\\\\RemoteDesktopManagerFree.exe' ESCAPE '\\' OR Image LIKE '%\\\\RSSensor.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTS2App.exe' ESCAPE '\\' OR Image LIKE '%\\\\RTSApp.exe' ESCAPE '\\' OR Image LIKE '%\\\\spiceworks-finder.exe' ESCAPE '\\' OR Image LIKE '%\\\\Terminals.exe' ESCAPE '\\' OR Image LIKE '%\\\\ws\\_TunnelService.exe' ESCAPE '\\')) OR ((Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Program Files\\\\SplunkUniversalForwarder\\\\bin\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\Ranger\\\\SentinelRanger.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\TSplus\\\\Java\\\\bin\\\\HTML5service.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\TSplus\\\\Java\\\\bin\\\\HTML5service.exe' ESCAPE '\\')) OR (Image = '') OR (Image = '') OR (Image = '<unknown process>')))"
         ],
         "filename": "net_connection_win_rdp_outbound_over_non_standard_tools.yml"
-    },
-    {
-        "title": "Suspicious Outbound Kerberos Connection",
-        "id": "e54979bd-c5f9-4d6c-967b-a04b19ac4c74",
-        "status": "test",
-        "description": "Detects suspicious outbound network activity via kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.",
-        "author": "Ilyas Ochkov, oscd.community",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1558",
-            "attack.lateral_movement",
-            "attack.t1550.003"
-        ],
-        "falsepositives": [
-            "Web Browsers"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '3' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (DestinationPort = '88' AND Initiated = 'true') AND NOT (((Image LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\'))))"
-        ],
-        "filename": "net_connection_win_susp_outbound_kerberos_connection.yml"
     },
     {
         "title": "Suspicious Program Location with Network Connections",
