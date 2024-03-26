@@ -26194,6 +26194,26 @@
         "filename": "file_event_win_apt_unknown_exploitation_indicators.yml"
     },
     {
+        "title": "Potential KamiKakaBot Activity - Winlogon Shell Persistence",
+        "id": "c9b86500-1ec2-4de6-9120-d744c8fb5caf",
+        "status": "experimental",
+        "description": "Detects changes to the \"Winlogon\" registry key where a process will set the value of the \"Shell\" to a value that was observed being used by KamiKakaBot samples in order to achieve persistence.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior",
+        "tags": [
+            "attack.persistence",
+            "attack.t1547.001",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Winlogon\\\\Shell' ESCAPE '\\' AND NewValue LIKE '%-nop -w h%' ESCAPE '\\' AND NewValue LIKE '%$env%' ESCAPE '\\' AND NewValue LIKE '%explorer.exe%' ESCAPE '\\' AND NewValue LIKE '%Start-Process%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_malware_kamikakabot_winlogon_persistence.yml"
+    },
+    {
         "title": "Potential Raspberry Robin CPL Execution Activity",
         "id": "92020b88-9caf-464f-bad8-cd0fb0aa2a81",
         "status": "experimental",

@@ -44344,6 +44344,65 @@
         "filename": "file_event_win_apt_unknown_exploitation_indicators.yml"
     },
     {
+        "title": "Potential KamiKakaBot Activity - Lure Document Execution",
+        "id": "24474469-bd80-46cc-9e08-9fbe81bfaaca",
+        "status": "experimental",
+        "description": "Detects the execution of a Word document via the WinWord Start Menu shortcut.\nThis behavior was observed being used by KamiKakaBot samples in order to initiate the 2nd stage of the infection.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%/c %' ESCAPE '\\' AND CommandLine LIKE '%.lnk ~%' ESCAPE '\\' AND CommandLine LIKE '%Start Menu\\\\Programs\\\\Word%' ESCAPE '\\' AND CommandLine LIKE '%.doc' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_malware_kamikakabot_lnk_lure_execution.yml"
+    },
+    {
+        "title": "Potential KamiKakaBot Activity - Winlogon Shell Persistence",
+        "id": "c9b86500-1ec2-4de6-9120-d744c8fb5caf",
+        "status": "experimental",
+        "description": "Detects changes to the \"Winlogon\" registry key where a process will set the value of the \"Shell\" to a value that was observed being used by KamiKakaBot samples in order to achieve persistence.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior",
+        "tags": [
+            "attack.persistence",
+            "attack.t1547.001",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Winlogon\\\\Shell' ESCAPE '\\' AND Details LIKE '%-nop -w h%' ESCAPE '\\' AND Details LIKE '%$env%' ESCAPE '\\' AND Details LIKE '%explorer.exe%' ESCAPE '\\' AND Details LIKE '%Start-Process%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_malware_kamikakabot_winlogon_persistence.yml"
+    },
+    {
+        "title": "Potential KamiKakaBot Activity - Shutdown Schedule Task Creation",
+        "id": "fe9e8ba9-4419-41e6-a574-bd9f7b3af961",
+        "status": "experimental",
+        "description": "Detects the creation of a schedule task that runs weekly and execute the \"shutdown /l /f\" command.\nThis behavior was observed being used by KamiKakaBot samples in order to achieve persistence on a system.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '% /create %' ESCAPE '\\' AND CommandLine LIKE '%shutdown /l /f%' ESCAPE '\\' AND CommandLine LIKE '%WEEKLY%' ESCAPE '\\') AND NOT (((User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_malware_kamikakabot_schtasks_persistence.yml"
+    },
+    {
         "title": "Potential Raspberry Robin CPL Execution Activity",
         "id": "92020b88-9caf-464f-bad8-cd0fb0aa2a81",
         "status": "experimental",
