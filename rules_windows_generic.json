@@ -942,7 +942,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\') OR (NewProcessName = '')))"
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\') OR (NewProcessName = '')))"
         ],
         "filename": "image_load_dll_vss_ps_susp_load.yml"
     },
@@ -26040,6 +26040,25 @@
             "SELECT * FROM logs WHERE cs-uri-stem LIKE '%/SetupWizard.aspx/%' ESCAPE '\\'"
         ],
         "filename": "web_exploit_cve_2024_1709_screenconnect.yml"
+    },
+    {
+        "title": "Potential Exploitation of CVE-2024-3094 - Suspicious SSH Child Process",
+        "id": "9aa27839-e8ba-4d7a-ac1a-746c22c3d1e5",
+        "status": "experimental",
+        "description": "Detects potentially suspicious child process of SSH process (sshd) with a specific execution user. This could be a sign of potential exploitation of CVE-2024-3094.\n",
+        "author": "Arnim Rupp, Nasreddine Bencherchali, Thomas Patzke",
+        "tags": [
+            "attack.execution",
+            "cve.2024.3094"
+        ],
+        "falsepositives": [
+            "Administrative activity directly with root authentication might trigger selection_1 if it's unnecessarily prefixed with \"sh -c\" or \"bash -c\""
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((ParentProcessName LIKE '%/sshd' ESCAPE '\\' AND (CommandLine LIKE 'bash -c%' ESCAPE '\\' OR CommandLine LIKE 'sh -c%' ESCAPE '\\') AND User = 'root') OR (ParentProcessName LIKE '%/sshd' ESCAPE '\\' AND NewProcessName LIKE '%/sshd' ESCAPE '\\' AND User = 'sshd'))"
+        ],
+        "filename": "proc_creation_lnx_exploit_cve_2024_3094_sshd_child_process.yml"
     },
     {
         "title": "CVE-2024-1212 Exploitation - Progress Kemp LoadMaster Unauthenticated Command Injection",

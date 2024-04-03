@@ -4045,7 +4045,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND (NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR Image LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR Image LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\') OR Image IS NULL))"
+            "SELECT * FROM logs WHERE ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND (NOT ((Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR Image LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor.exe' ESCAPE '\\' OR Image LIKE '%\\\\thor64.exe' ESCAPE '\\' OR Image LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR Image LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR Image LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR Image LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\') OR Image IS NULL))"
         ],
         "filename": ""
     },
@@ -26449,6 +26449,25 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND CommandLine REGEXP '\\\\[a-zA-Z0-9]{1,32}\\.[a-zA-Z0-9]{1,6}\\.[ \"']{1}')"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential Exploitation of CVE-2024-3094 - Suspicious SSH Child Process",
+        "id": "9aa27839-e8ba-4d7a-ac1a-746c22c3d1e5",
+        "status": "experimental",
+        "description": "Detects potentially suspicious child process of SSH process (sshd) with a specific execution user. This could be a sign of potential exploitation of CVE-2024-3094.\n",
+        "author": "Arnim Rupp, Nasreddine Bencherchali, Thomas Patzke",
+        "tags": [
+            "attack.execution",
+            "cve.2024.3094"
+        ],
+        "falsepositives": [
+            "Administrative activity directly with root authentication might trigger selection_1 if it's unnecessarily prefixed with \"sh -c\" or \"bash -c\""
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ParentImage LIKE '%/sshd' ESCAPE '\\' AND (CommandLine LIKE 'bash -c%' ESCAPE '\\' OR CommandLine LIKE 'sh -c%' ESCAPE '\\') AND User='root') OR (ParentImage LIKE '%/sshd' ESCAPE '\\' AND Image LIKE '%/sshd' ESCAPE '\\' AND User='sshd')"
         ],
         "filename": ""
     },
