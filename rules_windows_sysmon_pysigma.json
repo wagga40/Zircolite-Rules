@@ -22285,7 +22285,7 @@
         "title": "Windows Binaries Write Suspicious Extensions",
         "id": "b8fd0e93-ff58-4cbd-8f48-1c114e342e62",
         "status": "test",
-        "description": "Detects Windows executables that writes files with suspicious extensions",
+        "description": "Detects Windows executables that write files with suspicious extensions",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
@@ -22296,7 +22296,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND (((Image LIKE '%\\\\smss.exe' ESCAPE '\\' OR Image LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\sihost.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsass.exe' ESCAPE '\\' OR Image LIKE '%\\\\csrss.exe' ESCAPE '\\' OR Image LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR Image LIKE '%\\\\wininit.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.txt' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\')) OR ((Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND ((((Image LIKE '%\\\\smss.exe' ESCAPE '\\' OR Image LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\sihost.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsass.exe' ESCAPE '\\' OR Image LIKE '%\\\\csrss.exe' ESCAPE '\\' OR Image LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR Image LIKE '%\\\\wininit.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.txt' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\')) OR ((Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\'))) AND (NOT (Image LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' AND (TargetFilename LIKE '%:\\\\Users\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\\\_\\_PSScriptPolicyTest\\_%' ESCAPE '\\') AND TargetFilename LIKE '%.ps1' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
