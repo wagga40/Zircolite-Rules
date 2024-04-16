@@ -3704,6 +3704,27 @@
         "filename": "image_load_side_load_abused_dlls_susp_paths.yml"
     },
     {
+        "title": "Potential DLL Sideloading Of KeyScramblerIE.DLL Via KeyScrambler.EXE",
+        "id": "d2451be2-b582-4e15-8701-4196ac180260",
+        "status": "experimental",
+        "description": "Detects potential DLL side loading of \"KeyScramblerIE.dll\" by \"KeyScrambler.exe\".\nVarious threat actors and malware have been found side loading a masqueraded \"KeyScramblerIE.dll\" through \"KeyScrambler.exe\".\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE '%\\\\KeyScrambler.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\KeyScramblerLogon.exe' ESCAPE '\\') AND ImageLoaded LIKE '%\\\\KeyScramblerIE.dll' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\KeyScrambler\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Program Files\\\\KeyScrambler\\\\%' ESCAPE '\\') AND (ImageLoaded LIKE '%C:\\\\Program Files (x86)\\\\KeyScrambler\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%C:\\\\Program Files\\\\KeyScrambler\\\\%' ESCAPE '\\')) OR (Signature = 'QFX Software Corporation' AND SignatureStatus = 'Valid')))"
+        ],
+        "filename": "image_load_side_load_keyscrambler.yml"
+    },
+    {
         "title": "WMI Persistence - Command Line Event Consumer",
         "id": "05936ce2-ee05-4dae-9d03-9a391cf2d2c6",
         "status": "test",
@@ -3780,7 +3801,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:/c|/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\"\\{\\d\\}.+-f.+\"')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP 'cmd.{0,5}(?:/c|/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\"\\{\\d\\}.+-f.+\"')"
         ],
         "filename": "posh_pm_invoke_obfuscation_clip.yml"
     },
@@ -3879,7 +3900,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:/c|/r)(?:\\s|)\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\"\\s+?-f(?:.*\\)){1,}.*\"')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP 'cmd.{0,5}(?:/c|/r)(?:\\s|)\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\"\\s+?-f(?:.*\\)){1,}.*\"')"
         ],
         "filename": "posh_pm_invoke_obfuscation_var.yml"
     },
@@ -3940,7 +3961,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\"\\s+?-f.*&&.*cmd.*/c')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i)&&set.*(\\{\\d\\}){2,}\\\\\"\\s+?-f.*&&.*cmd.*/c')"
         ],
         "filename": "posh_pm_invoke_obfuscation_via_var.yml"
     },
@@ -3961,7 +3982,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '.*cmd.{0,5}(?:/c|/r).+powershell.+(?:\\$\\{?input\\}?|noexit).+\"')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP 'cmd.{0,5}(?:/c|/r).+powershell.+(?:\\$\\{?input\\}?|noexit).+\"')"
         ],
         "filename": "posh_pm_invoke_obfuscation_stdin.yml"
     },
@@ -3982,7 +4003,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i).*(set).*&&\\s?set.*(environment|invoke|\\$?\\{?input).*&&.*\"')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i)(set).*&&\\s?set.*(environment|invoke|\\$?\\{?input).*&&.*\"')"
         ],
         "filename": "posh_pm_invoke_obfuscation_via_stdin.yml"
     },
@@ -4091,7 +4112,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i).*?echo.*clip.*&&.*(Clipboard|i`?n`?v`?o`?k`?e`?).*')"
+            "SELECT * FROM logs WHERE (EventID = '4103' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND Payload REGEXP '(?i)echo.*clip.*&&.*(Clipboard|i`?n`?v`?o`?k`?e`?)')"
         ],
         "filename": "posh_pm_invoke_obfuscation_via_use_clip.yml"
     },
@@ -4268,7 +4289,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i).*(set).*&&\\s?set.*(environment|invoke|\\$\\{?input).*&&.*\"')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i)(set).*&&\\s?set.*(environment|invoke|\\$\\{?input).*&&.*\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_via_stdin.yml"
     },
@@ -4482,7 +4503,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:/c|/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\"\\{\\d\\}.+-f.+\"')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP 'cmd.{0,5}(?:/c|/r).+clip(?:\\.exe)?.{0,4}&&.+clipboard]::\\(\\s\\\\\"\\{\\d\\}.+-f.+\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_clip.yml"
     },
@@ -4713,7 +4734,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i).*&&set.*(\\{\\d\\}){2,}\\\\\"\\s+?-f.*&&.*cmd.*/c')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i)&&set.*(\\{\\d\\}){2,}\\\\\"\\s+?-f.*&&.*cmd.*/c')"
         ],
         "filename": "posh_ps_invoke_obfuscation_via_var.yml"
     },
@@ -4947,7 +4968,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:/c|/r)(?:\\s|)\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\"\\s+?-f(?:.*\\)){1,}.*\"')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP 'cmd.{0,5}(?:/c|/r)(?:\\s|)\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\"\\s+?-f(?:.*\\)){1,}.*\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_var.yml"
     },
@@ -5027,7 +5048,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '.*cmd.{0,5}(?:/c|/r).+powershell.+(?:\\$?\\{?input\\}?|noexit).+\"')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP 'cmd.{0,5}(?:/c|/r).+powershell.+(?:\\$?\\{?input\\}?|noexit).+\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_stdin.yml"
     },
@@ -5165,7 +5186,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i).*?echo.*clip.*&&.*(Clipboard|i`?n`?v`?o`?k`?e`?).*')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i)echo.*clip.*&&.*(Clipboard|i`?n`?v`?o`?k`?e`?)')"
         ],
         "filename": "posh_ps_invoke_obfuscation_via_use_clip.yml"
     },
@@ -10422,7 +10443,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine REGEXP '.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*' OR CommandLine REGEXP '.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*' OR CommandLine REGEXP '.*\\^.*\\^.*\\^.*\\^.*\\^.*' OR CommandLine REGEXP '.*`.*`.*`.*`.*`.*')) AND NOT ((ParentProcessName LIKE 'C:\\\\Program Files\\\\Amazon\\\\SSM\\\\ssm-document-worker.exe' ESCAPE '\\') OR ((CommandLine LIKE '%new EventSource(\"Microsoft.Windows.Sense.Client.Management\"%' ESCAPE '\\' OR CommandLine LIKE '%public static extern bool InstallELAMCertificateInfo(SafeFileHandle handle);%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine REGEXP '\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+' OR CommandLine REGEXP '\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{' OR CommandLine REGEXP '\\^.*\\^.*\\^.*\\^.*\\^' OR CommandLine REGEXP '`.*`.*`.*`.*`')) AND NOT ((ParentProcessName LIKE 'C:\\\\Program Files\\\\Amazon\\\\SSM\\\\ssm-document-worker.exe' ESCAPE '\\') OR ((CommandLine LIKE '%new EventSource(\"Microsoft.Windows.Sense.Client.Management\"%' ESCAPE '\\' OR CommandLine LIKE '%public static extern bool InstallELAMCertificateInfo(SafeFileHandle handle);%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_powershell_cmdline_special_characters.yml"
     },
@@ -10477,7 +10498,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\loader.exe' ESCAPE '\\' AND CommandLine LIKE '%--pid:%' ESCAPE '\\') OR (Imphash IN ('38d9e015591bbfd4929e0d0f47fa0055', '0e2216679ca6e1094d63322e3412d650') OR Hashes IN ('IMPHASH=38D9E015591BBFD4929E0D0F47FA0055', 'IMPHASH=0E2216679CA6E1094D63322E3412D650')) OR (CommandLine LIKE '%--pid:%' ESCAPE '\\' AND CommandLine LIKE '%--outfile:%' ESCAPE '\\' AND (CommandLine LIKE '%.dmp%' ESCAPE '\\' OR CommandLine LIKE '%lsass%' ESCAPE '\\' OR CommandLine LIKE '%.obf%' ESCAPE '\\' OR CommandLine LIKE '%dump%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\loader.exe' ESCAPE '\\' AND CommandLine LIKE '%--pid:%' ESCAPE '\\') OR (Imphash IN ('38d9e015591bbfd4929e0d0f47fa0055', '0e2216679ca6e1094d63322e3412d650') OR (Hashes LIKE '%IMPHASH=38D9E015591BBFD4929E0D0F47FA0055%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=0E2216679CA6E1094D63322E3412D650%' ESCAPE '\\')) OR (CommandLine LIKE '%--pid:%' ESCAPE '\\' AND CommandLine LIKE '%--outfile:%' ESCAPE '\\' AND (CommandLine LIKE '%.dmp%' ESCAPE '\\' OR CommandLine LIKE '%lsass%' ESCAPE '\\' OR CommandLine LIKE '%.obf%' ESCAPE '\\' OR CommandLine LIKE '%dump%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_hktl_handlekatz.yml"
     },
@@ -12957,7 +12978,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\SysmonEOP.exe' ESCAPE '\\' OR Hashes IN ('IMPHASH=22F4089EB8ABA31E1BB162C6D9BF72E5', 'IMPHASH=5123FA4C4384D431CD0D893EEB49BBEC') OR Imphash IN ('22f4089eb8aba31e1bb162c6d9bf72e5', '5123fa4c4384d431cd0d893eeb49bbec')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\SysmonEOP.exe' ESCAPE '\\' OR (Hashes LIKE '%IMPHASH=22F4089EB8ABA31E1BB162C6D9BF72E5%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=5123FA4C4384D431CD0D893EEB49BBEC%' ESCAPE '\\') OR Imphash IN ('22f4089eb8aba31e1bb162c6d9bf72e5', '5123fa4c4384d431cd0d893eeb49bbec')))"
         ],
         "filename": "proc_creation_win_hktl_sysmoneop.yml"
     },
@@ -13015,7 +13036,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%echo%' ESCAPE '\\' AND CommandLine LIKE '%clip%' ESCAPE '\\' AND CommandLine LIKE '%&&%' ESCAPE '\\' AND (CommandLine LIKE '%clipboard%' ESCAPE '\\' OR CommandLine LIKE '%invoke%' ESCAPE '\\' OR CommandLine LIKE '%i`%' ESCAPE '\\' OR CommandLine LIKE '%n`%' ESCAPE '\\' OR CommandLine LIKE '%v`%' ESCAPE '\\' OR CommandLine LIKE '%o`%' ESCAPE '\\' OR CommandLine LIKE '%k`%' ESCAPE '\\' OR CommandLine LIKE '%e`%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine REGEXP '(?i)echo.*clip.*&&.*(Clipboard|i`?n`?v`?o`?k`?e`?)')"
         ],
         "filename": "proc_creation_win_hktl_invoke_obfuscation_via_use_clip.yml"
     },
@@ -14999,7 +15020,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\CoercedPotato.exe' ESCAPE '\\' OR CommandLine LIKE '% --exploitId %' ESCAPE '\\' OR Imphash IN ('a75d7669db6b2e107a44c4057ff7f7d6', 'f91624350e2c678c5dcbe5e1f24e22c9', '14c81850a079a87e83d50ca41c709a15') OR Hashes IN ('IMPHASH=A75D7669DB6B2E107A44C4057FF7F7D6', 'IMPHASH=F91624350E2C678C5DCBE5E1F24E22C9', 'IMPHASH=14C81850A079A87E83D50CA41C709A15')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\CoercedPotato.exe' ESCAPE '\\' OR CommandLine LIKE '% --exploitId %' ESCAPE '\\' OR Imphash IN ('a75d7669db6b2e107a44c4057ff7f7d6', 'f91624350e2c678c5dcbe5e1f24e22c9', '14c81850a079a87e83d50ca41c709a15') OR (Hashes LIKE '%IMPHASH=A75D7669DB6B2E107A44C4057FF7F7D6%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=F91624350E2C678C5DCBE5E1F24E22C9%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=14C81850A079A87E83D50CA41C709A15%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_coercedpotato.yml"
     },
@@ -15080,7 +15101,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%powershell%' ESCAPE '\\' AND (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\')) AND (CommandLine LIKE '%noexit%' ESCAPE '\\' OR (CommandLine LIKE '%input%' ESCAPE '\\' AND CommandLine LIKE '%$%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine REGEXP 'cmd.{0,5}(?:/c|/r).+powershell.+(?:\\$\\{?input\\}?|noexit).+\\\"')"
         ],
         "filename": "proc_creation_win_hktl_invoke_obfuscation_stdin.yml"
     },
@@ -15368,7 +15389,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%cmd%' ESCAPE '\\' AND CommandLine LIKE '%\"set%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\' AND (CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine REGEXP 'cmd.{0,5}(?:/c|/r)(?:\\s|)\\\"set\\s[a-zA-Z]{3,6}.*(?:\\{\\d\\}){1,}\\\\\\\"\\s+?\\-f(?:.*\\)){1,}.*\\\"')"
         ],
         "filename": "proc_creation_win_hktl_invoke_obfuscation_var.yml"
     },
@@ -15738,7 +15759,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%set%' ESCAPE '\\' AND CommandLine LIKE '%&&%' ESCAPE '\\' AND (CommandLine LIKE '%environment%' ESCAPE '\\' OR CommandLine LIKE '%invoke%' ESCAPE '\\' OR CommandLine LIKE '%input%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine REGEXP '(?i)(set).*&&\\s?set.*(environment|invoke|\\${?input).*&&.*\"')"
         ],
         "filename": "proc_creation_win_hktl_invoke_obfuscation_via_stdin.yml"
     },
@@ -27428,7 +27449,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((((NewProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sihost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csrss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.txt' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\'))) AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\\\_\\_PSScriptPolicyTest\\_%' ESCAPE '\\' AND TargetFilename LIKE '%.ps1' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((((NewProcessName LIKE '%\\\\csrss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sihost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.txt' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\'))) AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\\\_\\_PSScriptPolicyTest\\_%' ESCAPE '\\' AND TargetFilename LIKE '%.ps1' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%C:\\\\Windows\\\\System32\\\\GroupPolicy\\\\DataStore\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Policies\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Machine\\\\Scripts\\\\Startup\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\'))))"
         ],
         "filename": "file_event_win_shell_write_susp_files_extensions.yml"
     },
