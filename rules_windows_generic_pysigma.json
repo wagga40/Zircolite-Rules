@@ -31603,6 +31603,25 @@
         "filename": ""
     },
     {
+        "title": "RegAsm.EXE Initiating Network Connection To Public IP",
+        "id": "0531e43a-d77d-47c2-b89f-5fe50321c805",
+        "status": "experimental",
+        "description": "Detects \"RegAsm.exe\" initiating a network connection to public IP adresses",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.009"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Initiated='true' AND Image LIKE '%\\\\regasm.exe' ESCAPE '\\') AND (NOT (DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '172.16.%' ESCAPE '\\' OR DestinationIp LIKE '172.17.%' ESCAPE '\\' OR DestinationIp LIKE '172.18.%' ESCAPE '\\' OR DestinationIp LIKE '172.19.%' ESCAPE '\\' OR DestinationIp LIKE '172.20.%' ESCAPE '\\' OR DestinationIp LIKE '172.21.%' ESCAPE '\\' OR DestinationIp LIKE '172.22.%' ESCAPE '\\' OR DestinationIp LIKE '172.23.%' ESCAPE '\\' OR DestinationIp LIKE '172.24.%' ESCAPE '\\' OR DestinationIp LIKE '172.25.%' ESCAPE '\\' OR DestinationIp LIKE '172.26.%' ESCAPE '\\' OR DestinationIp LIKE '172.27.%' ESCAPE '\\' OR DestinationIp LIKE '172.28.%' ESCAPE '\\' OR DestinationIp LIKE '172.29.%' ESCAPE '\\' OR DestinationIp LIKE '172.30.%' ESCAPE '\\' OR DestinationIp LIKE '172.31.%' ESCAPE '\\' OR DestinationIp LIKE '192.168.%' ESCAPE '\\' OR DestinationIp LIKE '169.254.%' ESCAPE '\\' OR DestinationIp='::1/128' OR DestinationIp LIKE 'fe8%' ESCAPE '\\' OR DestinationIp LIKE 'fe9%' ESCAPE '\\' OR DestinationIp LIKE 'fea%' ESCAPE '\\' OR DestinationIp LIKE 'feb%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Dllhost.EXE Initiated Network Connection To Non-Local IP Address",
         "id": "cfed2f44-16df-4bf3-833a-79405198b277",
         "status": "test",
@@ -39249,6 +39268,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\accesschk.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\accesschk64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AccessEnum.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADInsight.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADInsight64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\adrestore.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\adrestore64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Autologon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Autologon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Autoruns.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Autoruns64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\autorunsc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\autorunsc64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Bginfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Bginfo64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Cacheset.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Cacheset64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Clockres.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Clockres64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Contig.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Contig64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Coreinfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Coreinfo64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CPUSTRES.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CPUSTRES64.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ctrl2cap.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Dbgview.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dbgview64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktops.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktops64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\disk2vhd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\disk2vhd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\diskext.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\diskext64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Diskmon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Diskmon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\DiskView.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\DiskView64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\du.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\du64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\efsdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FindLinks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\FindLinks64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hex2dec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hex2dec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\junction.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\junction64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ldmdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\listdlls.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\listdlls64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\loadOrd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\loadOrd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\loadOrdC.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\loadOrdC64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\logonsessions.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\logonsessions64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\movefile.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\movefile64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notmyfault.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notmyfault64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notmyfaultc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notmyfaultc64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ntfsinfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ntfsinfo64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pendmoves.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pendmoves64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pipelist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pipelist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\portmon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Procmon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Procmon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psExec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psExec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psfile.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psfile64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psGetsid.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psGetsid64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psInfo.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psInfo64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pskill.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pskill64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pslist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pslist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psLoggedon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psLoggedon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psping.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psping64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psService64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psshutdown.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psshutdown64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pssuspend.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pssuspend64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RAMMap.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RDCMan.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RegDelNull.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RegDelNull64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regjump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ru.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ru64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sdelete.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sdelete64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ShareEnum.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ShareEnum64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\shellRunas.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sigcheck.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sigcheck64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\streams.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\streams64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\strings.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\strings64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sync.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sync64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Sysmon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tcpvcon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tcpvcon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tcpview.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tcpview64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Testlimit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Testlimit64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vmmap.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vmmap64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Volumeid.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Volumeid64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whois.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\whois64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Winobj.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Winobj64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ZoomIt.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ZoomIt64.exe' ESCAPE '\\') AND (NOT ((Company='Sysinternals - www.sysinternals.com' OR Company='Sysinternals') OR Company IS NULL))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "PUA - SoftPerfect Netscan Execution",
+        "id": "ca387a8e-1c84-4da3-9993-028b45342d30",
+        "status": "experimental",
+        "description": "Detects usage of SoftPerfect's \"netscan.exe\". An application for scanning networks.\nIt is actively used in-the-wild by threat actors to inspect and understand the network architecture of a victim.\n",
+        "author": "@d4ns4n_ (Wuerth-Phoenix)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1046"
+        ],
+        "falsepositives": [
+            "Legitimate administrator activity"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\netscan.exe' ESCAPE '\\' OR Product='Network Scanner' OR Description='Application for scanning networks'))"
         ],
         "filename": ""
     },
@@ -47316,6 +47354,26 @@
         "filename": ""
     },
     {
+        "title": "Potential CVE-2024-3400 Exploitation - Palo Alto GlobalProtect OS Command Injection - File Creation",
+        "id": "bcd95697-e3e7-4c6f-8584-8e3503e6929f",
+        "status": "experimental",
+        "description": "Detects suspicious file creations in the Palo Alto Networks PAN-OS' parent telemetry folder, which are processed by the vulnerable 'dt_curl' script if device telemetry is enabled.\nAs said script overrides the shell-subprocess restriction, arbitrary command execution may occur by carefully crafting filenames that are escaped through this function.\n",
+        "author": "Andreas Braathen (mnemonic.io)",
+        "tags": [
+            "attack.execution",
+            "cve.2024.3400",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "The PAN-OS device telemetry function does not enforce a standard filename convention, but observations are unlikely."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%{IFS}%' ESCAPE '\\' OR TargetFilename LIKE '%base64%' ESCAPE '\\' OR TargetFilename LIKE '%bash%' ESCAPE '\\' OR TargetFilename LIKE '%curl%' ESCAPE '\\' OR TargetFilename LIKE '%http%' ESCAPE '\\') AND TargetFilename LIKE '/opt/panlogs/tmp/device\\_telemetry/%' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
         "title": "CVE-2024-1708 - ScreenConnect Path Traversal Exploitation",
         "id": "44d7af7e-88e6-4490-be11-55f7ff4d9fc1",
         "status": "experimental",
@@ -48541,6 +48599,26 @@
         "filename": ""
     },
     {
+        "title": "Python Path Configuration File Creation - MacOS",
+        "id": "4f394635-13ef-4599-b677-3353e0f84f55",
+        "status": "experimental",
+        "description": "Detects creation of a Python path configuration file (.pth) in Python library folders, which can be maliciously abused for code execution and persistence.\nModules referenced by these files are run at every Python startup (v3.5+), regardless of whether the module is imported by the calling script.\nDefault paths are '\\lib\\site-packages\\*.pth' (Windows) and '/lib/pythonX.Y/site-packages/*.pth' (Unix and macOS).\n",
+        "author": "Andreas Braathen (mnemonic.io)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.006",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Although .pth files are discouraged due to potential security implications, these are legitimate files by specification."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename REGEXP '(?i)/lib/python3\\.([5-9]|[0-9]{2})/site-packages/' AND TargetFilename LIKE '%.pth' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
         "title": "HH.EXE Initiated HTTP Network Connection",
         "id": "468a8cea-2920-4909-a593-0cbe1d96674a",
         "status": "test",
@@ -49056,6 +49134,26 @@
         "filename": ""
     },
     {
+        "title": "Python Path Configuration File Creation - Windows",
+        "id": "e3652ba3-0ad8-4010-a957-b7ba369e7bac",
+        "status": "experimental",
+        "description": "Detects creation of a Python path configuration file (.pth) in Python library folders, which can be maliciously abused for code execution and persistence.\nModules referenced by these files are run at every Python startup (v3.5+), regardless of whether the module is imported by the calling script.\nDefault paths are '\\lib\\site-packages\\*.pth' (Windows) and '/lib/pythonX.Y/site-packages/*.pth' (Unix and macOS).\n",
+        "author": "Andreas Braathen (mnemonic.io), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.006",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Although .pth files are discouraged due to potential security implications, these are legitimate files by specification."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename REGEXP '(?i)\\\\(venv|python(.+)?)\\\\lib\\\\site-packages\\\\' AND TargetFilename LIKE '%.pth' ESCAPE '\\') AND (NOT (Image LIKE '%\\\\python.exe' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\pywin32.pth' ESCAPE '\\' OR TargetFilename LIKE '%\\\\distutils-precedence.pth' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "VsCode Code Tunnel Execution File Indicator",
         "id": "9661ec9d-4439-4a7a-abed-d9be4ca43b6d",
         "status": "experimental",
@@ -49421,6 +49519,26 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND ScriptBlockText REGEXP '(Get-Item|gci|Get-ChildItem).{1,64}-Path.{1,64}\\\\(currentcontrolset\\\\services|CurrentVersion\\\\Policies\\\\Explorer\\\\Run|CurrentVersion\\\\Run|CurrentVersion\\\\ShellServiceObjectDelayLoad|CurrentVersion\\\\Windows\\winlogon)\\\\')"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Python Path Configuration File Creation - Linux",
+        "id": "fb96c26c-9f85-4ae7-af0d-ed1ed1f1f5ce",
+        "status": "experimental",
+        "description": "Detects creation of a Python path configuration file (.pth) in Python library folders, which can be maliciously abused for code execution and persistence.\nModules referenced by these files are run at every Python startup (v3.5+), regardless of whether the module is imported by the calling script.\nDefault paths are '\\lib\\site-packages\\*.pth' (Windows) and '/lib/pythonX.Y/site-packages/*.pth' (Unix and macOS).\n",
+        "author": "Andreas Braathen (mnemonic.io)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.006",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Although .pth files are discouraged due to potential security implications, these are legitimate files by specification."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename REGEXP '(?i)/lib/python3\\.([5-9]|[0-9]{2})/site-packages/' AND TargetFilename LIKE '%.pth' ESCAPE '\\'"
         ],
         "filename": ""
     },
