@@ -3870,6 +3870,25 @@
         "filename": ""
     },
     {
+        "title": "ManageEngine Endpoint Central Dctask64.EXE Potential Abuse",
+        "id": "6345b048-8441-43a7-9bed-541133633d7a",
+        "status": "test",
+        "description": "Detects the execution of \"dctask64.exe\", a signed binary by ZOHO Corporation part of ManageEngine Endpoint Central.\nThis binary can be abused for DLL injection, arbitrary command and process execution.\n",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1055.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\' OR (Hashes LIKE '%6834B1B94E49701D77CCB3C0895E1AFD%' ESCAPE '\\' OR Hashes LIKE '%1BB6F93B129F398C7C4A76BB97450BBA%' ESCAPE '\\' OR Hashes LIKE '%FAA2AC19875FADE461C8D89DCF2710A3%' ESCAPE '\\' OR Hashes LIKE '%F1039CED4B91572AB7847D26032E6BBF%' ESCAPE '\\')) AND (CommandLine LIKE '% executecmd64 %' ESCAPE '\\' OR CommandLine LIKE '% invokeexe %' ESCAPE '\\' OR CommandLine LIKE '% injectDll %' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Execution Of Non-Existing File",
         "id": "71158e3f-df67-472b-930e-7d287acaa3e1",
         "status": "test",
@@ -4154,6 +4173,25 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csrss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Taskmgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sihost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\audiodg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wlanext.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dashost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\atbroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certreq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\consent.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\defrag.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dism.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhst3g.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\eventvwr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\runonce.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winver.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\logonui.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dwm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\LsaIso.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ntoskrnl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dfrgui.exe' ESCAPE '\\') AND (NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\SystemRoot\\\\System32\\\\%' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\pwsh.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Xwizard.EXE Execution From Non-Default Location",
+        "id": "193d5ccd-6f59-40c6-b5b0-8e32d5ddd3d1",
+        "status": "test",
+        "description": "Detects the execution of Xwizard tool from a non-default directory.\nWhen executed from a non-default directory, this utility can be abused in order to side load a custom version of \"xwizards.dll\".\n",
+        "author": "Christian Burkard (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Windows installed on non-C drive"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' OR OriginalFileName='xwizard.exe') AND (NOT (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -7395,25 +7433,6 @@
         "filename": ""
     },
     {
-        "title": "ZOHO Dctask64 Process Injection",
-        "id": "6345b048-8441-43a7-9bed-541133633d7a",
-        "status": "test",
-        "description": "Detects suspicious process injection using ZOHO's dctask64.exe",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1055.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\' AND (NOT CommandLine LIKE '%DesktopCentral\\_Agent\\\\agent%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "HackTool - CrackMapExec Execution",
         "id": "42a993dd-bb3e-48c8-b372-4d6684c4106c",
         "status": "test",
@@ -9259,25 +9278,6 @@
         "level": "high",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\wsreset.exe' ESCAPE '\\' AND (NOT (NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' OR OriginalFileName='CONHOST.EXE'))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Windows Kernel Debugger Execution",
-        "id": "27ee9438-90dc-4bef-904b-d3ef927f5e7e",
-        "status": "test",
-        "description": "Detects execution of the Windows Kernel Debugger \"kd.exe\".",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.privilege_escalation"
-        ],
-        "falsepositives": [
-            "Rare occasions of legitimate cases where kernel debugging is necessary in production. Investigation is required"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\kd.exe' ESCAPE '\\' OR OriginalFileName='kd.exe'))"
         ],
         "filename": ""
     },
@@ -12208,25 +12208,6 @@
         "filename": ""
     },
     {
-        "title": "Xwizard DLL Sideloading",
-        "id": "193d5ccd-6f59-40c6-b5b0-8e32d5ddd3d1",
-        "status": "test",
-        "description": "Detects the execution of Xwizard tool from the non-default directory which can be used to sideload a custom xwizards.dll",
-        "author": "Christian Burkard (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Windows installed on non-C drive"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' AND (NOT NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Wusa.EXE Extracting Cab Files From Suspicious Paths",
         "id": "c74c0390-3e20-41fd-a69a-128f0275a5ea",
         "status": "test",
@@ -12267,8 +12248,8 @@
         "title": "Renamed ZOHO Dctask64 Execution",
         "id": "340a090b-c4e9-412e-bb36-b4b16fe96f9b",
         "status": "test",
-        "description": "Detects a renamed dctask64.exe used for process injection, command execution, process creation with a signed binary by ZOHO Corporation",
-        "author": "Florian Roth (Nextron Systems)",
+        "description": "Detects a renamed \"dctask64.exe\" execution, a signed binary by ZOHO Corporation part of ManageEngine Endpoint Central.\nThis binary can be abused for DLL injection, arbitrary command and process execution.\n",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1036",
@@ -12277,11 +12258,11 @@
             "attack.t1218"
         ],
         "falsepositives": [
-            "Unknown yet"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (Hashes LIKE '%6834B1B94E49701D77CCB3C0895E1AFD%' ESCAPE '\\' AND (NOT NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((Hashes LIKE '%6834B1B94E49701D77CCB3C0895E1AFD%' ESCAPE '\\' OR Hashes LIKE '%1BB6F93B129F398C7C4A76BB97450BBA%' ESCAPE '\\' OR Hashes LIKE '%FAA2AC19875FADE461C8D89DCF2710A3%' ESCAPE '\\' OR Hashes LIKE '%F1039CED4B91572AB7847D26032E6BBF%' ESCAPE '\\') AND (NOT NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -28503,6 +28484,25 @@
         "filename": ""
     },
     {
+        "title": "JScript Compiler Execution",
+        "id": "52788a70-f1da-40dd-8fbd-73b5865d6568",
+        "status": "test",
+        "description": "Detects the execution of the \"jsc.exe\" (JScript Compiler).\nAttacker might abuse this in order to compile JScript files on the fly and bypassing application whitelisting.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1127"
+        ],
+        "falsepositives": [
+            "Legitimate use to compile JScript by developers."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\jsc.exe' ESCAPE '\\' OR OriginalFileName='jsc.exe'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "New Process Created Via Taskmgr.EXE",
         "id": "3d7679bd-0c00-440c-97b0-3f204273e6c7",
         "status": "test",
@@ -32229,6 +32229,25 @@
         "filename": ""
     },
     {
+        "title": "Process Memory Dump Via Dotnet-Dump",
+        "id": "53d8d3e1-ca33-4012-adf3-e05a4d652e34",
+        "status": "test",
+        "description": "Detects the execution of \"dotnet-dump\" with the \"collect\" flag. The execution could indicate potential process dumping of critical processes such as LSASS.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Process dumping is the expected behavior of the tool. So false positives are expected in legitimate usage. The PID/Process Name of the process being dumped needs to be investigated"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\dotnet-dump.exe' ESCAPE '\\' OR OriginalFileName='dotnet-dump.dll') AND CommandLine LIKE '%collect%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Potential Provlaunch.EXE Binary Proxy Execution Abuse",
         "id": "7f5d1c9a-3e83-48df-95a7-2b98aae6c13c",
         "status": "experimental",
@@ -32818,46 +32837,6 @@
         "filename": ""
     },
     {
-        "title": "Suspicious Cmdl32 Execution",
-        "id": "f37aba28-a9e6-4045-882c-d5004043b337",
-        "status": "test",
-        "description": "lolbas Cmdl32 is use to download a payload to evade antivirus",
-        "author": "frack113",
-        "tags": [
-            "attack.execution",
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.t1202"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmdl32.exe' ESCAPE '\\' OR OriginalFileName='CMDL32.EXE') AND (CommandLine LIKE '%/vpn %' ESCAPE '\\' AND CommandLine LIKE '%/lan %' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Custom Class Execution via Xwizard",
-        "id": "53d4bb30-3f36-4e8a-b078-69d36c4a79ff",
-        "status": "test",
-        "description": "Detects the execution of Xwizard tool with specific arguments which utilized to run custom class properties.",
-        "author": "Ensar \u015eamil, @sblmsrsn, @oscd_initiative",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' AND CommandLine REGEXP '\\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\\}'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Arbitrary Binary Execution Using GUP Utility",
         "id": "d65aee4d-2292-4cea-b832-83accd6cfa43",
         "status": "test",
@@ -33378,25 +33357,6 @@
         "filename": ""
     },
     {
-        "title": "Dotnet.exe Exec Dll and Execute Unsigned Code LOLBIN",
-        "id": "d80d5c81-04ba-45b4-84e4-92eba40e0ad3",
-        "status": "test",
-        "description": "dotnet.exe will execute any DLL and execute unsigned code",
-        "author": "Beyu Denis, oscd.community",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "System administrator Usage"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\dotnet.exe' ESCAPE '\\' OR OriginalFileName='.NET Host') AND (CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.csproj' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Indirect Command Execution From Script File Via Bash.EXE",
         "id": "2d22a514-e024-4428-9dba-41505bd63a5b",
         "status": "experimental",
@@ -33412,26 +33372,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\bash.exe' ESCAPE '\\') OR OriginalFileName='Bash.exe') AND (NOT ((CommandLine LIKE '%bash.exe -%' ESCAPE '\\' OR CommandLine LIKE '%bash -%' ESCAPE '\\') OR CommandLine IS NULL OR CommandLine='' OR (CommandLine='bash.exe' OR CommandLine='bash')))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Lolbin Defaultpack.exe Use As Proxy",
-        "id": "b2309017-4235-44fe-b5af-b15363011957",
-        "status": "test",
-        "description": "Detect usage of the \"defaultpack.exe\" binary as a proxy to launch other programs",
-        "author": "frack113",
-        "tags": [
-            "attack.t1218",
-            "attack.defense_evasion",
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ParentProcessName LIKE '%\\\\defaultpack.exe' ESCAPE '\\')"
         ],
         "filename": ""
     },
@@ -33565,25 +33505,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName='esentutl.exe') AND (CommandLine LIKE '%-r%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\') AND CommandLine LIKE '%\\\\Windows\\\\WebCache%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Suspicious ConfigSecurityPolicy Execution",
-        "id": "1f0f6176-6482-4027-b151-00071af39d7e",
-        "status": "test",
-        "description": "Upload file, credentials or data exfiltration with Binary part of Windows Defender",
-        "author": "frack113",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1567"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%ConfigSecurityPolicy.exe%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ConfigSecurityPolicy.exe' ESCAPE '\\' OR OriginalFileName='ConfigSecurityPolicy.exe') AND (CommandLine LIKE '%https://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%ftp://%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -35560,6 +35481,28 @@
         "filename": ""
     },
     {
+        "title": "Potential Binary Proxy Execution Via Cdb.EXE",
+        "id": "b5c7395f-e501-4a08-94d4-57fe7a9da9d2",
+        "status": "test",
+        "description": "Detects usage of \"cdb.exe\" to launch arbitrary processes or commands from a debugger script file",
+        "author": "Beyu Denis, oscd.community, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1106",
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.t1127"
+        ],
+        "falsepositives": [
+            "Legitimate use of debugging tools"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cdb.exe' ESCAPE '\\' OR OriginalFileName='CDB.Exe') AND (CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% -cf %' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Potential Persistence Via Microsoft Compatibility Appraiser",
         "id": "f548a603-c9f2-4c89-b511-b089f7e94549",
         "status": "test",
@@ -35750,28 +35693,6 @@
         "filename": ""
     },
     {
-        "title": "WinDbg/CDB LOLBIN Usage",
-        "id": "b5c7395f-e501-4a08-94d4-57fe7a9da9d2",
-        "status": "test",
-        "description": "Detects usage of \"cdb.exe\" to launch 64-bit shellcode or arbitrary processes or commands from a debugger script file",
-        "author": "Beyu Denis, oscd.community, Nasreddine Bencherchali",
-        "tags": [
-            "attack.execution",
-            "attack.t1106",
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.t1127"
-        ],
-        "falsepositives": [
-            "Legitimate use of debugging tools"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cdb.exe' ESCAPE '\\' OR OriginalFileName='CDB.Exe') AND (CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% -cf %' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Python Inline Command Execution",
         "id": "899133d5-4d7c-4a7f-94ee-27355c879d90",
         "status": "test",
@@ -35807,26 +35728,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((CommandLine LIKE '%sc %' ESCAPE '\\' AND CommandLine LIKE '%config %' ESCAPE '\\' AND CommandLine LIKE '%binpath=%' ESCAPE '\\') OR (CommandLine LIKE '%sc %' ESCAPE '\\' AND CommandLine LIKE '%failure%' ESCAPE '\\' AND CommandLine LIKE '%command=%' ESCAPE '\\')) OR (((CommandLine LIKE '%reg %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%FailureCommand%' ESCAPE '\\') OR (CommandLine LIKE '%reg %' ESCAPE '\\' AND CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%ImagePath%' ESCAPE '\\')) AND (CommandLine LIKE '%.sh%' ESCAPE '\\' OR CommandLine LIKE '%.exe%' ESCAPE '\\' OR CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine LIKE '%.bin$%' ESCAPE '\\' OR CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.cmd%' ESCAPE '\\' OR CommandLine LIKE '%.js%' ESCAPE '\\' OR CommandLine LIKE '%.msh$%' ESCAPE '\\' OR CommandLine LIKE '%.reg$%' ESCAPE '\\' OR CommandLine LIKE '%.scr%' ESCAPE '\\' OR CommandLine LIKE '%.ps%' ESCAPE '\\' OR CommandLine LIKE '%.vb%' ESCAPE '\\' OR CommandLine LIKE '%.jar%' ESCAPE '\\' OR CommandLine LIKE '%.pl%' ESCAPE '\\'))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Application Whitelisting Bypass via Dnx.exe",
-        "id": "81ebd28b-9607-4478-bf06-974ed9d53ed7",
-        "status": "test",
-        "description": "Execute C# code located in the consoleapp folder",
-        "author": "Beyu Denis, oscd.community",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218",
-            "attack.t1027.004"
-        ],
-        "falsepositives": [
-            "Legitimate use of dnx.exe by legitimate user"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND NewProcessName LIKE '%\\\\dnx.exe' ESCAPE '\\')"
         ],
         "filename": ""
     },
@@ -36069,6 +35970,25 @@
         "filename": ""
     },
     {
+        "title": "Use of FSharp Interpreters",
+        "id": "b96b2031-7c17-4473-afe7-a30ce714db29",
+        "status": "test",
+        "description": "Detects the execution of FSharp Interpreters \"FsiAnyCpu.exe\" and \"FSi.exe\"\nBoth can be used for AWL bypass and to execute F# code via scripts or inline.\n",
+        "author": "Christopher Peacock @SecurePeacock, SCYTHE @scythe_io",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Legitimate use by a software developer."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\fsi.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\fsianycpu.exe' ESCAPE '\\') OR (OriginalFileName='fsi.exe' OR OriginalFileName='fsianycpu.exe')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Suspicious Scheduled Task Creation via Masqueraded XML File",
         "id": "dd2a821e-3b07-4d3b-a9ac-929fe4c6ca0c",
         "status": "test",
@@ -36109,25 +36029,6 @@
         "filename": ""
     },
     {
-        "title": "Ilasm Lolbin Use Compile C-Sharp",
-        "id": "850d55f9-6eeb-4492-ad69-a72338f65ba4",
-        "status": "test",
-        "description": "Detect use of Ilasm.exe to compile c# code into dll or exe.",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1127"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\ilasm.exe' ESCAPE '\\' OR OriginalFileName='ilasm.exe'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Usage Of Web Request Commands And Cmdlets",
         "id": "9fc51a3c-81b3-4fa7-b35f-7c02cf10fd2d",
         "status": "test",
@@ -36162,6 +36063,26 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (Description='GoTo Opener' OR Product='GoTo Opener' OR Company='LogMeIn, Inc.'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential Application Whitelisting Bypass via Dnx.EXE",
+        "id": "81ebd28b-9607-4478-bf06-974ed9d53ed7",
+        "status": "test",
+        "description": "Detects the execution of Dnx.EXE. The Dnx utility allows for the execution of C# code.\nAttackers might abuse this in order to bypass application whitelisting.\n",
+        "author": "Beyu Denis, oscd.community",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.t1027.004"
+        ],
+        "falsepositives": [
+            "Legitimate use of dnx.exe by legitimate user"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND NewProcessName LIKE '%\\\\dnx.exe' ESCAPE '\\')"
         ],
         "filename": ""
     },
@@ -36610,25 +36531,6 @@
         "filename": ""
     },
     {
-        "title": "Process Memory Dump Via Dotnet-Dump",
-        "id": "53d8d3e1-ca33-4012-adf3-e05a4d652e34",
-        "status": "test",
-        "description": "Detects the execution of \"dotnet-dump\" with the \"collect\" flag. The execution could indicate potential process dumping of critical processes such as LSASS",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1218"
-        ],
-        "falsepositives": [
-            "Process dumping is the expected behavior of the tool. So false positives are expected in legitimate usage. The PID/Process Name of the process being dumped needs to be investigated"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\dotnet-dump.exe' ESCAPE '\\' OR OriginalFileName='dotnet-dump.dll') AND CommandLine LIKE '%collect%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "Copy From Or To Admin Share Or Sysvol Folder",
         "id": "855bc8b5-2ae8-402e-a9ed-b889e6df1900",
         "status": "test",
@@ -36648,27 +36550,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%\\\\\\\\%$%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Sysvol\\\\%' ESCAPE '\\') AND (((NewProcessName LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\xcopy.exe' ESCAPE '\\') OR (OriginalFileName='robocopy.exe' OR OriginalFileName='XCOPY.EXE')) OR ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND CommandLine LIKE '%copy%' ESCAPE '\\') OR (((NewProcessName LIKE '%\\\\powershell.exe%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe%' ESCAPE '\\') OR (OriginalFileName='PowerShell.EXE' OR OriginalFileName='pwsh.dll')) AND (CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '%copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\' OR CommandLine LIKE '%move %' ESCAPE '\\' OR CommandLine LIKE '%move-item%' ESCAPE '\\' OR CommandLine LIKE '% mi %' ESCAPE '\\' OR CommandLine LIKE '% mv %' ESCAPE '\\')))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "LOLBIN Execution Of The FTP.EXE Binary",
-        "id": "06b401f4-107c-4ff9-947f-9ec1e7649f1e",
-        "status": "test",
-        "description": "Detects execution of ftp.exe script execution with the \"-s\" or \"/s\" flag and any child processes ran by ftp.exe",
-        "author": "Victor Sergeev, oscd.community",
-        "tags": [
-            "attack.execution",
-            "attack.t1059",
-            "attack.defense_evasion",
-            "attack.t1202"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR ((NewProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR OriginalFileName='ftp.exe') AND (CommandLine LIKE '%-s:%' ESCAPE '\\' OR CommandLine LIKE '%/s:%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -36766,6 +36647,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\netsh.exe' ESCAPE '\\' OR OriginalFileName='netsh.exe') AND (CommandLine LIKE '%firewall%' ESCAPE '\\' AND CommandLine LIKE '%delete %' ESCAPE '\\')) AND (NOT (ParentProcessName LIKE '%\\\\Dropbox.exe' ESCAPE '\\' AND CommandLine LIKE '%name=Dropbox%' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "COM Object Execution via Xwizard.EXE",
+        "id": "53d4bb30-3f36-4e8a-b078-69d36c4a79ff",
+        "status": "test",
+        "description": "Detects the execution of Xwizard tool with the \"RunWizard\" flag and a GUID like argument.\nThis utility can be abused in order to run custom COM object created in the registry.\n",
+        "author": "Ensar \u015eamil, @sblmsrsn, @oscd_initiative, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (((NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' OR OriginalFileName='xwizard.exe') AND (CommandLine='RunWizard' AND CommandLine REGEXP '\\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\\}')) OR ((CommandLine='RunWizard' AND CommandLine REGEXP '\\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\\}') AND (NOT (NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' OR OriginalFileName='xwizard.exe')))))"
         ],
         "filename": ""
     },
@@ -37061,6 +36961,25 @@
         "filename": ""
     },
     {
+        "title": "Windows Kernel Debugger Execution",
+        "id": "27ee9438-90dc-4bef-904b-d3ef927f5e7e",
+        "status": "test",
+        "description": "Detects execution of the Windows Kernel Debugger \"kd.exe\".",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.privilege_escalation"
+        ],
+        "falsepositives": [
+            "Rare occasions of legitimate cases where kernel debugging is necessary in production. Investigation is required"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\kd.exe' ESCAPE '\\' OR OriginalFileName='kd.exe'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "PktMon.EXE Execution",
         "id": "f956c7c1-0f60-4bc5-b7d7-b39ab3c08908",
         "status": "test",
@@ -37328,6 +37247,25 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%C:\\\\Program Files\\\\WindowsApps\\\\%' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%Base64%' ESCAPE '\\')) AND (NOT (ParentProcessName LIKE '%:\\\\Program Files\\\\WindowsApps\\\\Microsoft.WindowsTerminal%' ESCAPE '\\' AND ParentProcessName LIKE '%\\\\WindowsTerminal.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\')))))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "C# IL Code Compilation Via Ilasm.EXE",
+        "id": "850d55f9-6eeb-4492-ad69-a72338f65ba4",
+        "status": "test",
+        "description": "Detects the use of \"Ilasm.EXE\" in order to compile C# intermediate (IL) code to EXE or DLL.",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1127"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\ilasm.exe' ESCAPE '\\' OR OriginalFileName='ilasm.exe') AND (CommandLine LIKE '% /dll%' ESCAPE '\\' OR CommandLine LIKE '% /exe%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -38339,6 +38277,25 @@
         "filename": ""
     },
     {
+        "title": "Potential Download/Upload Activity Using Type Command",
+        "id": "aa0b3a82-eacc-4ec3-9150-b5a9a3e3f82f",
+        "status": "test",
+        "description": "Detects usage of the \"type\" command to download/upload data from WebDAV server",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%type %' ESCAPE '\\' AND CommandLine LIKE '% > \\\\\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%type \\\\\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > %' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Cscript/Wscript Potentially Suspicious Child Process",
         "id": "b6676963-0353-4f88-90f5-36c20d443c6a",
         "status": "experimental",
@@ -38373,6 +38330,27 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\tshark.exe' ESCAPE '\\' AND CommandLine LIKE '%-i%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\windump.exe' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Potential Arbitrary Command Execution Via FTP.EXE",
+        "id": "06b401f4-107c-4ff9-947f-9ec1e7649f1e",
+        "status": "test",
+        "description": "Detects execution of \"ftp.exe\" script with the \"-s\" or \"/s\" flag and any child processes ran by \"ftp.exe\".",
+        "author": "Victor Sergeev, oscd.community",
+        "tags": [
+            "attack.execution",
+            "attack.t1059",
+            "attack.defense_evasion",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (ParentProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR ((NewProcessName LIKE '%\\\\ftp.exe' ESCAPE '\\' OR OriginalFileName='ftp.exe') AND (CommandLine LIKE '%-s:%' ESCAPE '\\' OR CommandLine LIKE '%/s:%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -39798,6 +39776,25 @@
         "filename": ""
     },
     {
+        "title": "Arbitrary File Download Via ConfigSecurityPolicy.EXE",
+        "id": "1f0f6176-6482-4027-b151-00071af39d7e",
+        "status": "test",
+        "description": "Detects the execution of \"ConfigSecurityPolicy.EXE\", a binary part of Windows Defender used to manage settings in Windows Defender.\nUsers can configure different pilot collections for each of the co-management workloads.\nIt can be abused by attackers in order to upload or download files.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1567"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%ConfigSecurityPolicy.exe%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ConfigSecurityPolicy.exe' ESCAPE '\\' OR OriginalFileName='ConfigSecurityPolicy.exe') AND (CommandLine LIKE '%ftp://%' ESCAPE '\\' OR CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "PUA - WebBrowserPassView Execution",
         "id": "d0dae994-26c6-4d2d-83b5-b3c8b79ae513",
         "status": "test",
@@ -40285,6 +40282,27 @@
         "filename": ""
     },
     {
+        "title": "Potential Arbitrary File Download Via Cmdl32.EXE",
+        "id": "f37aba28-a9e6-4045-882c-d5004043b337",
+        "status": "test",
+        "description": "Detects execution of Cmdl32 with the \"/vpn\" and \"/lan\" flags.\nAttackers can abuse this utility in order to download arbitrary files via a configuration file.\nInspect the location and the content of the file passed as an argument in order to determine if it is suspicious.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.execution",
+            "attack.defense_evasion",
+            "attack.t1218",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmdl32.exe' ESCAPE '\\' OR OriginalFileName='CMDL32.EXE') AND (CommandLine LIKE '%/vpn%' ESCAPE '\\' AND CommandLine LIKE '%/lan%' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Suspicious MsiExec Embedding Parent",
         "id": "4a2a2c3e-209f-4d01-b513-4155a540b469",
         "status": "test",
@@ -40380,6 +40398,26 @@
         "filename": ""
     },
     {
+        "title": "Uncommon Child Process Of Defaultpack.EXE",
+        "id": "b2309017-4235-44fe-b5af-b15363011957",
+        "status": "test",
+        "description": "Detects uncommon child processes of \"DefaultPack.EXE\" binary as a proxy to launch other programs",
+        "author": "frack113",
+        "tags": [
+            "attack.t1218",
+            "attack.defense_evasion",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ParentProcessName LIKE '%\\\\DefaultPack.exe' ESCAPE '\\')"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Rundll32 InstallScreenSaver Execution",
         "id": "15bd98ea-55f4-4d37-b09a-e7caa0fa2221",
         "status": "test",
@@ -40414,25 +40452,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%.bat' ESCAPE '\\') AND ((NewProcessName LIKE '%\\\\xcopy.exe' ESCAPE '\\' AND (CommandLine LIKE '%powershell.exe%' ESCAPE '\\' AND CommandLine LIKE '%.bat.exe%' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\xcopy.exe' ESCAPE '\\' AND (CommandLine LIKE '%pwsh.exe%' ESCAPE '\\' AND CommandLine LIKE '%.bat.exe%' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\attrib.exe' ESCAPE '\\' AND (CommandLine LIKE '%+s%' ESCAPE '\\' AND CommandLine LIKE '%+h%' ESCAPE '\\' AND CommandLine LIKE '%.bat.exe%' ESCAPE '\\')))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "JSC Convert Javascript To Executable",
-        "id": "52788a70-f1da-40dd-8fbd-73b5865d6568",
-        "status": "test",
-        "description": "Detects the execution of the LOLBIN jsc.exe used by .NET to compile javascript code to .exe or .dll format",
-        "author": "frack113",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1127"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\jsc.exe' ESCAPE '\\' AND CommandLine LIKE '%.js%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -40963,6 +40982,25 @@
         "filename": ""
     },
     {
+        "title": "Arbitrary DLL or Csproj Code Execution Via Dotnet.EXE",
+        "id": "d80d5c81-04ba-45b4-84e4-92eba40e0ad3",
+        "status": "test",
+        "description": "Detects execution of arbitrary DLLs or unsigned code via a \".csproj\" files via Dotnet.EXE.",
+        "author": "Beyu Denis, oscd.community",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Legitimate administrator usage"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\dotnet.exe' ESCAPE '\\' OR OriginalFileName='.NET Host') AND (CommandLine LIKE '%.csproj' ESCAPE '\\' OR CommandLine LIKE '%.csproj\"' ESCAPE '\\' OR CommandLine LIKE '%.dll' ESCAPE '\\' OR CommandLine LIKE '%.dll\"' ESCAPE '\\' OR CommandLine LIKE '%.csproj''' ESCAPE '\\' OR CommandLine LIKE '%.dll''' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "WMIC Remote Command Execution",
         "id": "7773b877-5abb-4a3e-b9c9-fd0369b59b00",
         "status": "test",
@@ -40997,25 +41035,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((NewProcessName LIKE '%\\\\cmdkey.exe' ESCAPE '\\' OR OriginalFileName='cmdkey.exe') AND (CommandLine LIKE '% -g%' ESCAPE '\\' OR CommandLine LIKE '% /g%' ESCAPE '\\') AND (CommandLine LIKE '% -u%' ESCAPE '\\' OR CommandLine LIKE '% /u%' ESCAPE '\\') AND (CommandLine LIKE '% -p%' ESCAPE '\\' OR CommandLine LIKE '% /p%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Potential Download/Upload Activity Using Type Command",
-        "id": "aa0b3a82-eacc-4ec3-9150-b5a9a3e3f82f",
-        "status": "test",
-        "description": "Detects usage of the \"type\" command to download/upload data from WebDAV server",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.command_and_control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND ((CommandLine LIKE '%type %' ESCAPE '\\' AND CommandLine LIKE '% > \\\\\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%type \\\\\\\\%' ESCAPE '\\' AND CommandLine LIKE '% > %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -41129,25 +41148,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (CommandLine LIKE '%\\\\System\\\\CurrentControlSet\\\\Control%' ESCAPE '\\' AND CommandLine LIKE '%Write Protection%' ESCAPE '\\' AND CommandLine LIKE '%0%' ESCAPE '\\' AND CommandLine LIKE '%storage%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Use of FSharp Interpreters",
-        "id": "b96b2031-7c17-4473-afe7-a30ce714db29",
-        "status": "test",
-        "description": "The FSharp Interpreters, FsiAnyCpu.exe and FSi.exe, can be used for AWL bypass and is listed in Microsoft recommended block rules.",
-        "author": "Christopher Peacock @SecurePeacock, SCYTHE @scythe_io",
-        "tags": [
-            "attack.execution",
-            "attack.t1059"
-        ],
-        "falsepositives": [
-            "Legitimate use by a software developer."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4688 AND (NewProcessName LIKE '%\\\\fsianycpu.exe' ESCAPE '\\' OR OriginalFileName='fsianycpu.exe' OR NewProcessName LIKE '%\\\\fsi.exe' ESCAPE '\\' OR OriginalFileName='fsi.exe'))"
         ],
         "filename": ""
     },
@@ -41361,7 +41361,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND (NOT (Image LIKE '%:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%:Zone.Identifier' ESCAPE '\\' AND (NOT (Image LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe' ESCAPE '\\')) AND (NOT ((Image LIKE 'C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Mozilla Firefox\\\\firefox.exe' ESCAPE '\\')))"
         ],
         "filename": ""
     },

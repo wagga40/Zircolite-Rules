@@ -667,6 +667,25 @@
         "filename": "proc_creation_win_hktl_crackmapexec_powershell_obfuscation.yml"
     },
     {
+        "title": "ManageEngine Endpoint Central Dctask64.EXE Potential Abuse",
+        "id": "6345b048-8441-43a7-9bed-541133633d7a",
+        "status": "test",
+        "description": "Detects the execution of \"dctask64.exe\", a signed binary by ZOHO Corporation part of ManageEngine Endpoint Central.\nThis binary can be abused for DLL injection, arbitrary command and process execution.\n",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1055.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\' OR (Hashes LIKE '%6834B1B94E49701D77CCB3C0895E1AFD%' ESCAPE '\\' OR Hashes LIKE '%1BB6F93B129F398C7C4A76BB97450BBA%' ESCAPE '\\' OR Hashes LIKE '%FAA2AC19875FADE461C8D89DCF2710A3%' ESCAPE '\\' OR Hashes LIKE '%F1039CED4B91572AB7847D26032E6BBF%' ESCAPE '\\')) AND (CommandLine LIKE '% executecmd64 %' ESCAPE '\\' OR CommandLine LIKE '% invokeexe %' ESCAPE '\\' OR CommandLine LIKE '% injectDll %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_dctask64_arbitrary_command_and_dll_execution.yml"
+    },
+    {
         "title": "Execution Of Non-Existing File",
         "id": "71158e3f-df67-472b-930e-7d287acaa3e1",
         "status": "test",
@@ -953,6 +972,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csrss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Taskmgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sihost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\audiodg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wlanext.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dashost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\atbroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certreq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\consent.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\defrag.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dism.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhst3g.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\eventvwr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\runonce.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winver.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\logonui.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dwm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\LsaIso.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ntoskrnl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dfrgui.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\SystemRoot\\\\System32\\\\%' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\pwsh.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_system_exe_anomaly.yml"
+    },
+    {
+        "title": "Xwizard.EXE Execution From Non-Default Location",
+        "id": "193d5ccd-6f59-40c6-b5b0-8e32d5ddd3d1",
+        "status": "test",
+        "description": "Detects the execution of Xwizard tool from a non-default directory.\nWhen executed from a non-default directory, this utility can be abused in order to side load a custom version of \"xwizards.dll\".\n",
+        "author": "Christian Burkard (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Windows installed on non-C drive"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' OR OriginalFileName = 'xwizard.exe') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_xwizard_execution_non_default_location.yml"
     },
     {
         "title": "Visual Basic Command Line Compiler Usage",
@@ -4229,25 +4267,6 @@
         "filename": "proc_creation_win_hktl_krbrelayup.yml"
     },
     {
-        "title": "ZOHO Dctask64 Process Injection",
-        "id": "6345b048-8441-43a7-9bed-541133633d7a",
-        "status": "test",
-        "description": "Detects suspicious process injection using ZOHO's dctask64.exe",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1055.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\' AND NOT (CommandLine LIKE '%DesktopCentral\\_Agent\\\\agent%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_dctask64_proc_inject.yml"
-    },
-    {
         "title": "HackTool - CrackMapExec Execution",
         "id": "42a993dd-bb3e-48c8-b372-4d6684c4106c",
         "status": "test",
@@ -6197,25 +6216,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\wsreset.exe' ESCAPE '\\' AND NOT (NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' OR OriginalFileName = 'CONHOST.EXE'))"
         ],
         "filename": "proc_creation_win_uac_bypass_wsreset.yml"
-    },
-    {
-        "title": "Windows Kernel Debugger Execution",
-        "id": "27ee9438-90dc-4bef-904b-d3ef927f5e7e",
-        "status": "test",
-        "description": "Detects execution of the Windows Kernel Debugger \"kd.exe\".",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.privilege_escalation"
-        ],
-        "falsepositives": [
-            "Rare occasions of legitimate cases where kernel debugging is necessary in production. Investigation is required"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\kd.exe' ESCAPE '\\' OR OriginalFileName = 'kd.exe'))"
-        ],
-        "filename": "proc_creation_win_kd_execution.yml"
     },
     {
         "title": "Potential File Overwrite Via Sysinternals SDelete",
@@ -9314,25 +9314,6 @@
         "filename": "proc_creation_win_hktl_coercedpotato.yml"
     },
     {
-        "title": "Xwizard DLL Sideloading",
-        "id": "193d5ccd-6f59-40c6-b5b0-8e32d5ddd3d1",
-        "status": "test",
-        "description": "Detects the execution of Xwizard tool from the non-default directory which can be used to sideload a custom xwizards.dll",
-        "author": "Christian Burkard (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion",
-            "attack.t1574.002"
-        ],
-        "falsepositives": [
-            "Windows installed on non-C drive"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\xwizard.exe' ESCAPE '\\' AND NOT (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_dll_sideload_xwizard.yml"
-    },
-    {
         "title": "Wusa.EXE Extracting Cab Files From Suspicious Paths",
         "id": "c74c0390-3e20-41fd-a69a-128f0275a5ea",
         "status": "test",
@@ -9393,8 +9374,8 @@
         "title": "Renamed ZOHO Dctask64 Execution",
         "id": "340a090b-c4e9-412e-bb36-b4b16fe96f9b",
         "status": "test",
-        "description": "Detects a renamed dctask64.exe used for process injection, command execution, process creation with a signed binary by ZOHO Corporation",
-        "author": "Florian Roth (Nextron Systems)",
+        "description": "Detects a renamed \"dctask64.exe\" execution, a signed binary by ZOHO Corporation part of ManageEngine Endpoint Central.\nThis binary can be abused for DLL injection, arbitrary command and process execution.\n",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense_evasion",
             "attack.t1036",
@@ -9403,11 +9384,11 @@
             "attack.t1218"
         ],
         "falsepositives": [
-            "Unknown yet"
+            "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND Hashes LIKE '%6834B1B94E49701D77CCB3C0895E1AFD%' ESCAPE '\\' AND NOT (NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Hashes LIKE '%6834B1B94E49701D77CCB3C0895E1AFD%' ESCAPE '\\' OR Hashes LIKE '%1BB6F93B129F398C7C4A76BB97450BBA%' ESCAPE '\\' OR Hashes LIKE '%FAA2AC19875FADE461C8D89DCF2710A3%' ESCAPE '\\' OR Hashes LIKE '%F1039CED4B91572AB7847D26032E6BBF%' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_renamed_dctask64.yml"
     },
