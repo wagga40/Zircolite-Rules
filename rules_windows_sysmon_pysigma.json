@@ -3561,6 +3561,25 @@
         "filename": ""
     },
     {
+        "title": "Outbound Network Connection Initiated By Microsoft Dialer",
+        "id": "37e4024a-6c80-4d8f-b95d-2e7e94f3a8d1",
+        "status": "experimental",
+        "description": "Detects outbound network connection initiated by Microsoft Dialer.\nThe Microsoft Dialer, also known as Phone Dialer, is a built-in utility application included in various versions of the Microsoft Windows operating system. Its primary function is to provide users with a graphical interface for managing phone calls via a modem or a phone line connected to the computer.\nThis is an outdated process in the current conext of it's usage and is a common target for info stealers for process injection, and is used to make C2 connections, common example is \"Rhadamanthys\"\n",
+        "author": "CertainlyP",
+        "tags": [
+            "attack.execution",
+            "attack.t1071.001"
+        ],
+        "falsepositives": [
+            "In Modern Windows systems, unable to see legitimate usage of this process, However, if an organization has legitimate purpose for this there can be false positives."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=3 AND ((Image LIKE '%:\\\\Windows\\\\System32\\\\dialer.exe' ESCAPE '\\' AND Initiated='true') AND (NOT (DestinationIp LIKE '127.%' ESCAPE '\\' OR DestinationIp LIKE '10.%' ESCAPE '\\' OR DestinationIp LIKE '172.16.%' ESCAPE '\\' OR DestinationIp LIKE '172.17.%' ESCAPE '\\' OR DestinationIp LIKE '172.18.%' ESCAPE '\\' OR DestinationIp LIKE '172.19.%' ESCAPE '\\' OR DestinationIp LIKE '172.20.%' ESCAPE '\\' OR DestinationIp LIKE '172.21.%' ESCAPE '\\' OR DestinationIp LIKE '172.22.%' ESCAPE '\\' OR DestinationIp LIKE '172.23.%' ESCAPE '\\' OR DestinationIp LIKE '172.24.%' ESCAPE '\\' OR DestinationIp LIKE '172.25.%' ESCAPE '\\' OR DestinationIp LIKE '172.26.%' ESCAPE '\\' OR DestinationIp LIKE '172.27.%' ESCAPE '\\' OR DestinationIp LIKE '172.28.%' ESCAPE '\\' OR DestinationIp LIKE '172.29.%' ESCAPE '\\' OR DestinationIp LIKE '172.30.%' ESCAPE '\\' OR DestinationIp LIKE '172.31.%' ESCAPE '\\' OR DestinationIp LIKE '192.168.%' ESCAPE '\\' OR DestinationIp LIKE '169.254.%' ESCAPE '\\' OR DestinationIp='::1/128' OR DestinationIp LIKE 'fe8%' ESCAPE '\\' OR DestinationIp LIKE 'fe9%' ESCAPE '\\' OR DestinationIp LIKE 'fea%' ESCAPE '\\' OR DestinationIp LIKE 'feb%' ESCAPE '\\' OR DestinationIp LIKE 'fc%' ESCAPE '\\' OR DestinationIp LIKE 'fd%' ESCAPE '\\'))))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Potential PsExec Remote Execution",
         "id": "ea011323-7045-460b-b2d7-0f7442ea6b38",
         "status": "test",
