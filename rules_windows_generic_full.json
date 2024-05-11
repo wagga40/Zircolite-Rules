@@ -24672,6 +24672,28 @@
         "filename": "file_access_win_dpapi_master_key_access.yml"
     },
     {
+        "title": "Access To Windows Outlook Mail Files By Uncommon Application",
+        "id": "fc3e237f-2fef-406c-b90d-b3ae7e02fa8f",
+        "status": "experimental",
+        "description": "Detects file access requests to Windows Outlook Mail by uncommon processes.\nCould indicate potential attempt of credential stealing.\nRequires heavy baselining before usage\n",
+        "author": "frack113",
+        "tags": [
+            "attack.t1070.008",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Antivirus, Anti-Spyware, Anti-Malware Software",
+            "Backup software",
+            "Legitimate software installed on partitions other than \"C:\\\"",
+            "Searching software such as \"everything.exe\""
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (((FileName LIKE '%\\\\AppData\\\\Local\\\\Comms\\\\Unistore\\\\data%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Comms\\\\UnistoreDB\\\\store.vol' ESCAPE '\\') AND NOT ((NewProcessName = 'System') OR ((NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCopyAccelerator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "file_access_win_outlook_mail_credential_access.yml"
+    },
+    {
         "title": "Access To Browser Credential Files By Uncommon Application",
         "id": "91cb43db-302a-47e3-b3c8-7ede481e27bf",
         "status": "experimental",
@@ -24689,7 +24711,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (((FileName LIKE '%\\\\Appdata\\\\Local\\\\Microsoft\\\\Windows\\\\WebCache\\\\WebCacheV01.dat' ESCAPE '\\' OR (FileName LIKE '%\\\\cookies.sqlite' ESCAPE '\\' OR FileName LIKE '%release\\\\key3.db' ESCAPE '\\' OR FileName LIKE '%release\\\\key4.db' ESCAPE '\\' OR FileName LIKE '%release\\\\logins.json' ESCAPE '\\') OR (FileName LIKE '%\\\\Appdata\\\\Local\\\\Chrome\\\\User Data\\\\Default\\\\Login Data%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Network\\\\Cookies%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Local State%' ESCAPE '\\')) AND NOT ((NewProcessName = 'System') OR ((NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\WINDOWS\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\WINDOWS\\\\SysWOW64\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCopyAccelerator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (((FileName LIKE '%\\\\Appdata\\\\Local\\\\Microsoft\\\\Windows\\\\WebCache\\\\WebCacheV01.dat' ESCAPE '\\' OR (FileName LIKE '%\\\\cookies.sqlite' ESCAPE '\\' OR FileName LIKE '%release\\\\key3.db' ESCAPE '\\' OR FileName LIKE '%release\\\\key4.db' ESCAPE '\\' OR FileName LIKE '%release\\\\logins.json' ESCAPE '\\') OR (FileName LIKE '%\\\\Appdata\\\\Local\\\\Chrome\\\\User Data\\\\Default\\\\Login Data%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Network\\\\Cookies%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Local State%' ESCAPE '\\')) AND NOT ((NewProcessName = 'System') OR ((NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCopyAccelerator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\'))))"
         ],
         "filename": "file_access_win_browser_credential_access.yml"
     },
@@ -25826,6 +25848,26 @@
         "filename": "registry_set_rpcrt4_etw_tamper.yml"
     },
     {
+        "title": "UAC Notification Disabled",
+        "id": "c5f6a85d-b647-40f7-bbad-c10b66bab038",
+        "status": "experimental",
+        "description": "Detects when an attacker tries to disable User Account Control (UAC) notification by tampering with the \"UACDisableNotify\" value.\nUAC is a critical security feature in Windows that prevents unauthorized changes to the operating system. It prompts the user for permission or an administrator password before allowing actions that could affect the system's operation or change settings that affect other users.\nWhen \"UACDisableNotify\" is set to 1, UAC prompts are suppressed.\n",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.defense_evasion",
+            "attack.t1548.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Microsoft\\\\Security Center\\\\UACDisableNotify%' ESCAPE '\\' AND NewValue = 'DWORD (0x00000001)')"
+        ],
+        "filename": "registry_set_uac_disable_notification.yml"
+    },
+    {
         "title": "PowerShell Logging Disabled Via Registry Key Tampering",
         "id": "fecfd1a1-cc78-4313-a1ea-2ee2e8ec27a7",
         "status": "experimental",
@@ -25919,6 +25961,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\PortNumber' ESCAPE '\\' AND NOT ((NewValue = 'DWORD (0x00000d3d)')))"
         ],
         "filename": "registry_set_change_rdp_port.yml"
+    },
+    {
+        "title": "UAC Secure Desktop Prompt Disabled",
+        "id": "0d7ceeef-3539-4392-8953-3dc664912714",
+        "status": "experimental",
+        "description": "Detects when an attacker tries to change User Account Control (UAC) elevation request destination via the \"PromptOnSecureDesktop\" value.\nThe \"PromptOnSecureDesktop\" setting specifically determines whether UAC prompts are displayed on the secure desktop. The secure desktop is a separate desktop environment that's isolated from other processes running on the system. It's designed to prevent malicious software from intercepting or tampering with UAC prompts.\nWhen \"PromptOnSecureDesktop\" is set to 0, UAC prompts are displayed on the user's current desktop instead of the secure desktop. This reduces the level of security because it potentially exposes the prompts to manipulation by malicious software.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.defense_evasion",
+            "attack.t1548.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\PromptOnSecureDesktop%' ESCAPE '\\' AND NewValue = 'DWORD (0x00000000)')"
+        ],
+        "filename": "registry_set_uac_disable_secure_desktop_prompt.yml"
     },
     {
         "title": "Tamper With Sophos AV Registry Keys",
@@ -27335,6 +27397,26 @@
         "filename": "registry_set_persistence_mycomputer.yml"
     },
     {
+        "title": "UAC Disabled",
+        "id": "48437c39-9e5f-47fb-af95-3d663c3f2919",
+        "status": "stable",
+        "description": "Detects when an attacker tries to disable User Account Control (UAC) by setting the registry value \"EnableLUA\" to 0.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.privilege_escalation",
+            "attack.defense_evasion",
+            "attack.t1548.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\EnableLUA%' ESCAPE '\\' AND NewValue = 'DWORD (0x00000000)')"
+        ],
+        "filename": "registry_set_uac_disable.yml"
+    },
+    {
         "title": "New Application in AppCompat",
         "id": "60936b49-fca0-4f32-993d-7415edcf9a5d",
         "status": "test",
@@ -27565,26 +27647,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%\\\\CLSID\\\\{c90250f3-4d7d-4991-9b69-a5c5bc1c2ae6}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND NOT ((NewValue LIKE '\\%windir\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\')))"
         ],
         "filename": "registry_set_persistence_comhijack_psfactorybuffer.yml"
-    },
-    {
-        "title": "Disable UAC Using Registry",
-        "id": "48437c39-9e5f-47fb-af95-3d663c3f2919",
-        "status": "experimental",
-        "description": "Detects when an attacker tries to disable User Account Control (UAC) by changing its registry key HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA from 1 to 0",
-        "author": "frack113",
-        "tags": [
-            "attack.privilege_escalation",
-            "attack.defense_evasion",
-            "attack.t1548.002"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\EnableLUA%' ESCAPE '\\' AND NewValue = 'DWORD (0x00000000)')"
-        ],
-        "filename": "registry_set_disable_uac_registry.yml"
     },
     {
         "title": "Register New IFiltre For Persistence",
@@ -30156,7 +30218,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2004', '2071') AND NOT ((Action = '2') OR ((ApplicationPath LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((ApplicationPath LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')))) AND NOT ((ModifyingApplication LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2004', '2071', '2097') AND NOT ((Action = '2') OR ((ApplicationPath LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((ApplicationPath LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Tmp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')))) AND NOT ((ModifyingApplication LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND ModifyingApplication LIKE '%\\\\MsMpEng.exe%' ESCAPE '\\')))"
         ],
         "filename": "win_firewall_as_add_rule.yml"
     },
@@ -30239,9 +30301,28 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2004', '2071') AND (ApplicationPath LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')) AND NOT ((Action = '2')))"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND (EventID IN ('2004', '2071', '2097') AND (ApplicationPath LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Tmp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR ApplicationPath LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')) AND NOT ((Action = '2')))"
         ],
         "filename": "win_firewall_as_add_rule_susp_folder.yml"
+    },
+    {
+        "title": "New Firewall Rule Added In Windows Firewall Exception List Via WmiPrvSE.EXE",
+        "id": "eca81e8d-09e1-4d04-8614-c91f44fd0519",
+        "status": "experimental",
+        "description": "Detects the addition of a new \"Allow\" firewall rule by the WMI process (WmiPrvSE.EXE).\nThis can occur if an attacker leverages PowerShell cmdlets such as \"New-NetFirewallRule\", or directly uses WMI CIM classes such as \"MSFT_NetFirewallRule\".\n",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004"
+        ],
+        "falsepositives": [
+            "Administrator scripts or activity."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' AND EventID IN ('2004', '2071', '2097') AND Action = '3' AND ModifyingApplication LIKE '%:\\\\Windows\\\\System32\\\\wbem\\\\WmiPrvSE.exe' ESCAPE '\\')"
+        ],
+        "filename": "win_firewall_as_add_rule_wmiprvse.yml"
     },
     {
         "title": "Windows Defender Firewall Has Been Reset To Its Default Configuration",
@@ -46008,6 +46089,21 @@
         "filename": "proc_creation_win_wmic_recon_system_info.yml"
     },
     {
+        "title": "New Windows Firewall Rule Added Via New-NetFirewallRule Cmdlet",
+        "id": "51483085-0cba-46a8-837e-4416496d6971",
+        "status": "experimental",
+        "description": "Detects calls to the \"New-NetFirewallRule\" cmdlet from PowerShell in order to add a new firewall rule with an \"Allow\" action.\n",
+        "author": "frack113",
+        "falsepositives": [
+            "Administrator script"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%New-NetFirewallRule %' ESCAPE '\\' AND CommandLine LIKE '% -Action %' ESCAPE '\\' AND CommandLine LIKE '%allow%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_new_netfirewallrule_allow.yml"
+    },
+    {
         "title": "Diskshadow Child Process Spawned",
         "id": "56b1dde8-b274-435f-a73a-fb75eb81262a",
         "status": "experimental",
@@ -47059,6 +47155,26 @@
             "SELECT * FROM logs WHERE ((EventID = '400' AND Channel = 'Windows PowerShell') AND (Data LIKE '%HostApplication=%' ESCAPE '\\' AND NOT (((Data LIKE '%HostApplication=_:/Windows/System32/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR Data LIKE '%HostApplication=_:/Windows/SysWOW64/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR Data LIKE '%HostApplication=_:\\\\Windows\\\\System32\\\\sdiagnhost.exe%' ESCAPE '\\' OR Data LIKE '%HostApplication=_:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR Data LIKE '%HostApplication=_:\\\\Windows\\\\SysWOW64\\\\sdiagnhost.exe%' ESCAPE '\\' OR Data LIKE '%HostApplication=_:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR Data LIKE '%HostApplication=powershell%' ESCAPE '\\')))) AND NOT ((Data LIKE '%Citrix\\\\ConfigSync\\\\ConfigSync.ps1%' ESCAPE '\\')))"
         ],
         "filename": "posh_pc_alternate_powershell_hosts.yml"
+    },
+    {
+        "title": "New Windows Firewall Rule Added Via New-NetFirewallRule Cmdlet - ScriptBlock",
+        "id": "8d31dd2e-b582-48ca-826e-dcaa2c1ca264",
+        "status": "experimental",
+        "description": "Detects when a powershell script contains calls to the \"New-NetFirewallRule\" cmdlet in order to add a new firewall rule with an \"Allow\" action.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1562.004",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Administrator script"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%New-NetFirewallRule%-Action%Allow%' ESCAPE '\\')"
+        ],
+        "filename": "posh_ps_new_netfirewallrule_allow.yml"
     },
     {
         "title": "WinAPI Library Calls Via PowerShell Scripts",
