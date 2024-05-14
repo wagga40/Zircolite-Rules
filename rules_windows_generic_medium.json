@@ -1088,6 +1088,28 @@
         "filename": "proc_creation_win_renamed_jusched.yml"
     },
     {
+        "title": "Potentially Suspicious Child Process of KeyScrambler.exe",
+        "id": "ca5583e9-8f80-46ac-ab91-7f314d13b984",
+        "status": "experimental",
+        "description": "Detects potentially suspicious child processes of KeyScrambler.exe",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.execution",
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1203",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\KeyScrambler.exe' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR OriginalFileName IN ('Cmd.Exe', 'cscript.exe', 'mshta.exe', 'PowerShell.EXE', 'pwsh.dll', 'regsvr32.exe', 'RUNDLL32.EXE', 'wscript.exe')))"
+        ],
+        "filename": "proc_creation_win_keyscrambler_susp_child_process.yml"
+    },
+    {
         "title": "Disable Windows Defender AV Security Monitoring",
         "id": "a7ee1722-c3c5-aeff-3212-c777e4733217",
         "status": "test",
@@ -1665,6 +1687,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csrss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Taskmgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sihost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\audiodg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wlanext.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dashost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\atbroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certreq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\consent.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\defrag.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dism.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhst3g.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\eventvwr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\runonce.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winver.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\logonui.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dwm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\LsaIso.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ntoskrnl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dfrgui.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\SystemRoot\\\\System32\\\\%' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\pwsh.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_system_exe_anomaly.yml"
+    },
+    {
+        "title": "All Backups Deleted Via Wbadmin.EXE",
+        "id": "639c9081-f482-47d3-a0bd-ddee3d4ecd76",
+        "status": "test",
+        "description": "Detects the deletion of all backups or system state backups via \"wbadmin.exe\".\nThis technique is used by numerous ransomware families and actors.\nThis may only be successful on server platforms that have Windows Backup enabled.\n",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1490"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wbadmin.exe' ESCAPE '\\' OR OriginalFileName = 'WBADMIN.EXE') AND (CommandLine LIKE '%delete%' ESCAPE '\\' AND CommandLine LIKE '%backup%' ESCAPE '\\' AND CommandLine LIKE '%keepVersions:0%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_wbadmin_delete_all_backups.yml"
     },
     {
         "title": "New Firewall Rule Added Via Netsh.EXE",
@@ -3165,25 +3206,6 @@
         "filename": "proc_creation_win_lolbin_extrac32.yml"
     },
     {
-        "title": "SystemStateBackup Deleted Using Wbadmin.EXE",
-        "id": "89f75308-5b1b-4390-b2d8-d6b2340efaf8",
-        "status": "test",
-        "description": "Deletes the Windows systemstatebackup using wbadmin.exe.\nThis technique is used by numerous ransomware families.\nThis may only be successful on server platforms that have Windows Backup enabled.\n",
-        "author": "frack113",
-        "tags": [
-            "attack.impact",
-            "attack.t1490"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wbadmin.exe' ESCAPE '\\' OR OriginalFileName = 'WBADMIN.EXE') AND (CommandLine LIKE '%delete %' ESCAPE '\\' AND CommandLine LIKE '%systemstatebackup %' ESCAPE '\\' AND CommandLine LIKE '%-keepVersions:0%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_wbadmin_delete_systemstatebackup.yml"
-    },
-    {
         "title": "Potential Dosfuscation Activity",
         "id": "a77c1610-fc73-4019-8e29-0f51efc04a51",
         "status": "test",
@@ -3761,6 +3783,25 @@
         "filename": "proc_creation_win_powershell_install_unsigned_appx_packages.yml"
     },
     {
+        "title": "Sensitive File Recovery From Backup Via Wbadmin.EXE",
+        "id": "84972c80-251c-4c3a-9079-4f00aad93938",
+        "status": "experimental",
+        "description": "Detects the dump of highly sensitive files such as \"NTDS.DIT\" and \"SECURITY\" hive.\nAttackers can leverage the \"wbadmin\" utility in order to dump sensitive files that might contain credential or sensitive information.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wbadmin.exe' ESCAPE '\\' OR OriginalFileName = 'WBADMIN.EXE') AND (CommandLine LIKE '% recovery%' ESCAPE '\\' AND CommandLine LIKE '%recoveryTarget%' ESCAPE '\\' AND CommandLine LIKE '%itemtype:File%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\config\\\\SAM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\SECURITY%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\SYSTEM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\NTDS\\\\NTDS.dit%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_wbadmin_restore_sensitive_files.yml"
+    },
+    {
         "title": "Potential Command Line Path Traversal Evasion Attempt",
         "id": "1327381e-6ab0-4f38-b583-4c1b8346a56b",
         "status": "test",
@@ -4029,6 +4070,24 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '% -u system %' ESCAPE '\\' OR CommandLine LIKE '% --user system %' ESCAPE '\\' OR CommandLine LIKE '% -u NT%' ESCAPE '\\' OR CommandLine LIKE '% -u \"NT%' ESCAPE '\\' OR CommandLine LIKE '% -u ''NT%' ESCAPE '\\' OR CommandLine LIKE '% --system %' ESCAPE '\\' OR CommandLine LIKE '% -u administrator %' ESCAPE '\\') AND (CommandLine LIKE '% -c cmd%' ESCAPE '\\' OR CommandLine LIKE '% -c \"cmd%' ESCAPE '\\' OR CommandLine LIKE '% -c powershell%' ESCAPE '\\' OR CommandLine LIKE '% -c \"powershell%' ESCAPE '\\' OR CommandLine LIKE '% --command cmd%' ESCAPE '\\' OR CommandLine LIKE '% --command powershell%' ESCAPE '\\' OR CommandLine LIKE '% -c whoami%' ESCAPE '\\' OR CommandLine LIKE '% -c wscript%' ESCAPE '\\' OR CommandLine LIKE '% -c cscript%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_privilege_escalation_cli_patterns.yml"
+    },
+    {
+        "title": "Uncommon FileSystem Load Attempt By Format.com",
+        "id": "9fb6b26e-7f9e-4517-a48b-8cac4a1b6c60",
+        "status": "test",
+        "description": "Detects the execution of format.com with an uncommon filesystem selection that could indicate a defense evasion activity in which \"format.com\" is used to load malicious DLL files or other programs.\n",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\format.com' ESCAPE '\\' AND CommandLine LIKE '%/fs:%' ESCAPE '\\') AND NOT (((CommandLine LIKE '%/fs:exFAT%' ESCAPE '\\' OR CommandLine LIKE '%/fs:FAT%' ESCAPE '\\' OR CommandLine LIKE '%/fs:NTFS%' ESCAPE '\\' OR CommandLine LIKE '%/fs:ReFS%' ESCAPE '\\' OR CommandLine LIKE '%/fs:UDF%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_format_uncommon_filesystem_load.yml"
     },
     {
         "title": "Potential Meterpreter/CobaltStrike Activity",
@@ -7874,6 +7933,25 @@
         "filename": "proc_creation_win_hktl_hydra.yml"
     },
     {
+        "title": "Windows Backup Deleted Via Wbadmin.EXE",
+        "id": "89f75308-5b1b-4390-b2d8-d6b2340efaf8",
+        "status": "test",
+        "description": "Detects the deletion of backups or system state backups via \"wbadmin.exe\".\nThis technique is used by numerous ransomware families and actors.\nThis may only be successful on server platforms that have Windows Backup enabled.\n",
+        "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1490"
+        ],
+        "falsepositives": [
+            "Legitimate backup activity from administration scripts and software."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\wbadmin.exe' ESCAPE '\\' OR OriginalFileName = 'WBADMIN.EXE') AND (CommandLine LIKE '%delete %' ESCAPE '\\' AND CommandLine LIKE '%backup%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%keepVersions:0%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_wbadmin_delete_backups.yml"
+    },
+    {
         "title": "Potential LethalHTA Technique Execution",
         "id": "ed5d72a6-f8f4-479d-ba79-02f6a80d7471",
         "status": "test",
@@ -9635,6 +9713,25 @@
         "filename": "proc_creation_win_teams_suspicious_command_line_cred_access.yml"
     },
     {
+        "title": "File Recovery From Backup Via Wbadmin.EXE",
+        "id": "6fe4aa1e-0531-4510-8be2-782154b73b48",
+        "status": "experimental",
+        "description": "Detects the recovery of files from backups via \"wbadmin.exe\".\nAttackers can restore sensitive files such as NTDS.DIT or Registry Hives from backups in order to potentially extract credentials.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), frack113",
+        "tags": [
+            "attack.impact",
+            "attack.t1490"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wbadmin.exe' ESCAPE '\\' OR OriginalFileName = 'WBADMIN.EXE') AND (CommandLine LIKE '% recovery%' ESCAPE '\\' AND CommandLine LIKE '%recoveryTarget%' ESCAPE '\\' AND CommandLine LIKE '%itemtype:File%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_wbadmin_restore_file.yml"
+    },
+    {
         "title": "Potential Suspicious Activity Using SeCEdit",
         "id": "c2c76b77-32be-4d1f-82c9-7e544bdfe0eb",
         "status": "test",
@@ -10762,7 +10859,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Change%' ESCAPE '\\' AND CommandLine LIKE '%/TN%' ESCAPE '\\' AND CommandLine LIKE '%/disable%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Change%' ESCAPE '\\' AND CommandLine LIKE '%/TN%' ESCAPE '\\' AND CommandLine LIKE '%/disable%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_schtasks_disable.yml"
     },
@@ -10959,7 +11056,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +h %' ESCAPE '\\') AND NOT ((CommandLine LIKE '%\\\\desktop.ini %' ESCAPE '\\') OR (ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '+R +H +S +A \\\\\\*.cui' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\\\*.bat' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +h %' ESCAPE '\\') AND NOT ((CommandLine LIKE '%\\\\desktop.ini %' ESCAPE '\\'))) AND NOT ((ParentProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '+R +H +S +A \\\\\\*.cui' ESCAPE '\\' AND ParentCommandLine LIKE 'C:\\\\WINDOWS\\\\system32\\\\\\*.bat' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_attrib_hiding_files.yml"
     },
@@ -11001,6 +11098,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%ttdinject.exe' ESCAPE '\\' OR OriginalFileName = 'TTDInject.EXE'))"
         ],
         "filename": "proc_creation_win_lolbin_ttdinject.yml"
+    },
+    {
+        "title": "Sensitive File Dump Via Wbadmin.EXE",
+        "id": "8b93a509-1cb8-42e1-97aa-ee24224cdc15",
+        "status": "experimental",
+        "description": "Detects the dump of highly sensitive files such as \"NTDS.DIT\" and \"SECURITY\" hive.\nAttackers can leverage the \"wbadmin\" utility in order to dump sensitive files that might contain credential or sensitive information.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1003.003"
+        ],
+        "falsepositives": [
+            "Legitimate backup operation by authorized administrators. Matches must be investigated and allowed on a case by case basis."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wbadmin.exe' ESCAPE '\\' OR OriginalFileName = 'WBADMIN.EXE') AND (CommandLine LIKE '%start%' ESCAPE '\\' OR CommandLine LIKE '%backup%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\config\\\\SAM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\SECURITY%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\SYSTEM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\NTDS\\\\NTDS.dit%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_wbadmin_dump_sensitive_files.yml"
     },
     {
         "title": "Phishing Pattern ISO in Archive",
@@ -12120,24 +12236,6 @@
         "filename": "proc_creation_win_mpcmdrun_dll_sideload_defender.yml"
     },
     {
-        "title": "Format.com FileSystem LOLBIN",
-        "id": "9fb6b26e-7f9e-4517-a48b-8cac4a1b6c60",
-        "status": "test",
-        "description": "Detects the execution of format.com with a suspicious filesystem selection that could indicate a defense evasion activity in which format.com is used to load malicious DLL files or other programs",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense_evasion"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\format.com' ESCAPE '\\' AND CommandLine LIKE '%/fs:%' ESCAPE '\\') AND NOT (((CommandLine LIKE '%/fs:FAT%' ESCAPE '\\' OR CommandLine LIKE '%/fs:exFAT%' ESCAPE '\\' OR CommandLine LIKE '%/fs:NTFS%' ESCAPE '\\' OR CommandLine LIKE '%/fs:UDF%' ESCAPE '\\' OR CommandLine LIKE '%/fs:ReFS%' ESCAPE '\\'))))"
-        ],
-        "filename": "proc_creation_win_lolbin_format.yml"
-    },
-    {
         "title": "Suspicious File Characteristics Due to Missing Fields",
         "id": "9637e8a5-7131-4f7f-bdc7-2b05d8670c43",
         "status": "test",
@@ -12357,11 +12455,11 @@
             "attack.t1564.001"
         ],
         "falsepositives": [
-            "Legitimate use"
+            "Unknown"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'iCACLS.EXE' OR NewProcessName LIKE '%\\\\icacls.exe' ESCAPE '\\') AND (CommandLine LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%/deny%' ESCAPE '\\' AND CommandLine LIKE '%S-1-1-0:%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'iCACLS.EXE' OR NewProcessName LIKE '%\\\\icacls.exe' ESCAPE '\\') AND (CommandLine LIKE '%/deny%' ESCAPE '\\' AND CommandLine LIKE '%S-1-1-0:%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_icacls_deny.yml"
     },
@@ -14945,7 +15043,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/delete%' ESCAPE '\\' AND CommandLine LIKE '%/tn%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/delete%' ESCAPE '\\' AND CommandLine LIKE '%/tn%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_schtasks_delete.yml"
     },
@@ -15663,25 +15761,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%lsass.dmp%' ESCAPE '\\' OR CommandLine LIKE '%lsass.zip%' ESCAPE '\\' OR CommandLine LIKE '%lsass.rar%' ESCAPE '\\' OR CommandLine LIKE '%Andrew.dmp%' ESCAPE '\\' OR CommandLine LIKE '%Coredump.dmp%' ESCAPE '\\' OR CommandLine LIKE '%NotLSASS.zip%' ESCAPE '\\' OR CommandLine LIKE '%lsass\\_2%' ESCAPE '\\' OR CommandLine LIKE '%lsassdump%' ESCAPE '\\' OR CommandLine LIKE '%lsassdmp%' ESCAPE '\\') OR (CommandLine LIKE '%lsass%' ESCAPE '\\' AND CommandLine LIKE '%.dmp%' ESCAPE '\\') OR (CommandLine LIKE '%SQLDmpr%' ESCAPE '\\' AND CommandLine LIKE '%.mdmp%' ESCAPE '\\') OR (CommandLine LIKE '%nanodump%' ESCAPE '\\' AND CommandLine LIKE '%.dmp%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_lsass_dmp_cli_keywords.yml"
-    },
-    {
-        "title": "Suspicious Add Scheduled Task Parent",
-        "id": "9494479d-d994-40bf-a8b1-eea890237021",
-        "status": "test",
-        "description": "Detects suspicious scheduled task creations from a parent stored in a temporary folder",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.execution",
-            "attack.t1053.005"
-        ],
-        "falsepositives": [
-            "Software installers that run from temporary folders and also install scheduled tasks"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Create %' ESCAPE '\\' AND (ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%update\\_task.xml%' ESCAPE '\\' OR CommandLine LIKE '%unattended.ini%' ESCAPE '\\'))))"
-        ],
-        "filename": "proc_creation_win_schtasks_parent.yml"
     },
     {
         "title": "Msxsl.EXE Execution",
@@ -17059,7 +17138,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +s%' ESCAPE '\\' AND (CommandLine LIKE '% \\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') AND (CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine LIKE '%.exe%' ESCAPE '\\' OR CommandLine LIKE '%.hta%' ESCAPE '\\' OR CommandLine LIKE '%.ps1%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\')) AND NOT (CommandLine LIKE '%\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.exe%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\attrib.exe' ESCAPE '\\' OR OriginalFileName = 'ATTRIB.EXE') AND CommandLine LIKE '% +s%' ESCAPE '\\' AND (CommandLine LIKE '% \\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') AND (CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.dll%' ESCAPE '\\' OR CommandLine LIKE '%.exe%' ESCAPE '\\' OR CommandLine LIKE '%.hta%' ESCAPE '\\' OR CommandLine LIKE '%.ps1%' ESCAPE '\\' OR CommandLine LIKE '%.vbe%' ESCAPE '\\' OR CommandLine LIKE '%.vbs%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' AND CommandLine LIKE '%.exe%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_attrib_system_susp_paths.yml"
     },
@@ -17854,7 +17933,7 @@
         "filename": "proc_creation_win_hktl_sharp_impersonation.yml"
     },
     {
-        "title": "Suspicious Execution Of PDQDeployRunner",
+        "title": "Potentially Suspicious Execution Of PDQDeployRunner",
         "id": "12b8e9f5-96b2-41e1-9a42-8c6779a5c184",
         "status": "test",
         "description": "Detects suspicious execution of \"PDQDeployRunner\" which is part of the PDQDeploy service stack that is responsible for executing commands and packages on a remote machines",
@@ -17867,7 +17946,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%PDQDeployRunner-%' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scriptrunner.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\') OR (NewProcessName LIKE '%C:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\ProgramData\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\') OR (CommandLine LIKE '%iex %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\' OR CommandLine LIKE '%DownloadString%' ESCAPE '\\' OR CommandLine LIKE '%http%' ESCAPE '\\' OR CommandLine LIKE '% -enc %' ESCAPE '\\' OR CommandLine LIKE '% -encodedcommand %' ESCAPE '\\' OR CommandLine LIKE '%FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '% -w hidden%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\PDQDeployRunner-%' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\bash.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\scriptrunner.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\TEMP\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\') OR (CommandLine LIKE '% -decode %' ESCAPE '\\' OR CommandLine LIKE '% -enc %' ESCAPE '\\' OR CommandLine LIKE '% -encodedcommand %' ESCAPE '\\' OR CommandLine LIKE '% -w hidden%' ESCAPE '\\' OR CommandLine LIKE '%DownloadString%' ESCAPE '\\' OR CommandLine LIKE '%FromBase64String%' ESCAPE '\\' OR CommandLine LIKE '%http%' ESCAPE '\\' OR CommandLine LIKE '%iex %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_pdqdeploy_runner_susp_children.yml"
     },
@@ -21459,7 +21538,7 @@
         "title": "Suspicious Executable File Creation",
         "id": "74babdd6-a758-4549-9632-26535279e654",
         "status": "test",
-        "description": "Detect creation of suspicious executable file name. Some strings look for suspicious file extensions, others look for filenames that exploit unquoted service paths.",
+        "description": "Detect creation of suspicious executable file names.\nSome strings look for suspicious file extensions, others look for filenames that exploit unquoted service paths.\n",
         "author": "frack113",
         "tags": [
             "attack.defense_evasion",
@@ -29600,29 +29679,6 @@
         "filename": "win_security_replay_attack_detected.yml"
     },
     {
-        "title": "Malicious Service Installations",
-        "id": "cb062102-587e-4414-8efa-dbe3c7bf19c6",
-        "status": "test",
-        "description": "Detects known malicious service installs that only appear in cases of lateral movement, credential dumping, and other suspicious activities.",
-        "author": "Florian Roth (Nextron Systems), Daniil Yugoslavskiy, oscd.community (update)",
-        "tags": [
-            "attack.persistence",
-            "attack.privilege_escalation",
-            "attack.t1003",
-            "car.2013-09-005",
-            "attack.t1543.003",
-            "attack.t1569.002"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ServiceName = 'javamtsup')"
-        ],
-        "filename": "win_security_mal_service_installs.yml"
-    },
-    {
         "title": "Suspicious Teams Application Related ObjectAcess Event",
         "id": "25cde13e-8e20-4c29-b949-4e795b76f16f",
         "status": "test",
@@ -37386,6 +37442,27 @@
         "filename": "proc_creation_win_malware_plugx_susp_exe_locations.yml"
     },
     {
+        "title": "CosmicDuke Service Installation",
+        "id": "cb062102-587e-4414-8efa-dbe3c7bf19c6",
+        "status": "test",
+        "description": "Detects the installation of a service named \"javamtsup\" on the system.\nThe CosmicDuke info stealer uses Windows services typically named \"javamtsup\" for persistence.\n",
+        "author": "Florian Roth (Nextron Systems), Daniil Yugoslavskiy, oscd.community (update)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1543.003",
+            "attack.t1569.002",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ServiceName = 'javamtsup')"
+        ],
+        "filename": "win_security_mal_cosmik_duke_persistence.yml"
+    },
+    {
         "title": "Adwind RAT / JRAT",
         "id": "1fac1481-2dbc-48b2-9096-753c49b4ec71",
         "status": "test",
@@ -40459,7 +40536,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((Hashes LIKE '%6b311c0a977d21e772ac4e99762234da852bbf84293386fbe78622a96c0b052f%' ESCAPE '\\' OR Hashes LIKE '%c60ead92cd376b689d1b4450f2578b36ea0bf64f3963cfa5546279fa4424c2a5%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%Create%' ESCAPE '\\' AND CommandLine LIKE '%/RU%' ESCAPE '\\' AND CommandLine LIKE '%SYSTEM%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Microsoft\\\\Windows\\\\WinSrv%' ESCAPE '\\' AND (CommandLine LIKE '%servtask.bat%' ESCAPE '\\' OR CommandLine LIKE '%execute.bat%' ESCAPE '\\' OR CommandLine LIKE '%doit.bat%' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%Delete%' ESCAPE '\\' AND CommandLine LIKE '%/F %' ESCAPE '\\' AND CommandLine LIKE '%\\\\Microsoft\\\\Windows\\\\WinSrv%' ESCAPE '\\') OR (CommandLine LIKE '%Get-ChildItem%' ESCAPE '\\' OR CommandLine LIKE '%.save%' ESCAPE '\\' OR CommandLine LIKE '%Compress-Archive -DestinationPath C:\\\\ProgramData\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((Hashes LIKE '%6b311c0a977d21e772ac4e99762234da852bbf84293386fbe78622a96c0b052f%' ESCAPE '\\' OR Hashes LIKE '%c60ead92cd376b689d1b4450f2578b36ea0bf64f3963cfa5546279fa4424c2a5%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%Create%' ESCAPE '\\' AND CommandLine LIKE '%/RU%' ESCAPE '\\' AND CommandLine LIKE '%SYSTEM%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Microsoft\\\\Windows\\\\WinSrv%' ESCAPE '\\' AND (CommandLine LIKE '%servtask.bat%' ESCAPE '\\' OR CommandLine LIKE '%execute.bat%' ESCAPE '\\' OR CommandLine LIKE '%doit.bat%' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%Delete%' ESCAPE '\\' AND CommandLine LIKE '%/F %' ESCAPE '\\' AND CommandLine LIKE '%\\\\Microsoft\\\\Windows\\\\WinSrv%' ESCAPE '\\') OR (CommandLine LIKE '%Get-ChildItem%' ESCAPE '\\' AND CommandLine LIKE '%.save%' ESCAPE '\\' AND CommandLine LIKE '%Compress-Archive -DestinationPath C:\\\\ProgramData\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_apt_forest_blizzard_activity.yml"
     },
@@ -43520,6 +43597,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\wwwroot\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmpub\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\htdocs\\\\%' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%bin\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Tools\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\SMSComponent\\\\%' ESCAPE '\\') AND ParentProcessName LIKE '%\\\\services.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_execution_path_webserver.yml"
+    },
+    {
+        "title": "Scheduled Task Creation From Potential Suspicious Parent Location",
+        "id": "9494479d-d994-40bf-a8b1-eea890237021",
+        "status": "test",
+        "description": "Detects the execution of \"schtasks.exe\" from a parent that is located in a potentially suspicious location.\nMultiple malware strains were seen exhibiting a similar behavior in order to achieve persistence.\n",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1053.005",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Software installers that run from temporary folders and also install scheduled tasks"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((ParentProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Create %' ESCAPE '\\') AND NOT (((CommandLine LIKE '%update\\_task.xml%' ESCAPE '\\' OR CommandLine LIKE '%unattended.ini%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_schtasks_creation_from_susp_parent.yml"
     },
     {
         "title": "File or Folder Permissions Modifications",
@@ -47452,6 +47549,26 @@
             "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText REGEXP '(?i)(set).*&&\\s?set.*(environment|invoke|\\$\\{?input).*&&.*\"')"
         ],
         "filename": "posh_ps_invoke_obfuscation_via_stdin.yml"
+    },
+    {
+        "title": "Potential Packet Capture Activity Via Start-NetEventSession - ScriptBlock",
+        "id": "da34e323-1e65-42db-83be-a6725ac2caa3",
+        "status": "experimental",
+        "description": "Detects the execution of powershell scripts with calls to the \"Start-NetEventSession\" cmdlet. Which allows an attacker to start event and packet capture for a network event session.\nAdversaries may attempt to capture network to gather information over the course of an operation.\nData captured via this technique may include user credentials, especially those sent over an insecure, unencrypted protocol.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.discovery",
+            "attack.t1040"
+        ],
+        "falsepositives": [
+            "Legitimate network diagnostic scripts."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%Start-NetEventSession%' ESCAPE '\\')"
+        ],
+        "filename": "posh_ps_packet_capture.yml"
     },
     {
         "title": "Suspicious Service DACL Modification Via Set-Service Cmdlet - PS",
