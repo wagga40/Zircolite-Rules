@@ -27650,6 +27650,27 @@
         "filename": "net_connection_win_domain_ngrok_tunnel.yml"
     },
     {
+        "title": "Communication To LocaltoNet Tunneling Service Initiated",
+        "id": "3ab65069-d82a-4d44-a759-466661a082d1",
+        "status": "experimental",
+        "description": "Detects an executable initiating a network connection to \"LocaltoNet\" tunneling sub-domains.\nLocaltoNet is a reverse proxy that enables localhost services to be exposed to the Internet.\nAttackers have been seen to use this service for command-and-control activities to bypass MFA and perimeter controls.\n",
+        "author": "Andreas Braathen (mnemonic.io)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1572",
+            "attack.t1090",
+            "attack.t1102"
+        ],
+        "falsepositives": [
+            "Legitimate use of the LocaltoNet service."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((DestinationHostname LIKE '%.localto.net' ESCAPE '\\' OR DestinationHostname LIKE '%.localtonet.com' ESCAPE '\\') AND Initiated = 'true')"
+        ],
+        "filename": "net_connection_win_domain_localtonet_tunnel.yml"
+    },
+    {
         "title": "Outbound RDP Connections Over Non-Standard Tools",
         "id": "ed74fe75-7594-4b4b-ae38-e38e3fd2eb23",
         "status": "test",

@@ -3057,6 +3057,26 @@
         "filename": "lnx_auditd_clipboard_collection.yml"
     },
     {
+        "title": "Communication To LocaltoNet Tunneling Service Initiated - Linux",
+        "id": "c4568f5d-131f-4e78-83d4-45b2da0ec4f1",
+        "description": "Detects an executable initiating a network connection to \"LocaltoNet\" tunneling sub-domains.\nLocaltoNet is a reverse proxy that enables localhost services to be exposed to the Internet.\nAttackers have been seen to use this service for command-and-control activities to bypass MFA and perimeter controls.\n",
+        "author": "Andreas Braathen (mnemonic.io)",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1572",
+            "attack.t1090",
+            "attack.t1102"
+        ],
+        "falsepositives": [
+            "Legitimate use of the LocaltoNet service."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((DestinationHostname LIKE '%.localto.net' ESCAPE '\\' OR DestinationHostname LIKE '%.localtonet.com' ESCAPE '\\') AND Initiated = 'true')"
+        ],
+        "filename": "net_connection_lnx_domain_localtonet_tunnel.yml"
+    },
+    {
         "title": "Linux Crypto Mining Pool Connections",
         "id": "a46c93b7-55ed-4d27-a41b-c259456c4746",
         "description": "Detects process connections to a Monero crypto mining pool",
