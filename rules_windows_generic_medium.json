@@ -9832,7 +9832,7 @@
         ],
         "falsepositives": [
             "Another tool that uses the command line switches of Ngrok",
-            "Ngrok http 3978 (https://docs.microsoft.com/en-us/azure/bot-service/bot-service-debug-channel-ngrok?view=azure-bot-service-4.0)"
+            "Ngrok http 3978 (https://learn.microsoft.com/en-us/azure/bot-service/bot-service-debug-channel-ngrok?view=azure-bot-service-4.0)"
         ],
         "level": "high",
         "rule": [
@@ -17497,7 +17497,7 @@
         "title": "Application Removed Via Wmic.EXE",
         "id": "b53317a0-8acf-4fd1-8de8-a5401e776b96",
         "status": "test",
-        "description": "Uninstall an application with wmic",
+        "description": "Detects the removal or uninstallation of an application via \"Wmic.EXE\".",
         "author": "frack113",
         "tags": [
             "attack.execution",
@@ -17508,7 +17508,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\WMIC.exe' ESCAPE '\\' OR OriginalFileName = 'wmic.exe') AND (CommandLine LIKE '%call%' ESCAPE '\\' OR CommandLine LIKE '%uninstall%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\WMIC.exe' ESCAPE '\\' OR OriginalFileName = 'wmic.exe') AND (CommandLine LIKE '%call%' ESCAPE '\\' AND CommandLine LIKE '%uninstall%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wmic_uninstall_application.yml"
     },
