@@ -24732,11 +24732,11 @@
             "cve.2024.3094"
         ],
         "falsepositives": [
-            "Administrative activity directly with root authentication might trigger selection_1 if it's unnecessarily prefixed with \"sh -c\" or \"bash -c\""
+            "Administrative activity directly with root authentication might trigger this rule if it's unnecessarily prefixed with \"sh -c\" or \"bash -c\""
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((ParentProcessName LIKE '%/sshd' ESCAPE '\\' AND (CommandLine LIKE 'bash -c%' ESCAPE '\\' OR CommandLine LIKE 'sh -c%' ESCAPE '\\') AND User = 'root') OR (ParentProcessName LIKE '%/sshd' ESCAPE '\\' AND NewProcessName LIKE '%/sshd' ESCAPE '\\' AND User = 'sshd' AND CommandLine LIKE '%root%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (ParentProcessName LIKE '%/sshd' ESCAPE '\\' AND (CommandLine LIKE 'bash -c%' ESCAPE '\\' OR CommandLine LIKE 'sh -c%' ESCAPE '\\') AND User = 'root')"
         ],
         "filename": "proc_creation_lnx_exploit_cve_2024_3094_sshd_child_process.yml"
     },
@@ -24759,6 +24759,123 @@
             "SELECT * FROM logs WHERE cs-uri-stem LIKE '%/SetupWizard.aspx/%' ESCAPE '\\'"
         ],
         "filename": "web_exploit_cve_2024_1709_screenconnect.yml"
+    },
+    {
+        "title": "Kapeka Backdoor Persistence Activity",
+        "id": "64a871dd-83f6-4e5f-80fc-5a7ca3a8a819",
+        "status": "experimental",
+        "description": "Detects Kapeka backdoor persistence activity.\nDepending on the process privileges, the Kapeka dropper then sets persistence for the backdoor either as a scheduled task (if admin or SYSTEM) or autorun registry (if not).\nFor the scheduled task, it creates a scheduled task called \"Sens Api\" via schtasks command, which is set to run upon system startup as SYSTEM.\nTo establish persistence through the autorun utility, it adds an autorun entry called \"Sens Api\" under HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run via the \"reg add\" command.\nBoth persistence mechanisms are set to launch the binary by calling rundll32 and passing the backdoor's first export ordinal (#1) without any additional argument.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.persistence",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR OriginalFileName = 'schtasks.exe') AND (CommandLine LIKE '%create%' ESCAPE '\\' AND CommandLine LIKE '%ONSTART%' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '%add%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\'))) AND (CommandLine LIKE '%rundll32%' ESCAPE '\\' AND CommandLine LIKE '%.wll%' ESCAPE '\\' AND CommandLine LIKE '%#1%' ESCAPE '\\' AND (CommandLine LIKE '%Sens Api%' ESCAPE '\\' OR CommandLine LIKE '%OneDrive%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_malware_kapeka_backdoor_persistence.yml"
+    },
+    {
+        "title": "Potential Kapeka Decrypted Backdoor Indicator",
+        "id": "20228d05-dd68-435d-8b4e-e7e64938880c",
+        "status": "experimental",
+        "description": "Detects the presence of a file that is decrypted backdoor binary dropped by the Kapeka Dropper, which disguises itself as a hidden file under a folder named \"Microsoft\" within \"CSIDL_COMMON_APPDATA\" or \"CSIDL_LOCAL_APPDATA\", depending on the process privileges.\nThe file, typically 5-6 characters long with a random combination of consonants and vowels followed by a \".wll\" extension to pose as a legitimate file to evade detection.\n",
+        "author": "Swachchhanda Shrawan Poudel, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((TargetFilename LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\') AND TargetFilename REGEXP '\\\\[a-zA-Z]{5,6}\\.wll') OR (TargetFilename LIKE '%\\\\win32log.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\crdss.exe' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_malware_kapeka_backdoor_indicators.yml"
+    },
+    {
+        "title": "Kapeka Backdoor Autorun Persistence",
+        "id": "c0c67b21-eb8a-4c84-a395-40473ec3b482",
+        "status": "experimental",
+        "description": "Detects the setting of a new value in the Autorun key that is used by the Kapeka backdoor for persistence.",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.persistence",
+            "attack.t1547.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Sens Api' ESCAPE '\\' OR TargetObject LIKE '%\\\\OneDrive' ESCAPE '\\') AND NewValue LIKE '%:\\\\WINDOWS\\\\system32\\\\rundll32.exe%' ESCAPE '\\' AND NewValue LIKE '%.wll%' ESCAPE '\\' AND NewValue LIKE '%#1%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_malware_kapeka_backdoor_autorun_persistence.yml"
+    },
+    {
+        "title": "Kapeka Backdoor Execution Via RunDLL32.EXE",
+        "id": "e98f741c-6a5b-4c83-bc2a-1f4e58d07b12",
+        "status": "experimental",
+        "description": "Detects Kapeka backdoor process execution pattern, where the dropper launch the backdoor binary by calling rundll32 and passing the backdoor's first export ordinal (#1) with a \"-d\" argument.\n",
+        "author": "Swachchhanda Shrawan Poudel, Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense_evasion",
+            "attack.t1218.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE') AND (CommandLine LIKE '%:\\\\ProgramData%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local%' ESCAPE '\\')) AND ((CommandLine LIKE '%.wll%' ESCAPE '\\' AND CommandLine LIKE '%#1%' ESCAPE '\\' AND CommandLine LIKE '% -d%' ESCAPE '\\') OR (CommandLine LIKE '%.wll%' ESCAPE '\\' AND CommandLine LIKE '%#1' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_malware_kapeka_backdoor_rundll32_execution.yml"
+    },
+    {
+        "title": "Kapeka Backdoor Scheduled Task Creation",
+        "id": "6c130acd-0adb-4545-bcc4-2e85d0883c9a",
+        "status": "experimental",
+        "description": "Detects Kapeka backdoor scheduled task creation based on attributes such as paths, commands line flags, etc.",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.execution",
+            "attack.privilege_escalation",
+            "attack.persistence",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4698' AND (TaskContent LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR TaskContent LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\') AND TaskContent LIKE '%rundll32%' ESCAPE '\\' AND TaskContent LIKE '%.wll%' ESCAPE '\\' AND TaskContent LIKE '%#1%' ESCAPE '\\' AND (TaskContent LIKE '%OneDrive%' ESCAPE '\\' OR TaskContent LIKE '%Sens Api%' ESCAPE '\\'))"
+        ],
+        "filename": "win_security_malware_kapeka_backdoor_scheduled_task_creation.yml"
+    },
+    {
+        "title": "Kapeka Backdoor Loaded Via Rundll32.EXE",
+        "id": "a7e6b1f9-8d2c-4f1e-9a7d-63e4c8a2bf4c",
+        "status": "experimental",
+        "description": "Detects the Kapeka Backdoor binary being loaded by rundll32.exe.\nThe Kapeka loader drops a backdoor, which is a DLL with the '.wll' extension masquerading as a Microsoft Word Add-In.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.002",
+            "attack.defense_evasion",
+            "attack.t1218.011"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND (ImageLoaded LIKE '%:\\\\ProgramData%' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\') AND ImageLoaded REGEXP '[a-zA-Z]{5,6}\\.wll')"
+        ],
+        "filename": "image_load_malware_kapeka_backdoor_wll.yml"
     },
     {
         "title": "Potential Raspberry Robin CPL Execution Activity",
