@@ -6844,7 +6844,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='System' AND ((Provider_Name='Service Control Manager' AND EventID=7045) AND (ImagePath LIKE '% -c %' ESCAPE '\\' OR ImagePath LIKE '% /c %' ESCAPE '\\' OR ImagePath LIKE '% -r %' ESCAPE '\\' OR ImagePath LIKE '% /r %' ESCAPE '\\' OR ImagePath LIKE '% -k %' ESCAPE '\\' OR ImagePath LIKE '% /k %' ESCAPE '\\') AND (ImagePath LIKE '%cscript%' ESCAPE '\\' OR ImagePath LIKE '%mshta%' ESCAPE '\\' OR ImagePath LIKE '%powershell%' ESCAPE '\\' OR ImagePath LIKE '%pwsh%' ESCAPE '\\' OR ImagePath LIKE '%regsvr32%' ESCAPE '\\' OR ImagePath LIKE '%rundll32%' ESCAPE '\\' OR ImagePath LIKE '%wscript%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='System' AND ((Provider_Name='Service Control Manager' AND EventID=7045) AND (ImagePath LIKE '% -c %' ESCAPE '\\' OR ImagePath LIKE '% /c %' ESCAPE '\\' OR ImagePath LIKE '% \u2013c %' ESCAPE '\\' OR ImagePath LIKE '% \u2014c %' ESCAPE '\\' OR ImagePath LIKE '% \u2015c %' ESCAPE '\\' OR ImagePath LIKE '% -r %' ESCAPE '\\' OR ImagePath LIKE '% /r %' ESCAPE '\\' OR ImagePath LIKE '% \u2013r %' ESCAPE '\\' OR ImagePath LIKE '% \u2014r %' ESCAPE '\\' OR ImagePath LIKE '% \u2015r %' ESCAPE '\\' OR ImagePath LIKE '% -k %' ESCAPE '\\' OR ImagePath LIKE '% /k %' ESCAPE '\\' OR ImagePath LIKE '% \u2013k %' ESCAPE '\\' OR ImagePath LIKE '% \u2014k %' ESCAPE '\\' OR ImagePath LIKE '% \u2015k %' ESCAPE '\\') AND (ImagePath LIKE '%cscript%' ESCAPE '\\' OR ImagePath LIKE '%mshta%' ESCAPE '\\' OR ImagePath LIKE '%powershell%' ESCAPE '\\' OR ImagePath LIKE '%pwsh%' ESCAPE '\\' OR ImagePath LIKE '%regsvr32%' ESCAPE '\\' OR ImagePath LIKE '%rundll32%' ESCAPE '\\' OR ImagePath LIKE '%wscript%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -15060,7 +15060,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND (CommandLine LIKE '% -s%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\') AND CommandLine LIKE '% calc' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND (CommandLine LIKE '% -s%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s%' ESCAPE '\\') AND CommandLine LIKE '% calc' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -16444,7 +16444,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND (CommandLine LIKE '% -E %' ESCAPE '\\' OR CommandLine LIKE '% /E %' ESCAPE '\\') AND (CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND (CommandLine LIKE '% -E %' ESCAPE '\\' OR CommandLine LIKE '% /E %' ESCAPE '\\' OR CommandLine LIKE '% \u2013E %' ESCAPE '\\' OR CommandLine LIKE '% \u2014E %' ESCAPE '\\' OR CommandLine LIKE '% \u2015E %' ESCAPE '\\') AND (CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -16792,7 +16792,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\') AND (NOT (CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%PsExec%' ESCAPE '\\' OR CommandLine LIKE '%accepteula%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2015s powershell%' ESCAPE '\\') AND (NOT (CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%PsExec%' ESCAPE '\\' OR CommandLine LIKE '%accepteula%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -17083,7 +17083,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName='livekd.exe') AND (CommandLine LIKE '% -m%' ESCAPE '\\' OR CommandLine LIKE '% /m%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\livekd.exe' ESCAPE '\\' OR Image LIKE '%\\\\livekd64.exe' ESCAPE '\\') OR OriginalFileName='livekd.exe') AND (CommandLine LIKE '% -m%' ESCAPE '\\' OR CommandLine LIKE '% /m%' ESCAPE '\\' OR CommandLine LIKE '% \u2013m%' ESCAPE '\\' OR CommandLine LIKE '% \u2014m%' ESCAPE '\\' OR CommandLine LIKE '% \u2015m%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -17140,7 +17140,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\') AND (CommandLine LIKE '%.acl%' ESCAPE '\\' OR CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.doc%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.mp3%' ESCAPE '\\' OR CommandLine LIKE '%.pdf%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.ppt%' ESCAPE '\\' OR CommandLine LIKE '%.tmp%' ESCAPE '\\' OR CommandLine LIKE '%.xls%' ESCAPE '\\' OR CommandLine LIKE '%.xml%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2013encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2014encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2015encode%' ESCAPE '\\') AND (CommandLine LIKE '%.acl%' ESCAPE '\\' OR CommandLine LIKE '%.bat%' ESCAPE '\\' OR CommandLine LIKE '%.doc%' ESCAPE '\\' OR CommandLine LIKE '%.gif%' ESCAPE '\\' OR CommandLine LIKE '%.jpeg%' ESCAPE '\\' OR CommandLine LIKE '%.jpg%' ESCAPE '\\' OR CommandLine LIKE '%.mp3%' ESCAPE '\\' OR CommandLine LIKE '%.pdf%' ESCAPE '\\' OR CommandLine LIKE '%.png%' ESCAPE '\\' OR CommandLine LIKE '%.ppt%' ESCAPE '\\' OR CommandLine LIKE '%.tmp%' ESCAPE '\\' OR CommandLine LIKE '%.xls%' ESCAPE '\\' OR CommandLine LIKE '%.xml%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -18249,7 +18249,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\esentutl.exe' ESCAPE '\\') AND (CommandLine LIKE '%vss%' ESCAPE '\\' OR CommandLine LIKE '% -m %' ESCAPE '\\' OR CommandLine LIKE '% /m %' ESCAPE '\\' OR CommandLine LIKE '% -y %' ESCAPE '\\' OR CommandLine LIKE '% /y %' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\config\\\\RegBack\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\system %' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\windows\\\\ntds\\\\ntds.dit%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\esentutl.exe' ESCAPE '\\') AND (CommandLine LIKE '%vss%' ESCAPE '\\' OR CommandLine LIKE '% -m %' ESCAPE '\\' OR CommandLine LIKE '% /m %' ESCAPE '\\' OR CommandLine LIKE '% \u2013m %' ESCAPE '\\' OR CommandLine LIKE '% \u2014m %' ESCAPE '\\' OR CommandLine LIKE '% \u2015m %' ESCAPE '\\' OR CommandLine LIKE '% -y %' ESCAPE '\\' OR CommandLine LIKE '% /y %' ESCAPE '\\' OR CommandLine LIKE '% \u2013y %' ESCAPE '\\' OR CommandLine LIKE '% \u2014y %' ESCAPE '\\' OR CommandLine LIKE '% \u2015y %' ESCAPE '\\')) OR (CommandLine LIKE '%\\\\config\\\\RegBack\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\RegBack\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\system %' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\sam%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\security%' ESCAPE '\\' OR CommandLine LIKE '%\\\\repair\\\\system%' ESCAPE '\\' OR CommandLine LIKE '%\\\\windows\\\\ntds\\\\ntds.dit%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -18870,7 +18870,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR OriginalFileName='CertOC.exe') AND (CommandLine LIKE '% -LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% /LoadDLL %' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Appdata\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR OriginalFileName='CertOC.exe') AND (CommandLine LIKE '% -LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% /LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% \u2013LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% \u2014LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% \u2015LoadDLL %' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Appdata\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -19550,7 +19550,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Sysmon.exe' ESCAPE '\\') OR Description='System activity monitor') AND (CommandLine LIKE '%-u%' ESCAPE '\\' OR CommandLine LIKE '%/u%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Sysmon.exe' ESCAPE '\\') OR Description='System activity monitor') AND (CommandLine LIKE '%-u%' ESCAPE '\\' OR CommandLine LIKE '%/u%' ESCAPE '\\' OR CommandLine LIKE '%\u2013u%' ESCAPE '\\' OR CommandLine LIKE '%\u2014u%' ESCAPE '\\' OR CommandLine LIKE '%\u2015u%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -19880,7 +19880,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName='odbcconf.exe') AND (CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% /f %' ESCAPE '\\')) AND (NOT (CommandLine LIKE '%.rsp%' ESCAPE '\\' OR (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\runonce.exe' ESCAPE '\\' AND Image LIKE 'C:\\\\Windows\\\\System32\\\\odbcconf.exe' ESCAPE '\\' AND CommandLine LIKE '%.exe /E /F \"C:\\\\WINDOWS\\\\system32\\\\odbcconf.tmp\"%' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName='odbcconf.exe') AND (CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% /f %' ESCAPE '\\' OR CommandLine LIKE '% \u2013f %' ESCAPE '\\' OR CommandLine LIKE '% \u2014f %' ESCAPE '\\' OR CommandLine LIKE '% \u2015f %' ESCAPE '\\')) AND (NOT (CommandLine LIKE '%.rsp%' ESCAPE '\\' OR (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\runonce.exe' ESCAPE '\\' AND Image LIKE 'C:\\\\Windows\\\\System32\\\\odbcconf.exe' ESCAPE '\\' AND CommandLine LIKE '%.exe /E /F \"C:\\\\WINDOWS\\\\system32\\\\odbcconf.tmp\"%' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -20145,7 +20145,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((((Image LIKE '%\\\\find.exe' ESCAPE '\\' OR Image LIKE '%\\\\findstr.exe' ESCAPE '\\') OR (OriginalFileName='FIND.EXE' OR OriginalFileName='FINDSTR.EXE')) AND CommandLine LIKE '%lsass%' ESCAPE '\\') OR (CommandLine LIKE '% -i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% /i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% -i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '% /i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '%findstr \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe lsass%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((((Image LIKE '%\\\\find.exe' ESCAPE '\\' OR Image LIKE '%\\\\findstr.exe' ESCAPE '\\') OR (OriginalFileName='FIND.EXE' OR OriginalFileName='FINDSTR.EXE')) AND CommandLine LIKE '%lsass%' ESCAPE '\\') OR (CommandLine LIKE '% -i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% /i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \"lsass%' ESCAPE '\\' OR CommandLine LIKE '% -i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '% /i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i lsass.exe%' ESCAPE '\\' OR CommandLine LIKE '%findstr \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe \"lsass%' ESCAPE '\\' OR CommandLine LIKE '%findstr.exe lsass%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -20419,7 +20419,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='procdump' OR ((CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\' OR CommandLine LIKE '% -mp %' ESCAPE '\\' OR CommandLine LIKE '% /mp %' ESCAPE '\\') AND (CommandLine LIKE '% -accepteula%' ESCAPE '\\' OR CommandLine LIKE '% /accepteula%' ESCAPE '\\'))) AND (NOT (Image LIKE '%\\\\procdump.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump64.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='procdump' OR ((CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\' OR CommandLine LIKE '% \u2013ma %' ESCAPE '\\' OR CommandLine LIKE '% \u2014ma %' ESCAPE '\\' OR CommandLine LIKE '% \u2015ma %' ESCAPE '\\' OR CommandLine LIKE '% -mp %' ESCAPE '\\' OR CommandLine LIKE '% /mp %' ESCAPE '\\' OR CommandLine LIKE '% \u2013mp %' ESCAPE '\\' OR CommandLine LIKE '% \u2014mp %' ESCAPE '\\' OR CommandLine LIKE '% \u2015mp %' ESCAPE '\\') AND (CommandLine LIKE '% -accepteula%' ESCAPE '\\' OR CommandLine LIKE '% /accepteula%' ESCAPE '\\' OR CommandLine LIKE '% \u2013accepteula%' ESCAPE '\\' OR CommandLine LIKE '% \u2014accepteula%' ESCAPE '\\' OR CommandLine LIKE '% \u2015accepteula%' ESCAPE '\\'))) AND (NOT (Image LIKE '%\\\\procdump.exe' ESCAPE '\\' OR Image LIKE '%\\\\procdump64.exe' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -22113,7 +22113,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%$Recycle.Bin%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2013encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2014encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2015encode%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\PerfLogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%$Recycle.Bin%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -22153,7 +22153,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName='msdt.exe') AND (CommandLine LIKE '%IT\\_BrowseForFile=%' ESCAPE '\\' OR (CommandLine LIKE '% PCWDiagnostic%' ESCAPE '\\' AND (CommandLine LIKE '% -af %' ESCAPE '\\' OR CommandLine LIKE '% /af %' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName='msdt.exe') AND (CommandLine LIKE '%IT\\_BrowseForFile=%' ESCAPE '\\' OR (CommandLine LIKE '% PCWDiagnostic%' ESCAPE '\\' AND (CommandLine LIKE '% -af %' ESCAPE '\\' OR CommandLine LIKE '% /af %' ESCAPE '\\' OR CommandLine LIKE '% \u2013af %' ESCAPE '\\' OR CommandLine LIKE '% \u2014af %' ESCAPE '\\' OR CommandLine LIKE '% \u2015af %' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -22566,7 +22566,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\') AND (CommandLine LIKE '%psexec%' ESCAPE '\\' OR CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%accepteula%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s -i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s /i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2013i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2014i cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2015i cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i -s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i /s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2013s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2014s cmd%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2015s cmd%' ESCAPE '\\' OR CommandLine LIKE '% -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s -i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s /i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2013i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2014i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2015i pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i -s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i /s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2013s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2014s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2015s pwsh%' ESCAPE '\\' OR CommandLine LIKE '% -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% /s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s -i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s /i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2013i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2014i powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s \u2015i powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% -i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% /i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i \u2015s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i -s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i /s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2013s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2014s powershell%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i \u2015s powershell%' ESCAPE '\\') AND (CommandLine LIKE '%psexec%' ESCAPE '\\' OR CommandLine LIKE '%paexec%' ESCAPE '\\' OR CommandLine LIKE '%accepteula%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -22685,7 +22685,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\') AND CommandLine LIKE '%Nul%' ESCAPE '\\' AND (CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% /f %' ESCAPE '\\' OR CommandLine LIKE '% -q %' ESCAPE '\\' OR CommandLine LIKE '% /q %' ESCAPE '\\') AND (CommandLine LIKE '%ping%' ESCAPE '\\' AND CommandLine LIKE '%del %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\' OR CommandLine LIKE '% \u2013n %' ESCAPE '\\' OR CommandLine LIKE '% \u2014n %' ESCAPE '\\' OR CommandLine LIKE '% \u2015n %' ESCAPE '\\') AND CommandLine LIKE '%Nul%' ESCAPE '\\' AND (CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% /f %' ESCAPE '\\' OR CommandLine LIKE '% \u2013f %' ESCAPE '\\' OR CommandLine LIKE '% \u2014f %' ESCAPE '\\' OR CommandLine LIKE '% \u2015f %' ESCAPE '\\' OR CommandLine LIKE '% -q %' ESCAPE '\\' OR CommandLine LIKE '% /q %' ESCAPE '\\' OR CommandLine LIKE '% \u2013q %' ESCAPE '\\' OR CommandLine LIKE '% \u2014q %' ESCAPE '\\' OR CommandLine LIKE '% \u2015q %' ESCAPE '\\') AND (CommandLine LIKE '%ping%' ESCAPE '\\' AND CommandLine LIKE '%del %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -22905,7 +22905,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND ((CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '%.reg%' ESCAPE '\\') AND CommandLine REGEXP ':[^ \\\\]')) AND (NOT (CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% -a %' ESCAPE '\\' OR CommandLine LIKE '% /a %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND ((CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '%.reg%' ESCAPE '\\') AND CommandLine REGEXP ':[^ \\\\]')) AND (NOT (CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% \u2013e %' ESCAPE '\\' OR CommandLine LIKE '% \u2014e %' ESCAPE '\\' OR CommandLine LIKE '% \u2015e %' ESCAPE '\\' OR CommandLine LIKE '% -a %' ESCAPE '\\' OR CommandLine LIKE '% /a %' ESCAPE '\\' OR CommandLine LIKE '% \u2013a %' ESCAPE '\\' OR CommandLine LIKE '% \u2014a %' ESCAPE '\\' OR CommandLine LIKE '% \u2015a %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% \u2013c %' ESCAPE '\\' OR CommandLine LIKE '% \u2014c %' ESCAPE '\\' OR CommandLine LIKE '% \u2015c %' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -23272,7 +23272,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\iexpress.exe' ESCAPE '\\' OR OriginalFileName='IEXPRESS.exe') AND (CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\iexpress.exe' ESCAPE '\\' OR OriginalFileName='IEXPRESS.exe') AND (CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\' OR CommandLine LIKE '% \u2013n %' ESCAPE '\\' OR CommandLine LIKE '% \u2014n %' ESCAPE '\\' OR CommandLine LIKE '% \u2015n %' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -23682,7 +23682,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmdkey.exe' ESCAPE '\\' OR OriginalFileName='cmdkey.exe') AND (CommandLine LIKE '% -l%' ESCAPE '\\' OR CommandLine LIKE '% /l%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmdkey.exe' ESCAPE '\\' OR OriginalFileName='cmdkey.exe') AND (CommandLine LIKE '% -l%' ESCAPE '\\' OR CommandLine LIKE '% /l%' ESCAPE '\\' OR CommandLine LIKE '% \u2013l%' ESCAPE '\\' OR CommandLine LIKE '% \u2014l%' ESCAPE '\\' OR CommandLine LIKE '% \u2015l%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -25151,7 +25151,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\') AND CommandLine LIKE '% ls%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -ma %' ESCAPE '\\' OR CommandLine LIKE '% /ma %' ESCAPE '\\' OR CommandLine LIKE '% \u2013ma %' ESCAPE '\\' OR CommandLine LIKE '% \u2014ma %' ESCAPE '\\' OR CommandLine LIKE '% \u2015ma %' ESCAPE '\\') AND CommandLine LIKE '% ls%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -25648,7 +25648,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\') AND (CommandLine LIKE '%curl %' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\' AND CommandLine LIKE '%-o%' ESCAPE '\\' AND CommandLine LIKE '%&%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% \u2013c %' ESCAPE '\\' OR CommandLine LIKE '% \u2014c %' ESCAPE '\\' OR CommandLine LIKE '% \u2015c %' ESCAPE '\\') AND (CommandLine LIKE '%curl %' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\' AND CommandLine LIKE '%-o%' ESCAPE '\\' AND CommandLine LIKE '%&%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -31048,7 +31048,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '%findstr%' ESCAPE '\\' OR Image LIKE '%findstr.exe' ESCAPE '\\' OR OriginalFileName='FINDSTR.EXE') AND ((CommandLine LIKE '% -s %' ESCAPE '\\' OR CommandLine LIKE '% /s %' ESCAPE '\\') AND (CommandLine LIKE '% -i %' ESCAPE '\\' OR CommandLine LIKE '% /i %' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '%findstr%' ESCAPE '\\' OR Image LIKE '%findstr.exe' ESCAPE '\\' OR OriginalFileName='FINDSTR.EXE') AND ((CommandLine LIKE '% -s %' ESCAPE '\\' OR CommandLine LIKE '% /s %' ESCAPE '\\' OR CommandLine LIKE '% \u2013s %' ESCAPE '\\' OR CommandLine LIKE '% \u2014s %' ESCAPE '\\' OR CommandLine LIKE '% \u2015s %' ESCAPE '\\') AND (CommandLine LIKE '% -i %' ESCAPE '\\' OR CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '% \u2013i %' ESCAPE '\\' OR CommandLine LIKE '% \u2014i %' ESCAPE '\\' OR CommandLine LIKE '% \u2015i %' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -31123,7 +31123,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND (CommandLine LIKE '% -E %' ESCAPE '\\' OR CommandLine LIKE '% /E %' ESCAPE '\\')) AND (NOT ((CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND (CommandLine LIKE '% -E %' ESCAPE '\\' OR CommandLine LIKE '% /E %' ESCAPE '\\' OR CommandLine LIKE '% \u2013E %' ESCAPE '\\' OR CommandLine LIKE '% \u2014E %' ESCAPE '\\' OR CommandLine LIKE '% \u2015E %' ESCAPE '\\')) AND (NOT ((CommandLine LIKE '%hklm%' ESCAPE '\\' OR CommandLine LIKE '%hkey\\_local\\_machine%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\system' ESCAPE '\\' OR CommandLine LIKE '%\\\\sam' ESCAPE '\\' OR CommandLine LIKE '%\\\\security' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -31142,7 +31142,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%dir%-s%' ESCAPE '\\' OR CommandLine LIKE '%dir%/s%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%dir%-s%' ESCAPE '\\' OR CommandLine LIKE '%dir%/s%' ESCAPE '\\' OR CommandLine LIKE '%dir%\u2013s%' ESCAPE '\\' OR CommandLine LIKE '%dir%\u2014s%' ESCAPE '\\' OR CommandLine LIKE '%dir%\u2015s%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -31372,7 +31372,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%del %' ESCAPE '\\' OR CommandLine LIKE '%erase %' ESCAPE '\\') AND (CommandLine LIKE '% -f%' ESCAPE '\\' OR CommandLine LIKE '% /f%' ESCAPE '\\' OR CommandLine LIKE '% -s%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% -q%' ESCAPE '\\' OR CommandLine LIKE '% /q%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%del %' ESCAPE '\\' OR CommandLine LIKE '%erase %' ESCAPE '\\') AND (CommandLine LIKE '% -f%' ESCAPE '\\' OR CommandLine LIKE '% /f%' ESCAPE '\\' OR CommandLine LIKE '% \u2013f%' ESCAPE '\\' OR CommandLine LIKE '% \u2014f%' ESCAPE '\\' OR CommandLine LIKE '% \u2015f%' ESCAPE '\\' OR CommandLine LIKE '% -s%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s%' ESCAPE '\\' OR CommandLine LIKE '% -q%' ESCAPE '\\' OR CommandLine LIKE '% /q%' ESCAPE '\\' OR CommandLine LIKE '% \u2013q%' ESCAPE '\\' OR CommandLine LIKE '% \u2014q%' ESCAPE '\\' OR CommandLine LIKE '% \u2015q%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -31451,7 +31451,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (CommandLine LIKE '% -accepteula%' ESCAPE '\\' OR CommandLine LIKE '% /accepteula%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (CommandLine LIKE '% -accepteula%' ESCAPE '\\' OR CommandLine LIKE '% /accepteula%' ESCAPE '\\' OR CommandLine LIKE '% \u2013accepteula%' ESCAPE '\\' OR CommandLine LIKE '% \u2014accepteula%' ESCAPE '\\' OR CommandLine LIKE '% \u2015accepteula%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -32533,7 +32533,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='diskshadow.exe' OR Image LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='diskshadow.exe' OR Image LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%\u2013s %' ESCAPE '\\' OR CommandLine LIKE '%\u2014s %' ESCAPE '\\' OR CommandLine LIKE '%\u2015s %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -41340,7 +41340,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\unregmp2.exe' ESCAPE '\\' OR OriginalFileName='unregmp2.exe') AND (CommandLine LIKE '% -HideWMP%' ESCAPE '\\' OR CommandLine LIKE '% /HideWMP%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\unregmp2.exe' ESCAPE '\\' OR OriginalFileName='unregmp2.exe') AND (CommandLine LIKE '% -HideWMP%' ESCAPE '\\' OR CommandLine LIKE '% /HideWMP%' ESCAPE '\\' OR CommandLine LIKE '% \u2013HideWMP%' ESCAPE '\\' OR CommandLine LIKE '% \u2014HideWMP%' ESCAPE '\\' OR CommandLine LIKE '% \u2015HideWMP%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -41378,7 +41378,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-decode %' ESCAPE '\\' OR CommandLine LIKE '%/decode %' ESCAPE '\\' OR CommandLine LIKE '%-decodehex %' ESCAPE '\\' OR CommandLine LIKE '%/decodehex %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-decode %' ESCAPE '\\' OR CommandLine LIKE '%/decode %' ESCAPE '\\' OR CommandLine LIKE '%\u2013decode %' ESCAPE '\\' OR CommandLine LIKE '%\u2014decode %' ESCAPE '\\' OR CommandLine LIKE '%\u2015decode %' ESCAPE '\\' OR CommandLine LIKE '%-decodehex %' ESCAPE '\\' OR CommandLine LIKE '%/decodehex %' ESCAPE '\\' OR CommandLine LIKE '%\u2013decodehex %' ESCAPE '\\' OR CommandLine LIKE '%\u2014decodehex %' ESCAPE '\\' OR CommandLine LIKE '%\u2015decodehex %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -41704,7 +41704,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%ping%' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') AND (CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\') AND (CommandLine LIKE '% -y %' ESCAPE '\\' OR CommandLine LIKE '% /y %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName='Cmd.Exe') AND (CommandLine LIKE '%ping%' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') AND (CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\' OR CommandLine LIKE '% \u2013n %' ESCAPE '\\' OR CommandLine LIKE '% \u2014n %' ESCAPE '\\' OR CommandLine LIKE '% \u2015n %' ESCAPE '\\') AND (CommandLine LIKE '% -y %' ESCAPE '\\' OR CommandLine LIKE '% /y %' ESCAPE '\\' OR CommandLine LIKE '% \u2013y %' ESCAPE '\\' OR CommandLine LIKE '% \u2014y %' ESCAPE '\\' OR CommandLine LIKE '% \u2015y %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -41723,7 +41723,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-exportPFX %' ESCAPE '\\' OR CommandLine LIKE '%/exportPFX %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-exportPFX %' ESCAPE '\\' OR CommandLine LIKE '%/exportPFX %' ESCAPE '\\' OR CommandLine LIKE '%\u2013exportPFX %' ESCAPE '\\' OR CommandLine LIKE '%\u2014exportPFX %' ESCAPE '\\' OR CommandLine LIKE '%\u2015exportPFX %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -41956,7 +41956,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR OriginalFileName='whoami.exe') AND (CommandLine LIKE '% -all%' ESCAPE '\\' OR CommandLine LIKE '% /all%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\whoami.exe' ESCAPE '\\' OR OriginalFileName='whoami.exe') AND (CommandLine LIKE '% -all%' ESCAPE '\\' OR CommandLine LIKE '% /all%' ESCAPE '\\' OR CommandLine LIKE '% \u2013all%' ESCAPE '\\' OR CommandLine LIKE '% \u2014all%' ESCAPE '\\' OR CommandLine LIKE '% \u2015all%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -41976,7 +41976,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% -c %' ESCAPE '\\' OR ParentCommandLine LIKE '% /c %' ESCAPE '\\' OR ParentCommandLine LIKE '% -r %' ESCAPE '\\' OR ParentCommandLine LIKE '% /r %' ESCAPE '\\' OR ParentCommandLine LIKE '% -k %' ESCAPE '\\' OR ParentCommandLine LIKE '% /k %' ESCAPE '\\') AND Image LIKE '%\\\\chcp.com' ESCAPE '\\' AND (CommandLine LIKE '%chcp' ESCAPE '\\' OR CommandLine LIKE '%chcp ' ESCAPE '\\' OR CommandLine LIKE '%chcp  ' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (ParentCommandLine LIKE '% -c %' ESCAPE '\\' OR ParentCommandLine LIKE '% /c %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2013c %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2014c %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2015c %' ESCAPE '\\' OR ParentCommandLine LIKE '% -r %' ESCAPE '\\' OR ParentCommandLine LIKE '% /r %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2013r %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2014r %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2015r %' ESCAPE '\\' OR ParentCommandLine LIKE '% -k %' ESCAPE '\\' OR ParentCommandLine LIKE '% /k %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2013k %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2014k %' ESCAPE '\\' OR ParentCommandLine LIKE '% \u2015k %' ESCAPE '\\') AND Image LIKE '%\\\\chcp.com' ESCAPE '\\' AND (CommandLine LIKE '%chcp' ESCAPE '\\' OR CommandLine LIKE '%chcp ' ESCAPE '\\' OR CommandLine LIKE '%chcp  ' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -42249,7 +42249,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '%findstr%' ESCAPE '\\' OR Image LIKE '%findstr.exe' ESCAPE '\\' OR OriginalFileName='FINDSTR.EXE') AND ((CommandLine LIKE '% -v %' ESCAPE '\\' OR CommandLine LIKE '% /v %' ESCAPE '\\') AND (CommandLine LIKE '% -l %' ESCAPE '\\' OR CommandLine LIKE '% /l %' ESCAPE '\\') AND CommandLine LIKE '%\\\\\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((CommandLine LIKE '%findstr%' ESCAPE '\\' OR Image LIKE '%findstr.exe' ESCAPE '\\' OR OriginalFileName='FINDSTR.EXE') AND ((CommandLine LIKE '% -v %' ESCAPE '\\' OR CommandLine LIKE '% /v %' ESCAPE '\\' OR CommandLine LIKE '% \u2013v %' ESCAPE '\\' OR CommandLine LIKE '% \u2014v %' ESCAPE '\\' OR CommandLine LIKE '% \u2015v %' ESCAPE '\\') AND (CommandLine LIKE '% -l %' ESCAPE '\\' OR CommandLine LIKE '% /l %' ESCAPE '\\' OR CommandLine LIKE '% \u2013l %' ESCAPE '\\' OR CommandLine LIKE '% \u2014l %' ESCAPE '\\' OR CommandLine LIKE '% \u2015l %' ESCAPE '\\') AND CommandLine LIKE '%\\\\\\\\%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -42344,7 +42344,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((OriginalFileName='diskshadow.exe' OR Image LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\')) AND (NOT CommandLine LIKE '%.txt%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((OriginalFileName='diskshadow.exe' OR Image LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%\u2013s %' ESCAPE '\\' OR CommandLine LIKE '%\u2014s %' ESCAPE '\\' OR CommandLine LIKE '%\u2015s %' ESCAPE '\\')) AND (NOT CommandLine LIKE '%.txt%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -42503,7 +42503,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName='msiexec.exe') AND (CommandLine LIKE '%-i%' ESCAPE '\\' OR CommandLine LIKE '%/i%' ESCAPE '\\' OR CommandLine LIKE '%-package%' ESCAPE '\\' OR CommandLine LIKE '%/package%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%-j%' ESCAPE '\\' OR CommandLine LIKE '%/j%' ESCAPE '\\') AND (CommandLine LIKE '%-q%' ESCAPE '\\' OR CommandLine LIKE '%/q%' ESCAPE '\\') AND (CommandLine LIKE '%http%' ESCAPE '\\' OR CommandLine LIKE '%\\\\\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName='msiexec.exe') AND (CommandLine LIKE '%-i%' ESCAPE '\\' OR CommandLine LIKE '%/i%' ESCAPE '\\' OR CommandLine LIKE '%\u2013i%' ESCAPE '\\' OR CommandLine LIKE '%\u2014i%' ESCAPE '\\' OR CommandLine LIKE '%\u2015i%' ESCAPE '\\' OR CommandLine LIKE '%-package%' ESCAPE '\\' OR CommandLine LIKE '%/package%' ESCAPE '\\' OR CommandLine LIKE '%\u2013package%' ESCAPE '\\' OR CommandLine LIKE '%\u2014package%' ESCAPE '\\' OR CommandLine LIKE '%\u2015package%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%\u2013a%' ESCAPE '\\' OR CommandLine LIKE '%\u2014a%' ESCAPE '\\' OR CommandLine LIKE '%\u2015a%' ESCAPE '\\' OR CommandLine LIKE '%-j%' ESCAPE '\\' OR CommandLine LIKE '%/j%' ESCAPE '\\' OR CommandLine LIKE '%\u2013j%' ESCAPE '\\' OR CommandLine LIKE '%\u2014j%' ESCAPE '\\' OR CommandLine LIKE '%\u2015j%' ESCAPE '\\') AND (CommandLine LIKE '%-q%' ESCAPE '\\' OR CommandLine LIKE '%/q%' ESCAPE '\\' OR CommandLine LIKE '%\u2013q%' ESCAPE '\\' OR CommandLine LIKE '%\u2014q%' ESCAPE '\\' OR CommandLine LIKE '%\u2015q%' ESCAPE '\\') AND (CommandLine LIKE '%http%' ESCAPE '\\' OR CommandLine LIKE '%\\\\\\\\%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -42541,7 +42541,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName='esentutl.exe') AND (CommandLine LIKE '%-r%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\') AND CommandLine LIKE '%\\\\Windows\\\\WebCache%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR OriginalFileName='esentutl.exe') AND (CommandLine LIKE '%-r%' ESCAPE '\\' OR CommandLine LIKE '%/r%' ESCAPE '\\' OR CommandLine LIKE '%\u2013r%' ESCAPE '\\' OR CommandLine LIKE '%\u2014r%' ESCAPE '\\' OR CommandLine LIKE '%\u2015r%' ESCAPE '\\') AND CommandLine LIKE '%\\\\Windows\\\\WebCache%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -42560,7 +42560,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Sysmon.exe' ESCAPE '\\') OR Description='System activity monitor') AND (CommandLine LIKE '%-c%' ESCAPE '\\' OR CommandLine LIKE '%/c%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR Image LIKE '%\\\\Sysmon.exe' ESCAPE '\\') OR Description='System activity monitor') AND (CommandLine LIKE '%-c%' ESCAPE '\\' OR CommandLine LIKE '%/c%' ESCAPE '\\' OR CommandLine LIKE '%\u2013c%' ESCAPE '\\' OR CommandLine LIKE '%\u2014c%' ESCAPE '\\' OR CommandLine LIKE '%\u2015c%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -42719,7 +42719,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='diskshadow.exe' OR Image LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='diskshadow.exe' OR Image LIKE '%\\\\diskshadow.exe' ESCAPE '\\') AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%\u2013s %' ESCAPE '\\' OR CommandLine LIKE '%\u2014s %' ESCAPE '\\' OR CommandLine LIKE '%\u2015s %' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -42880,7 +42880,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (CommandLine LIKE '%/factory,{75dff2b7-6936-4c06-a8bb-676a7b00b24b}%' ESCAPE '\\' OR ((CommandLine LIKE '%explorer.exe%' ESCAPE '\\') AND (CommandLine LIKE '% -root,%' ESCAPE '\\' OR CommandLine LIKE '% /root,%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (CommandLine LIKE '%/factory,{75dff2b7-6936-4c06-a8bb-676a7b00b24b}%' ESCAPE '\\' OR ((CommandLine LIKE '%explorer.exe%' ESCAPE '\\') AND (CommandLine LIKE '% -root,%' ESCAPE '\\' OR CommandLine LIKE '% /root,%' ESCAPE '\\' OR CommandLine LIKE '% \u2013root,%' ESCAPE '\\' OR CommandLine LIKE '% \u2014root,%' ESCAPE '\\' OR CommandLine LIKE '% \u2015root,%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -42918,7 +42918,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmdkey.exe' ESCAPE '\\' OR OriginalFileName='cmdkey.exe') AND (CommandLine LIKE '% -g%' ESCAPE '\\' OR CommandLine LIKE '% /g%' ESCAPE '\\') AND (CommandLine LIKE '% -u%' ESCAPE '\\' OR CommandLine LIKE '% /u%' ESCAPE '\\') AND (CommandLine LIKE '% -p%' ESCAPE '\\' OR CommandLine LIKE '% /p%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\cmdkey.exe' ESCAPE '\\' OR OriginalFileName='cmdkey.exe') AND (CommandLine LIKE '% -g%' ESCAPE '\\' OR CommandLine LIKE '% /g%' ESCAPE '\\' OR CommandLine LIKE '% \u2013g%' ESCAPE '\\' OR CommandLine LIKE '% \u2014g%' ESCAPE '\\' OR CommandLine LIKE '% \u2015g%' ESCAPE '\\') AND (CommandLine LIKE '% -u%' ESCAPE '\\' OR CommandLine LIKE '% /u%' ESCAPE '\\' OR CommandLine LIKE '% \u2013u%' ESCAPE '\\' OR CommandLine LIKE '% \u2014u%' ESCAPE '\\' OR CommandLine LIKE '% \u2015u%' ESCAPE '\\') AND (CommandLine LIKE '% -p%' ESCAPE '\\' OR CommandLine LIKE '% /p%' ESCAPE '\\' OR CommandLine LIKE '% \u2013p%' ESCAPE '\\' OR CommandLine LIKE '% \u2014p%' ESCAPE '\\' OR CommandLine LIKE '% \u2015p%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -43330,7 +43330,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\expand.exe' ESCAPE '\\' AND (CommandLine LIKE '%-F:%' ESCAPE '\\' OR CommandLine LIKE '%/F:%' ESCAPE '\\')) AND ((CommandLine LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\ProgramData%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp%' ESCAPE '\\') OR ((CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\'))) AND (NOT (ParentImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\UpdateService\\\\ServiceShell.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\ProgramData\\\\Dell\\\\UpdateService\\\\Temp\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\expand.exe' ESCAPE '\\' AND (CommandLine LIKE '%-F:%' ESCAPE '\\' OR CommandLine LIKE '%/F:%' ESCAPE '\\' OR CommandLine LIKE '%\u2013F:%' ESCAPE '\\' OR CommandLine LIKE '%\u2014F:%' ESCAPE '\\' OR CommandLine LIKE '%\u2015F:%' ESCAPE '\\')) AND ((CommandLine LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\ProgramData%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\Temp%' ESCAPE '\\') OR ((CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\'))) AND (NOT (ParentImage LIKE 'C:\\\\Program Files (x86)\\\\Dell\\\\UpdateService\\\\ServiceShell.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\ProgramData\\\\Dell\\\\UpdateService\\\\Temp\\\\%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -44120,7 +44120,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\appcmd.exe' ESCAPE '\\' OR OriginalFileName='appcmd.exe') AND ((CommandLine LIKE '%install%' ESCAPE '\\' AND CommandLine LIKE '%module%' ESCAPE '\\') AND (CommandLine LIKE '%-name:%' ESCAPE '\\' OR CommandLine LIKE '%/name:%' ESCAPE '\\'))) AND (NOT ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\appcmd.exe' ESCAPE '\\' OR OriginalFileName='appcmd.exe') AND ((CommandLine LIKE '%install%' ESCAPE '\\' AND CommandLine LIKE '%module%' ESCAPE '\\') AND (CommandLine LIKE '%-name:%' ESCAPE '\\' OR CommandLine LIKE '%/name:%' ESCAPE '\\' OR CommandLine LIKE '%\u2013name:%' ESCAPE '\\' OR CommandLine LIKE '%\u2014name:%' ESCAPE '\\' OR CommandLine LIKE '%\u2015name:%' ESCAPE '\\'))) AND (NOT ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -44511,7 +44511,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName='msdt.exe') AND (CommandLine LIKE '% -cab %' ESCAPE '\\' OR CommandLine LIKE '% /cab %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msdt.exe' ESCAPE '\\' OR OriginalFileName='msdt.exe') AND (CommandLine LIKE '% -cab %' ESCAPE '\\' OR CommandLine LIKE '% /cab %' ESCAPE '\\' OR CommandLine LIKE '% \u2013cab %' ESCAPE '\\' OR CommandLine LIKE '% \u2014cab %' ESCAPE '\\' OR CommandLine LIKE '% \u2015cab %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -44530,7 +44530,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\replace.exe' ESCAPE '\\' AND (CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\replace.exe' ESCAPE '\\' AND (CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%\u2013a%' ESCAPE '\\' OR CommandLine LIKE '%\u2014a%' ESCAPE '\\' OR CommandLine LIKE '%\u2015a%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -44567,7 +44567,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\lodctr.exe' ESCAPE '\\' AND OriginalFileName='LODCTR.EXE') AND (CommandLine LIKE '% -r%' ESCAPE '\\' OR CommandLine LIKE '% /r%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\lodctr.exe' ESCAPE '\\' AND OriginalFileName='LODCTR.EXE') AND (CommandLine LIKE '% -r%' ESCAPE '\\' OR CommandLine LIKE '% /r%' ESCAPE '\\' OR CommandLine LIKE '% \u2013r%' ESCAPE '\\' OR CommandLine LIKE '% \u2014r%' ESCAPE '\\' OR CommandLine LIKE '% \u2015r%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -44644,7 +44644,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND (CommandLine LIKE '% -i:%' ESCAPE '\\' OR CommandLine LIKE '% /i:%' ESCAPE '\\')) AND (NOT CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND (CommandLine LIKE '% -i:%' ESCAPE '\\' OR CommandLine LIKE '% /i:%' ESCAPE '\\' OR CommandLine LIKE '% \u2013i:%' ESCAPE '\\' OR CommandLine LIKE '% \u2014i:%' ESCAPE '\\' OR CommandLine LIKE '% \u2015i:%' ESCAPE '\\')) AND (NOT CommandLine LIKE '% -n %' ESCAPE '\\' OR CommandLine LIKE '% /n %' ESCAPE '\\' OR CommandLine LIKE '% \u2013n %' ESCAPE '\\' OR CommandLine LIKE '% \u2014n %' ESCAPE '\\' OR CommandLine LIKE '% \u2015n %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -44702,7 +44702,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\wmic.exe' ESCAPE '\\' AND (CommandLine LIKE '%-format%' ESCAPE '\\' OR CommandLine LIKE '%/format%' ESCAPE '\\')) AND (NOT (CommandLine LIKE '%Format:List%' ESCAPE '\\' OR CommandLine LIKE '%Format:htable%' ESCAPE '\\' OR CommandLine LIKE '%Format:hform%' ESCAPE '\\' OR CommandLine LIKE '%Format:table%' ESCAPE '\\' OR CommandLine LIKE '%Format:mof%' ESCAPE '\\' OR CommandLine LIKE '%Format:value%' ESCAPE '\\' OR CommandLine LIKE '%Format:rawxml%' ESCAPE '\\' OR CommandLine LIKE '%Format:xml%' ESCAPE '\\' OR CommandLine LIKE '%Format:csv%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\wmic.exe' ESCAPE '\\' AND (CommandLine LIKE '%-format%' ESCAPE '\\' OR CommandLine LIKE '%/format%' ESCAPE '\\' OR CommandLine LIKE '%\u2013format%' ESCAPE '\\' OR CommandLine LIKE '%\u2014format%' ESCAPE '\\' OR CommandLine LIKE '%\u2015format%' ESCAPE '\\')) AND (NOT (CommandLine LIKE '%Format:List%' ESCAPE '\\' OR CommandLine LIKE '%Format:htable%' ESCAPE '\\' OR CommandLine LIKE '%Format:hform%' ESCAPE '\\' OR CommandLine LIKE '%Format:table%' ESCAPE '\\' OR CommandLine LIKE '%Format:mof%' ESCAPE '\\' OR CommandLine LIKE '%Format:value%' ESCAPE '\\' OR CommandLine LIKE '%Format:rawxml%' ESCAPE '\\' OR CommandLine LIKE '%Format:xml%' ESCAPE '\\' OR CommandLine LIKE '%Format:csv%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -44759,7 +44759,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\reg.exe' ESCAPE '\\' AND (CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%SYSTEM\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND CommandLine LIKE '% ImagePath %' ESCAPE '\\')) AND (CommandLine LIKE '% -d %' ESCAPE '\\' OR CommandLine LIKE '% /d %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\reg.exe' ESCAPE '\\' AND (CommandLine LIKE '%add %' ESCAPE '\\' AND CommandLine LIKE '%SYSTEM\\\\CurrentControlSet\\\\Services\\\\%' ESCAPE '\\' AND CommandLine LIKE '% ImagePath %' ESCAPE '\\')) AND (CommandLine LIKE '% -d %' ESCAPE '\\' OR CommandLine LIKE '% /d %' ESCAPE '\\' OR CommandLine LIKE '% \u2013d %' ESCAPE '\\' OR CommandLine LIKE '% \u2014d %' ESCAPE '\\' OR CommandLine LIKE '% \u2015d %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -44796,7 +44796,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR OriginalFileName='forfiles.exe') AND (CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR OriginalFileName='forfiles.exe') AND (CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% \u2013c %' ESCAPE '\\' OR CommandLine LIKE '% \u2014c %' ESCAPE '\\' OR CommandLine LIKE '% \u2015c %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -45334,7 +45334,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR OriginalFileName='CertOC.exe') AND (CommandLine LIKE '% -LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% /LoadDLL %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR OriginalFileName='CertOC.exe') AND (CommandLine LIKE '% -LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% /LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% \u2013LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% \u2014LoadDLL %' ESCAPE '\\' OR CommandLine LIKE '% \u2015LoadDLL %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -46345,7 +46345,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='psloglist.exe' OR (Image LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist64.exe' ESCAPE '\\')) AND (CommandLine LIKE '% security%' ESCAPE '\\' OR CommandLine LIKE '% application%' ESCAPE '\\' OR CommandLine LIKE '% system%' ESCAPE '\\') AND (CommandLine LIKE '% -d%' ESCAPE '\\' OR CommandLine LIKE '% /d%' ESCAPE '\\' OR CommandLine LIKE '% -x%' ESCAPE '\\' OR CommandLine LIKE '% /x%' ESCAPE '\\' OR CommandLine LIKE '% -s%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% -c%' ESCAPE '\\' OR CommandLine LIKE '% /c%' ESCAPE '\\' OR CommandLine LIKE '% -g%' ESCAPE '\\' OR CommandLine LIKE '% /g%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((OriginalFileName='psloglist.exe' OR (Image LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR Image LIKE '%\\\\psloglist64.exe' ESCAPE '\\')) AND (CommandLine LIKE '% security%' ESCAPE '\\' OR CommandLine LIKE '% application%' ESCAPE '\\' OR CommandLine LIKE '% system%' ESCAPE '\\') AND (CommandLine LIKE '% -d%' ESCAPE '\\' OR CommandLine LIKE '% /d%' ESCAPE '\\' OR CommandLine LIKE '% \u2013d%' ESCAPE '\\' OR CommandLine LIKE '% \u2014d%' ESCAPE '\\' OR CommandLine LIKE '% \u2015d%' ESCAPE '\\' OR CommandLine LIKE '% -x%' ESCAPE '\\' OR CommandLine LIKE '% /x%' ESCAPE '\\' OR CommandLine LIKE '% \u2013x%' ESCAPE '\\' OR CommandLine LIKE '% \u2014x%' ESCAPE '\\' OR CommandLine LIKE '% \u2015x%' ESCAPE '\\' OR CommandLine LIKE '% -s%' ESCAPE '\\' OR CommandLine LIKE '% /s%' ESCAPE '\\' OR CommandLine LIKE '% \u2013s%' ESCAPE '\\' OR CommandLine LIKE '% \u2014s%' ESCAPE '\\' OR CommandLine LIKE '% \u2015s%' ESCAPE '\\' OR CommandLine LIKE '% -c%' ESCAPE '\\' OR CommandLine LIKE '% /c%' ESCAPE '\\' OR CommandLine LIKE '% \u2013c%' ESCAPE '\\' OR CommandLine LIKE '% \u2014c%' ESCAPE '\\' OR CommandLine LIKE '% \u2015c%' ESCAPE '\\' OR CommandLine LIKE '% -g%' ESCAPE '\\' OR CommandLine LIKE '% /g%' ESCAPE '\\' OR CommandLine LIKE '% \u2013g%' ESCAPE '\\' OR CommandLine LIKE '% \u2014g%' ESCAPE '\\' OR CommandLine LIKE '% \u2015g%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -47049,7 +47049,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND (CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '% /s %' ESCAPE '\\' OR CommandLine LIKE '%.reg%' ESCAPE '\\')) AND (NOT ((CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% -a %' ESCAPE '\\' OR CommandLine LIKE '% /a %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\') AND CommandLine REGEXP ':[^ \\\\]'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\regedit.exe' ESCAPE '\\' OR OriginalFileName='REGEDIT.EXE') AND (CommandLine LIKE '% /i %' ESCAPE '\\' OR CommandLine LIKE '% /s %' ESCAPE '\\' OR CommandLine LIKE '%.reg%' ESCAPE '\\')) AND (NOT ((CommandLine LIKE '% -e %' ESCAPE '\\' OR CommandLine LIKE '% /e %' ESCAPE '\\' OR CommandLine LIKE '% \u2013e %' ESCAPE '\\' OR CommandLine LIKE '% \u2014e %' ESCAPE '\\' OR CommandLine LIKE '% \u2015e %' ESCAPE '\\' OR CommandLine LIKE '% -a %' ESCAPE '\\' OR CommandLine LIKE '% /a %' ESCAPE '\\' OR CommandLine LIKE '% \u2013a %' ESCAPE '\\' OR CommandLine LIKE '% \u2014a %' ESCAPE '\\' OR CommandLine LIKE '% \u2015a %' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% /c %' ESCAPE '\\' OR CommandLine LIKE '% \u2013c %' ESCAPE '\\' OR CommandLine LIKE '% \u2014c %' ESCAPE '\\' OR CommandLine LIKE '% \u2015c %' ESCAPE '\\') AND CommandLine REGEXP ':[^ \\\\]'))))"
         ],
         "filename": ""
     },
@@ -47127,7 +47127,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\tasklist.exe' ESCAPE '\\' OR OriginalFileName='tasklist.exe') AND (CommandLine LIKE '%-m%' ESCAPE '\\' OR CommandLine LIKE '%/m%' ESCAPE '\\') AND CommandLine LIKE '%rdpcorets.dll%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\tasklist.exe' ESCAPE '\\' OR OriginalFileName='tasklist.exe') AND (CommandLine LIKE '%-m%' ESCAPE '\\' OR CommandLine LIKE '%/m%' ESCAPE '\\' OR CommandLine LIKE '%\u2013m%' ESCAPE '\\' OR CommandLine LIKE '%\u2014m%' ESCAPE '\\' OR CommandLine LIKE '%\u2015m%' ESCAPE '\\') AND CommandLine LIKE '%rdpcorets.dll%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -47263,7 +47263,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\rpcping.exe' ESCAPE '\\' AND (CommandLine LIKE '%-s%' ESCAPE '\\' OR CommandLine LIKE '%/s%' ESCAPE '\\') AND (((CommandLine LIKE '%-u%' ESCAPE '\\' OR CommandLine LIKE '%/u%' ESCAPE '\\') AND (CommandLine LIKE '%NTLM%' ESCAPE '\\')) OR ((CommandLine LIKE '%-t%' ESCAPE '\\' OR CommandLine LIKE '%/t%' ESCAPE '\\') AND (CommandLine LIKE '%ncacn\\_np%' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\rpcping.exe' ESCAPE '\\' AND (CommandLine LIKE '%-s%' ESCAPE '\\' OR CommandLine LIKE '%/s%' ESCAPE '\\' OR CommandLine LIKE '%\u2013s%' ESCAPE '\\' OR CommandLine LIKE '%\u2014s%' ESCAPE '\\' OR CommandLine LIKE '%\u2015s%' ESCAPE '\\') AND (((CommandLine LIKE '%-u%' ESCAPE '\\' OR CommandLine LIKE '%/u%' ESCAPE '\\' OR CommandLine LIKE '%\u2013u%' ESCAPE '\\' OR CommandLine LIKE '%\u2014u%' ESCAPE '\\' OR CommandLine LIKE '%\u2015u%' ESCAPE '\\') AND (CommandLine LIKE '%NTLM%' ESCAPE '\\')) OR ((CommandLine LIKE '%-t%' ESCAPE '\\' OR CommandLine LIKE '%/t%' ESCAPE '\\' OR CommandLine LIKE '%\u2013t%' ESCAPE '\\' OR CommandLine LIKE '%\u2014t%' ESCAPE '\\' OR CommandLine LIKE '%\u2015t%' ESCAPE '\\') AND (CommandLine LIKE '%ncacn\\_np%' ESCAPE '\\')))))"
         ],
         "filename": ""
     },
@@ -47301,7 +47301,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\wlrmdr.exe' ESCAPE '\\' OR (((Image LIKE '%\\\\wlrmdr.exe' ESCAPE '\\' OR OriginalFileName='WLRMNDR.EXE') AND ((CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\') AND (CommandLine LIKE '%-f %' ESCAPE '\\' OR CommandLine LIKE '%/f %' ESCAPE '\\') AND (CommandLine LIKE '%-t %' ESCAPE '\\' OR CommandLine LIKE '%/t %' ESCAPE '\\') AND (CommandLine LIKE '%-m %' ESCAPE '\\' OR CommandLine LIKE '%/m %' ESCAPE '\\') AND (CommandLine LIKE '%-a %' ESCAPE '\\' OR CommandLine LIKE '%/a %' ESCAPE '\\') AND (CommandLine LIKE '%-u %' ESCAPE '\\' OR CommandLine LIKE '%/u %' ESCAPE '\\'))) AND (NOT (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\' OR (ParentImage='' OR ParentImage='-') OR ParentImage IS NULL)))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\wlrmdr.exe' ESCAPE '\\' OR (((Image LIKE '%\\\\wlrmdr.exe' ESCAPE '\\' OR OriginalFileName='WLRMNDR.EXE') AND ((CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%/s %' ESCAPE '\\' OR CommandLine LIKE '%\u2013s %' ESCAPE '\\' OR CommandLine LIKE '%\u2014s %' ESCAPE '\\' OR CommandLine LIKE '%\u2015s %' ESCAPE '\\') AND (CommandLine LIKE '%-f %' ESCAPE '\\' OR CommandLine LIKE '%/f %' ESCAPE '\\' OR CommandLine LIKE '%\u2013f %' ESCAPE '\\' OR CommandLine LIKE '%\u2014f %' ESCAPE '\\' OR CommandLine LIKE '%\u2015f %' ESCAPE '\\') AND (CommandLine LIKE '%-t %' ESCAPE '\\' OR CommandLine LIKE '%/t %' ESCAPE '\\' OR CommandLine LIKE '%\u2013t %' ESCAPE '\\' OR CommandLine LIKE '%\u2014t %' ESCAPE '\\' OR CommandLine LIKE '%\u2015t %' ESCAPE '\\') AND (CommandLine LIKE '%-m %' ESCAPE '\\' OR CommandLine LIKE '%/m %' ESCAPE '\\' OR CommandLine LIKE '%\u2013m %' ESCAPE '\\' OR CommandLine LIKE '%\u2014m %' ESCAPE '\\' OR CommandLine LIKE '%\u2015m %' ESCAPE '\\') AND (CommandLine LIKE '%-a %' ESCAPE '\\' OR CommandLine LIKE '%/a %' ESCAPE '\\' OR CommandLine LIKE '%\u2013a %' ESCAPE '\\' OR CommandLine LIKE '%\u2014a %' ESCAPE '\\' OR CommandLine LIKE '%\u2015a %' ESCAPE '\\') AND (CommandLine LIKE '%-u %' ESCAPE '\\' OR CommandLine LIKE '%/u %' ESCAPE '\\' OR CommandLine LIKE '%\u2013u %' ESCAPE '\\' OR CommandLine LIKE '%\u2014u %' ESCAPE '\\' OR CommandLine LIKE '%\u2015u %' ESCAPE '\\'))) AND (NOT (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\winlogon.exe' ESCAPE '\\' OR (ParentImage='' OR ParentImage='-') OR ParentImage IS NULL)))))"
         ],
         "filename": ""
     },
@@ -47759,7 +47759,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% -y%' ESCAPE '\\' OR CommandLine LIKE '% /y%' ESCAPE '\\')) AND (NOT (CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' AND (CommandLine LIKE '% -y%' ESCAPE '\\' OR CommandLine LIKE '% /y%' ESCAPE '\\' OR CommandLine LIKE '% \u2013y%' ESCAPE '\\' OR CommandLine LIKE '% \u2014y%' ESCAPE '\\' OR CommandLine LIKE '% \u2015y%' ESCAPE '\\')) AND (NOT (CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" /Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Bonjour\\\\mdnsNSP.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\ScriptingObjectModel.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Program Files (x86)\\\\Apple Software Update\\\\SoftwareUpdateAdmin.dll%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y \"C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\MsiExec.exe\" -Y C:\\\\Windows\\\\CCM\\\\%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -47855,7 +47855,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\msiexec.exe' ESCAPE '\\') AND (CommandLine LIKE '% -z %' ESCAPE '\\' OR CommandLine LIKE '% /z %' ESCAPE '\\') AND CommandLine LIKE '%.dll%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE '\\\\msiexec.exe' ESCAPE '\\') AND (CommandLine LIKE '% -z %' ESCAPE '\\' OR CommandLine LIKE '% /z %' ESCAPE '\\' OR CommandLine LIKE '% \u2013z %' ESCAPE '\\' OR CommandLine LIKE '% \u2014z %' ESCAPE '\\' OR CommandLine LIKE '% \u2015z %' ESCAPE '\\') AND CommandLine LIKE '%.dll%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -48028,7 +48028,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-encode%' ESCAPE '\\' OR CommandLine LIKE '%/encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2013encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2014encode%' ESCAPE '\\' OR CommandLine LIKE '%\u2015encode%' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -48335,7 +48335,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName='msiexec.exe') AND (CommandLine LIKE '%-i%' ESCAPE '\\' OR CommandLine LIKE '%/i%' ESCAPE '\\' OR CommandLine LIKE '%-package%' ESCAPE '\\' OR CommandLine LIKE '%/package%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%-j%' ESCAPE '\\' OR CommandLine LIKE '%/j%' ESCAPE '\\') AND (CommandLine LIKE '%-q%' ESCAPE '\\' OR CommandLine LIKE '%/q%' ESCAPE '\\')) AND (NOT ((ParentImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND ParentImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') OR ParentImage LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR (ParentImage LIKE 'C:\\\\Windows\\\\CCM\\\\Ccm32BitLauncher.exe' ESCAPE '\\' AND IntegrityLevel='System')))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR OriginalFileName='msiexec.exe') AND (CommandLine LIKE '%-i%' ESCAPE '\\' OR CommandLine LIKE '%/i%' ESCAPE '\\' OR CommandLine LIKE '%\u2013i%' ESCAPE '\\' OR CommandLine LIKE '%\u2014i%' ESCAPE '\\' OR CommandLine LIKE '%\u2015i%' ESCAPE '\\' OR CommandLine LIKE '%-package%' ESCAPE '\\' OR CommandLine LIKE '%/package%' ESCAPE '\\' OR CommandLine LIKE '%\u2013package%' ESCAPE '\\' OR CommandLine LIKE '%\u2014package%' ESCAPE '\\' OR CommandLine LIKE '%\u2015package%' ESCAPE '\\' OR CommandLine LIKE '%-a%' ESCAPE '\\' OR CommandLine LIKE '%/a%' ESCAPE '\\' OR CommandLine LIKE '%\u2013a%' ESCAPE '\\' OR CommandLine LIKE '%\u2014a%' ESCAPE '\\' OR CommandLine LIKE '%\u2015a%' ESCAPE '\\' OR CommandLine LIKE '%-j%' ESCAPE '\\' OR CommandLine LIKE '%/j%' ESCAPE '\\' OR CommandLine LIKE '%\u2013j%' ESCAPE '\\' OR CommandLine LIKE '%\u2014j%' ESCAPE '\\' OR CommandLine LIKE '%\u2015j%' ESCAPE '\\') AND (CommandLine LIKE '%-q%' ESCAPE '\\' OR CommandLine LIKE '%/q%' ESCAPE '\\' OR CommandLine LIKE '%\u2013q%' ESCAPE '\\' OR CommandLine LIKE '%\u2014q%' ESCAPE '\\' OR CommandLine LIKE '%\u2015q%' ESCAPE '\\')) AND (NOT ((ParentImage LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND ParentImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') OR ParentImage LIKE 'C:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR (ParentImage LIKE 'C:\\\\Windows\\\\CCM\\\\Ccm32BitLauncher.exe' ESCAPE '\\' AND IntegrityLevel='System')))))"
         ],
         "filename": ""
     },
@@ -48679,7 +48679,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\ssh.exe' ESCAPE '\\' AND (CommandLine LIKE '% -R %' ESCAPE '\\' OR CommandLine LIKE '% /R %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (Image LIKE '%\\\\ssh.exe' ESCAPE '\\' AND (CommandLine LIKE '% -R %' ESCAPE '\\' OR CommandLine LIKE '% /R %' ESCAPE '\\' OR CommandLine LIKE '% \u2013R %' ESCAPE '\\' OR CommandLine LIKE '% \u2014R %' ESCAPE '\\' OR CommandLine LIKE '% \u2015R %' ESCAPE '\\')))"
         ],
         "filename": ""
     },
@@ -49311,7 +49311,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\ftp.exe' ESCAPE '\\' OR ((Image LIKE '%\\\\ftp.exe' ESCAPE '\\' OR OriginalFileName='ftp.exe') AND (CommandLine LIKE '%-s:%' ESCAPE '\\' OR CommandLine LIKE '%/s:%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\ftp.exe' ESCAPE '\\' OR ((Image LIKE '%\\\\ftp.exe' ESCAPE '\\' OR OriginalFileName='ftp.exe') AND (CommandLine LIKE '%-s:%' ESCAPE '\\' OR CommandLine LIKE '%/s:%' ESCAPE '\\' OR CommandLine LIKE '%\u2013s:%' ESCAPE '\\' OR CommandLine LIKE '%\u2014s:%' ESCAPE '\\' OR CommandLine LIKE '%\u2015s:%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -49330,7 +49330,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName='odbcconf.exe') AND (CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% /f %' ESCAPE '\\') AND CommandLine LIKE '%.rsp%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName='odbcconf.exe') AND (CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% /f %' ESCAPE '\\' OR CommandLine LIKE '% \u2013f %' ESCAPE '\\' OR CommandLine LIKE '% \u2014f %' ESCAPE '\\' OR CommandLine LIKE '% \u2015f %' ESCAPE '\\') AND CommandLine LIKE '%.rsp%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -49428,7 +49428,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName='mstsc.exe') AND (CommandLine LIKE '% -v:%' ESCAPE '\\' OR CommandLine LIKE '% /v:%' ESCAPE '\\')) AND (NOT (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\lxss\\\\wslhost.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\ProgramData\\\\Microsoft\\\\WSL\\\\wslg.rdp%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (((Image LIKE '%\\\\mstsc.exe' ESCAPE '\\' OR OriginalFileName='mstsc.exe') AND (CommandLine LIKE '% -v:%' ESCAPE '\\' OR CommandLine LIKE '% /v:%' ESCAPE '\\' OR CommandLine LIKE '% \u2013v:%' ESCAPE '\\' OR CommandLine LIKE '% \u2014v:%' ESCAPE '\\' OR CommandLine LIKE '% \u2015v:%' ESCAPE '\\')) AND (NOT (ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\lxss\\\\wslhost.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\ProgramData\\\\Microsoft\\\\WSL\\\\wslg.rdp%' ESCAPE '\\'))))"
         ],
         "filename": ""
     },
@@ -50030,7 +50030,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-addstore%' ESCAPE '\\' OR CommandLine LIKE '%/addstore%' ESCAPE '\\') AND CommandLine LIKE '%root%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR OriginalFileName='CertUtil.exe') AND (CommandLine LIKE '%-addstore%' ESCAPE '\\' OR CommandLine LIKE '%/addstore%' ESCAPE '\\' OR CommandLine LIKE '%\u2013addstore%' ESCAPE '\\' OR CommandLine LIKE '%\u2014addstore%' ESCAPE '\\' OR CommandLine LIKE '%\u2015addstore%' ESCAPE '\\') AND CommandLine LIKE '%root%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
