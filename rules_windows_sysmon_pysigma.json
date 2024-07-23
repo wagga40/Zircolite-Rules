@@ -5877,25 +5877,6 @@
         "filename": ""
     },
     {
-        "title": "Suspicious File Event With Teams Objects",
-        "id": "6902955a-01b7-432c-b32a-6f5f81d8f624",
-        "status": "test",
-        "description": "Detects an access to authentication tokens and accounts of Microsoft Teams desktop application.",
-        "author": "@SerkinValery",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1528"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND ((TargetFilename LIKE '%\\\\Microsoft\\\\Teams\\\\Cookies%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Microsoft\\\\Teams\\\\Local Storage\\\\leveldb%' ESCAPE '\\') AND (NOT Image LIKE '%\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe%' ESCAPE '\\')))"
-        ],
-        "filename": ""
-    },
-    {
         "title": "UAC Bypass Using MSConfig Token Modification - File",
         "id": "41bb431f-56d8-4691-bb56-ed34e390906f",
         "status": "test",
@@ -28657,6 +28638,26 @@
         "filename": ""
     },
     {
+        "title": "Unattend.XML File Access Attempt",
+        "id": "76a26006-0942-430b-8249-bd51d448f8e5",
+        "status": "experimental",
+        "description": "Detects attempts to access the \"unattend.xml\" file, where credentials might be stored.\nThis file is used during the unattended windows install process.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1552.001",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE FileName LIKE '%\\\\Panther\\\\unattend.xml' ESCAPE '\\'"
+        ],
+        "filename": ""
+    },
+    {
         "title": "ADS Zone.Identifier Deleted",
         "id": "7eac0a16-5832-4e81-865f-0268a6d19e4b",
         "status": "test",
@@ -33865,21 +33866,40 @@
         "filename": ""
     },
     {
-        "title": "Access To Potentially Sensitive Sysvol Files By Uncommon Application",
-        "id": "d51694fe-484a-46ac-92d6-969e76d60d10",
+        "title": "Access To Windows DPAPI Master Keys By Uncommon Application",
+        "id": "46612ae6-86be-4802-bc07-39b59feb1309",
         "status": "experimental",
-        "description": "Detects file access requests to potentially sensitive files hosted on the Windows Sysvol share.",
-        "author": "frack113",
+        "description": "Detects file access requests to the the Windows Data Protection API Master keys by an uncommon application.\nThis can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::masterkey\" function\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.credential_access",
-            "attack.t1552.006"
+            "attack.t1555.004"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (FileName LIKE '\\\\%' ESCAPE '\\' AND (FileName LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND FileName LIKE '%\\\\Policies\\\\%' ESCAPE '\\') AND (FileName LIKE '%audit.csv' ESCAPE '\\' OR FileName LIKE '%Files.xml' ESCAPE '\\' OR FileName LIKE '%GptTmpl.inf' ESCAPE '\\' OR FileName LIKE '%groups.xml' ESCAPE '\\' OR FileName LIKE '%Registry.pol' ESCAPE '\\' OR FileName LIKE '%Registry.xml' ESCAPE '\\' OR FileName LIKE '%scheduledtasks.xml' ESCAPE '\\' OR FileName LIKE '%scripts.ini' ESCAPE '\\' OR FileName LIKE '%services.xml' ESCAPE '\\')) AND (NOT (Image LIKE ':\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE ':\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE ':\\\\Windows\\\\explorer.exe%' ESCAPE '\\' OR Image LIKE ':\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR Image LIKE ':\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-18\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-21-%' ESCAPE '\\') AND (NOT (Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
+        "title": "Microsoft Teams Sensitive File Access By Uncommon Application",
+        "id": "65744385-8541-44a6-8630-ffc824d7d4cc",
+        "status": "experimental",
+        "description": "Detects file access attempts to sensitive Microsoft teams files (leveldb, cookies) by an uncommon process.\n",
+        "author": "@SerkinValery",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1528"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (FileName LIKE '%\\\\Microsoft\\\\Teams\\\\Cookies%' ESCAPE '\\' OR FileName LIKE '%\\\\Microsoft\\\\Teams\\\\Local Storage\\\\leveldb%' ESCAPE '\\') AND (NOT Image LIKE '%\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe' ESCAPE '\\')"
         ],
         "filename": ""
     },
@@ -33903,6 +33923,25 @@
         "filename": ""
     },
     {
+        "title": "Access To Potentially Sensitive Sysvol Files By Uncommon Application",
+        "id": "d51694fe-484a-46ac-92d6-969e76d60d10",
+        "status": "experimental",
+        "description": "Detects file access requests to potentially sensitive files hosted on the Windows Sysvol share.",
+        "author": "frack113",
+        "tags": [
+            "attack.credential_access",
+            "attack.t1552.006"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (FileName LIKE '\\\\%' ESCAPE '\\' AND (FileName LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND FileName LIKE '%\\\\Policies\\\\%' ESCAPE '\\') AND (FileName LIKE '%audit.csv' ESCAPE '\\' OR FileName LIKE '%Files.xml' ESCAPE '\\' OR FileName LIKE '%GptTmpl.inf' ESCAPE '\\' OR FileName LIKE '%groups.xml' ESCAPE '\\' OR FileName LIKE '%Registry.pol' ESCAPE '\\' OR FileName LIKE '%Registry.xml' ESCAPE '\\' OR FileName LIKE '%scheduledtasks.xml' ESCAPE '\\' OR FileName LIKE '%scripts.ini' ESCAPE '\\' OR FileName LIKE '%services.xml' ESCAPE '\\')) AND (NOT (Image LIKE ':\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE ':\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE ':\\\\Windows\\\\explorer.exe%' ESCAPE '\\' OR Image LIKE ':\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR Image LIKE ':\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Credential Manager Access By Uncommon Application",
         "id": "407aecb1-e762-4acf-8c7b-d087bcff3bb6",
         "status": "experimental",
@@ -33918,25 +33957,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\ProgramData\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\') AND (NOT (Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Access To Windows DPAPI Master Keys By Uncommon Application",
-        "id": "46612ae6-86be-4802-bc07-39b59feb1309",
-        "status": "experimental",
-        "description": "Detects file access requests to the the Windows Data Protection API Master keys by an uncommon application.\nThis can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::masterkey\" function\n",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1555.004"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-18\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-21-%' ESCAPE '\\') AND (NOT (Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))"
         ],
         "filename": ""
     },
@@ -34793,25 +34813,6 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND (TargetFilename LIKE '%.scr' ESCAPE '\\' AND (NOT (TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\NewOS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\'))))"
-        ],
-        "filename": ""
-    },
-    {
-        "title": "Suspicious Unattend.xml File Access",
-        "id": "1a3d42dd-3763-46b9-8025-b5f17f340dfb",
-        "status": "test",
-        "description": "Attempts to access unattend.xml, where credentials are commonly stored, within the Panther directory where installation logs are stored.\nIf these files exist, their contents will be displayed. They are used to store credentials/answers during the unattended windows install process\n",
-        "author": "frack113",
-        "tags": [
-            "attack.credential_access",
-            "attack.t1552.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=11 AND TargetFilename LIKE '%\\\\unattend.xml' ESCAPE '\\')"
         ],
         "filename": ""
     },
