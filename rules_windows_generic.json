@@ -7794,6 +7794,46 @@
         "filename": "win_security_exploit_cve_2024_1708_screenconnect.yml"
     },
     {
+        "title": "Potential Exploitation of CVE-2024-37085 - Suspicious Creation Of ESX Admins Group",
+        "id": "c408acfe-2870-41df-8d2f-9f4daa4555ed",
+        "status": "experimental",
+        "description": "Detects execution of the \"net.exe\" command in order to add a group named \"ESX Admins\".\nThis could indicates a potential exploitation attempt of CVE-2024-37085, which allows an attacker to elevate their privileges to full administrative access on an domain-joined ESXi hypervisor.\nVMware ESXi hypervisors joined to an Active Directory domain consider any member of a domain group named \"ESX Admins\" to have full administrative access by default.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.execution",
+            "cve.2024.37085",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((((NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\') OR OriginalFileName IN ('net.exe', 'net1.exe')) AND (CommandLine LIKE '%/add%' ESCAPE '\\' AND CommandLine LIKE '%/domain%' ESCAPE '\\' AND CommandLine LIKE '%ESX Admins%' ESCAPE '\\' AND CommandLine LIKE '%group%' ESCAPE '\\')) OR (((NewProcessName LIKE '%\\\\PowerShell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.exe', 'pwsh.dll')) AND (CommandLine LIKE '%New-ADGroup%' ESCAPE '\\' AND CommandLine LIKE '%ESX Admins%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2024_37085_esxi_admins_group_creation.yml"
+    },
+    {
+        "title": "Potential Exploitation of CVE-2024-37085 - Suspicious ESX Admins Group Activity",
+        "id": "47a1658b-67a4-48e2-8ab1-c10437fc0148",
+        "status": "experimental",
+        "description": "Detects any creation or modification to a windows domain group with the name \"ESX Admins\".\nThis could indicates a potential exploitation attempt of CVE-2024-37085, which allows an attacker to elevate their privileges to full administrative access on an domain-joined ESXi hypervisor.\nVMware ESXi hypervisors joined to an Active Directory domain consider any member of a domain group named \"ESX Admins\" to have full administrative access by default.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "cve.2024.37085",
+            "detection.emerging_threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID IN ('4727', '4728', '4731', '4737', '4754', '4755', '4756') AND logs MATCH ('\"ESX Admins\"'))"
+        ],
+        "filename": "win_security_exploit_cve_2024_37085_esxi_admins_group.yml"
+    },
+    {
         "title": "CVE-2024-1212 Exploitation - Progress Kemp LoadMaster Unauthenticated Command Injection",
         "id": "eafb8bd5-7605-4bfe-a9ec-0442bc151f15",
         "status": "experimental",
