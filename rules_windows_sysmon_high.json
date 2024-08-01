@@ -7735,6 +7735,25 @@
         "filename": "registry_set_malware_kapeka_backdoor_autorun_persistence.yml"
     },
     {
+        "title": "Potential CSharp Streamer RAT Loading .NET Executable Image",
+        "id": "6f6afac3-8e7a-4e4b-9588-2608ffe08f82",
+        "status": "experimental",
+        "description": "Detects potential CSharp Streamer RAT loading .NET executable image by using the default file name and path associated with the tool.\n",
+        "author": "Luca Di Bartolomeo",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ImageLoaded REGEXP '\\\\AppData\\\\Local\\\\Temp\\\\dat[0-9A-Z]{4}\\.tmp')"
+        ],
+        "filename": "image_load_malware_csharp_streamer_dotnet_load.yml"
+    },
+    {
         "title": "CVE-2024-1709 - ScreenConnect Authentication Bypass Exploitation",
         "id": "d27eabad-9068-401a-b0d6-9eac744d6e67",
         "status": "experimental",

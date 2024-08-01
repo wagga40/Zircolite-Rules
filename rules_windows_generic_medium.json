@@ -9987,6 +9987,25 @@
         "filename": "file_event_win_malware_darkgate_autoit3_save_temp.yml"
     },
     {
+        "title": "Potential CSharp Streamer RAT Loading .NET Executable Image",
+        "id": "6f6afac3-8e7a-4e4b-9588-2608ffe08f82",
+        "status": "experimental",
+        "description": "Detects potential CSharp Streamer RAT loading .NET executable image by using the default file name and path associated with the tool.\n",
+        "author": "Luca Di Bartolomeo",
+        "tags": [
+            "attack.command_and_control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ImageLoaded REGEXP '\\\\AppData\\\\Local\\\\Temp\\\\dat[0-9A-Z]{4}\\.tmp'"
+        ],
+        "filename": "image_load_malware_csharp_streamer_dotnet_load.yml"
+    },
+    {
         "title": "ScreenConnect User Database Modification - Security",
         "id": "4109cb6a-a4af-438a-9f0c-056abba41c6f",
         "status": "experimental",
@@ -20331,6 +20350,27 @@
         "filename": "file_event_macos_python_path_configuration_files.yml"
     },
     {
+        "title": "Clipboard Data Collection Via Pbpaste",
+        "id": "d8af0da1-2959-40f9-a3e4-37a6aa1228b7",
+        "status": "experimental",
+        "description": "Detects execution of the \"pbpaste\" utility, which retrieves the contents of the clipboard (a.k.a. pasteboard) and writes them to the standard output (stdout).\nThe utility is often used for creating new files with the clipboard content or for piping clipboard contents to other commands.\nIt can also be used in shell scripts that may require clipboard content as input.\nAttackers can abuse this utility in order to collect data from the user clipboard, which may contain passwords or sensitive information.\nUse this rule to hunt for potential abuse of the utility by looking at the parent process and any potentially suspicious command line content.\n",
+        "author": "Daniel Cortez",
+        "tags": [
+            "attack.collection",
+            "attack.credential_access",
+            "attack.t1115",
+            "detection.threat_hunting"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE NewProcessName LIKE '%/pbpaste' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_macos_pbpaste_execution.yml"
+    },
+    {
         "title": "Potential Shellcode Injection",
         "id": "250ae82f-736e-4844-a68b-0b5e8cc887da",
         "status": "test",
@@ -24476,29 +24516,7 @@
         "filename": "file_change_win_2022_timestomping.yml"
     },
     {
-        "title": "Access To Browser Credential Files By Uncommon Application",
-        "id": "91cb43db-302a-47e3-b3c8-7ede481e27bf",
-        "status": "experimental",
-        "description": "Detects file access requests to browser credential stores by uncommon processes.\nCould indicate potential attempt of credential stealing.\nRequires heavy baselining before usage\n",
-        "author": "frack113",
-        "tags": [
-            "attack.t1003",
-            "attack.credential_access"
-        ],
-        "falsepositives": [
-            "Antivirus, Anti-Spyware, Anti-Malware Software",
-            "Backup software",
-            "Legitimate software installed on partitions other than \"C:\\\"",
-            "Searching software such as \"everything.exe\""
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (((FileName LIKE '%\\\\Appdata\\\\Local\\\\Microsoft\\\\Windows\\\\WebCache\\\\WebCacheV01.dat' ESCAPE '\\' OR (FileName LIKE '%\\\\cookies.sqlite' ESCAPE '\\' OR FileName LIKE '%release\\\\key3.db' ESCAPE '\\' OR FileName LIKE '%release\\\\key4.db' ESCAPE '\\' OR FileName LIKE '%release\\\\logins.json' ESCAPE '\\') OR (FileName LIKE '%\\\\Appdata\\\\Local\\\\Chrome\\\\User Data\\\\Default\\\\Login Data%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Network\\\\Cookies%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Local State%' ESCAPE '\\')) AND NOT ((NewProcessName = 'System') OR ((NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCopyAccelerator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\'))))"
-        ],
-        "filename": "file_access_win_browsers_credential_access.yml"
-    },
-    {
-        "title": "Microsoft Teams Sensitive File Access By Uncommon Application",
+        "title": "Microsoft Teams Sensitive File Access By Uncommon Applications",
         "id": "65744385-8541-44a6-8630-ffc824d7d4cc",
         "status": "experimental",
         "description": "Detects file access attempts to sensitive Microsoft teams files (leveldb, cookies) by an uncommon process.\n",
@@ -24517,7 +24535,7 @@
         "filename": "file_access_win_teams_sensitive_files.yml"
     },
     {
-        "title": "Access To Potentially Sensitive Sysvol Files By Uncommon Application",
+        "title": "Access To Potentially Sensitive Sysvol Files By Uncommon Applications",
         "id": "d51694fe-484a-46ac-92d6-969e76d60d10",
         "status": "experimental",
         "description": "Detects file access requests to potentially sensitive files hosted on the Windows Sysvol share.",
@@ -24531,12 +24549,34 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((FileName LIKE '\\\\\\*' ESCAPE '\\' AND FileName LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND FileName LIKE '%\\\\Policies\\\\%' ESCAPE '\\' AND (FileName LIKE '%audit.csv' ESCAPE '\\' OR FileName LIKE '%Files.xml' ESCAPE '\\' OR FileName LIKE '%GptTmpl.inf' ESCAPE '\\' OR FileName LIKE '%groups.xml' ESCAPE '\\' OR FileName LIKE '%Registry.pol' ESCAPE '\\' OR FileName LIKE '%Registry.xml' ESCAPE '\\' OR FileName LIKE '%scheduledtasks.xml' ESCAPE '\\' OR FileName LIKE '%scripts.ini' ESCAPE '\\' OR FileName LIKE '%services.xml' ESCAPE '\\')) AND NOT (((NewProcessName LIKE ':\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE ':\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE ':\\\\Windows\\\\explorer.exe%' ESCAPE '\\' OR NewProcessName LIKE ':\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE ':\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((FileName LIKE '\\\\\\*' ESCAPE '\\' AND FileName LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND FileName LIKE '%\\\\Policies\\\\%' ESCAPE '\\' AND (FileName LIKE '%audit.csv' ESCAPE '\\' OR FileName LIKE '%Files.xml' ESCAPE '\\' OR FileName LIKE '%GptTmpl.inf' ESCAPE '\\' OR FileName LIKE '%groups.xml' ESCAPE '\\' OR FileName LIKE '%Registry.pol' ESCAPE '\\' OR FileName LIKE '%Registry.xml' ESCAPE '\\' OR FileName LIKE '%scheduledtasks.xml' ESCAPE '\\' OR FileName LIKE '%scripts.ini' ESCAPE '\\' OR FileName LIKE '%services.xml' ESCAPE '\\')) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\')))"
         ],
         "filename": "file_access_win_susp_gpo_files.yml"
     },
     {
-        "title": "Access To Windows DPAPI Master Keys By Uncommon Application",
+        "title": "Access To Crypto Currency Wallets By Uncommon Applications",
+        "id": "f41b0311-44f9-44f0-816d-dd45e39d4bc8",
+        "status": "experimental",
+        "description": "Detects file access requests to crypto currency files by uncommon processes.\nCould indicate potential attempt of crypto currency wallet stealing.\n",
+        "author": "X__Junior (Nextron Systems)",
+        "tags": [
+            "attack.t1003",
+            "attack.credential_access"
+        ],
+        "falsepositives": [
+            "Antivirus, Anti-Spyware, Anti-Malware Software",
+            "Backup software",
+            "Legitimate software installed on partitions other than \"C:\\\"",
+            "Searching software such as \"everything.exe\""
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((((FileName LIKE '%\\\\AppData\\\\Roaming\\\\Ethereum\\\\keystore\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\EthereumClassic\\\\keystore\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\monero\\\\wallets\\\\%' ESCAPE '\\') OR (FileName LIKE '%\\\\AppData\\\\Roaming\\\\Bitcoin\\\\wallet.dat' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\BitcoinABC\\\\wallet.dat' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\BitcoinSV\\\\wallet.dat' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\DashCore\\\\wallet.dat' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\DogeCoin\\\\wallet.dat' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\Litecoin\\\\wallet.dat' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\Ripple\\\\wallet.dat' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\Zcash\\\\wallet.dat' ESCAPE '\\')) AND NOT ((NewProcessName = 'System') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')))) AND NOT ((NewProcessName LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\MpCopyAccelerator.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "file_access_win_susp_crypto_currency_wallets.yml"
+    },
+    {
+        "title": "Access To Windows DPAPI Master Keys By Uncommon Applications",
         "id": "46612ae6-86be-4802-bc07-39b59feb1309",
         "status": "experimental",
         "description": "Detects file access requests to the the Windows Data Protection API Master keys by an uncommon application.\nThis can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::masterkey\" function\n",
@@ -24550,12 +24590,12 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-18\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-21-%' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-18\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\Microsoft\\\\Protect\\\\S-1-5-21-%' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "file_access_win_susp_dpapi_master_key_access.yml"
     },
     {
-        "title": "Credential Manager Access By Uncommon Application",
+        "title": "Credential Manager Access By Uncommon Applications",
         "id": "407aecb1-e762-4acf-8c7b-d087bcff3bb6",
         "status": "experimental",
         "description": "Detects suspicious processes based on name and location that access the windows credential manager and vault.\nWhich can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::cred\" function\n",
@@ -24569,12 +24609,12 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\ProgramData\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Credentials\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\' OR FileName LIKE '%\\\\ProgramData\\\\Microsoft\\\\Vault\\\\%' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "file_access_win_susp_credential_manager_access.yml"
     },
     {
-        "title": "Access To Windows Credential History File By Uncommon Application",
+        "title": "Access To Windows Credential History File By Uncommon Applications",
         "id": "7a2a22ea-a203-4cd3-9abf-20eb1c5c6cd2",
         "status": "experimental",
         "description": "Detects file access requests to the Windows Credential History File by an uncommon application.\nThis can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::credhist\" function\n",
@@ -24588,7 +24628,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (FileName LIKE '%\\\\Microsoft\\\\Protect\\\\CREDHIST' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (FileName LIKE '%\\\\Microsoft\\\\Protect\\\\CREDHIST' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\')))"
         ],
         "filename": "file_access_win_susp_credhist.yml"
     },
