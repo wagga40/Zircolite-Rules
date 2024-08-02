@@ -256,7 +256,7 @@
     {
         "title": "Suspicious Scripting in a WMI Consumer",
         "id": "fe21810c-2a8c-478f-8dd3-5a287fb2a0e0",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious commands that are related to scripting/powershell in WMI Event Consumers",
         "author": "Florian Roth (Nextron Systems), Jonhnathan Ribeiro",
         "tags": [
@@ -7597,6 +7597,28 @@
         "filename": "registry_set_malware_kamikakabot_winlogon_persistence.yml"
     },
     {
+        "title": "Potential Raspberry Robin Aclui Dll SideLoading",
+        "id": "0f3a9db2-c17a-480e-a723-d1f1c547ab6a",
+        "status": "experimental",
+        "description": "Detects potential sideloading of malicious \"aclui.dll\" by OleView.This behavior was observed in Raspberry-Robin variants reported by chekpoint research on Feburary 2024.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE '%\\\\OleView.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\aclui.dll' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Windows Kits\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft SDKs\\\\%' ESCAPE '\\')) OR (Signed = 'true'))) AND NOT ((NewProcessName LIKE '%\\\\Windows Resource Kit\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_malware_raspberry_robin_side_load_aclui_oleview.yml"
+    },
+    {
         "title": "Potential Raspberry Robin CPL Execution Activity",
         "id": "92020b88-9caf-464f-bad8-cd0fb0aa2a81",
         "status": "experimental",
@@ -8386,7 +8408,7 @@
     {
         "title": "Sysmon Blocked Executable",
         "id": "23b71bc5-953e-4971-be4c-c896cda73fc2",
-        "status": "experimental",
+        "status": "test",
         "description": "Triggers on any Sysmon \"FileBlockExecutable\" event, which indicates a violation of the configured block policy",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -9068,7 +9090,7 @@
     {
         "title": "Uncommon Microsoft Office Trusted Location Added",
         "id": "f742bde7-9528-42e5-bd82-84f51a8387d2",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects changes to registry keys related to \"Trusted Location\" of Microsoft Office where the path is set to something uncommon. Attackers might add additional trusted locations to avoid macro security restrictions.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -9900,7 +9922,7 @@
     {
         "title": "UAC Bypass via Event Viewer",
         "id": "7c81fec3-1c1d-43b0-996a-46753041b1b6",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects UAC bypass method using Windows event viewer",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -11282,7 +11304,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\SYSVOL' ESCAPE '\\' AND RelativeTargetName LIKE '%ScheduledTasks.xml' ESCAPE '\\' AND (Accesses LIKE '%WriteData%' ESCAPE '\\' OR Accesses LIKE '%\\%\\%4417%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\SYSVOL' ESCAPE '\\' AND RelativeTargetName LIKE '%ScheduledTasks.xml' ESCAPE '\\' AND (AccessList LIKE '%WriteData%' ESCAPE '\\' OR AccessList LIKE '%\\%\\%4417%' ESCAPE '\\'))"
         ],
         "filename": "win_security_gpo_scheduledtasks.yml"
     },
@@ -17533,7 +17555,7 @@
     {
         "title": "DNS Query Tor .Onion Address - Sysmon",
         "id": "b55ca2a3-7cff-4dda-8bdd-c7bfa63bf544",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DNS queries to an \".onion\" address related to Tor routing networks",
         "author": "frack113",
         "tags": [
@@ -17843,7 +17865,7 @@
     {
         "title": "Potential Recon Activity Using DriverQuery.EXE",
         "id": "9fc3072c-dc8f-4bf7-b231-18950000fadd",
-        "status": "experimental",
+        "status": "test",
         "description": "Detect usage of the \"driverquery\" utility to perform reconnaissance on installed drivers",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -19678,7 +19700,7 @@
     {
         "title": "Copy .DMP/.DUMP Files From Remote Share Via Cmd.EXE",
         "id": "044ba588-dff4-4918-9808-3f95e8160606",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects usage of the copy builtin cmd command to copy files with the \".dmp\"/\".dump\" extension from a remote share",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -22734,7 +22756,7 @@
     {
         "title": "Suspicious AddinUtil.EXE CommandLine Execution",
         "id": "631b22a4-70f4-4e2f-9ea8-42f84d9df6d8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) with suspicious Addinroot or Pipelineroot paths. An adversary may execute AddinUtil.exe with uncommon Addinroot/Pipelineroot paths that point to the adversaries Addins.Store payload.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
         "tags": [
@@ -23398,7 +23420,7 @@
     {
         "title": "Renamed AutoIt Execution",
         "id": "f4264e47-f522-4c38-a420-04525d5b880f",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a renamed AutoIt2.exe or AutoIt3.exe.\nAutoIt is a scripting language and automation tool for Windows systems. While primarily used for legitimate automation tasks, it can be misused in cyber attacks.\nAttackers can leverage AutoIt to create and distribute malware, including keyloggers, spyware, and botnets. A renamed AutoIt executable is particularly suspicious.\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -24839,7 +24861,7 @@
     {
         "title": "Chromium Browser Headless Execution To Mockbin Like Site",
         "id": "1c526788-0abe-4713-862f-b520da5e5316",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a Chromium based browser process with the \"headless\" flag and a URL pointing to the mockbin.org service (which can be used to exfiltrate data).",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
@@ -25131,7 +25153,7 @@
     {
         "title": "Renamed Visual Studio Code Tunnel Execution",
         "id": "2cf29f11-e356-4f61-98c0-1bdb9393d6da",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects renamed Visual Studio Code tunnel execution. Attackers can abuse this functionality to establish a C2 channel",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -27250,7 +27272,7 @@
     {
         "title": "Suspicious WebDav Client Execution Via Rundll32.EXE",
         "id": "982e9f2d-1a85-4d5b-aea4-31f5e97c6555",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects \"svchost.exe\" spawning \"rundll32.exe\" with command arguments like C:\\windows\\system32\\davclnt.dll,DavSetCookie. This could be an indicator of exfiltration or use of WebDav to launch code (hosted on WebDav Server) or potentially a sign of exploitation of CVE-2023-23397\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Florian Roth (Nextron Systems)",
         "tags": [

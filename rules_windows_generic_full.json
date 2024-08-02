@@ -376,7 +376,7 @@
     {
         "title": "Suspicious Scripting in a WMI Consumer",
         "id": "fe21810c-2a8c-478f-8dd3-5a287fb2a0e0",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious commands that are related to scripting/powershell in WMI Event Consumers",
         "author": "Florian Roth (Nextron Systems), Jonhnathan Ribeiro",
         "tags": [
@@ -898,7 +898,7 @@
     {
         "title": "PsExec Tool Execution From Suspicious Locations - PipeName",
         "id": "41504465-5e3a-4a5b-a5b4-2a0baadd4463",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects PsExec default pipe creation where the image executed is located in a suspicious location. Which could indicate that the tool is being used in an attack",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -1780,7 +1780,7 @@
     {
         "title": "Remote DLL Load Via Rundll32.EXE",
         "id": "f40017b3-cb2e-4335-ab5d-3babf679c1de",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects a remote DLL load event via \"rundll32.exe\".",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -2506,7 +2506,7 @@
     {
         "title": "Python Image Load By Non-Python Process",
         "id": "cbb56d62-4060-40f7-9466-d8aaf3123f83",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the image load of \"Python Core\" by a non-Python process. This might be indicative of a Python script bundled with Py2Exe.",
         "author": "Patrick St. John, OTR (Open Threat Research)",
         "tags": [
@@ -2566,7 +2566,7 @@
     {
         "title": "Amsi.DLL Loaded Via LOLBIN Process",
         "id": "6ec86d9e-912e-4726-91a2-209359b999b9",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects loading of \"Amsi.dll\" by a living of the land process. This could be an indication of a \"PowerShell without PowerShell\" attack",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -2584,7 +2584,7 @@
     {
         "title": "DLL Load By System Process From Suspicious Locations",
         "id": "9e9a9002-56c4-40fd-9eff-e4b09bfa5f6c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects when a system process (i.e. located in system32, syswow64, etc.) loads a DLL from a suspicious location or a location with permissive permissions such as \"C:\\Users\\Public\"",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -3701,7 +3701,7 @@
     {
         "title": "Python Initiated Connection",
         "id": "bef0bc5a-b9ae-425d-85c6-7b2d705980c6",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects a Python process initiating a network connection. While this often relates to package installation, it can also indicate a potential malicious script communicating with a C&C server.",
         "author": "frack113",
         "tags": [
@@ -10074,6 +10074,48 @@
         "filename": "proc_creation_win_malware_kamikakabot_lnk_lure_execution.yml"
     },
     {
+        "title": "Potential Raspberry Robin Registry Set Internet Settings ZoneMap",
+        "id": "16a4c7b3-4681-49d0-8d58-3e9b796dcb43",
+        "status": "experimental",
+        "description": "Detects registry modifications related to the proxy configuration of the system, potentially associated with the Raspberry Robin malware, as seen in campaigns running in Q1 2024.\nRaspberry Robin may alter proxy settings to circumvent security measures, ensuring unhindered connection with Command and Control servers for maintaining control over compromised systems if there are any proxy settings that are blocking connections.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.t1112",
+            "attack.defense_evasion"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\') OR NewProcessName LIKE '%\\\\control.exe' ESCAPE '\\') AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Internet Settings\\\\ZoneMap\\\\%' ESCAPE '\\') AND (((TargetObject LIKE '%\\\\IntranetName' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProxyByPass' ESCAPE '\\' OR TargetObject LIKE '%\\\\UNCAsIntranet' ESCAPE '\\') AND NewValue LIKE '%DWORD (0x00000001)%' ESCAPE '\\') OR (TargetObject LIKE '%\\\\AutoDetect' ESCAPE '\\' AND NewValue LIKE '%DWORD (0x00000000)%' ESCAPE '\\')))"
+        ],
+        "filename": "registry_set_malware_raspberry_robin_internet_settings_zonemap_tamper.yml"
+    },
+    {
+        "title": "Potential Raspberry Robin Aclui Dll SideLoading",
+        "id": "0f3a9db2-c17a-480e-a723-d1f1c547ab6a",
+        "status": "experimental",
+        "description": "Detects potential sideloading of malicious \"aclui.dll\" by OleView.This behavior was observed in Raspberry-Robin variants reported by chekpoint research on Feburary 2024.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "detection.emerging_threats",
+            "attack.defense_evasion",
+            "attack.privilege_escalation",
+            "attack.t1574.001",
+            "attack.t1574.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE '%\\\\OleView.exe' ESCAPE '\\' AND ImageLoaded LIKE '%\\\\aclui.dll' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Windows Kits\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft SDKs\\\\%' ESCAPE '\\')) OR (Signed = 'true'))) AND NOT ((NewProcessName LIKE '%\\\\Windows Resource Kit\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "image_load_malware_raspberry_robin_side_load_aclui_oleview.yml"
+    },
+    {
         "title": "Potential Raspberry Robin CPL Execution Activity",
         "id": "92020b88-9caf-464f-bad8-cd0fb0aa2a81",
         "status": "experimental",
@@ -11041,7 +11083,7 @@
     {
         "title": "Sysmon Blocked Executable",
         "id": "23b71bc5-953e-4971-be4c-c896cda73fc2",
-        "status": "experimental",
+        "status": "test",
         "description": "Triggers on any Sysmon \"FileBlockExecutable\" event, which indicates a violation of the configured block policy",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -12167,7 +12209,7 @@
     {
         "title": "Uncommon Microsoft Office Trusted Location Added",
         "id": "f742bde7-9528-42e5-bd82-84f51a8387d2",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects changes to registry keys related to \"Trusted Location\" of Microsoft Office where the path is set to something uncommon. Attackers might add additional trusted locations to avoid macro security restrictions.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -12882,7 +12924,7 @@
     {
         "title": "Potential Persistence Via COM Search Order Hijacking",
         "id": "a0ff33d8-79e4-4cef-b4f3-9dc4133ccd12",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potential COM object hijacking leveraging the COM Search Order",
         "author": "Maxime Thiebaut (@0xThiebaut), oscd.community, Cédric Hien",
         "tags": [
@@ -13632,7 +13674,7 @@
     {
         "title": "UAC Bypass via Event Viewer",
         "id": "7c81fec3-1c1d-43b0-996a-46753041b1b6",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects UAC bypass method using Windows event viewer",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -16332,7 +16374,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\SYSVOL' ESCAPE '\\' AND RelativeTargetName LIKE '%ScheduledTasks.xml' ESCAPE '\\' AND (Accesses LIKE '%WriteData%' ESCAPE '\\' OR Accesses LIKE '%\\%\\%4417%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\SYSVOL' ESCAPE '\\' AND RelativeTargetName LIKE '%ScheduledTasks.xml' ESCAPE '\\' AND (AccessList LIKE '%WriteData%' ESCAPE '\\' OR AccessList LIKE '%\\%\\%4417%' ESCAPE '\\'))"
         ],
         "filename": "win_security_gpo_scheduledtasks.yml"
     },
@@ -16354,7 +16396,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\IPC$' ESCAPE '\\' AND RelativeTargetName = 'atsvc' AND Accesses LIKE '%WriteData%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\IPC$' ESCAPE '\\' AND RelativeTargetName = 'atsvc' AND AccessList LIKE '%WriteData%' ESCAPE '\\')"
         ],
         "filename": "win_security_atsvc_task.yml"
     },
@@ -16872,7 +16914,7 @@
     {
         "title": "Service Registry Key Read Access Request",
         "id": "11d00fff-5dc3-428c-8184-801f292faec0",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects \"read access\" requests on the services registry key.\nAdversaries may execute their own malicious payloads by hijacking the Registry entries used by services.\nAdversaries may use flaws in the permissions for Registry keys related to services to redirect from the originally specified executable to one that they control, in order to launch their own code when a service starts.\n",
         "author": "Center for Threat Informed Defense (CTID) Summiting the Pyramid Team",
         "tags": [
@@ -17929,7 +17971,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\IPC$' ESCAPE '\\' AND RelativeTargetName = 'svcctl' AND Accesses LIKE '%WriteData%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\IPC$' ESCAPE '\\' AND RelativeTargetName = 'svcctl' AND AccessList LIKE '%WriteData%' ESCAPE '\\')"
         ],
         "filename": "win_security_svcctl_remote_service.yml"
     },
@@ -19112,7 +19154,7 @@
     {
         "title": "DNS Query To Ufile.io - DNS Client",
         "id": "090ffaad-c01a-4879-850c-6d57da98452d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DNS queries to \"ufile.io\", which was seen abused by malware and threat actors as a method for data exfiltration",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -21492,7 +21534,7 @@
     {
         "title": "Sysinternals Tools AppX Versions Execution",
         "id": "d29a20b2-be4b-4827-81f2-3d8a59eab5fc",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of Sysinternals tools via an AppX package. Attackers could install the Sysinternals Suite to get access to tools such as psexec and procdump to avoid detection based on System paths",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -21915,7 +21957,7 @@
     {
         "title": "Scheduled Task Created - Registry",
         "id": "93ff0ceb-e0ef-4586-8cd8-a6c277d738e3",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a scheduled task via Registry keys.",
         "author": "Center for Threat Informed Defense (CTID) Summiting the Pyramid Team",
         "tags": [
@@ -22099,7 +22141,7 @@
     {
         "title": "Scheduled Task Created - FileCreation",
         "id": "a762e74f-4dce-477c-b023-4ed81df600f9",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a scheduled task via file creation.",
         "author": "Center for Threat Informed Defense (CTID) Summiting the Pyramid Team",
         "tags": [
@@ -22123,7 +22165,7 @@
     {
         "title": "DMP/HDMP File Creation",
         "id": "3a525307-d100-48ae-b3b9-0964699d7f97",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a file with the \".dmp\"/\".hdmp\" extension. Often created by software during a crash. Memory dumps can sometimes contain sensitive information such as credentials. It's best to determine the source of the crash.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -23259,7 +23301,7 @@
     {
         "title": "Diskshadow Child Process Spawned",
         "id": "56b1dde8-b274-435f-a73a-fb75eb81262a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects any child process spawning from \"Diskshadow.exe\". This could be due to executing Diskshadow in interpreter mode or script mode and using the \"exec\" flag to launch other applications.",
         "author": "Harjot Singh @cyb3rjy0t",
         "tags": [
@@ -24441,7 +24483,7 @@
     {
         "title": "Potentially Suspicious DMP/HDMP File Creation",
         "id": "aba15bdd-657f-422a-bab3-ac2d2a0d6f1c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a file with the \".dmp\"/\".hdmp\" extension by a shell or scripting application such as \"cmd\", \"powershell\", etc. Often created by software during a crash. Memory dumps can sometimes contain sensitive information such as credentials. It's best to determine the source of the crash.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -26525,7 +26567,7 @@
     {
         "title": "OneNote Attachment File Dropped In Suspicious Location",
         "id": "7fd164ba-126a-4d9c-9392-0d4f7c243df0",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects creation of files with the \".one\"/\".onepkg\" extension in suspicious or uncommon locations. This could be a sign of attackers abusing OneNote attachments",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -30943,7 +30985,7 @@
     {
         "title": "DNS Query Tor .Onion Address - Sysmon",
         "id": "b55ca2a3-7cff-4dda-8bdd-c7bfa63bf544",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DNS queries to an \".onion\" address related to Tor routing networks",
         "author": "frack113",
         "tags": [
@@ -31097,7 +31139,7 @@
     {
         "title": "DNS Query To Remote Access Software Domain From Non-Browser App",
         "id": "4d07b1f4-cb00-4470-b9f8-b0191d48ff52",
-        "status": "experimental",
+        "status": "test",
         "description": "An adversary may use legitimate desktop support and remote access software, such as Team Viewer, Go2Assist, LogMein, AmmyyAdmin, etc, to establish an interactive command and control channel to target systems within networks.\nThese services are commonly used as legitimate technical support software, and may be allowed by application control within a target environment.\nRemote access tools like VNC, Ammyy, and Teamviewer are used frequently when compared with other legitimate software commonly used by adversaries. (Citation: Symantec Living off the Land)\n",
         "author": "frack113, Connor Martin",
         "tags": [
@@ -31135,7 +31177,7 @@
     {
         "title": "DNS Server Discovery Via LDAP Query",
         "id": "a21bcd7e-38ec-49ad-b69a-9ea17e69509e",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DNS server discovery via LDAP query requests from uncommon applications",
         "author": "frack113",
         "tags": [
@@ -31193,7 +31235,7 @@
     {
         "title": "DNS Query To Ufile.io",
         "id": "1cbbeaaf-3c8c-4e4c-9d72-49485b6a176b",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DNS queries to \"ufile.io\", which was seen abused by malware and threat actors as a method for data exfiltration",
         "author": "yatinwad, TheDFIRReport",
         "tags": [
@@ -31642,7 +31684,7 @@
     {
         "title": "Potential Recon Activity Using DriverQuery.EXE",
         "id": "9fc3072c-dc8f-4bf7-b231-18950000fadd",
-        "status": "experimental",
+        "status": "test",
         "description": "Detect usage of the \"driverquery\" utility to perform reconnaissance on installed drivers",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -32183,7 +32225,7 @@
     {
         "title": "Winrar Compressing Dump Files",
         "id": "1ac14d38-3dfc-4635-92c7-e3fd1c5f5bfc",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of WinRAR in order to compress a file with a \".dmp\"/\".dump\" extension, which could be a step in a process of dump file exfiltration.",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -32582,7 +32624,7 @@
     {
         "title": "DriverQuery.EXE Execution",
         "id": "a20def93-0709-4eae-9bd2-31206e21e6b2",
-        "status": "experimental",
+        "status": "test",
         "description": "Detect usage of the \"driverquery\" utility. Which can be used to perform reconnaissance on installed drivers",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -33282,7 +33324,7 @@
     {
         "title": "7Zip Compressing Dump Files",
         "id": "ec570e53-4c76-45a9-804d-dc3f355ff7a7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of 7z in order to compress a file with a \".dmp\"/\".dump\" extension, which could be a step in a process of dump file exfiltration.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -34592,7 +34634,7 @@
     {
         "title": "Copy .DMP/.DUMP Files From Remote Share Via Cmd.EXE",
         "id": "044ba588-dff4-4918-9808-3f95e8160606",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects usage of the copy builtin cmd command to copy files with the \".dmp\"/\".dump\" extension from a remote share",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -34957,7 +34999,7 @@
     {
         "title": "Uncommon AddinUtil.EXE CommandLine Execution",
         "id": "4f2cd9b6-4a17-440f-bb2a-687abb65993a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) with uncommon Addinroot or Pipelineroot paths. An adversary may execute AddinUtil.exe with uncommon Addinroot/Pipelineroot paths that point to the adversaries Addins.Store payload.\n",
         "author": "Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
         "tags": [
@@ -35890,7 +35932,7 @@
     {
         "title": "Potentially Suspicious Child Process Of DiskShadow.EXE",
         "id": "9f546b25-5f12-4c8d-8532-5893dcb1e4b8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potentially suspicious child processes of \"Diskshadow.exe\". This could be an attempt to bypass parent/child relationship detection or application whitelisting rules.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -35967,7 +36009,7 @@
     {
         "title": "Application Terminated Via Wmic.EXE",
         "id": "49d9671b-0a0a-4c09-8280-d215bfd30662",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects calls to the \"terminate\" function via wmic in order to kill an application",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -37679,7 +37721,7 @@
     {
         "title": "Uncommon Child Process Of AddinUtil.EXE",
         "id": "b5746143-59d6-4603-8d06-acbd60e166ee",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects uncommon child processes of the Add-In deployment cache updating utility (AddInutil.exe) which could be a sign of potential abuse of the binary to proxy execution via a custom Addins.Store payload.\n",
         "author": "Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
         "tags": [
@@ -38310,7 +38352,7 @@
     {
         "title": "Greedy File Deletion Using Del",
         "id": "204b17ae-4007-471b-917b-b917b315c5db",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of the \"del\" builtin command to remove files using greedy/wildcard expression. This is often used by malware to delete content of folders that perhaps contains the initial malware infection or to delete evidence.",
         "author": "frack113 , X__Junior (Nextron Systems)",
         "tags": [
@@ -39730,7 +39772,7 @@
     {
         "title": "Diskshadow Script Mode - Execution From Potential Suspicious Location",
         "id": "fa1a7e52-3d02-435b-81b8-00da14dd66c1",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of \"Diskshadow.exe\" in script mode using the \"/s\" flag where the script is located in a potentially suspicious location.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -41135,7 +41177,7 @@
     {
         "title": "Suspicious AddinUtil.EXE CommandLine Execution",
         "id": "631b22a4-70f4-4e2f-9ea8-42f84d9df6d8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) with suspicious Addinroot or Pipelineroot paths. An adversary may execute AddinUtil.exe with uncommon Addinroot/Pipelineroot paths that point to the adversaries Addins.Store payload.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
         "tags": [
@@ -41390,7 +41432,7 @@
     {
         "title": "Potential Unquoted Service Path Reconnaissance Via Wmic.EXE",
         "id": "68bcd73b-37ef-49cb-95fc-edc809730be6",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects known WMI recon method to look for unquoted service paths using wmic. Often used by pentester and attacker enumeration scripts",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -42557,7 +42599,7 @@
     {
         "title": "Renamed AutoIt Execution",
         "id": "f4264e47-f522-4c38-a420-04525d5b880f",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a renamed AutoIt2.exe or AutoIt3.exe.\nAutoIt is a scripting language and automation tool for Windows systems. While primarily used for legitimate automation tasks, it can be misused in cyber attacks.\nAttackers can leverage AutoIt to create and distribute malware, including keyloggers, spyware, and botnets. A renamed AutoIt executable is particularly suspicious.\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -45819,7 +45861,7 @@
     {
         "title": "Chromium Browser Headless Execution To Mockbin Like Site",
         "id": "1c526788-0abe-4713-862f-b520da5e5316",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a Chromium based browser process with the \"headless\" flag and a URL pointing to the mockbin.org service (which can be used to exfiltrate data).",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
@@ -46347,7 +46389,7 @@
     {
         "title": "Renamed Visual Studio Code Tunnel Execution",
         "id": "2cf29f11-e356-4f61-98c0-1bdb9393d6da",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects renamed Visual Studio Code tunnel execution. Attackers can abuse this functionality to establish a C2 channel",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -48403,7 +48445,7 @@
     {
         "title": "AddinUtil.EXE Execution From Uncommon Directory",
         "id": "6120ac2a-a34b-42c0-a9bd-1fb9f459f348",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) from a non-standard directory.",
         "author": "Michael McKinley (@McKinleyMike), Tony Latteri (@TheLatteri)",
         "tags": [
@@ -50448,7 +50490,7 @@
     {
         "title": "Suspicious WebDav Client Execution Via Rundll32.EXE",
         "id": "982e9f2d-1a85-4d5b-aea4-31f5e97c6555",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects \"svchost.exe\" spawning \"rundll32.exe\" with command arguments like C:\\windows\\system32\\davclnt.dll,DavSetCookie. This could be an indicator of exfiltration or use of WebDav to launch code (hosted on WebDav Server) or potentially a sign of exploitation of CVE-2023-23397\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Florian Roth (Nextron Systems)",
         "tags": [
