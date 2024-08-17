@@ -35307,6 +35307,26 @@
         "filename": ""
     },
     {
+        "title": "Potentially Suspicious Rundll32.EXE Execution of UDL File",
+        "id": "0ea52357-cd59-4340-9981-c46c7e900428",
+        "status": "experimental",
+        "description": "Detects the execution of rundll32.exe with the oledb32.dll library to open a UDL file.\nThreat actors can abuse this technique as a phishing vector to capture authentication credentials or other sensitive data.\n",
+        "author": "@kostastsale",
+        "tags": [
+            "attack.execution",
+            "attack.t1218.011",
+            "attack.t1071"
+        ],
+        "falsepositives": [
+            "UDL files serve as a convenient and flexible tool for managing and testing database connections in various development and administrative scenarios."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND (ParentImage LIKE '%\\\\explorer.exe' ESCAPE '\\' AND (Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName='RUNDLL32.EXE') AND ((CommandLine LIKE '%oledb32.dll%' ESCAPE '\\' AND CommandLine LIKE '%,OpenDSLFile %' ESCAPE '\\' AND CommandLine LIKE '%\\\\Users\\\\%\\\\Downloads\\\\%' ESCAPE '\\') AND CommandLine LIKE '%.udl' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Abusing Print Executable",
         "id": "bafac3d6-7de9-4dd9-8874-4a1194b493ed",
         "status": "test",
