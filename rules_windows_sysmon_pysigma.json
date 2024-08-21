@@ -36760,6 +36760,25 @@
         "filename": ""
     },
     {
+        "title": "Data Export From MSSQL Table Via BCP.EXE",
+        "id": "c615d676-f655-46b9-b913-78729021e5d7",
+        "status": "experimental",
+        "description": "Detects the execution of the BCP utility in order to export data from the database.\nAttackers were seen saving their malware to a database column or table and then later extracting it via \"bcp.exe\" into a file.\n",
+        "author": "Omar Khaled (@beacon_exe), MahirAli Khan (in/mahiralikhan), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1048"
+        ],
+        "falsepositives": [
+            "Legitimate data export operations."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-Sysmon/Operational' AND (EventID=1 AND ((Image LIKE '%\\\\bcp.exe' ESCAPE '\\' OR OriginalFileName='BCP.exe') AND (CommandLine LIKE '% out %' ESCAPE '\\' OR CommandLine LIKE '% queryout %' ESCAPE '\\')))"
+        ],
+        "filename": ""
+    },
+    {
         "title": "Suspicious XOR Encoded PowerShell Command",
         "id": "bb780e0c-16cf-4383-8383-1e5471db6cf9",
         "status": "test",

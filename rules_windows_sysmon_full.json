@@ -15286,6 +15286,25 @@
         "filename": "proc_creation_win_wlrmdr_uncommon_child_process.yml"
     },
     {
+        "title": "Data Export From MSSQL Table Via BCP.EXE",
+        "id": "c615d676-f655-46b9-b913-78729021e5d7",
+        "status": "experimental",
+        "description": "Detects the execution of the BCP utility in order to export data from the database.\nAttackers were seen saving their malware to a database column or table and then later extracting it via \"bcp.exe\" into a file.\n",
+        "author": "Omar Khaled (@beacon_exe), MahirAli Khan (in/mahiralikhan), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1048"
+        ],
+        "falsepositives": [
+            "Legitimate data export operations."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bcp.exe' ESCAPE '\\' OR OriginalFileName = 'BCP.exe') AND (CommandLine LIKE '% out %' ESCAPE '\\' OR CommandLine LIKE '% queryout %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_bcp_export_data.yml"
+    },
+    {
         "title": "Suspicious Plink Port Forwarding",
         "id": "48a61b29-389f-4032-b317-b30de6b95314",
         "status": "test",
