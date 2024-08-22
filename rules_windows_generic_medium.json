@@ -38026,6 +38026,24 @@
         "filename": "registry_set_netsh_help_dll_persistence_susp_location.yml"
     },
     {
+        "title": "Driver Added To Disallowed Images In HVCI - Registry",
+        "id": "555155a2-03bf-4fe7-af74-d176b3fdbe16",
+        "status": "experimental",
+        "description": "Detects changes to the \"HVCIDisallowedImages\" registry value to potentially add a driver to the list, in order to prevent it from loading.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Omar Khaled (@beacon_exe)",
+        "tags": [
+            "attack.defense-evasion"
+        ],
+        "falsepositives": [
+            "Legitimate usage of this key would also trigger this. Investigate the driver being added and make sure its intended"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Control\\\\CI\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\HVCIDisallowedImages%' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_hvci_disallowed_images.yml"
+    },
+    {
         "title": "Uncommon Extension In Keyboard Layout IME File Registry Value",
         "id": "b888e3f2-224d-4435-b00b-9dd66e9ea1f1",
         "status": "experimental",
