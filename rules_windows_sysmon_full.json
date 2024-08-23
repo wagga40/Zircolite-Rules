@@ -122,6 +122,26 @@
         "filename": "proc_creation_win_csc_compilation.yml"
     },
     {
+        "title": "Potential File Override/Append Via SET Command",
+        "id": "65e4c134-ee52-4099-9e35-5e17a4b45c62",
+        "status": "experimental",
+        "description": "Detects the use of the \"SET\" internal command of Cmd.EXE with the /p flag followed directly by an \"=\" sign.\nAttackers used this technique along with an append redirection operator \">>\" in order to update the content of a file indirectly.\nEx: cmd /c >> example.txt set /p=\"test data\". This will append \"test data\" to contents of \"example.txt\".\nThe typical use case of the \"set /p=\" command is to prompt the user for input.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), MahirAli Khan (in/mahiralikhan)",
+        "tags": [
+            "attack.execution",
+            "attack.defense-evasion",
+            "detection.threat-hunting"
+        ],
+        "falsepositives": [
+            "Legitimate use of the SET with the \"/p\" flag for user prompting. command in administrative scripts or user-generated scripts."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR OriginalFileName = 'Cmd.Exe') AND (CommandLine LIKE '%/c set /p=%' ESCAPE '\\' OR CommandLine LIKE '%\"set /p=%' ESCAPE '\\' OR CommandLine LIKE '%>>%set /p=%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_cmd_set_prompt_abuse.yml"
+    },
+    {
         "title": "WSF/JSE/JS/VBA/VBE File Execution Via Cscript/Wscript",
         "id": "1e33157c-53b1-41ad-bbcc-780b80b58288",
         "status": "test",
