@@ -690,28 +690,6 @@
         "filename": "lnx_auditd_auditing_config_change.yml"
     },
     {
-        "title": "OMIGOD SCX RunAsProvider ExecuteShellCommand - Auditd",
-        "id": "045b5f9c-49f7-4419-a236-9854fb3c827a",
-        "description": "Rule to detect the use of the SCX RunAsProvider Invoke_ExecuteShellCommand to execute any UNIX/Linux command using the /bin/sh shell.\nSCXcore, started as the Microsoft Operations Manager UNIX/Linux Agent, is now used in a host of products including Microsoft Operations Manager.\nMicrosoft Azure, and Microsoft Operations Management Suite.\n",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.initial-access",
-            "attack.execution",
-            "attack.t1068",
-            "attack.t1190",
-            "attack.t1203"
-        ],
-        "falsepositives": [
-            "Legitimate use of SCX RunAsProvider Invoke_ExecuteShellCommand."
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'execve' AND uid = '0' AND cwd = '/var/opt/microsoft/scx/tmp' AND comm = 'sh')"
-        ],
-        "filename": "lnx_auditd_omigod_scx_runasprovider_executeshellcommand.yml"
-    },
-    {
         "title": "Password Policy Discovery",
         "id": "ca94a6db-8106-4737-9ed2-3e3bb826af0a",
         "description": "Detects password policy discovery commands",
@@ -873,24 +851,6 @@
             "SELECT * FROM logs WHERE ((Image LIKE '%/who' ESCAPE '\\' OR Image LIKE '%/w' ESCAPE '\\' OR Image LIKE '%/last' ESCAPE '\\' OR Image LIKE '%/lsof' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\') AND NOT ((ParentCommandLine LIKE '%/usr/bin/landscape-sysinfo%' ESCAPE '\\' AND Image LIKE '%/who' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_system_network_connections_discovery.yml"
-    },
-    {
-        "title": "Vim GTFOBin Abuse - Linux",
-        "id": "7ab8f73a-fcff-428b-84aa-6a5ff7877dea",
-        "description": "Detects usage of \"vim\" and it's siblings as a GTFOBin to execute and proxy command and binary execution",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.discovery",
-            "attack.t1083"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/vim' ESCAPE '\\' OR Image LIKE '%/rvim' ESCAPE '\\' OR Image LIKE '%/vimdiff' ESCAPE '\\') AND (CommandLine LIKE '% -c %' ESCAPE '\\' OR CommandLine LIKE '% --cmd%' ESCAPE '\\') AND (CommandLine LIKE '%:!/%' ESCAPE '\\' OR CommandLine LIKE '%:py %' ESCAPE '\\' OR CommandLine LIKE '%:lua %' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_lnx_gtfobin_vim.yml"
     },
     {
         "title": "ESXi Storage Information Discovery Via ESXCLI",
@@ -1114,6 +1074,42 @@
         "filename": "proc_creation_lnx_crypto_mining.yml"
     },
     {
+        "title": "Shell Invocation via Env Command - Linux",
+        "id": "bed978f8-7f3a-432b-82c5-9286a9b3031a",
+        "description": "Detects the use of the env command to invoke a shell. This may indicate an attempt to bypass restricted environments, escalate privileges, or execute arbitrary commands.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Github operations such as ghe-backup"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/env' ESCAPE '\\' AND (CommandLine LIKE '%/bin/bash' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_env_shell_invocation.yml"
+    },
+    {
+        "title": "Shell Execution via Find - Linux",
+        "id": "6adfbf8f-52be-4444-9bac-81b539624146",
+        "description": "Detects the use of the find command to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or exploitation attempt.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/find' ESCAPE '\\' AND CommandLine LIKE '% . %' ESCAPE '\\' AND CommandLine LIKE '%-exec%' ESCAPE '\\' AND (CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_find_shell_execution.yml"
+    },
+    {
         "title": "Python Spawning Pretty TTY",
         "id": "c4042d54-110d-45dd-a0e1-05c47822c937",
         "description": "Detects python spawning a pretty tty which could be indicative of potential reverse shell activity",
@@ -1239,6 +1235,24 @@
         "filename": "proc_creation_lnx_esxcli_permission_change_admin.yml"
     },
     {
+        "title": "Vim GTFOBin Abuse - Linux",
+        "id": "7ab8f73a-fcff-428b-84aa-6a5ff7877dea",
+        "description": "Detects the use of \"vim\" and it's siblings commands to execute a shell or proxy commands.\nSuch behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/rvim' ESCAPE '\\' OR Image LIKE '%/vim' ESCAPE '\\' OR Image LIKE '%/vimdiff' ESCAPE '\\') AND (CommandLine LIKE '% --cmd%' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\') AND (CommandLine LIKE '%:!/%' ESCAPE '\\' OR CommandLine LIKE '%:lua %' ESCAPE '\\' OR CommandLine LIKE '%:py %' ESCAPE '\\' OR CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_vim_shell_execution.yml"
+    },
+    {
         "title": "Local Groups Discovery - Linux",
         "id": "676381a6-15ca-4d73-a9c8-6a22e970b90d",
         "description": "Detects enumeration of local system groups. Adversaries may attempt to find local system groups and permission settings",
@@ -1331,6 +1345,24 @@
         "filename": "proc_creation_lnx_dd_file_overwrite.yml"
     },
     {
+        "title": "Shell Invocation Via Ssh - Linux",
+        "id": "8737b7f6-8df3-4bb7-b1da-06019b99b687",
+        "description": "Detects the use of the \"ssh\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/ssh' ESCAPE '\\' AND (CommandLine LIKE '%ProxyCommand=;%' ESCAPE '\\' OR CommandLine LIKE '%permitlocalcommand=yes%' ESCAPE '\\' OR CommandLine LIKE '%localhost%' ESCAPE '\\') AND (CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\' OR CommandLine LIKE '%sh 0<&2 1>&2%' ESCAPE '\\' OR CommandLine LIKE '%sh 1>&2 0<&2%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_ssh_shell_execution.yml"
+    },
+    {
         "title": "Suspicious Package Installed - Linux",
         "id": "700fb7e8-2981-401c-8430-be58e189e741",
         "description": "Detects installation of suspicious packages using system installation utilities",
@@ -1367,6 +1399,24 @@
         "filename": "proc_creation_lnx_susp_git_clone.yml"
     },
     {
+        "title": "Shell Invocation via Apt - Linux",
+        "id": "bb382fd5-b454-47ea-a264-1828e4c766d6",
+        "description": "Detects the use of the \"apt\" and \"apt-get\" commands to execute a shell or proxy commands.\nSuch behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND CommandLine LIKE '%APT::Update::Pre-Invoke::=%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_apt_shell_execution.yml"
+    },
+    {
         "title": "Potential PHP Reverse Shell",
         "id": "c6714a24-d7d5-4283-a36b-3ffd091d5f7e",
         "description": "Detects usage of the PHP CLI with the \"-r\" flag which allows it to run inline PHP code. The rule looks for calls to the \"fsockopen\" function which allows the creation of sockets.\nAttackers often leverage this in combination with functions such as \"exec\" or \"fopen\" to initiate a reverse shell connection.\n",
@@ -1401,6 +1451,24 @@
             "SELECT * FROM logs WHERE ((Image LIKE '%/curl' ESCAPE '\\' AND ((CommandLine LIKE '% --form%' ESCAPE '\\' OR CommandLine LIKE '% --upload-file %' ESCAPE '\\' OR CommandLine LIKE '% --data %' ESCAPE '\\' OR CommandLine LIKE '% --data-%' ESCAPE '\\') OR CommandLine REGEXP '\\s-[FTd]\\s')) AND NOT (((CommandLine LIKE '%://localhost%' ESCAPE '\\' OR CommandLine LIKE '%://127.0.0.1%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_lnx_susp_curl_fileupload.yml"
+    },
+    {
+        "title": "Shell Execution via Nice - Linux",
+        "id": "093d68c7-762a-42f4-9f46-95e79142571a",
+        "description": "Detects the use of the \"nice\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/nice' ESCAPE '\\' AND (CommandLine LIKE '%/bin/bash' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_nice_shell_execution.yml"
     },
     {
         "title": "System Network Discovery - Linux",
@@ -1769,6 +1837,24 @@
         "filename": "proc_creation_lnx_mkfifo_named_pipe_creation.yml"
     },
     {
+        "title": "Inline Python Execution - Spawn Shell Via OS System Library",
+        "id": "2d2f44ff-4611-4778-a8fc-323a0e9850cc",
+        "description": "Detects execution of inline Python code via the \"-c\" in order to call the \"system\" function from the \"os\" library, and spawn a shell.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((Image LIKE '%/python' ESCAPE '\\' OR Image LIKE '%/python2' ESCAPE '\\' OR Image LIKE '%/python3' ESCAPE '\\') OR (Image LIKE '%/python2.%' ESCAPE '\\' OR Image LIKE '%/python3.%' ESCAPE '\\')) AND (CommandLine LIKE '% -c %' ESCAPE '\\' AND CommandLine LIKE '%os.system(%' ESCAPE '\\' AND (CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_lnx_python_shell_os_system.yml"
+    },
+    {
         "title": "Container Residence Discovery Via Proc Virtual FS",
         "id": "746c86fb-ccda-4816-8997-01386263acc4",
         "description": "Detects potential container discovery via listing of certain kernel features in the \"/proc\" virtual filesystem",
@@ -1860,6 +1946,42 @@
         "filename": "proc_creation_lnx_clear_logs.yml"
     },
     {
+        "title": "Shell Execution GCC  - Linux",
+        "id": "9b5de532-a757-4d70-946c-1f3e44f48b4d",
+        "description": "Detects the use of the \"gcc\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/c89' ESCAPE '\\' OR Image LIKE '%/c99' ESCAPE '\\' OR Image LIKE '%/gcc' ESCAPE '\\') AND CommandLine LIKE '%-wrapper%' ESCAPE '\\' AND (CommandLine LIKE '%/bin/bash,-s%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash,-s%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish,-s%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh,-s%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh,-s%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_gcc_shell_execution.yml"
+    },
+    {
+        "title": "Shell Execution via Git - Linux",
+        "id": "47b3bbd4-1bf7-48cc-84ab-995362aaa75a",
+        "description": "Detects the use of the \"git\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ParentImage LIKE '%/git' ESCAPE '\\' AND ParentCommandLine LIKE '% -p %' ESCAPE '\\' AND ParentCommandLine LIKE '%help%' ESCAPE '\\' AND (CommandLine LIKE '%bash 0<&1%' ESCAPE '\\' OR CommandLine LIKE '%dash 0<&1%' ESCAPE '\\' OR CommandLine LIKE '%sh 0<&1%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_git_shell_execution.yml"
+    },
+    {
         "title": "Triple Cross eBPF Rootkit Execve Hijack",
         "id": "0326c3c8-7803-4a0f-8c5c-368f747f7c3e",
         "description": "Detects execution of a the file \"execve_hijack\" which is used by the Triple Cross rootkit as a way to elevate privileges",
@@ -1894,24 +2016,6 @@
             "SELECT * FROM logs WHERE (Image LIKE '%/chmod' ESCAPE '\\' AND (CommandLine LIKE '%/tmp/%' ESCAPE '\\' OR CommandLine LIKE '%/.Library/%' ESCAPE '\\' OR CommandLine LIKE '%/etc/%' ESCAPE '\\' OR CommandLine LIKE '%/opt/%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_susp_chmod_directories.yml"
-    },
-    {
-        "title": "Apt GTFOBin Abuse - Linux",
-        "id": "bb382fd5-b454-47ea-a264-1828e4c766d6",
-        "description": "Detects usage of \"apt\" and \"apt-get\" as a GTFOBin to execute and proxy command and binary execution",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.discovery",
-            "attack.t1083"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND CommandLine LIKE '%APT::Update::Pre-Invoke::=%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_lnx_gtfobin_apt.yml"
     },
     {
         "title": "OS Architecture Discovery Via Grep",
@@ -2093,6 +2197,42 @@
             "SELECT * FROM logs WHERE (Image LIKE '%/at' ESCAPE '\\' OR Image LIKE '%/atd' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_at_command.yml"
+    },
+    {
+        "title": "Capsh Shell Invocation - Linux",
+        "id": "db1ac3be-f606-4e3a-89e0-9607cbe6b98a",
+        "description": "Detects the use of the \"capsh\" utility to invoke a shell.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/capsh' ESCAPE '\\' AND CommandLine LIKE '% --' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_capsh_shell_invocation.yml"
+    },
+    {
+        "title": "Suspicious Invocation of Shell via AWK - Linux",
+        "id": "8c1a5675-cb85-452f-a298-b01b22a51856",
+        "description": "Detects the execution of \"awk\" or it's sibling commands, to invoke a shell using the system() function.\nThis behavior is commonly associated with attempts to execute arbitrary commands or escalate privileges, potentially leading to unauthorized access or further exploitation.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/awk' ESCAPE '\\' OR Image LIKE '%/gawk' ESCAPE '\\' OR Image LIKE '%/mawk' ESCAPE '\\' OR Image LIKE '%/nawk' ESCAPE '\\') AND CommandLine LIKE '%BEGIN {system%' ESCAPE '\\' AND (CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_awk_shell_spawn.yml"
     },
     {
         "title": "User Has Been Deleted Via Userdel",
@@ -2348,6 +2488,24 @@
         "filename": "proc_creation_lnx_susp_curl_useragent.yml"
     },
     {
+        "title": "Shell Execution via Rsync - Linux",
+        "id": "e2326866-609f-4015-aea9-7ec634e8aa04",
+        "description": "Detects the use of the \"gcc\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/rsync' ESCAPE '\\' AND CommandLine LIKE '% -e %' ESCAPE '\\' AND (CommandLine LIKE '%sh 0<&2 1>&2%' ESCAPE '\\' OR CommandLine LIKE '%sh 1>&2 0<&2%' ESCAPE '\\') AND CommandLine LIKE '%/dev/null%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_rsync_shell_execution.yml"
+    },
+    {
         "title": "Remove Immutable File Attribute",
         "id": "34979410-e4b5-4e5d-8cfb-389fdff05c12",
         "description": "Detects usage of the 'chattr' utility to remove immutable file attribute.",
@@ -2474,6 +2632,24 @@
             "SELECT * FROM logs WHERE (CommandLine LIKE '%IyEvYmluL2Jhc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL2Rhc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL3pza%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL2Zpc2%' ESCAPE '\\' OR CommandLine LIKE '%IyEvYmluL3No%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_base64_shebang_cli.yml"
+    },
+    {
+        "title": "Shell Execution via Flock - Linux",
+        "id": "4b09c71e-4269-4111-9cdd-107d8867f0cc",
+        "description": "Detects the use of the \"flock\" command to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/flock' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND (CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_flock_shell_execution.yml"
     },
     {
         "title": "Potential Discovery Activity Using Find - Linux",

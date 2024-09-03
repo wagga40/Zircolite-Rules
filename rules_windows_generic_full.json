@@ -286,7 +286,7 @@
     {
         "title": "Regsvr32.EXE Calling of DllRegisterServer Export Function Implicitly",
         "id": "ce2c44b5-a6ac-412a-afba-9e89326fa972",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of regsvr32 with the silent flag and no other flags on a DLL located in an uncommon or potentially suspicious location.\nWhen Regsvr32 is called in such a way, it implicitly calls the DLL export function 'DllRegisterServer'.\n",
         "author": "Andreas Braathen (mnemonic.io), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -380,7 +380,7 @@
     {
         "title": "Process Terminated Via Taskkill",
         "id": "86085955-ea48-42a2-9dd3-85d4c36b167d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of \"taskkill.exe\" in order to stop a service or a process. Look for suspicious parents executing this command in order to hunt for potential malicious activity.\nAttackers might leverage this in order to conduct data destruction or data encrypted for impact on the data stores of services like Exchange and SQL Server.\n",
         "author": "frack113",
         "tags": [
@@ -662,7 +662,7 @@
     {
         "title": "Remote Access Tool - Action1 Arbitrary Code Execution and Remote Sessions",
         "id": "aa3168fb-d594-4f93-a92d-7a9ba675b766",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of Action1 in order to execute arbitrary code or establish a remote session.\n\nAction1 is a powerful Remote Monitoring and Management tool that enables users to execute commands, scripts, and binaries.\nThrough the web interface of action1, the administrator must create a new policy or an app to establish remote execution and then points that the agent is installed.\n\nHunting Opportunity 1- Weed Out The Noise\n\nWhen threat actors execute a script, a command, or a binary through these new policies and apps, the names of these become visible in the command line during the execution process. Below is an example of the command line that contains the deployment of a binary through  a policy with name \"test_app_1\":\n\nParentCommandLine: \"C:\\WINDOWS\\Action1\\action1_agent.exe schedule:Deploy_App__test_app_1_1681327673425 runaction:0\"\n\nAfter establishing a baseline, we can split the command to extract the policy name and group all the policy names and inspect the results with a list of frequency occurrences.\n\nHunting Opportunity 2 - Remote Sessions On Out Of Office Hours\n\nIf you have admins within your environment using remote sessions to administer endpoints, you can create a threat-hunting query and modify the time of the initiated sessions looking for abnormal activity.\n",
         "author": "@kostastsale",
         "tags": [
@@ -741,6 +741,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' OR Product = 'The curl executable'))"
         ],
         "filename": "proc_creation_win_curl_execution.yml"
+    },
+    {
+        "title": "Potential CommandLine Obfuscation Using Unicode Characters",
+        "id": "e0552b19-5a83-4222-b141-b36184bb8d79",
+        "status": "test",
+        "description": "Detects potential CommandLine obfuscation using unicode characters.\nAdversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit.\n",
+        "author": "frack113, Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1027",
+            "detection.threat-hunting"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%ˣ%' ESCAPE '\\' OR CommandLine LIKE '%˪%' ESCAPE '\\' OR CommandLine LIKE '%ˢ%' ESCAPE '\\' OR CommandLine LIKE '%∕%' ESCAPE '\\' OR CommandLine LIKE '%⁄%' ESCAPE '\\' OR CommandLine LIKE '%―%' ESCAPE '\\' OR CommandLine LIKE '%—%' ESCAPE '\\' OR CommandLine LIKE '%¯%' ESCAPE '\\' OR CommandLine LIKE '%®%' ESCAPE '\\' OR CommandLine LIKE '%¶%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_cli_obfuscation_unicode.yml"
     },
     {
         "title": "Potentially Suspicious Compression Tool Parameters",
@@ -885,7 +905,7 @@
     {
         "title": "Rundll32.EXE Calling DllRegisterServer Export Function Explicitly",
         "id": "d81a9fc6-55db-4461-b962-0e78fea5b0ad",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects when the DLL export function 'DllRegisterServer' is called in the commandline by Rundll32 explicitly where the DLL is located in a non-standard path.\n",
         "author": "Andreas Braathen (mnemonic.io)",
         "tags": [
@@ -1145,6 +1165,48 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4699' AND NOT ((TaskName LIKE '\\\\Microsoft\\\\Windows\\\\RemovalTools\\\\MRT\\_ERROR\\_HB' ESCAPE '\\') OR (TaskName LIKE '%\\\\Mozilla\\\\Firefox Default Browser Agent %' ESCAPE '\\')))"
         ],
         "filename": "win_security_scheduled_task_deletion.yml"
+    },
+    {
+        "title": "Potential Remote WMI ActiveScriptEventConsumers Activity",
+        "id": "9599c180-e3a8-4743-8f92-7fb96d3be648",
+        "status": "test",
+        "description": "Detect potential adversaries leveraging WMI ActiveScriptEventConsumers remotely to move laterally in a network.\nThis event is best correlated and used as an enrichment to determine the potential lateral movement activity.\n",
+        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
+        "tags": [
+            "attack.lateral-movement",
+            "attack.privilege-escalation",
+            "detection.threat-hunting",
+            "attack.persistence",
+            "attack.t1546.003"
+        ],
+        "falsepositives": [
+            "SCCM"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '4624' AND LogonType = '3' AND ProcessName LIKE '%scrcons.exe' ESCAPE '\\') AND NOT ((TargetLogonId = '0x3e7')))"
+        ],
+        "filename": "win_security_scrcons_remote_wmi_scripteventconsumer.yml"
+    },
+    {
+        "title": "Task Scheduler DLL Loaded By Application Located In Potentially Suspicious Location",
+        "id": "3b92a1d0-8d4b-4d28-a1b4-1e29d49a6a3e",
+        "status": "experimental",
+        "description": "Detects the loading of the \"taskschd.dll\" module from a process that located in a potentially suspicious or uncommon directory.\nThe loading of this DLL might indicate that the application have the capability to create a scheduled task via the \"Schedule.Service\" COM object.\nInvestigation of the loading application and its behavior is required to determining if its malicious.\n",
+        "author": "Swachchhanda Shrawan Poudel",
+        "tags": [
+            "attack.persistence",
+            "attack.execution",
+            "attack.t1053.005"
+        ],
+        "falsepositives": [
+            "Some installers might generate false positives, apply additional filters accordingly."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\taskschd.dll' ESCAPE '\\' OR OriginalFileName = 'taskschd.dll') AND (NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Downloads\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "image_load_dll_taskschd_by_process_in_potentially_suspicious_location.yml"
     },
     {
         "title": "Dbghelp/Dbgcore DLL Loaded By Uncommon/Suspicious Process",
@@ -1763,7 +1825,7 @@
     {
         "title": "Creation of an Executable by an Executable",
         "id": "297afac9-5d02-4138-8c58-b977bac60556",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of an executable by another executable.",
         "author": "frack113",
         "tags": [
@@ -1785,7 +1847,7 @@
     {
         "title": "VsCode Code Tunnel Execution File Indicator",
         "id": "9661ec9d-4439-4a7a-abed-d9be4ca43b6d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a file with the name \"code_tunnel.json\" which indicate execution and usage of VsCode tunneling utility. Attackers can abuse this functionality to establish a C2 channel\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -2037,7 +2099,7 @@
     {
         "title": "Okta Password Health Report Query",
         "id": "0d58814b-1660-4d31-8c93-d1086ed24cba",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects all activities against the endpoint \"/reports/password-health/*\" which should only be accessed via OKTA Admin Console UI.\nUse this rule to hunt for potential suspicious requests. Correlate this event with \"admin console\" login and alert on requests without any corresponding admin console login\n",
         "author": "Muhammad Faisal (@faisalusuf)",
         "tags": [
@@ -2058,7 +2120,7 @@
     {
         "title": "Mail Forwarding/Redirecting Activity In O365",
         "id": "c726e007-2cd0-4a55-abfb-79730fbedee5",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects email forwarding or redirecting acitivty in O365 Audit logs.",
         "author": "RedCanary Team (idea), Harjot Singh @cyb3rjy0t",
         "tags": [
@@ -2241,7 +2303,7 @@
     {
         "title": "Serpent Backdoor Payload Execution Via Scheduled Task",
         "id": "d5eb7432-fda4-4bba-a37f-ffa74d9ed639",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects post exploitation execution technique of the Serpent backdoor.\nAccording to Proofpoint, one of the commands that the backdoor ran was via creating a temporary scheduled task using an unusual method.\nIt creates a fictitious windows event and a trigger in which once the event is created, it executes the payload.\n",
         "author": "@kostastsale",
         "tags": [
@@ -2263,7 +2325,7 @@
     {
         "title": "ChromeLoader Malware Execution",
         "id": "0a74c5a9-1b71-4475-9af2-7829d320d5c2",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of ChromeLoader malware via a registered scheduled task",
         "author": "@kostastsale",
         "tags": [
@@ -2325,7 +2387,7 @@
     {
         "title": "Raspberry Robin Initial Execution From External Drive",
         "id": "2c6bea3a-ef58-4f2e-a775-4928f6b7c58a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the initial execution of the Raspberry Robin malware from an external drive using \"Cmd.EXE\".",
         "author": "@kostastsale",
         "tags": [
@@ -2778,7 +2840,7 @@
     {
         "title": "Potential CVE-2022-22954 Exploitation Attempt - VMware Workspace ONE Access Remote Code Execution",
         "id": "5660d8db-6e25-411f-b92f-094420168a5d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potential exploitation attempt of CVE-2022-22954, a remote code execution vulnerability in VMware Workspace ONE Access and Identity Manager.\nAs reported by Morphisec, part of the attack chain, threat actors used PowerShell commands that executed as a child processes of the legitimate Tomcat \"prunsrv.exe\" process application.\n",
         "author": "@kostastsale",
         "tags": [
@@ -2822,7 +2884,7 @@
     {
         "title": "Suspicious Sysmon as Execution Parent",
         "id": "6d1058a4-407e-4f3a-a144-1968c11dc5c3",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious process executions in which Sysmon itself is the parent of a process, which could be a sign of exploitation (e.g. CVE-2022-41120)",
         "author": "Florian Roth (Nextron Systems), Tim Shelton (fp werfault)",
         "tags": [
@@ -4167,7 +4229,7 @@
     {
         "title": "Exploitation Attempt Of CVE-2020-1472 - Execution of ZeroLogon PoC",
         "id": "dcc6a01e-9471-44a0-a699-71ea96f8ed8b",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of the commonly used ZeroLogon PoC executable.",
         "author": "@Kostastsale, @TheDFIRReport",
         "tags": [
@@ -6013,7 +6075,7 @@
     {
         "title": "Potential CVE-2021-44228 Exploitation Attempt - VMware Horizon",
         "id": "3eb91f0a-0060-424a-a676-59f5fdd75610",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potential initial exploitation attempts against VMware Horizon deployments running a vulnerable versions of Log4j.\n",
         "author": "@kostastsale",
         "tags": [
@@ -7187,7 +7249,7 @@
     {
         "title": "Injected Browser Process Spawning Rundll32 - GuLoader Activity",
         "id": "89e1490f-1a3e-452a-bbb8-b68a5f58072f",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of installed GuLoader malware on the host.\nGuLoader is initiating network connections via the rundll32.exe process that is spawned via a browser parent(injected) process.\n",
         "author": "@kostastsale",
         "tags": [
@@ -7546,7 +7608,7 @@
     {
         "title": "DarkGate - Autoit3.EXE File Creation By Uncommon Process",
         "id": "1a433e1d-03d2-47a6-8063-ece992cf4e73",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the usage of curl.exe, KeyScramblerLogon, or other non-standard/suspicious processes used to create Autoit3.exe.\nThis activity has been associated with DarkGate malware, which uses Autoit3.exe to execute shellcode that performs\nprocess injection and connects to the DarkGate command-and-control server. Curl, KeyScramblerLogon, and these other\nprocesses consitute non-standard and suspicious ways to retrieve the Autoit3 executable.\n",
         "author": "Micah Babinski",
         "tags": [
@@ -7568,7 +7630,7 @@
     {
         "title": "DarkGate - User Created Via Net.EXE",
         "id": "bf906d7b-7070-4642-8383-e404cf26eba5",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects creation of local users via the net.exe command with the name of \"DarkGate\"",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
@@ -7588,7 +7650,7 @@
     {
         "title": "DarkGate - Autoit3.EXE Execution Parameters",
         "id": "f8e9aa1c-14f2-4dbd-aa59-b98968ed650d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of the legitimate Autoit3 utility from a suspicious parent process. AutoIt3.exe is used within\nthe DarkGate infection chain to execute shellcode that performs process injection and connects to the DarkGate\ncommand-and-control server.\n",
         "author": "Micah Babinski",
         "tags": [
@@ -7796,7 +7858,7 @@
     {
         "title": "Ursnif Redirection Of Discovery Commands",
         "id": "7aaa5739-12fc-41aa-b98b-23ec27d42bdf",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the redirection of Ursnif discovery commands as part of the initial execution of the malware.\n",
         "author": "@kostastsale",
         "tags": [
@@ -7920,7 +7982,7 @@
     {
         "title": "Onyx Sleet APT File Creation Indicators",
         "id": "2fef4fd9-7206-40d1-b4f5-ad6441d0cd9b",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects file creation activity that is related to Onyx Sleet APT activity",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8587,7 +8649,7 @@
     {
         "title": "Diamond Sleet APT File Creation Indicators",
         "id": "e1212b32-55ff-4dfb-a595-62b572248056",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects file creation activity that is related to Diamond Sleet APT activity",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8606,7 +8668,7 @@
     {
         "title": "Diamond Sleet APT Scheduled Task Creation",
         "id": "3b8e5084-4de9-449a-a40d-0e11014f2e2d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects registry event related to the creation of a scheduled task used by Diamond Sleet APT during exploitation of Team City CVE-2023-42793 vulnerability\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8628,7 +8690,7 @@
     {
         "title": "Diamond Sleet APT Process Activity Indicators",
         "id": "b5495d8d-24ad-4a44-8caf-ceae9a07a5c2",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects process creation activity indicators related to Diamond Sleet APT",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8647,7 +8709,7 @@
     {
         "title": "Diamond Sleet APT Scheduled Task Creation - Registry",
         "id": "9f9f92ba-5300-43a4-b435-87d1ee571688",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects registry event related to the creation of a scheduled task used by Diamond Sleet APT during exploitation of Team City CVE-2023-42793 vulnerability\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8667,7 +8729,7 @@
     {
         "title": "Diamond Sleet APT DNS Communication Indicators",
         "id": "fba38e0f-4607-4344-bb8f-a4b50cdeef7f",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DNS queries related to Diamond Sleet APT activity",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8686,7 +8748,7 @@
     {
         "title": "Diamond Sleet APT DLL Sideloading Indicators",
         "id": "d1b65d98-37d7-4ff6-b139-2d87c1af3042",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects DLL sideloading activity seen used by Diamond Sleet APT",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8764,7 +8826,7 @@
     {
         "title": "Okta 2023 Breach Indicator Of Compromise",
         "id": "00a8e92a-776b-425f-80f2-82d8f8fab2e5",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects new user account creation or activation with specific names related to the Okta Support System 2023 breach.\nThis rule can be enhanced by filtering out known and legitimate username used in your environnement.\n",
         "author": "Muhammad Faisal (@faisalusuf)",
         "tags": [
@@ -8783,7 +8845,7 @@
     {
         "title": "Lazarus APT DLL Sideloading Activity",
         "id": "24007168-a26b-4049-90d0-ce138e13a5cf",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects sideloading of trojanized DLLs used in Lazarus APT campaign in the case of a Spanish aerospace company",
         "author": "Thurein Oo, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -8946,7 +9008,7 @@
     {
         "title": "Potential Information Disclosure CVE-2023-43261 Exploitation - Proxy",
         "id": "f48f5368-355c-4a1b-8bf5-11c13d589eaa",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects exploitation attempts of CVE-2023-43261 and information disclosure in Milesight UR5X, UR32L, UR32, UR35, UR41 before v35.3.0.7 that allows attackers to access sensitive router components in proxy logs.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Thurein Oo",
         "tags": [
@@ -8967,7 +9029,7 @@
     {
         "title": "Potential Information Disclosure CVE-2023-43261 Exploitation - Web",
         "id": "a2bcca38-9f3a-4d5e-b603-0c587e8569d7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects exploitation attempts of CVE-2023-43261 and information disclosure in Milesight UR5X, UR32L, UR32, UR35, UR41 before v35.3.0.7 that allows attackers to access sensitive router components in access logs.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Thurein Oo",
         "tags": [
@@ -9265,7 +9327,7 @@
     {
         "title": "Potential CVE-2023-27363 Exploitation - HTA File Creation By FoxitPDFReader",
         "id": "9cae055f-e1d2-4f81-b8a5-1986a68cdd84",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious \".hta\" file creation in the startup folder by Foxit Reader. This can be an indication of CVE-2023-27363 exploitation.",
         "author": "Gregory",
         "tags": [
@@ -9451,7 +9513,7 @@
     {
         "title": "Potential MOVEit Transfer CVE-2023-34362 Exploitation - Dynamic Compilation Via Csc.EXE",
         "id": "39ac1fb0-07f1-474b-b97e-c5c0eace0d79",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of \"csc.exe\" via \"w3wp.exe\" process. MOVEit affected hosts execute \"csc.exe\" via the \"w3wp.exe\" process to dynamically compile malicious DLL files.\n\nMOVEit is affected by a critical vulnerability. Exploited hosts show evidence of dynamically compiling a DLL and writing it under C:\\\\Windows\\\\Microsoft\\.NET\\\\Framework64\\\\v4\\.0\\.30319\\\\Temporary ASP\\.NET Files\\\\root\\\\([a-z0-9]{5,12})\\\\([a-z0-9]{5,12})\\\\App_Web_[a-z0-9]{5,12}\\.dll.\n\nHunting Opportunity\n\nEvents from IIS dynamically compiling binaries via the csc.exe on behalf of the MOVEit application, especially since May 27th should be investigated.\n",
         "author": "@kostastsale",
         "tags": [
@@ -9575,7 +9637,7 @@
     {
         "title": "Potential CVE-2023-36874 Exploitation - Fake Wermgr.Exe Creation",
         "id": "ad0960eb-0015-4d16-be13-b3d9f18f1342",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a file named \"wermgr.exe\" being created in an uncommon directory. This could be a sign of potential exploitation of CVE-2023-36874.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -11101,6 +11163,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\SysmonEOP.exe' ESCAPE '\\' OR (Hashes LIKE '%IMPHASH=22F4089EB8ABA31E1BB162C6D9BF72E5%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=5123FA4C4384D431CD0D893EEB49BBEC%' ESCAPE '\\') OR Imphash IN ('22f4089eb8aba31e1bb162c6d9bf72e5', '5123fa4c4384d431cd0d893eeb49bbec')))"
         ],
         "filename": "proc_creation_win_hktl_sysmoneop.yml"
+    },
+    {
+        "title": "Potential CommandLine Obfuscation Using Unicode Characters From Suspicious Image",
+        "id": "584bca0f-3608-4402-80fd-4075ff6072e3",
+        "status": "test",
+        "description": "Detects potential commandline obfuscation using unicode characters.\nAdversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit.\n",
+        "author": "frack113, Florian Roth (Nextron Systems), Josh Nickels",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1027"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') AND OriginalFileName IN ('Cmd.EXE', 'cscript.exe', 'PowerShell.EXE', 'pwsh.dll', 'wscript.exe') AND (CommandLine LIKE '%ˣ%' ESCAPE '\\' OR CommandLine LIKE '%˪%' ESCAPE '\\' OR CommandLine LIKE '%ˢ%' ESCAPE '\\' OR CommandLine LIKE '%∕%' ESCAPE '\\' OR CommandLine LIKE '%⁄%' ESCAPE '\\' OR CommandLine LIKE '%―%' ESCAPE '\\' OR CommandLine LIKE '%—%' ESCAPE '\\' OR CommandLine LIKE '%¯%' ESCAPE '\\' OR CommandLine LIKE '%®%' ESCAPE '\\' OR CommandLine LIKE '%¶%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_cli_obfuscation_unicode_img.yml"
     },
     {
         "title": "PUA- IOX Tunneling Tool Execution",
@@ -13936,7 +14017,7 @@
     {
         "title": "Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 4",
         "id": "225274c4-8dd1-40db-9e09-71dff4f6fb3c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the usage of emojis in the command line, this could be a sign of potential defense evasion activity.",
         "author": "@Kostastsale, @TheDFIRReport",
         "tags": [
@@ -14072,7 +14153,7 @@
     {
         "title": "Schtasks Creation Or Modification With SYSTEM Privileges",
         "id": "89ca78fd-b37c-4310-b3d3-81a023f83936",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation or update of a scheduled task to run with \"NT AUTHORITY\\SYSTEM\" privileges",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -14764,7 +14845,7 @@
     {
         "title": "Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 2",
         "id": "c98f2a0d-e1b8-4f76-90d3-359caf88d6b9",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the usage of emojis in the command line, this could be a sign of potential defense evasion activity.",
         "author": "@Kostastsale, @TheDFIRReport",
         "tags": [
@@ -15032,7 +15113,7 @@
     {
         "title": "Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 3",
         "id": "f9578658-9e71-4711-b634-3f9b50cd3c06",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the usage of emojis in the command line, this could be a sign of potential defense evasion activity.",
         "author": "@Kostastsale, @TheDFIRReport",
         "tags": [
@@ -15524,7 +15605,7 @@
     {
         "title": "Visual Studio Code Tunnel Shell Execution",
         "id": "f4a623c2-4ef5-4c33-b811-0642f702c9f1",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a shell (powershell, bash, wsl...) via Visual Studio Code tunnel. Attackers can abuse this functionality to establish a C2 channel and execute arbitrary commands on the system.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -18099,7 +18180,7 @@
     {
         "title": "Obfuscated PowerShell OneLiner Execution",
         "id": "44e24481-6202-4c62-9127-5a0ae8e3fe3d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a specific OneLiner to download and execute powershell modules in memory.",
         "author": "@Kostastsale, @TheDFIRReport",
         "tags": [
@@ -18179,7 +18260,7 @@
     {
         "title": "Obfuscated IP Via CLI",
         "id": "56d19cb4-6414-4769-9644-1ed35ffbb148",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects usage of an encoded/obfuscated version of an IP address (hex, octal, etc.) via command line",
         "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior (Nextron Systems)",
         "tags": [
@@ -18509,7 +18590,7 @@
     {
         "title": "File Download From IP Based URL Via CertOC.EXE",
         "id": "b86f6dea-0b2f-41f5-bdcc-a057bd19cd6a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects when a user downloads a file from an IP based URL using CertOC.exe",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -18822,7 +18903,7 @@
     {
         "title": "Potentially Suspicious Office Document Executed From Trusted Location",
         "id": "f99abdf0-6283-4e71-bd2b-b5c048a94743",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of an Office application that points to a document that is located in a trusted location. Attackers often used this to avoid macro security and execute their malicious code.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -19576,7 +19657,7 @@
     {
         "title": "Visual Studio Code Tunnel Service Installation",
         "id": "30bf1789-379d-4fdc-900f-55cd0a90a801",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the installation of VsCode tunnel (code-tunnel) as a service.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -20436,7 +20517,7 @@
     {
         "title": "Python Function Execution Security Warning Disabled In Excel",
         "id": "023c654f-8f16-44d9-bb2b-00ff36a62af9",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects changes to the registry value \"PythonFunctionWarnings\" that would prevent any warnings or alerts from showing when Python functions are about to be executed.\nThreat actors could run malicious code through the new Microsoft Excel feature that allows Python to run within the spreadsheet.\n",
         "author": "@Kostastsale",
         "tags": [
@@ -20512,7 +20593,7 @@
     {
         "title": "Potential Defense Evasion Activity Via Emoji Usage In CommandLine - 1",
         "id": "4a30ac0c-b9d6-4e01-b71a-5f851bbf4259",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the usage of emojis in the command line, this could be a sign of potential defense evasion activity.",
         "author": "@Kostastsale, @TheDFIRReport",
         "tags": [
@@ -20826,7 +20907,7 @@
     {
         "title": "File Download From IP URL Via Curl.EXE",
         "id": "9cc85849-3b02-4cb5-b371-3a1ff54f2218",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects file downloads directly from IP address URL using curl.exe",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -21116,7 +21197,7 @@
     {
         "title": "Potentially Suspicious Child Process Of VsCode",
         "id": "5a3164f2-b373-4152-93cf-090b13c12d27",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects uncommon or suspicious child processes spawning from a VsCode \"code.exe\" process. This could indicate an attempt of persistence via VsCode tasks or terminal profiles.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -21174,7 +21255,7 @@
     {
         "title": "OneNote.EXE Execution of Malicious Embedded Scripts",
         "id": "84b1706c-932a-44c4-ae28-892b28a25b94",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of malicious OneNote documents that contain embedded scripts.\nWhen a user clicks on a OneNote attachment and then on the malicious link inside the \".one\" file, it exports and executes the malicious embedded script from specific directories.\n",
         "author": "@kostastsale",
         "tags": [
@@ -24352,25 +24433,6 @@
         "filename": "proc_creation_win_ping_hex_ip.yml"
     },
     {
-        "title": "Potential Commandline Obfuscation Using Unicode Characters",
-        "id": "e0552b19-5a83-4222-b141-b36184bb8d79",
-        "status": "test",
-        "description": "Detects potential commandline obfuscation using unicode characters.\nAdversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit.\n",
-        "author": "frack113, Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1027"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((CommandLine LIKE '%ˣ%' ESCAPE '\\' OR CommandLine LIKE '%˪%' ESCAPE '\\' OR CommandLine LIKE '%ˢ%' ESCAPE '\\') OR (CommandLine LIKE '%∕%' ESCAPE '\\' OR CommandLine LIKE '%⁄%' ESCAPE '\\') OR (CommandLine LIKE '%―%' ESCAPE '\\' OR CommandLine LIKE '%—%' ESCAPE '\\') OR (CommandLine LIKE '%¯%' ESCAPE '\\' OR CommandLine LIKE '%®%' ESCAPE '\\' OR CommandLine LIKE '%¶%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_susp_cli_obfuscation_unicode.yml"
-    },
-    {
         "title": "Winrar Execution in Non-Standard Folder",
         "id": "4ede543c-e098-43d9-a28f-dd784a13132f",
         "status": "test",
@@ -24513,7 +24575,7 @@
     {
         "title": "Potential Hidden Directory Creation Via NTFS INDEX_ALLOCATION Stream - CLI",
         "id": "0900463c-b33b-49a8-be1d-552a3b553dae",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects command line containing reference to the \"::$index_allocation\" stream, which can be used as a technique to prevent access to folders or files from tooling such as \"explorer.exe\" or \"powershell.exe\"\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Scoubi (@ScoubiMtl)",
         "tags": [
@@ -28174,7 +28236,7 @@
     {
         "title": "Renamed CURL.EXE Execution",
         "id": "7530cd3d-7671-43e3-b209-976966f6ea48",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of a renamed \"CURL.exe\" binary based on the PE metadata fields",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
@@ -30034,7 +30096,7 @@
     {
         "title": "Visual Studio Code Tunnel Execution",
         "id": "90d6bd71-dffb-4989-8d86-a827fedd6624",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects Visual Studio Code tunnel execution. Attackers can abuse this functionality to establish a C2 channel",
         "author": "Nasreddine Bencherchali (Nextron Systems), citron_ninja",
         "tags": [
@@ -31816,7 +31878,7 @@
     {
         "title": "HackTool - CoercedPotato Named Pipe Creation",
         "id": "4d0083b3-580b-40da-9bba-626c19fe4033",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the pattern of a pipe name as used by the hack tool CoercedPotato",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -32961,7 +33023,7 @@
     {
         "title": "Kerberoasting Activity - Initial Query",
         "id": "d04ae2b8-ad54-4de0-bd87-4bc1da66aa59",
-        "status": "experimental",
+        "status": "test",
         "description": "This rule will collect the data needed to start looking into possible kerberoasting activity.\nFurther analysis or computation within the query is needed focusing on requests from one specific host/IP towards multiple service names within a time period of 5 seconds.\nYou can then set a threshold for the number of requests and time between the requests to turn this into an alert.\n",
         "author": "@kostastsale",
         "tags": [
@@ -33950,27 +34012,6 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4624' AND ProcessName LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\')"
         ],
         "filename": "win_security_susp_wmi_login.yml"
-    },
-    {
-        "title": "Remote WMI ActiveScriptEventConsumers",
-        "id": "9599c180-e3a8-4743-8f92-7fb96d3be648",
-        "status": "test",
-        "description": "Detect potential adversaries leveraging WMI ActiveScriptEventConsumers remotely to move laterally in a network",
-        "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
-        "tags": [
-            "attack.lateral-movement",
-            "attack.privilege-escalation",
-            "attack.persistence",
-            "attack.t1546.003"
-        ],
-        "falsepositives": [
-            "SCCM"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND (EventID = '4624' AND LogonType = '3' AND ProcessName LIKE '%scrcons.exe' ESCAPE '\\') AND NOT (TargetLogonId = '0x3e7'))"
-        ],
-        "filename": "win_security_scrcons_remote_wmi_scripteventconsumer.yml"
     },
     {
         "title": "RDP Login from Localhost",
@@ -35699,7 +35740,7 @@
     {
         "title": "Certificate Use With No Strong Mapping",
         "id": "993c2665-e6ef-40e3-a62a-e1a97686af79",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects a user certificate that was valid but could not be mapped to a user in a strong way (such as via explicit mapping, key trust mapping, or a SID)\nThis could be a sign of exploitation of the elevation of privilege vulnerabilities (CVE-2022-34691, CVE-2022-26931, CVE-2022-26923) that can occur when the KDC allows certificate spoofing by not requiring a strong mapping.\nEvents where the AccountName and CN of the Subject do not match, or where the CN ends in a dollar sign indicating a machine, may indicate certificate spoofing.\n",
         "author": "@br4dy5",
         "tags": [
@@ -37184,7 +37225,7 @@
     {
         "title": "Remote Access Tool - ScreenConnect File Transfer",
         "id": "5d19eb78-5b5b-4ef2-a9f0-4bfa94d58a13",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects file being transferred via ScreenConnect RMM",
         "author": "Ali Alwashali",
         "tags": [
@@ -37203,7 +37244,7 @@
     {
         "title": "Remote Access Tool - ScreenConnect Command Execution",
         "id": "076ebe48-cc05-4d8f-9d41-89245cd93a14",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects command execution via ScreenConnect RMM",
         "author": "Ali Alwashali",
         "tags": [
@@ -40143,7 +40184,7 @@
     {
         "title": "Enable Remote Connection Between Anonymous Computer - AllowAnonymousCallback",
         "id": "4d431012-2ab5-4db7-a84e-b29809da2172",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects enabling of the \"AllowAnonymousCallback\" registry value, which allows a remote connection between computers that do not have a trust relationship.",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
@@ -41761,25 +41802,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\EventLog\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\File' ESCAPE '\\') AND NOT (NewValue LIKE '%\\\\System32\\\\Winevt\\\\Logs\\\\%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_evtx_file_key_tamper.yml"
-    },
-    {
-        "title": "Potential Persistence Via COM Search Order Hijacking",
-        "id": "a0ff33d8-79e4-4cef-b4f3-9dc4133ccd12",
-        "status": "test",
-        "description": "Detects potential COM object hijacking leveraging the COM Search Order",
-        "author": "Maxime Thiebaut (@0xThiebaut), oscd.community, Cédric Hien",
-        "tags": [
-            "attack.persistence",
-            "attack.t1546.015"
-        ],
-        "falsepositives": [
-            "Some installed utilities (i.e. OneDrive) may serve new COM objects at user-level"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (TargetObject LIKE '%\\\\CLSID\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\InprocServer32\\\\(Default)' ESCAPE '\\') AND NOT (((NewValue LIKE '%\\%\\%systemroot\\%\\%\\\\system32\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\%\\%systemroot\\%\\%\\\\SysWow64\\\\%' ESCAPE '\\')) OR ((NewValue LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\FileCoAuthLib64.dll%' ESCAPE '\\' OR NewValue LIKE '%\\\\FileSyncShell64.dll%' ESCAPE '\\' OR NewValue LIKE '%\\\\FileSyncApi64.dll%' ESCAPE '\\')) OR (NewProcessName LIKE '%:\\\\WINDOWS\\\\system32\\\\SecurityHealthService.exe' ESCAPE '\\') OR (NewValue LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\TeamsMeetingAddin\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\Microsoft.Teams.AddinLoader.dll%' ESCAPE '\\') OR (NewValue LIKE '%\\\\AppData\\\\Roaming\\\\Dropbox\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\DropboxExt64.%.dll%' ESCAPE '\\') OR (NewValue LIKE '%TmopIEPlg.dll' ESCAPE '\\') OR ((NewProcessName LIKE '%:\\\\WINDOWS\\\\system32\\\\wuauclt.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\') AND NewProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\') OR (NewValue LIKE '%\\\\FileRepository\\\\nvmdi.inf%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\MicrosoftEdgeUpdateComRegisterShell64.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\WINDOWS\\\\SYSTEM32\\\\dxdiag.exe' ESCAPE '\\') OR ((NewValue LIKE '%:\\\\Windows\\\\pyshellext.amd64.dll' ESCAPE '\\' OR NewValue LIKE '%:\\\\Windows\\\\pyshellext.dll' ESCAPE '\\')) OR ((NewValue LIKE '%:\\\\Windows\\\\system32\\\\dnssdX.dll' ESCAPE '\\' OR NewValue LIKE '%:\\\\Windows\\\\SysWOW64\\\\dnssdX.dll' ESCAPE '\\')) OR (NewValue LIKE '%:\\\\Windows\\\\system32\\\\spool\\\\drivers\\\\x64\\\\3\\\\PrintConfig.dll' ESCAPE '\\') OR ((NewValue LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR NewValue LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (NewValue LIKE '%:\\\\ProgramData\\\\Microsoft\\\\%' ESCAPE '\\') OR (NewValue LIKE '%:\\\\WINDOWS\\\\system32\\\\GamingServicesProxy.dll%' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\poqexec.exe' ESCAPE '\\' AND NewValue LIKE '%:\\\\Windows\\\\System32\\\\Autopilot.dll%' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\Windows\\\\system32\\\\SecurityHealthService.exe' ESCAPE '\\' AND NewValue LIKE '%:\\\\Windows\\\\System32\\\\SecurityHealth%' ESCAPE '\\') OR ((NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\poqexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\regsvr32.exe' ESCAPE '\\') AND TargetObject LIKE '%\\\\InProcServer32\\\\(Default)' ESCAPE '\\')))"
-        ],
-        "filename": "registry_set_persistence_search_order.yml"
     },
     {
         "title": "Potential CobaltStrike Service Installations - Registry",
@@ -43643,7 +43665,7 @@
     {
         "title": "PowerShell Script Execution Policy Enabled",
         "id": "8218c875-90b9-42e2-b60d-0b0069816d10",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the enabling of the PowerShell script execution policy. Once enabled, this policy allows scripts to be executed.",
         "author": "Nasreddine Bencherchali (Nextron Systems), Thurein Oo",
         "tags": [
@@ -46587,7 +46609,7 @@
     {
         "title": "Security Software Discovery Via Powershell Script",
         "id": "904e8e61-8edf-4350-b59c-b905fc8e810c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects calls to \"get-process\" where the output is piped to a \"where-object\" filter to search for security solution processes.\nAdversaries may attempt to get a listing of security software, configurations, defensive tools, and sensors that are installed on a system or in a cloud environment. This may include things such as firewall rules and anti-virus\n",
         "author": "frack113, Anish Bogati, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -49076,6 +49098,26 @@
         "filename": "net_connection_win_certutil_initiated_connection.yml"
     },
     {
+        "title": "Remote Access Tool - AnyDesk Incoming Connection",
+        "id": "d58ba5c6-0ed7-4b9d-a433-6878379efda9",
+        "status": "experimental",
+        "description": "Detects incoming connections to AnyDesk. This could indicate a potential remote attacker trying to connect to a listening instance of AnyDesk and use it as potential command and control channel.\n",
+        "author": "@d4ns4n_ (Wuerth-Phoenix)",
+        "tags": [
+            "attack.persistence",
+            "attack.command-and-control",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Legitimate incoming connections (e.g. sysadmin activity). Most of the time I would expect outgoing connections (initiated locally)."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\AnyDesk.exe' ESCAPE '\\' AND Initiated = 'false')"
+        ],
+        "filename": "net_connection_win_remote_access_tools_anydesk_incoming_connection.yml"
+    },
+    {
         "title": "Network Communication Initiated To File Sharing Domains From Process Located In Suspicious Folder",
         "id": "e0f8ab85-0ac9-423b-a73a-81b3c7b1aa97",
         "status": "test",
@@ -50321,7 +50363,7 @@
     {
         "title": "LSASS Process Memory Dump Creation Via Taskmgr.EXE",
         "id": "69ca12af-119d-44ed-b50f-a47af0ebc364",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of an \"lsass.dmp\" file by the taskmgr process. This indicates a manual dumping of the LSASS.exe process memory using Windows Task Manager.",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
@@ -50404,7 +50446,7 @@
     {
         "title": "PowerShell Module File Created By Non-PowerShell Process",
         "id": "e3845023-ca9a-4024-b2b2-5422156d5527",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a new PowerShell module \".psm1\", \".psd1\", \".dll\", \".ps1\", etc. by a non-PowerShell process",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -51269,7 +51311,7 @@
     {
         "title": "Remote Access Tool - ScreenConnect Temporary File",
         "id": "0afecb6e-6223-4a82-99fb-bf5b981e92a5",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of files in a specific location by ScreenConnect RMM.\nScreenConnect has feature to remotely execute binaries on a target machine. These binaries will be dropped to \":\\Users\\<username>\\Documents\\ConnectWiseControl\\Temp\\\" before execution.\n",
         "author": "Ali Alwashali",
         "tags": [
@@ -52099,7 +52141,7 @@
     {
         "title": "Visual Studio Code Tunnel Remote File Creation",
         "id": "56e05d41-ce99-4ecd-912d-93f019ee0b71",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of file by the \"node.exe\" process in the \".vscode-server\" directory. Could be a sign of remote file creation via VsCode tunnel feature\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -52117,7 +52159,7 @@
     {
         "title": "Potential Hidden Directory Creation Via NTFS INDEX_ALLOCATION Stream",
         "id": "a8f866e1-bdd4-425e-a27a-37619238d9c7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of hidden file/folder with the \"::$index_allocation\" stream. Which can be used as a technique to prevent access to folder and files from tooling such as \"explorer.exe\" and \"powershell.exe\"\n",
         "author": "Scoubi (@ScoubiMtl)",
         "tags": [
@@ -52525,7 +52567,7 @@
     {
         "title": "Renamed VsCode Code Tunnel Execution - File Indicator",
         "id": "d102b8f5-61dc-4e68-bd83-9a3187c67377",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of a file with the name \"code_tunnel.json\" which indicate execution and usage of VsCode tunneling utility by an \"Image\" or \"Process\" other than VsCode.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -52915,7 +52957,7 @@
     {
         "title": "Suspicious LNK Double Extension File Created",
         "id": "3215aa19-f060-4332-86d5-5602511f3ca8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of files with an \"LNK\" as a second extension. This is sometimes used by malware as a method to abuse the fact that Windows hides the \"LNK\" extension by default.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), frack113",
         "tags": [
