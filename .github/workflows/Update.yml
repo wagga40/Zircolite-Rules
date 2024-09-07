@@ -48,8 +48,6 @@ jobs:
           cp -r ./sigma/rules-threat-hunting/ ./sigma/rules/windows/rules-threat-hunting/
           cp -r ./sigma/rules-emerging-threats/ ./sigma/rules/windows/rules-emerging-threats/
           find ./sigma/ -type f -name '*.md' -delete
-          pdm run ./legacy-sigmatools/tools/sigmac -t sqlite -c ./legacy-sigmatools/tools/config/generic/sysmon.yml -c ./legacy-sigmatools/tools/config/generic/powershell.yml -c ./legacy-sigmatools/tools/config/zircolite.yml -d ./sigma/rules/windows/ --output-fields title,id,description,author,tags,level,falsepositives,filename,status --output-format json -r -o rules_windows_sysmon_full.json --backend-option table=logs || true
-          pdm run ./legacy-sigmatools/tools/sigmac -t sqlite -c ./legacy-sigmatools/tools/config/generic/windows-audit.yml -c ./legacy-sigmatools/tools/config/generic/powershell.yml -c ./legacy-sigmatools/tools/config/zircolite.yml -d ./sigma/rules/windows/ --output-fields title,id,description,author,tags,level,falsepositives,filename,status --output-format json -r -o rules_windows_generic_full.json --backend-option table=logs || true
           pdm run ./legacy-sigmatools/tools/sigmac -t sqlite -c ./legacy-sigmatools/tools/config/generic/sysmon.yml -c ./legacy-sigmatools/tools/config/generic/powershell.yml -c ./legacy-sigmatools/tools/config/zircolite.yml -d ./sigma/rules/windows/ --output-fields title,id,description,author,tags,level,falsepositives,filename,status --output-format json -r -o rules_windows_sysmon_high.json --filter level\>=high --backend-option table=logs || true
           pdm run ./legacy-sigmatools/tools/sigmac -t sqlite -c ./legacy-sigmatools/tools/config/generic/windows-audit.yml -c ./legacy-sigmatools/tools/config/generic/powershell.yml -c ./legacy-sigmatools/tools/config/zircolite.yml -d ./sigma/rules/windows/ --output-fields title,id,description,author,tags,level,falsepositives,filename,status --output-format json -r -o rules_windows_generic_high.json --filter level\>=high --backend-option table=logs || true
           pdm run ./legacy-sigmatools/tools/sigmac -t sqlite -c ./legacy-sigmatools/tools/config/generic/sysmon.yml -c ./legacy-sigmatools/tools/config/generic/powershell.yml -c ./legacy-sigmatools/tools/config/zircolite.yml -d ./sigma/rules/windows/ --output-fields title,id,description,author,tags,level,falsepositives,filename,status --output-format json -r -o rules_windows_sysmon_medium.json --filter level\>=medium --backend-option table=logs || true
@@ -63,6 +61,8 @@ jobs:
         run: |
           cp gen_ruleset.py ./pySigma-backend-sqlite/
           pdm run python3 ./pySigma-backend-sqlite/gen_ruleset.py
+          cp rules_windows_generic_pysigma.json rules_windows_generic_full.json
+          cp rules_windows_sysmon_pysigma.json rules_windows_sysmon_full.json
       - name: Commit and Push
         uses: EndBug/add-and-commit@v9
         with:
