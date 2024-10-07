@@ -754,6 +754,26 @@
         "filename": "win_hybridconnectionmgr_svc_running.yml"
     },
     {
+        "title": "HTTP Logging Disabled On IIS Server",
+        "id": "e8ebd53a-30c2-45bd-81bb-74befba07bdb",
+        "status": "experimental",
+        "description": "Detects changes to of the IIS server configuration in order to disable HTTP logging for successful requests.",
+        "author": "frack113",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.002",
+            "attack.t1505.004"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '29' AND Configuration = '/system.webServer/httpLogging/@dontLog' AND NewValue = 'true')"
+        ],
+        "filename": "win_iis_logging_http_disabled.yml"
+    },
+    {
         "title": "Audit CVE Event",
         "id": "48d91a3a-2363-43ba-a456-ca71ac3da5c2",
         "status": "test",
