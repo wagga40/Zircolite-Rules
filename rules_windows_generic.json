@@ -12810,6 +12810,26 @@
         "filename": "file_event_win_wmiprvse_wbemcomn_dll_hijack.yml"
     },
     {
+        "title": "Potential File Extension Spoofing Using Right-to-Left Override",
+        "id": "979baf41-ca44-4540-9d0c-4fcef3b5a3a4",
+        "status": "experimental",
+        "description": "Detects suspicious filenames that contain a right-to-left override character and a potentially spoofed file extensions.\n",
+        "author": "Jonathan Peters (Nextron Systems), Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense-evasion",
+            "attack.t1036.002"
+        ],
+        "falsepositives": [
+            "Filenames that contains scriptures such as arabic or hebrew might make use of this character"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\u202e%' ESCAPE '\\' AND (TargetFilename LIKE '%fpd..%' ESCAPE '\\' OR TargetFilename LIKE '%nls..%' ESCAPE '\\' OR TargetFilename LIKE '%vsc..%' ESCAPE '\\' OR TargetFilename LIKE '%xcod.%' ESCAPE '\\' OR TargetFilename LIKE '%xslx.%' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_susp_right_to_left_override_extension_spoofing.yml"
+    },
+    {
         "title": "PSEXEC Remote Execution File Artefact",
         "id": "304afd73-55a5-4bb9-8c21-0b1fc84ea9e4",
         "status": "test",
