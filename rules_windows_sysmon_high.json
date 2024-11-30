@@ -12226,26 +12226,6 @@
         "filename": "file_event_win_shell_write_susp_files_extensions.yml"
     },
     {
-        "title": "Creation of an WerFault.exe in Unusual Folder",
-        "id": "28a452f3-786c-4fd8-b8f2-bddbe9d616d1",
-        "status": "test",
-        "description": "Detects WerFault copoed to a suspicious folder, which could be a sign of WerFault DLL hijacking",
-        "author": "frack113",
-        "tags": [
-            "attack.persistence",
-            "attack.defense-evasion",
-            "attack.t1574.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetFilename LIKE '%\\\\WerFault.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\wer.dll' ESCAPE '\\') AND NOT ((TargetFilename LIKE '%\\\\System32\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\SysWOW64\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\WinSxS\\\\%' ESCAPE '\\')))"
-        ],
-        "filename": "file_event_win_werfault_dll_hijacking.yml"
-    },
-    {
         "title": "Suspicious Executable File Creation",
         "id": "74babdd6-a758-4549-9632-26535279e654",
         "status": "test",
