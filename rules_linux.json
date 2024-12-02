@@ -215,7 +215,7 @@
         "filename": "lnx_auditd_masquerading_crond.yml"
     },
     {
-        "title": "Password Policy Discovery",
+        "title": "Password Policy Discovery - Linux",
         "id": "ca94a6db-8106-4737-9ed2-3e3bb826af0a",
         "description": "Detects password policy discovery commands",
         "author": "Ömer Günal, oscd.community, Pawel Mazur",
@@ -228,7 +228,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/pam.d/common-password', '/etc/security/pwquality.conf', '/etc/pam.d/system-auth', '/etc/login.defs')) OR (type = 'EXECVE' AND a0 = 'chage' AND a1 IN ('--list', '-l')) OR (type = 'EXECVE' AND a0 = 'passwd' AND a1 IN ('-S', '--status')))"
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/login.defs', '/etc/pam.d/auth', '/etc/pam.d/common-account', '/etc/pam.d/common-auth', '/etc/pam.d/common-password', '/etc/pam.d/system-auth', '/etc/security/pwquality.conf')) OR (type = 'EXECVE' AND a0 = 'chage' AND a1 IN ('--list', '-l')) OR (type = 'EXECVE' AND a0 = 'passwd' AND a1 IN ('-S', '--status')))"
         ],
         "filename": "lnx_auditd_password_policy_discovery.yml"
     },
@@ -395,9 +395,9 @@
         "filename": "lnx_auditd_split_file_into_pieces.yml"
     },
     {
-        "title": "System Owner or User Discovery",
+        "title": "System Owner or User Discovery - Linux",
         "id": "9a0d8ca0-2385-4020-b6c6-cb6153ca56f3",
-        "description": "Adversaries may use the information from System Owner/User Discovery during automated discovery to shape follow-on behaviors, including whether or not the adversary fully infects the target and/or attempts specific actions.",
+        "description": "Detects the execution of host or user discovery utilities such as \"whoami\", \"hostname\", \"id\", etc.\nAdversaries may use the information from System Owner/User Discovery during automated discovery to shape follow-on behaviors, including whether or not the adversary fully infects the target and/or attempts specific actions.\n",
         "author": "Timur Zinniatullin, oscd.community",
         "tags": [
             "attack.discovery",
@@ -408,7 +408,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 IN ('users', 'w', 'who'))"
+            "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 IN ('hostname', 'id', 'last', 'users', 'w', 'who', 'whoami'))"
         ],
         "filename": "lnx_auditd_user_discovery.yml"
     },
@@ -3137,8 +3137,8 @@
     {
         "title": "File and Directory Discovery - Linux",
         "id": "d3feb4ee-ff1d-4d3d-bd10-5b28a238cc72",
-        "description": "Detects usage of system utilities to discover files and directories",
-        "author": "Daniil Yugoslavskiy, oscd.community",
+        "description": "Detects usage of system utilities such as \"find\", \"tree\", \"findmnt\", etc, to discover files, directories and network shares.\n",
+        "author": "Daniil Yugoslavskiy, oscd.community, CheraghiMilad",
         "tags": [
             "attack.discovery",
             "attack.t1083"
@@ -3148,7 +3148,7 @@
         ],
         "level": "informational",
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/file' ESCAPE '\\' AND CommandLine REGEXP '(.){200,}') OR (Image LIKE '%/ls' ESCAPE '\\' AND CommandLine LIKE '%-R%' ESCAPE '\\') OR Image LIKE '%/find' ESCAPE '\\' OR Image LIKE '%/tree' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/file' ESCAPE '\\' AND CommandLine REGEXP '(.){200,}') OR (Image LIKE '%/ls' ESCAPE '\\' AND CommandLine LIKE '%-R%' ESCAPE '\\') OR Image LIKE '%/find' ESCAPE '\\' OR Image LIKE '%/tree' ESCAPE '\\' OR Image LIKE '%/findmnt' ESCAPE '\\' OR Image LIKE '%/mlocate' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_file_and_directory_discovery.yml"
     },
