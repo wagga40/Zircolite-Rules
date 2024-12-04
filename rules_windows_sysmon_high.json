@@ -61,18 +61,18 @@
         "id": "d67572a0-e2ec-45d6-b8db-c100d14b8ef2",
         "status": "test",
         "description": "Detects NetNTLM downgrade attack",
-        "author": "Florian Roth (Nextron Systems), wagga",
+        "author": "Florian Roth (Nextron Systems), wagga, Nasreddine Bencherchali (Splunk STRT)",
         "tags": [
             "attack.defense-evasion",
             "attack.t1562.001",
             "attack.t1112"
         ],
         "falsepositives": [
-            "Unknown"
+            "Services or tools that set the values to more restrictive values"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%SYSTEM\\\\%' ESCAPE '\\' AND TargetObject LIKE '%ControlSet%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Control\\\\Lsa%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\lmcompatibilitylevel' ESCAPE '\\' OR TargetObject LIKE '%\\\\NtlmMinClientSec' ESCAPE '\\' OR TargetObject LIKE '%\\\\RestrictSendingNTLMTraffic' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID IN ('12', '13', '14') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%SYSTEM\\\\%' ESCAPE '\\' AND TargetObject LIKE '%ControlSet%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Control\\\\Lsa%' ESCAPE '\\') AND ((TargetObject LIKE '%\\\\lmcompatibilitylevel' ESCAPE '\\' AND Details IN ('DWORD (0x00000000)', 'DWORD (0x00000001)', 'DWORD (0x00000002)')) OR (TargetObject LIKE '%\\\\NtlmMinClientSec' ESCAPE '\\' AND Details IN ('DWORD (0x00000000)', 'DWORD (0x00000010)', 'DWORD (0x00000020)', 'DWORD (0x00000030)')) OR TargetObject LIKE '%\\\\RestrictSendingNTLMTraffic' ESCAPE '\\'))"
         ],
         "filename": "registry_event_net_ntlm_downgrade.yml"
     },
@@ -20109,7 +20109,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Description = 'Execute processes remotely' OR Product = 'Sysinternals PsExec' OR (Description LIKE 'Windows PowerShell%' ESCAPE '\\' OR Description LIKE 'pwsh%' ESCAPE '\\') OR (OriginalFileName LIKE 'certutil.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cmstp.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'mshta.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.c' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexesvc.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'reg.exe' ESCAPE '\\' OR OriginalFileName LIKE 'regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'rundll32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'WerMgr' ESCAPE '\\' OR OriginalFileName LIKE 'wmic.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wscript.exe' ESCAPE '\\')) AND NOT ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\psexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\psexec64.exe' ESCAPE '\\' OR Image LIKE '%\\\\PSEXESVC.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Description = 'Execute processes remotely' OR Product = 'Sysinternals PsExec' OR (Description LIKE 'Windows PowerShell%' ESCAPE '\\' OR Description LIKE 'pwsh%' ESCAPE '\\') OR (OriginalFileName LIKE 'certutil.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cmstp.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'IE4UINIT.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'mshta.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msxsl.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.c' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexesvc.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'reg.exe' ESCAPE '\\' OR OriginalFileName LIKE 'regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'rundll32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'WerMgr' ESCAPE '\\' OR OriginalFileName LIKE 'wmic.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wscript.exe' ESCAPE '\\')) AND NOT ((Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\ie4uinit.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\msxsl.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\psexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\psexec64.exe' ESCAPE '\\' OR Image LIKE '%\\\\PSEXESVC.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_renamed_binary_highly_relevant.yml"
     },
