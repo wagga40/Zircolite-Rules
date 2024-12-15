@@ -2191,24 +2191,6 @@
         "filename": "proc_creation_lnx_python_reverse_shell.yml"
     },
     {
-        "title": "Terminate Linux Process Via Kill",
-        "id": "64c41342-6b27-523b-5d3f-c265f3efcdb3",
-        "description": "Detects usage of command line tools such as \"kill\", \"pkill\" or \"killall\" to terminate or signal a running process.",
-        "author": "Tuan Le (NCSGroup)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1562"
-        ],
-        "falsepositives": [
-            "Likely"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/kill' ESCAPE '\\' OR Image LIKE '%/pkill' ESCAPE '\\' OR Image LIKE '%/killall' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_lnx_kill_process.yml"
-    },
-    {
         "title": "Copy Passwd Or Shadow From TMP Path",
         "id": "fa4aaed5-4fe0-498d-bbc0-08e3346387ba",
         "description": "Detects when the file \"passwd\" or \"shadow\" is copied from tmp path",
@@ -2354,7 +2336,7 @@
         "title": "Local System Accounts Discovery - Linux",
         "id": "b45e3d6f-42c6-47d8-a478-df6bd6cf534c",
         "description": "Detects enumeration of local systeam accounts. This information can help adversaries determine which local accounts exist on a system to aid in follow-on behavior.",
-        "author": "Alejandro Ortuno, oscd.community",
+        "author": "Alejandro Ortuno, oscd.community, CheraghiMilad",
         "tags": [
             "attack.discovery",
             "attack.t1087.001"
@@ -2364,7 +2346,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/lastlog' ESCAPE '\\' OR CommandLine LIKE '%''x:0:''%' ESCAPE '\\' OR ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/ed' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\' OR Image LIKE '%/nano' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/vi' ESCAPE '\\' OR Image LIKE '%/vim' ESCAPE '\\') AND (CommandLine LIKE '%/etc/passwd%' ESCAPE '\\' OR CommandLine LIKE '%/etc/shadow%' ESCAPE '\\' OR CommandLine LIKE '%/etc/sudoers%' ESCAPE '\\')) OR Image LIKE '%/id' ESCAPE '\\' OR (Image LIKE '%/lsof' ESCAPE '\\' AND CommandLine LIKE '%-u%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Image LIKE '%/lastlog' ESCAPE '\\' OR CommandLine LIKE '%''x:0:''%' ESCAPE '\\' OR ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/ed' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\' OR Image LIKE '%/nano' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/vi' ESCAPE '\\' OR Image LIKE '%/vim' ESCAPE '\\' OR Image LIKE '%/less' ESCAPE '\\' OR Image LIKE '%/emacs' ESCAPE '\\' OR Image LIKE '%/sqlite3' ESCAPE '\\' OR Image LIKE '%/makemap' ESCAPE '\\') AND (CommandLine LIKE '%/etc/passwd%' ESCAPE '\\' OR CommandLine LIKE '%/etc/shadow%' ESCAPE '\\' OR CommandLine LIKE '%/etc/sudoers%' ESCAPE '\\' OR CommandLine LIKE '%/etc/spwd.db%' ESCAPE '\\' OR CommandLine LIKE '%/etc/pwd.db%' ESCAPE '\\' OR CommandLine LIKE '%/etc/master.passwd%' ESCAPE '\\')) OR Image LIKE '%/id' ESCAPE '\\' OR (Image LIKE '%/lsof' ESCAPE '\\' AND CommandLine LIKE '%-u%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_local_account.yml"
     },
@@ -2857,24 +2839,6 @@
             "SELECT * FROM logs WHERE ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%grep' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\') AND CommandLine LIKE '% /etc/sudoers%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_cat_sudoers.yml"
-    },
-    {
-        "title": "Process Discovery",
-        "id": "4e2f5868-08d4-413d-899f-dc2f1508627b",
-        "description": "Detects process discovery commands. Adversaries may attempt to get information about running processes on a system.\nInformation obtained could be used to gain an understanding of common software/applications running on systems within the network\n",
-        "author": "Ömer Günal, oscd.community",
-        "tags": [
-            "attack.discovery",
-            "attack.t1057"
-        ],
-        "falsepositives": [
-            "Legitimate administration activities"
-        ],
-        "level": "informational",
-        "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/ps' ESCAPE '\\' OR Image LIKE '%/top' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_lnx_process_discovery.yml"
     },
     {
         "title": "Linux Webshell Indicators",
