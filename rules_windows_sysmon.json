@@ -3290,6 +3290,43 @@
         "filename": "proc_creation_win_malware_kapeka_backdoor_rundll32_execution.yml"
     },
     {
+        "title": "File Creation Related To RAT Clients",
+        "id": "2f3039c8-e8fe-43a9-b5cf-dcd424a2522d",
+        "status": "experimental",
+        "description": "File .conf created related to VenomRAT, AsyncRAT and Lummac samples observed in the wild.\n",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Legitimate software creating a file with the same name"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\mydata\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\datalogs\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\hvnc\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\dcrat\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%\\\\datalogs.conf' ESCAPE '\\' OR TargetFilename LIKE '%\\\\hvnc.conf' ESCAPE '\\' OR TargetFilename LIKE '%\\\\dcrat.conf' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_malware_generic_creation_configuration_rats.yml"
+    },
+    {
+        "title": "Lummac Stealer Activity - Execution Of More.com And Vbc.exe",
+        "id": "19b3806e-46f2-4b4c-9337-e3d8653245ea",
+        "status": "experimental",
+        "description": "Detects the execution of more.com and vbc.exe in the process tree.\nThis behavior was observed by a set of samples related to Lummac Stealer.\nThe Lummac payload is injected into the vbc.exe process.\n",
+        "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1055"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\more.com' ESCAPE '\\' AND (Image LIKE '%\\\\vbc.exe' ESCAPE '\\' OR OriginalFileName = 'vbc.exe'))"
+        ],
+        "filename": "proc_creation_win_malware_lummac_more_vbc.yml"
+    },
+    {
         "title": "Potential KamiKakaBot Activity - Winlogon Shell Persistence",
         "id": "c9b86500-1ec2-4de6-9120-d744c8fb5caf",
         "status": "experimental",
@@ -16702,6 +16739,7 @@
         "tags": [
             "attack.lateral-movement",
             "attack.privilege-escalation",
+            "attack.credential-access",
             "attack.t1558.003"
         ],
         "falsepositives": [
