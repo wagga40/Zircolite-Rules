@@ -3465,6 +3465,27 @@
         "filename": "proc_creation_lnx_exploit_cve_2024_3094_sshd_child_process.yml"
     },
     {
+        "title": "CVE-2024-49113 Exploitation Attempt - LDAP Nightmare",
+        "id": "3f2c93c7-7b2a-4d58-bb8d-6f39422d8148",
+        "status": "experimental",
+        "description": "Detects exploitation attempt of CVE-2024-49113 known as LDAP Nightmare, based on \"Application Error\" log where the faulting application is \"lsass.exe\" and the faulting module is \"WLDAP32.dll\".\n",
+        "author": "Samuel Monsempes",
+        "tags": [
+            "attack.impact",
+            "attack.t1499",
+            "cve.2024-49113",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Application Error' AND EventID = '1000' AND Data LIKE '%lsass.exe%' ESCAPE '\\' AND Data LIKE '%WLDAP32.dll%' ESCAPE '\\')"
+        ],
+        "filename": "win_application_error_exploit_cve_2024_49113_ldap_nightmare.yml"
+    },
+    {
         "title": "CVE-2024-50623 Exploitation Attempt - Cleo",
         "id": "f007b877-02e3-45b7-8501-1b78c2864029",
         "status": "experimental",
