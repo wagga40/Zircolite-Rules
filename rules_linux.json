@@ -1601,18 +1601,18 @@
     {
         "title": "Shell Execution via Rsync - Linux",
         "id": "e2326866-609f-4015-aea9-7ec634e8aa04",
-        "description": "Detects the use of the \"gcc\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
-        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.)",
+        "description": "Detects the use of the \"rsync\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+        "author": "Li Ling, Andy Parkidomo, Robert Rakowski, Blake Hartstein (Bloomberg L.P.), Florian Roth",
         "tags": [
             "attack.execution",
             "attack.t1059"
         ],
         "falsepositives": [
-            "Unknown"
+            "Legitimate cases in which \"rsync\" is used to execute a shell"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/rsync' ESCAPE '\\' AND CommandLine LIKE '% -e %' ESCAPE '\\' AND (CommandLine LIKE '%sh 0<&2 1>&2%' ESCAPE '\\' OR CommandLine LIKE '%sh 1>&2 0<&2%' ESCAPE '\\') AND CommandLine LIKE '%/dev/null%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/rsync' ESCAPE '\\' OR Image LIKE '%/rsyncd' ESCAPE '\\') AND CommandLine LIKE '% -e %' ESCAPE '\\' AND (CommandLine LIKE '%/ash %' ESCAPE '\\' OR CommandLine LIKE '%/bash %' ESCAPE '\\' OR CommandLine LIKE '%/dash %' ESCAPE '\\' OR CommandLine LIKE '%/csh %' ESCAPE '\\' OR CommandLine LIKE '%/sh %' ESCAPE '\\' OR CommandLine LIKE '%/zsh %' ESCAPE '\\' OR CommandLine LIKE '%/tcsh %' ESCAPE '\\' OR CommandLine LIKE '%/ksh %' ESCAPE '\\' OR CommandLine LIKE '%''ash %' ESCAPE '\\' OR CommandLine LIKE '%''bash %' ESCAPE '\\' OR CommandLine LIKE '%''dash %' ESCAPE '\\' OR CommandLine LIKE '%''csh %' ESCAPE '\\' OR CommandLine LIKE '%''sh %' ESCAPE '\\' OR CommandLine LIKE '%''zsh %' ESCAPE '\\' OR CommandLine LIKE '%''tcsh %' ESCAPE '\\' OR CommandLine LIKE '%''ksh %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_rsync_shell_execution.yml"
     },
@@ -1890,6 +1890,25 @@
             "SELECT * FROM logs WHERE ((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND CommandLine LIKE '%APT::Update::Pre-Invoke::=%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_apt_shell_execution.yml"
+    },
+    {
+        "title": "Suspicious Invocation of Shell via Rsync",
+        "id": "297241f3-8108-4b3a-8c15-2dda9f844594",
+        "description": "Detects the execution of a shell as sub process of \"rsync\" without the expected command line flag \"-e\" being used, which could be an indication of exploitation as described in CVE-2024-12084. This behavior is commonly associated with attempts to execute arbitrary commands or escalate privileges, potentially leading to unauthorized access or further exploitation.\n",
+        "author": "Florian Roth",
+        "tags": [
+            "attack.execution",
+            "attack.t1059",
+            "attack.t1203"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((ParentImage LIKE '%/rsync' ESCAPE '\\' OR ParentImage LIKE '%/rsyncd' ESCAPE '\\') AND (Image LIKE '%/ash' ESCAPE '\\' OR Image LIKE '%/bash' ESCAPE '\\' OR Image LIKE '%/csh' ESCAPE '\\' OR Image LIKE '%/dash' ESCAPE '\\' OR Image LIKE '%/ksh' ESCAPE '\\' OR Image LIKE '%/sh' ESCAPE '\\' OR Image LIKE '%/tcsh' ESCAPE '\\' OR Image LIKE '%/zsh' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% -e %' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_lnx_rsync_shell_spawn.yml"
     },
     {
         "title": "Linux Network Service Scanning Tools Execution",

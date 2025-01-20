@@ -992,26 +992,6 @@
         "filename": "image_load_side_load_office_dlls.yml"
     },
     {
-        "title": "Suspicious Volume Shadow Copy Vsstrace.dll Load",
-        "id": "48bfd177-7cf2-412b-ad77-baf923489e82",
-        "status": "test",
-        "description": "Detects the image load of VSS DLL by uncommon executables",
-        "author": "frack113",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.impact",
-            "attack.t1490"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\vsstrace.dll' ESCAPE '\\' AND NOT (((NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\Temp\\\\{%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\'))))"
-        ],
-        "filename": "image_load_dll_vsstrace_susp_load.yml"
-    },
-    {
         "title": "Potential DLL Sideloading Of Non-Existent DLLs From System Folders",
         "id": "6b98b92b-4f00-4f62-b4fe-4d1920215771",
         "status": "test",
