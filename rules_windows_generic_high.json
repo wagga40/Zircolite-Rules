@@ -3818,7 +3818,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND (CommandLine LIKE '% /change %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\') AND CommandLine LIKE '%/ru %' ESCAPE '\\' AND (CommandLine LIKE '%NT AUT%' ESCAPE '\\' OR CommandLine LIKE '% SYSTEM %' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/TN TVInstallRestore%' ESCAPE '\\' AND CommandLine LIKE '%\\\\TeamViewer\\_.exe%' ESCAPE '\\') OR ((CommandLine LIKE '%/Create /F /RU System /SC WEEKLY /TN AviraSystemSpeedupVerify /TR %' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Program Files (x86)\\\\Avira\\\\System Speedup\\\\setup\\\\avira\\_speedup\\_setup.exe%' ESCAPE '\\' OR CommandLine LIKE '%/VERIFY /VERYSILENT /NOSTART /NODOTNET /NORESTART\" /RL HIGHEST%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND (CommandLine LIKE '% /change %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\') AND CommandLine LIKE '%/ru %' ESCAPE '\\' AND (CommandLine LIKE '%NT AUT%' ESCAPE '\\' OR CommandLine LIKE '% SYSTEM %' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/TN TVInstallRestore%' ESCAPE '\\' AND CommandLine LIKE '%\\\\TeamViewer\\_.exe%' ESCAPE '\\') OR (CommandLine LIKE '%Subscription Heartbeat%' ESCAPE '\\' AND CommandLine LIKE '%\\\\HeartbeatConfig.xml%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Microsoft Shared\\\\OFFICE%' ESCAPE '\\') OR ((CommandLine LIKE '%/Create /F /RU System /SC WEEKLY /TN AviraSystemSpeedupVerify /TR %' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Program Files (x86)\\\\Avira\\\\System Speedup\\\\setup\\\\avira\\_speedup\\_setup.exe%' ESCAPE '\\' OR CommandLine LIKE '%/VERIFY /VERYSILENT /NOSTART /NODOTNET /NORESTART\" /RL HIGHEST%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_schtasks_system.yml"
     },
@@ -8386,7 +8386,7 @@
         "id": "c86500e9-a645-4680-98d7-f882c70c1ea3",
         "status": "test",
         "description": "Detects ADDInternals Cmdlet execution. A tool for administering Azure AD and Office 365. Which can be abused by threat actors to attack Azure AD or Office 365.",
-        "author": "Austin Songer (@austinsonger), Nasreddine Bencherchali (Nextron Systems)",
+        "author": "Austin Songer (@austinsonger), Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.reconnaissance",
@@ -8399,7 +8399,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.Exe', 'pwsh.dll')) AND (CommandLine LIKE '%Add-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%ConvertTo-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Disable-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Enable-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Export-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Get-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Grant-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Install-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Join-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%New-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Open-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Read-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Register-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Remove-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Restore-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Search-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Send-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Set-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Start-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Update-AADInt%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.Exe', 'pwsh.dll')) AND (CommandLine LIKE '%Add-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%ConvertTo-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Disable-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Enable-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Export-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Find-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Get-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Grant-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Initialize-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Install-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Join-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%New-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Open-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Read-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Register-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Remove-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Reset-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Resolve-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Restore-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Save-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Search-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Send-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Set-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Start-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Unprotect-AADInt%' ESCAPE '\\' OR CommandLine LIKE '%Update-AADInt%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_aadinternals_cmdlets_execution.yml"
     },
@@ -17551,6 +17551,30 @@
         "filename": "web_cve_2010_5278_exploitation_attempt.yml"
     },
     {
+        "title": "Kalambur Backdoor Curl TOR SOCKS Proxy Execution",
+        "id": "e99375eb-3ee0-407a-9f90-79569cc6a01c",
+        "status": "experimental",
+        "description": "Detects the execution of the \"curl.exe\" command, referencing \"SOCKS\" and \".onion\" domains, which could be indicative of Kalambur backdoor activity.",
+        "author": "Arda Buyukkaya (EclecticIQ)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1090",
+            "attack.t1573",
+            "attack.t1071.001",
+            "attack.t1059.001",
+            "attack.s0183",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' AND (CommandLine LIKE '%socks5h://%' ESCAPE '\\' OR CommandLine LIKE '%socks5://%' ESCAPE '\\' OR CommandLine LIKE '%socks4a://%' ESCAPE '\\') AND CommandLine LIKE '%.onion%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_malware_kalambur_curl_socks_tor.yml"
+    },
+    {
         "title": "PaperCut MF/NG Exploitation Related Indicators",
         "id": "de1bd0b6-6d59-417c-86d9-a44114aede3b",
         "status": "test",
@@ -25285,14 +25309,15 @@
         "description": "Detects changes to the Windows EventLog channel permission values. It focuses on changes to the Security Descriptor Definition Language (SDDL) string, as modifications to these values can restrict access to specific users or groups, potentially aiding in defense evasion by controlling who can view or modify a event log channel. Upon execution, the user shouldn't be able to access the event log channel via the event viewer or via utilities such as \"Get-EventLog\" or \"wevtutil\".\n",
         "author": "X__Junior",
         "tags": [
-            "attack.t1547.001"
+            "attack.t1547.001",
+            "attack.t1112"
         ],
         "falsepositives": [
             "Administrative activity, still unlikely"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\EventLog\\\\System%' ESCAPE '\\' AND TargetObject LIKE '%\\\\CustomSD' ESCAPE '\\') OR ((TargetObject LIKE '%\\\\Policies\\\\Microsoft\\\\Windows\\\\EventLog\\\\Setup%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels%' ESCAPE '\\') AND TargetObject LIKE '%\\\\ChannelAccess' ESCAPE '\\')) AND (NewValue LIKE '%D:(D;%' ESCAPE '\\' OR (NewValue LIKE '%D:(%' ESCAPE '\\' AND NewValue LIKE '%)(D;%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\EventLog\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\CustomSD' ESCAPE '\\') OR ((TargetObject LIKE '%\\\\Policies\\\\Microsoft\\\\Windows\\\\EventLog\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels%' ESCAPE '\\') AND TargetObject LIKE '%\\\\ChannelAccess' ESCAPE '\\')) AND (NewValue LIKE '%D:(D;%' ESCAPE '\\' OR (NewValue LIKE '%D:(%' ESCAPE '\\' AND NewValue LIKE '%)(D;%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_disable_windows_event_log_access.yml"
     },
@@ -27874,7 +27899,7 @@
         "id": "91e69562-2426-42ce-a647-711b8152ced6",
         "status": "test",
         "description": "Detects ADDInternals Cmdlet execution. A tool for administering Azure AD and Office 365. Which can be abused by threat actors to attack Azure AD or Office 365.",
-        "author": "Austin Songer (@austinsonger), Nasreddine Bencherchali (Nextron Systems)",
+        "author": "Austin Songer (@austinsonger), Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.reconnaissance",
@@ -27887,7 +27912,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '%Add-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%ConvertTo-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Disable-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enable-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Grant-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Install-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Join-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Open-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Read-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Register-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Restore-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Search-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Send-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Start-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Update-AADInt%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND (ScriptBlockText LIKE '%Add-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%ConvertTo-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Disable-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Enable-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Export-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Find-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Get-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Grant-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Initialize-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Install-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Invoke-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Join-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%New-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Open-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Read-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Register-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Remove-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Reset-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Resolve-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Restore-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Save-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Search-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Send-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Set-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Start-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Unprotect-AADInt%' ESCAPE '\\' OR ScriptBlockText LIKE '%Update-AADInt%' ESCAPE '\\'))"
         ],
         "filename": "posh_ps_aadinternals_cmdlets_execution.yml"
     },
