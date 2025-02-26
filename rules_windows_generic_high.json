@@ -1199,7 +1199,7 @@
         "id": "646ea171-dded-4578-8a4d-65e9822892e3",
         "status": "test",
         "description": "Detects a process memory dump via \"comsvcs.dll\" using rundll32, covering multiple different techniques (ordinal, minidump function, etc.)",
-        "author": "Florian Roth (Nextron Systems), Modexp, Nasreddine Bencherchali (Nextron Systems)",
+        "author": "Florian Roth (Nextron Systems), Modexp, Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.defense-evasion",
             "attack.credential-access",
@@ -1212,7 +1212,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND (CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '%#-%' ESCAPE '\\' OR CommandLine LIKE '%#+%' ESCAPE '\\' OR CommandLine LIKE '%#24%' ESCAPE '\\' OR CommandLine LIKE '%24 %' ESCAPE '\\' OR CommandLine LIKE '%MiniDump%' ESCAPE '\\'))) OR (CommandLine LIKE '%24%' ESCAPE '\\' AND CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '% #%' ESCAPE '\\' OR CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND (CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '%#-%' ESCAPE '\\' OR CommandLine LIKE '%#+%' ESCAPE '\\' OR CommandLine LIKE '%#24%' ESCAPE '\\' OR CommandLine LIKE '%24 %' ESCAPE '\\' OR CommandLine LIKE '%MiniDump%' ESCAPE '\\' OR CommandLine LIKE '%#65560%' ESCAPE '\\'))) OR (CommandLine LIKE '%24%' ESCAPE '\\' AND CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '% #%' ESCAPE '\\' OR CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\' OR CommandLine LIKE '%\"#%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_rundll32_process_dump_via_comsvcs.yml"
     },
