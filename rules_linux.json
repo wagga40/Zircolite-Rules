@@ -2073,6 +2073,24 @@
         "filename": "lnx_shellshock.yml"
     },
     {
+        "title": "Buffer Overflow Attempts",
+        "id": "18b042f0-2ecd-4b6e-9f8d-aa7a7e7de781",
+        "description": "Detects buffer overflow attempts in Unix system log files",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.t1068",
+            "attack.privilege-escalation"
+        ],
+        "falsepositives": [
+            "Base64 encoded data in log entries"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (logs MATCH ('\"attempt to execute code on stack by\" OR \"0bin0sh1\" OR \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" OR \"stack smashing detected\"'))"
+        ],
+        "filename": "lnx_buffer_overflows.yml"
+    },
+    {
         "title": "Symlink Etc Passwd",
         "id": "c67fc22a-0be5-4b4f-aad5-2b32c4b69523",
         "description": "Detects suspicious command lines that look as if they would create symbolic links to /etc/passwd",
