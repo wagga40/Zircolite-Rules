@@ -1858,6 +1858,30 @@
         "filename": "proc_creation_win_exploit_cve_2025_30406_centrestack_portal_child_process.yml"
     },
     {
+        "title": "Potential Exploitation of CVE-2025-4427/4428 Ivanti EPMM Pre-Auth RCE",
+        "id": "41956f7c-7a6b-46d6-b6bb-da6eb2e83fbe",
+        "status": "experimental",
+        "description": "Detects potential exploitation of a chained vulnerability attack targeting Ivanti EPMM 12.5.0.0.\nCVE-2025-4427 allows unauthenticated access to protected API endpoints via an authentication bypass,\nwhich can then be leveraged to trigger CVE-2025-4428 — a remote code execution vulnerability through\ntemplate injection. This sequence enables unauthenticated remote code execution, significantly increasing\nthe impact of exploitation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.t1190",
+            "attack.execution",
+            "attack.t1203",
+            "cve.2025-4427",
+            "cve.2025-4428",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((cs-uri-stem LIKE '%/mifs/rs/api/v2/featureusage%' ESCAPE '\\' AND cs-uri-query LIKE '%format=%' ESCAPE '\\') AND ((cs-uri-query LIKE '%java.lang.Runtime%' ESCAPE '\\' AND cs-uri-query LIKE '%.getMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%getRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%.exec(%' ESCAPE '\\') OR (cs-uri-query LIKE '%java\\%2elang\\%2eRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2egetMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2eexec\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%\\%6a\\%61\\%76\\%61\\%2e\\%6c\\%61\\%6e\\%67\\%2e\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65\\%65\\%28\\%29%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%67\\%65\\%74\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%2e\\%65\\%78\\%65\\%63\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%{7%7}%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7B7%7\\%7D%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7b7\\%2a7\\%7d%' ESCAPE '\\')))"
+        ],
+        "filename": "web_invanti_epmm_cve_2025_4427_and_cve_2025_4428.yml"
+    },
+    {
         "title": "Potential ACTINIUM Persistence Activity",
         "id": "e1118a8f-82f5-44b3-bb6b-8a284e5df602",
         "status": "test",
@@ -2580,7 +2604,7 @@
     {
         "title": "Kapeka Backdoor Scheduled Task Creation",
         "id": "6c130acd-0adb-4545-bcc4-2e85d0883c9a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects Kapeka backdoor scheduled task creation based on attributes such as paths, commands line flags, etc.",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
@@ -2602,7 +2626,7 @@
     {
         "title": "Kapeka Backdoor Loaded Via Rundll32.EXE",
         "id": "a7e6b1f9-8d2c-4f1e-9a7d-63e4c8a2bf4c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the Kapeka Backdoor binary being loaded by rundll32.exe.\nThe Kapeka loader drops a backdoor, which is a DLL with the '.wll' extension masquerading as a Microsoft Word Add-In.\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
@@ -2624,7 +2648,7 @@
     {
         "title": "Potential Kapeka Decrypted Backdoor Indicator",
         "id": "20228d05-dd68-435d-8b4e-e7e64938880c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the presence of a file that is decrypted backdoor binary dropped by the Kapeka Dropper, which disguises itself as a hidden file under a folder named \"Microsoft\" within \"CSIDL_COMMON_APPDATA\" or \"CSIDL_LOCAL_APPDATA\", depending on the process privileges.\nThe file, typically 5-6 characters long with a random combination of consonants and vowels followed by a \".wll\" extension to pose as a legitimate file to evade detection.\n",
         "author": "Swachchhanda Shrawan Poudel, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -2643,7 +2667,7 @@
     {
         "title": "Kapeka Backdoor Execution Via RunDLL32.EXE",
         "id": "e98f741c-6a5b-4c83-bc2a-1f4e58d07b12",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects Kapeka backdoor process execution pattern, where the dropper launch the backdoor binary by calling rundll32 and passing the backdoor's first export ordinal (#1) with a \"-d\" argument.\n",
         "author": "Swachchhanda Shrawan Poudel, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -2663,7 +2687,7 @@
     {
         "title": "Kapeka Backdoor Persistence Activity",
         "id": "64a871dd-83f6-4e5f-80fc-5a7ca3a8a819",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects Kapeka backdoor persistence activity.\nDepending on the process privileges, the Kapeka dropper then sets persistence for the backdoor either as a scheduled task (if admin or SYSTEM) or autorun registry (if not).\nFor the scheduled task, it creates a scheduled task called \"Sens Api\" via schtasks command, which is set to run upon system startup as SYSTEM.\nTo establish persistence through the autorun utility, it adds an autorun entry called \"Sens Api\" under HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run via the \"reg add\" command.\nBoth persistence mechanisms are set to launch the binary by calling rundll32 and passing the backdoor's first export ordinal (#1) without any additional argument.\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
@@ -2683,7 +2707,7 @@
     {
         "title": "Kapeka Backdoor Autorun Persistence",
         "id": "c0c67b21-eb8a-4c84-a395-40473ec3b482",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the setting of a new value in the Autorun key that is used by the Kapeka backdoor for persistence.",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
@@ -2784,7 +2808,7 @@
     {
         "title": "Potential CSharp Streamer RAT Loading .NET Executable Image",
         "id": "6f6afac3-8e7a-4e4b-9588-2608ffe08f82",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potential CSharp Streamer RAT loading .NET executable image by using the default file name and path associated with the tool.\n",
         "author": "Luca Di Bartolomeo",
         "tags": [
@@ -2804,7 +2828,7 @@
     {
         "title": "Potential Exploitation of CVE-2024-3094 - Suspicious SSH Child Process",
         "id": "9aa27839-e8ba-4d7a-ac1a-746c22c3d1e5",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potentially suspicious child process of SSH process (sshd) with a specific execution user. This could be a sign of potential exploitation of CVE-2024-3094.\n",
         "author": "Arnim Rupp, Nasreddine Bencherchali, Thomas Patzke",
         "tags": [
@@ -7738,7 +7762,7 @@
     {
         "title": "DSInternals Suspicious PowerShell Cmdlets",
         "id": "43d91656-a9b2-4541-b7e2-6a9bd3a13f4e",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution and usage of the DSInternals PowerShell module. Which can be used to perform what might be considered as suspicious activity such as dumping DPAPI backup keys or manipulating NTDS.DIT files.\nThe DSInternals PowerShell Module exposes several internal features of Active Directory and Azure Active Directory. These include FIDO2 and NGC key auditing, offline ntds.dit file manipulation, password auditing, DC recovery from IFM backups and password hash calculation.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Nounou Mbeiri",
         "tags": [
@@ -11524,6 +11548,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.credential-access",
+            "attack.resource-development",
             "attack.t1588.002",
             "attack.t1003"
         ],
@@ -12047,6 +12072,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.credential-access",
+            "attack.collection",
             "attack.t1185"
         ],
         "falsepositives": [
@@ -13115,6 +13141,7 @@
         "author": "Michael R. (@nahamike01)",
         "tags": [
             "attack.execution",
+            "attack.defense-evasion",
             "attack.t1127"
         ],
         "falsepositives": [
@@ -13191,6 +13218,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.credential-access",
             "attack.t1557.001"
         ],
         "falsepositives": [
@@ -13639,7 +13667,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%domainlist%' ESCAPE '\\' OR CommandLine LIKE '%trustdmp%' ESCAPE '\\' OR CommandLine LIKE '%dcmodes%' ESCAPE '\\' OR CommandLine LIKE '%adinfo%' ESCAPE '\\' OR CommandLine LIKE '% dclist %' ESCAPE '\\' OR CommandLine LIKE '%computer\\_pwdnotreqd%' ESCAPE '\\' OR CommandLine LIKE '%objectcategory=%' ESCAPE '\\' OR CommandLine LIKE '%-subnets -f%' ESCAPE '\\' OR CommandLine LIKE '%name=\"Domain Admins\"%' ESCAPE '\\' OR CommandLine LIKE '%-sc u:%' ESCAPE '\\' OR CommandLine LIKE '%domainncs%' ESCAPE '\\' OR CommandLine LIKE '%dompol%' ESCAPE '\\' OR CommandLine LIKE '% oudmp %' ESCAPE '\\' OR CommandLine LIKE '%subnetdmp%' ESCAPE '\\' OR CommandLine LIKE '%gpodmp%' ESCAPE '\\' OR CommandLine LIKE '%fspdmp%' ESCAPE '\\' OR CommandLine LIKE '%users\\_noexpire%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_active%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_pwdnotreqd%' ESCAPE '\\') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\') OR OriginalFileName = 'AdFind.exe') AND NOT (Image LIKE '%\\\\AdFind.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%domainlist%' ESCAPE '\\' OR CommandLine LIKE '%trustdmp%' ESCAPE '\\' OR CommandLine LIKE '%dcmodes%' ESCAPE '\\' OR CommandLine LIKE '%adinfo%' ESCAPE '\\' OR CommandLine LIKE '% dclist %' ESCAPE '\\' OR CommandLine LIKE '%computer\\_pwdnotreqd%' ESCAPE '\\' OR CommandLine LIKE '%objectcategory=%' ESCAPE '\\' OR CommandLine LIKE '%-subnets -f%' ESCAPE '\\' OR CommandLine LIKE '%name=\"Domain Admins\"%' ESCAPE '\\' OR CommandLine LIKE '%-sc u:%' ESCAPE '\\' OR CommandLine LIKE '%domainncs%' ESCAPE '\\' OR CommandLine LIKE '%dompol%' ESCAPE '\\' OR CommandLine LIKE '% oudmp %' ESCAPE '\\' OR CommandLine LIKE '%subnetdmp%' ESCAPE '\\' OR CommandLine LIKE '%gpodmp%' ESCAPE '\\' OR CommandLine LIKE '%fspdmp%' ESCAPE '\\' OR CommandLine LIKE '%users\\_noexpire%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_active%' ESCAPE '\\' OR CommandLine LIKE '%computers\\_pwdnotreqd%' ESCAPE '\\') OR (Hashes LIKE '%IMPHASH=BCA5675746D13A1F246E2DA3C2217492%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=53E117A96057EAF19C41380D0E87F1C2%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=d144de8117df2beceaba2201ad304764%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=12ce1c0f3f5837ecc18a3782408fa975%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=4fbf3f084fbbb2470b80b2013134df35%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=49b639b4acbecc49d72a01f357aa4930%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=680dad9e300346e05a85023965867201%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=21aa085d54992511b9f115355e468782%' ESCAPE '\\') OR OriginalFileName = 'AdFind.exe') AND NOT (Image LIKE '%\\\\AdFind.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_renamed_adfind.yml"
     },
@@ -13803,7 +13831,7 @@
     {
         "title": "HackTool - RemoteKrbRelay Execution",
         "id": "a7664b14-75fb-4a50-a223-cb9bc0afbacf",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the use of RemoteKrbRelay, a Kerberos relaying tool via CommandLine flags and PE metadata.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -14101,7 +14129,7 @@
     {
         "title": "HackTool - SharpDPAPI Execution",
         "id": "c7d33b50-f690-4b51-8cfb-0fb912a31e57",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of the SharpDPAPI tool based on CommandLine flags and PE metadata.\nSharpDPAPI is a C# port of some DPAPI functionality from the Mimikatz project.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -14320,6 +14348,8 @@
         "description": "Detects process creation with a renamed BrowserCore.exe (used to extract Azure tokens)",
         "author": "Max Altgelt (Nextron Systems)",
         "tags": [
+            "attack.credential-access",
+            "attack.defense-evasion",
             "attack.t1528",
             "attack.t1036.003"
         ],
@@ -14883,6 +14913,7 @@
         "author": "Markus Neis, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.defense-evasion",
             "attack.t1059",
             "attack.t1202"
         ],
@@ -15991,8 +16022,10 @@
         "description": "Detects potential tampering with Windows Defender settings such as adding exclusion using wmic",
         "author": "frack113",
         "tags": [
-            "attack.credential-access",
-            "attack.t1546.008"
+            "attack.defense-evasion",
+            "attack.execution",
+            "attack.t1047",
+            "attack.t1562"
         ],
         "falsepositives": [
             "Unknown"
@@ -16030,6 +16063,7 @@
         "author": "Markus Neis, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.defense-evasion",
             "attack.t1059",
             "attack.t1202"
         ],
@@ -16679,6 +16713,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems), frack113 , X__Junior",
         "tags": [
             "attack.defense-evasion",
+            "attack.impact",
             "attack.t1489",
             "attack.t1562.001"
         ],
@@ -17939,6 +17974,7 @@
         "author": "frack113",
         "tags": [
             "attack.defense-evasion",
+            "attack.persistence",
             "attack.t1562.002",
             "attack.t1505.004"
         ],
@@ -18126,6 +18162,7 @@
         "description": "Detects successful installation of Atera Remote Monitoring & Management (RMM) agent as recently found to be used by Conti operators",
         "author": "Bhabesh Raj",
         "tags": [
+            "attack.command-and-control",
             "attack.t1219"
         ],
         "falsepositives": [
@@ -18741,6 +18778,7 @@
         "tags": [
             "attack.discovery",
             "attack.execution",
+            "attack.collection",
             "attack.t1087",
             "attack.t1114",
             "attack.t1059",
@@ -20618,6 +20656,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.credential-access",
             "attack.t1557.001"
         ],
         "falsepositives": [
@@ -21367,7 +21406,7 @@
     {
         "title": "HackTool - CrackMapExec File Indicators",
         "id": "736ffa74-5f6f-44ca-94ef-1c0df4f51d2a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects file creation events with filename patterns used by CrackMapExec.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -21882,7 +21921,7 @@
     {
         "title": "HackTool - RemoteKrbRelay SMB Relay Secrets Dump Module Indicators",
         "id": "3ab79e90-9fab-4cdf-a7b2-6522bc742adb",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the creation of file with specific names used by RemoteKrbRelay SMB Relay attack module.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -22949,7 +22988,7 @@
     {
         "title": "DPAPI Backup Keys And Certificate Export Activity IOC",
         "id": "7892ec59-c5bb-496d-8968-e5d210ca3ac4",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects file names with specific patterns seen generated and used by tools such as Mimikatz and DSInternals related to exported or stolen DPAPI backup keys and certificates.\n",
         "author": "Nounou Mbeiri, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -23259,6 +23298,7 @@
         "author": "Trent Liffick (@tliffick)",
         "tags": [
             "attack.execution",
+            "attack.persistence",
             "attack.t1112",
             "attack.t1047"
         ],
@@ -23350,7 +23390,7 @@
     {
         "title": "Hypervisor Enforced Paging Translation Disabled",
         "id": "7f2954d2-99c2-4d42-a065-ca36740f187b",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects changes to the \"DisableHypervisorEnforcedPagingTranslation\" registry value. Where the it is set to \"1\" in order to disable the Hypervisor Enforced Paging Translation feature.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -23754,7 +23794,7 @@
     {
         "title": "Hypervisor Enforced Code Integrity Disabled",
         "id": "8b7273a4-ba5d-4d8a-b04f-11f2900d043a",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects changes to the HypervisorEnforcedCodeIntegrity registry key and the \"Enabled\" value being set to 0 in order to disable the Hypervisor Enforced Code Integrity feature. This allows an attacker to load unsigned and untrusted code to be run in the kernel\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Anish Bogati",
         "tags": [
@@ -24445,7 +24485,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\CLSID\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\InprocServer32\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\LocalServer32\\\\(Default)' ESCAPE '\\') AND (TargetObject LIKE '%\\\\{1f486a52-3cb1-48fd-8f50-b8dc300d9f9d}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{2155fee3-2419-4373-b102-6843707eb41f}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4590f811-1d3a-11d0-891f-00aa004b2e24}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4de225bf-cf59-4cfc-85f7-68b90f185355}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{ddc05a5a-351a-4e06-8eaf-54ec1bc2dcea}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F56F6FDD-AA9D-4618-A949-C1B91AF43B1A}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F82B4EF1-93A9-4DDE-8015-F7950A1A6E31}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{7849596a-48ea-486e-8937-a2a3009f31a9}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{0b91a74b-ad7c-4a9d-b563-29eef9167172}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{603D3801-BD81-11d0-A3A5-00C04FD706EC}\\\\%' ESCAPE '\\')) AND ((Details LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\System32\\\\spool\\\\drivers\\\\color\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR Details LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%\\%appdata\\%%' ESCAPE '\\' OR Details LIKE '%\\%temp\\%%' ESCAPE '\\' OR Details LIKE '%\\%tmp\\%%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\CLSID\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\InprocServer32\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\LocalServer32\\\\(Default)' ESCAPE '\\') AND (TargetObject LIKE '%\\\\{1f486a52-3cb1-48fd-8f50-b8dc300d9f9d}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{2155fee3-2419-4373-b102-6843707eb41f}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4590f811-1d3a-11d0-891f-00aa004b2e24}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4de225bf-cf59-4cfc-85f7-68b90f185355}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{ddc05a5a-351a-4e06-8eaf-54ec1bc2dcea}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F56F6FDD-AA9D-4618-A949-C1B91AF43B1A}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F82B4EF1-93A9-4DDE-8015-F7950A1A6E31}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{7849596a-48ea-486e-8937-a2a3009f31a9}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{0b91a74b-ad7c-4a9d-b563-29eef9167172}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{603D3801-BD81-11d0-A3A5-00C04FD706EC}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{30D49246-D217-465F-B00B-AC9DDD652EB7}\\\\%' ESCAPE '\\')) AND ((Details LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\System32\\\\spool\\\\drivers\\\\color\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR Details LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%\\%appdata\\%%' ESCAPE '\\' OR Details LIKE '%\\%temp\\%%' ESCAPE '\\' OR Details LIKE '%\\%tmp\\%%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_persistence_com_hijacking_builtin.yml"
     },
@@ -24538,6 +24578,7 @@
         "description": "Detects changes to the Windows EventLog channel permission values. It focuses on changes to the Security Descriptor Definition Language (SDDL) string, as modifications to these values can restrict access to specific users or groups, potentially aiding in defense evasion by controlling who can view or modify a event log channel. Upon execution, the user shouldn't be able to access the event log channel via the event viewer or via utilities such as \"Get-EventLog\" or \"wevtutil\".\n",
         "author": "X__Junior",
         "tags": [
+            "attack.defense-evasion",
             "attack.t1547.001",
             "attack.t1112"
         ],
@@ -25528,6 +25569,7 @@
         "description": "Detects the presence of a registry key created during Azorult execution",
         "author": "Trent Liffick",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.t1112"
         ],
@@ -27109,6 +27151,7 @@
         "author": "Kiran kumar s, oscd.community",
         "tags": [
             "attack.execution",
+            "attack.defense-evasion",
             "attack.t1127.001"
         ],
         "falsepositives": [
@@ -27259,7 +27302,7 @@
     {
         "title": "Communication To LocaltoNet Tunneling Service Initiated",
         "id": "3ab65069-d82a-4d44-a759-466661a082d1",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects an executable initiating a network connection to \"LocaltoNet\" tunneling sub-domains.\nLocaltoNet is a reverse proxy that enables localhost services to be exposed to the Internet.\nAttackers have been seen to use this service for command-and-control activities to bypass MFA and perimeter controls.\n",
         "author": "Andreas Braathen (mnemonic.io)",
         "tags": [
@@ -27898,25 +27941,6 @@
         "filename": "posh_ps_wmimplant.yml"
     },
     {
-        "title": "Delete Volume Shadow Copies via WMI with PowerShell - PS Script",
-        "id": "e17121b4-ef2a-4418-8a59-12fb1631fa9e",
-        "status": "test",
-        "description": "Deletes Windows Volume Shadow Copies with PowerShell code and Get-WMIObject. This technique is used by numerous ransomware families such as Sodinokibi/REvil",
-        "author": "frack113",
-        "tags": [
-            "attack.impact",
-            "attack.t1490"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%Get-WmiObject%' ESCAPE '\\' AND ScriptBlockText LIKE '%Win32\\_ShadowCopy%' ESCAPE '\\' AND ScriptBlockText LIKE '%.Delete()%' ESCAPE '\\')"
-        ],
-        "filename": "posh_ps_susp_win32_shadowcopy.yml"
-    },
-    {
         "title": "AADInternals PowerShell Cmdlets Execution - PsScript",
         "id": "91e69562-2426-42ce-a647-711b8152ced6",
         "status": "test",
@@ -28492,7 +28516,7 @@
         "id": "c1337eb8-921a-4b59-855b-4ba188ddcc42",
         "status": "test",
         "description": "Detects deletion of Windows Volume Shadow Copies with PowerShell code and Get-WMIObject. This technique is used by numerous ransomware families such as Sodinokibi/REvil",
-        "author": "Tim Rauch",
+        "author": "Tim Rauch, frack113",
         "tags": [
             "attack.impact",
             "attack.t1490"
@@ -28574,7 +28598,7 @@
     {
         "title": "DSInternals Suspicious PowerShell Cmdlets - ScriptBlock",
         "id": "846c7a87-8e14-4569-9d49-ecfd4276a01c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution and usage of the DSInternals PowerShell module. Which can be used to perform what might be considered as suspicious activity such as dumping DPAPI backup keys or manipulating NTDS.DIT files.\nThe DSInternals PowerShell Module exposes several internal features of Active Directory and Azure Active Directory. These include FIDO2 and NGC key auditing, offline ntds.dit file manipulation, password auditing, DC recovery from IFM backups and password hash calculation.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
