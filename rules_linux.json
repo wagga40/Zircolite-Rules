@@ -441,7 +441,9 @@
         "author": "Cedric Maurugeon",
         "tags": [
             "attack.persistence",
-            "attack.t1136"
+            "attack.execution",
+            "attack.t1136",
+            "attack.t1059.012"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -644,8 +646,10 @@
         "author": "Nasreddine Bencherchali (Nextron Systems), Cedric Maurugeon",
         "tags": [
             "attack.discovery",
+            "attack.execution",
             "attack.t1033",
-            "attack.t1007"
+            "attack.t1007",
+            "attack.t1059.012"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -680,8 +684,10 @@
         "author": "Cedric Maurugeon",
         "tags": [
             "attack.defense-evasion",
+            "attack.execution",
             "attack.t1562.001",
-            "attack.t1562.003"
+            "attack.t1562.003",
+            "attack.t1059.012"
         ],
         "falsepositives": [
             "Legitimate administrative activities"
@@ -895,7 +901,10 @@
         "description": "Detects execution of the \"esxcli\" command with the \"system\" and \"permission\" flags in order to assign admin permissions to an account.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.execution"
+            "attack.execution",
+            "attack.privilege-escalation",
+            "attack.t1059.012",
+            "attack.t1098"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -1549,8 +1558,10 @@
         "author": "Cedric Maurugeon",
         "tags": [
             "attack.discovery",
+            "attack.execution",
             "attack.t1033",
-            "attack.t1007"
+            "attack.t1007",
+            "attack.t1059.012"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -1568,8 +1579,10 @@
         "author": "Nasreddine Bencherchali (Nextron Systems), Cedric Maurugeon",
         "tags": [
             "attack.discovery",
+            "attack.execution",
             "attack.t1033",
-            "attack.t1007"
+            "attack.t1007",
+            "attack.t1059.012"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -1899,8 +1912,10 @@
         "author": "Cedric Maurugeon",
         "tags": [
             "attack.discovery",
+            "attack.execution",
             "attack.t1033",
-            "attack.t1007"
+            "attack.t1007",
+            "attack.t1059.012"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -1936,8 +1951,10 @@
         "author": "Cedric Maurugeon",
         "tags": [
             "attack.discovery",
+            "attack.execution",
             "attack.t1033",
-            "attack.t1007"
+            "attack.t1007",
+            "attack.t1059.012"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -1954,7 +1971,10 @@
         "description": "Detects execution of the \"esxcli\" command with the \"vm\" and \"kill\" flag in order to kill/shutdown a specific VM.",
         "author": "Nasreddine Bencherchali (Nextron Systems), Cedric Maurugeon",
         "tags": [
-            "attack.execution"
+            "attack.execution",
+            "attack.impact",
+            "attack.t1059.012",
+            "attack.t1529"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -3059,8 +3079,8 @@
     {
         "title": "Audio Capture",
         "id": "a7af2487-9c2f-42e4-9bb9-ff961f0561d5",
-        "description": "Detects attempts to record audio with arecord utility",
-        "author": "Pawel Mazur",
+        "description": "Detects attempts to record audio using the arecord and ecasound utilities.",
+        "author": "Pawel Mazur, Milad Cheraghi",
         "tags": [
             "attack.collection",
             "attack.t1123"
@@ -3070,7 +3090,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 = 'arecord' AND a1 = '-vv' AND a2 = '-fdat')"
+            "SELECT * FROM logs WHERE ((type = 'EXECVE' AND a0 = 'arecord' AND a1 = '-vv' AND a2 = '-fdat') OR (type = 'SYSCALL' AND exe LIKE '%/ecasound' ESCAPE '\\' AND syscall = '319'))"
         ],
         "filename": "lnx_auditd_audio_capture.yml"
     },
