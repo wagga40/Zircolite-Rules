@@ -1836,6 +1836,86 @@
         "filename": "proc_creation_win_malware_kalambur_curl_socks_tor.yml"
     },
     {
+        "title": "Katz Stealer Suspicious User-Agent",
+        "id": "834c6d2f-5e98-4b2a-b453-0c4f234afedd",
+        "status": "experimental",
+        "description": "Detects network connections with a suspicious user-agent string containing \"katz-ontop\", which may indicate Katz Stealer activity.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1071.001",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE user_agent LIKE '%katz-ontop%' ESCAPE '\\'"
+        ],
+        "filename": "zeek_http_katz_stealer_susp_useragent.yml"
+    },
+    {
+        "title": "Katz Stealer DLL Loaded",
+        "id": "e6c7ab7c-c79d-4b84-b913-b2ec3f8e8a98",
+        "status": "experimental",
+        "description": "Detects loading of DLLs associated with Katz Stealer malware 2025 variants.\nKatz Stealer is a malware variant that is known to be used for stealing sensitive information from compromised systems.\nThe process that loads these DLLs are very likely to be malicious.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1129",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (ImageLoaded LIKE '%\\\\katz\\_ontop.dll' ESCAPE '\\' OR ImageLoaded LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\received\\_dll.dll' ESCAPE '\\'))"
+        ],
+        "filename": "image_load_win_katz_stealer_payloads.yml"
+    },
+    {
+        "title": "DNS Query To Katz Stealer Domains - Network",
+        "id": "6b0c762f-0e1b-435f-a829-5943b08fe36a",
+        "status": "experimental",
+        "description": "Detects DNS queries to domains associated with Katz Stealer malware.\nKatz Stealer is a malware variant that is known to be used for stealing sensitive information from compromised systems.\nIn Enterprise environments, DNS queries to these domains may indicate potential malicious activity or compromise.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1071.004",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (query LIKE '%katz-panel.com%' ESCAPE '\\' OR query LIKE '%katz-stealer.com%' ESCAPE '\\' OR query LIKE '%katzstealer.com%' ESCAPE '\\' OR query LIKE '%twist2katz.com%' ESCAPE '\\')"
+        ],
+        "filename": "net_dns_katz_stealer_domain.yml"
+    },
+    {
+        "title": "DNS Query To Katz Stealer Domains",
+        "id": "9c3d6e32-f4c8-4d73-8b8f-95c3b383a13c",
+        "status": "experimental",
+        "description": "Detects DNS queries to domains associated with Katz Stealer malware.\nKatz Stealer is a malware variant that is known to be used for stealing sensitive information from compromised systems.\nIn Enterprise environments, DNS queries to these domains may indicate potential malicious activity or compromise.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1071.004",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '22' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (QueryName LIKE '%katz-panel.com%' ESCAPE '\\' OR QueryName LIKE '%katz-stealer.com%' ESCAPE '\\' OR QueryName LIKE '%katzstealer.com%' ESCAPE '\\' OR QueryName LIKE '%twist2katz.com%' ESCAPE '\\'))"
+        ],
+        "filename": "dns_query_win_katz_stealer_domain.yml"
+    },
+    {
         "title": "Suspicious Process Spawned by CentreStack Portal AppPool",
         "id": "2d79e371-2a27-42de-87a4-b4213fc72a6a",
         "status": "experimental",
@@ -9486,6 +9566,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\frpc.exe' ESCAPE '\\' OR Image LIKE '%\\\\frps.exe' ESCAPE '\\') OR CommandLine LIKE '%\\\\frpc.ini%' ESCAPE '\\' OR (Hashes LIKE '%MD5=7D9C233B8C9E3F0EA290D2B84593C842%' ESCAPE '\\' OR Hashes LIKE '%SHA1=06DDC9280E1F1810677935A2477012960905942F%' ESCAPE '\\' OR Hashes LIKE '%SHA256=57B0936B8D336D8E981C169466A15A5FD21A7D5A2C7DAF62D5E142EE860E387C%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_pua_frp.yml"
+    },
+    {
+        "title": "Registry Export of Third-Party Credentials",
+        "id": "cc1abf27-78a3-4ac5-a51c-f3070b1d8e40",
+        "status": "experimental",
+        "description": "Detects the use of reg.exe to export registry paths associated with third-party credentials.\nCredential stealers have been known to use this technique to extract sensitive information from the registry.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1552.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '%save%' ESCAPE '\\' OR CommandLine LIKE '%export%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Software\\\\Aerofox\\\\Foxmail\\\\V3.1%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\Aerofox\\\\FoxmailPreview%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\DownloadManager\\\\Passwords%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\FTPWare\\\\COREFTP\\\\Sites%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\IncrediMail\\\\Identities%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\Martin Prikryl\\\\WinSCP 2\\\\Sessions%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\Mobatek\\\\MobaXterm%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\OpenSSH\\\\Agent\\\\Keys%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\OpenVPN-GUI\\\\configs%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\ORL\\\\WinVNC3\\\\Password%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\Qualcomm\\\\Eudora\\\\CommandLine%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\RealVNC\\\\WinVNC4%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\RimArts\\\\B2\\\\Settings%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\SimonTatham\\\\PuTTY\\\\Sessions%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\SimonTatham\\\\PuTTY\\\\SshHostKeys%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\Sota\\\\FFFTP%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\TightVNC\\\\Server%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\WOW6432Node\\\\Radmin\\\\v3.0\\\\Server\\\\Parameters\\\\Radmin%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_registry_export_of_thirdparty_creds.yml"
     },
     {
         "title": "Arbitrary File Download Via IMEWDBLD.EXE",
