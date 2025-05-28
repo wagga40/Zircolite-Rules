@@ -23001,6 +23001,25 @@
         "filename": "file_event_win_susp_get_variable.yml"
     },
     {
+        "title": "HackTool - Impacket File Indicators",
+        "id": "03f4ca17-de95-428d-a75a-4ee78b047256",
+        "status": "experimental",
+        "description": "Detects file creation events with filename patterns used by Impacket.",
+        "author": "The DFIR Report, IrishDeath",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename REGEXP '\\\\sessionresume_[a-zA-Z]{8}$')"
+        ],
+        "filename": "file_event_win_impacket_file_indicators.yml"
+    },
+    {
         "title": "UAC Bypass Using IEInstal - File",
         "id": "bdd8157d-8e85-4397-bb82-f06cc9c71dbb",
         "status": "test",
