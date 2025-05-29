@@ -2637,6 +2637,25 @@
         "filename": "lnx_auditd_auditing_config_change.yml"
     },
     {
+        "title": "Disable ASLR Via Personality Syscall - Linux",
+        "id": "e497a24e-9345-4a62-9803-b06d7d7cb132",
+        "description": "Detects the use of the `personality` syscall with the ADDR_NO_RANDOMIZE flag (0x0040000),\nwhich disables Address Space Layout Randomization (ASLR) in Linux. This is often used by attackers\nexploit development, or to bypass memory protection mechanisms.\nA successful use of this flag can reduce the effectiveness of ASLR and make memory corruption\nattacks more reliable.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001",
+            "attack.t1055.009"
+        ],
+        "falsepositives": [
+            "Debugging or legitimate software testing"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = '135' AND a0 = '40000')"
+        ],
+        "filename": "lnx_auditd_disable_aslr_protection.yml"
+    },
+    {
         "title": "Unix Shell Configuration Modification",
         "id": "a94cdd87-6c54-4678-a6cc-2814ffe5a13d",
         "description": "Detect unix shell configuration modification. Adversaries may establish persistence through executing malicious commands triggered when a new shell is opened.",
