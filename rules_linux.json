@@ -3285,6 +3285,28 @@
         "filename": "lnx_auditd_find_cred_in_files.yml"
     },
     {
+        "title": "Potential Abuse of Linux Magic System Request Key",
+        "id": "ea61bb82-a5e0-42e6-8537-91d29500f1b9",
+        "description": "Detects the potential abuse of the Linux Magic SysRq (System Request) key by adversaries with root or sufficient privileges\nto silently manipulate or destabilize a system. By writing to /proc/sysrq-trigger, they can crash the system, kill processes,\nor disrupt forensic analysis—all while bypassing standard logging. Though intended for recovery and debugging, SysRq can be\nmisused as a stealthy post-exploitation tool. It is controlled via /proc/sys/kernel/sysrq or permanently through /etc/sysctl.conf.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.004",
+            "attack.impact",
+            "attack.t1529",
+            "attack.t1489",
+            "attack.t1499"
+        ],
+        "falsepositives": [
+            "Legitimate administrative activity"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '%/sysrq' ESCAPE '\\' OR name LIKE '%/sysctl.conf' ESCAPE '\\' OR name LIKE '%/sysrq-trigger' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_magic_system_request_key.yml"
+    },
+    {
         "title": "Creation Of An User Account",
         "id": "759d0d51-bc99-4b5e-9add-8f5b2c8e7512",
         "description": "Detects the creation of a new user account. Such accounts may be used for persistence that do not require persistent remote access tools to be deployed on the system.",
@@ -3301,6 +3323,25 @@
             "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND exe LIKE '%/useradd' ESCAPE '\\') OR type LIKE 'ADD\\_USER' ESCAPE '\\')"
         ],
         "filename": "lnx_auditd_create_account.yml"
+    },
+    {
+        "title": "Clear or Disable Kernel Ring Buffer Logs via Syslog Syscall",
+        "id": "eca5e022-d368-4043-98e5-9736fb01f72f",
+        "description": "Detects the use of the `syslog` syscall with action code 5 (SYSLOG_ACTION_CLEAR),\n(4 is SYSLOG_ACTION_READ_CLEAR and 6 is SYSLOG_ACTION_CONSOLE_OFF) which clears the kernel\nring buffer (dmesg logs). This can be used by attackers to hide traces after exploitation\nor privilege escalation. A common technique is running `dmesg -c`, which triggers this syscall internally.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1070.002"
+        ],
+        "falsepositives": [
+            "System administrators or scripts that intentionally clear logs",
+            "Debugging scripts"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = '103' AND a0 IN ('4', '5', '6'))"
+        ],
+        "filename": "lnx_auditd_clean_disable_dmesg_logs_via_syslog.yml"
     },
     {
         "title": "Suspicious C2 Activities",
