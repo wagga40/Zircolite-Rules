@@ -146,24 +146,6 @@
         "filename": "proc_creation_lnx_susp_network_utilities_execution.yml"
     },
     {
-        "title": "Cat Sudoers",
-        "id": "0f79c4d2-4e1f-4683-9c36-b5469a665e06",
-        "description": "Detects the execution of a cat /etc/sudoers to list all users that have sudo rights",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.reconnaissance",
-            "attack.t1592.004"
-        ],
-        "falsepositives": [
-            "Legitimate administration activities"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%grep' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\') AND CommandLine LIKE '% /etc/sudoers%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_lnx_cat_sudoers.yml"
-    },
-    {
         "title": "Remove Immutable File Attribute",
         "id": "34979410-e4b5-4e5d-8cfb-389fdff05c12",
         "description": "Detects usage of the 'chattr' utility to remove immutable file attribute.",
@@ -1256,6 +1238,24 @@
         "filename": "proc_creation_lnx_pnscan_binary_cli_pattern.yml"
     },
     {
+        "title": "Access of Sudoers File Content",
+        "id": "0f79c4d2-4e1f-4683-9c36-b5469a665e06",
+        "description": "Detects the execution of a text-based file access or inspection utilities to read the content of /etc/sudoers in order to potentially list all users that have sudo rights.",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.reconnaissance",
+            "attack.t1592.004"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/ed' ESCAPE '\\' OR Image LIKE '%/egrep' ESCAPE '\\' OR Image LIKE '%/emacs' ESCAPE '\\' OR Image LIKE '%/fgrep' ESCAPE '\\' OR Image LIKE '%/grep' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/less' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\' OR Image LIKE '%/nano' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\') AND CommandLine LIKE '% /etc/sudoers%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_susp_process_reading_sudoers.yml"
+    },
+    {
         "title": "User Added To Root/Sudoers Group Using Usermod",
         "id": "6a50f16c-3b7b-42d1-b081-0fdd3ba70a73",
         "description": "Detects usage of the \"usermod\" binary to add users add users to the root or suoders groups",
@@ -1287,7 +1287,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/groups' ESCAPE '\\' OR ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\') AND CommandLine LIKE '%/etc/group%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Image LIKE '%/groups' ESCAPE '\\' OR ((Image LIKE '%/cat' ESCAPE '\\' OR Image LIKE '%/ed' ESCAPE '\\' OR Image LIKE '%/head' ESCAPE '\\' OR Image LIKE '%/less' ESCAPE '\\' OR Image LIKE '%/more' ESCAPE '\\' OR Image LIKE '%/nano' ESCAPE '\\' OR Image LIKE '%/tail' ESCAPE '\\' OR Image LIKE '%/vi' ESCAPE '\\' OR Image LIKE '%/vim' ESCAPE '\\') AND CommandLine LIKE '%/etc/group%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_local_groups.yml"
     },
@@ -2991,6 +2991,25 @@
         "filename": "lnx_auditd_masquerading_crond.yml"
     },
     {
+        "title": "System Info Discovery via Sysinfo Syscall",
+        "id": "b207d563-a1d9-4275-b349-77d1eb55aa6d",
+        "description": "Detects use of the sysinfo system call in Linux, which provides a snapshot of key system statistics such as uptime, load averages, memory usage, and the number of running processes.\nMalware or reconnaissance tools might leverage sysinfo to fingerprint the system - gathering data to determine if it's a viable target.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.discovery",
+            "attack.t1057",
+            "attack.t1082"
+        ],
+        "falsepositives": [
+            "Legitimate administrative activity"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND syscall = 'sysinfo') AND NOT ((exe LIKE '%/bin/splunkd' ESCAPE '\\')))"
+        ],
+        "filename": "lnx_auditd_susp_discovery_sysinfo_syscall.yml"
+    },
+    {
         "title": "BPFDoor Abnormal Process ID or Lock File Accessed",
         "id": "808146b2-9332-4d78-9416-d7e47012d83d",
         "description": "detects BPFDoor .lock and .pid files access in temporary file storage facility",
@@ -3104,6 +3123,25 @@
         "filename": "lnx_auditd_disable_system_firewall.yml"
     },
     {
+        "title": "Special File Creation via Mknod Syscall",
+        "id": "710bdbce-495d-491d-9a8f-7d0d88d2b41e",
+        "description": "Detects usage of the `mknod` syscall to create special files (e.g., character or block devices).\nAttackers or malware might use `mknod` to create fake devices, interact with kernel interfaces,\nor establish covert channels in Linux systems.\nMonitoring the use of `mknod` is important because this syscall is rarely used by legitimate applications,\nand it can be abused to bypass file system restrictions or create backdoors.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.persistence",
+            "attack.t1543.003"
+        ],
+        "falsepositives": [
+            "Device creation by legitimate scripts or init systems (udevadm, MAKEDEV)",
+            "Container runtimes or security tools during initialization"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'mknod')"
+        ],
+        "filename": "lnx_auditd_susp_special_file_creation_via_mknod_syscall.yml"
+    },
+    {
         "title": "Webshell Remote Command Execution",
         "id": "c0d3734d-330f-4a03-aae2-65dacc6a8222",
         "description": "Detects possible command execution by web application/web shell",
@@ -3118,7 +3156,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'execve' AND key LIKE 'detect\\_execve\\_www' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall IN ('execve', 'execveat') AND euid = '33')"
         ],
         "filename": "lnx_auditd_web_rce.yml"
     },
@@ -3136,7 +3174,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE ((type = 'EXECVE' AND a0 = 'arecord' AND a1 = '-vv' AND a2 = '-fdat') OR (type = 'SYSCALL' AND exe LIKE '%/ecasound' ESCAPE '\\' AND syscall = '319'))"
+            "SELECT * FROM logs WHERE ((type = 'EXECVE' AND a0 = 'arecord' AND a1 = '-vv' AND a2 = '-fdat') OR (type = 'SYSCALL' AND exe LIKE '%/ecasound' ESCAPE '\\' AND syscall LIKE 'memfd\\_create' ESCAPE '\\'))"
         ],
         "filename": "lnx_auditd_audio_capture.yml"
     },
@@ -3209,7 +3247,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = '135' AND a0 = '40000')"
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'personality' AND a0 = '40000')"
         ],
         "filename": "lnx_auditd_disable_aslr_protection.yml"
     },
@@ -3340,7 +3378,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = '103' AND a0 IN ('4', '5', '6'))"
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'syslog' AND a0 IN ('4', '5', '6'))"
         ],
         "filename": "lnx_auditd_clean_disable_dmesg_logs_via_syslog.yml"
     },
@@ -3375,7 +3413,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 IN ('hostname', 'id', 'last', 'users', 'w', 'who', 'whoami'))"
+            "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 IN ('hostname', 'id', 'last', 'uname', 'users', 'w', 'who', 'whoami'))"
         ],
         "filename": "lnx_auditd_user_discovery.yml"
     },
