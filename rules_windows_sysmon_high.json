@@ -2837,7 +2837,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Unknown"
@@ -8110,7 +8110,7 @@
         "author": "Ján Trenčanský",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Legitimate deployment of AnyDesk"
@@ -9504,7 +9504,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Likelihood is related to how often the paths are used in the environment"
@@ -10101,7 +10101,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Legitimate use of AnyDesk from a non-standard folder"
@@ -11493,7 +11493,7 @@
         "author": "Samir Bousseaden",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Unlikely"
@@ -11625,7 +11625,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Unlikely"
@@ -11740,7 +11740,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Unknown"
@@ -11944,7 +11944,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Unlikely"
@@ -13202,7 +13202,7 @@
         "author": "Dusty Miller",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219",
+            "attack.t1219.002",
             "detection.emerging-threats"
         ],
         "falsepositives": [
@@ -16449,6 +16449,78 @@
         "filename": "web_lnx_exploit_cve_2025_31324_sap_netviewer_webshell_uploaded.yml"
     },
     {
+        "title": "Potential Exploitation of RCE Vulnerability CVE-2025-33053 - Process Access",
+        "id": "9a2d8b3e-f5a1-4c68-9e21-7d9e1cf8a123",
+        "status": "experimental",
+        "description": "Detects potential exploitation of remote code execution vulnerability CVE-2025-33053\nby looking for process access that involves legitimate Windows executables (iediagcmd.exe, CustomShellHost.exe)\naccessing suspicious executables hosted on WebDAV shares. This indicates an attacker may be exploiting\nProcess.Start() search order manipulation to execute malicious code from attacker-controlled WebDAV servers\ninstead of legitimate system binaries. The vulnerability allows unauthorized code execution through\nexternal control of file names or paths via WebDAV.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense-evasion",
+            "attack.t1218",
+            "attack.lateral-movement",
+            "attack.t1105",
+            "detection.emerging-threats",
+            "cve.2025-33053"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '10' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (SourceImage LIKE 'C:\\\\Program Files\\\\internet explorer\\\\iediagcmd.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\CustomShellHost.exe' ESCAPE '\\') AND (TargetImage LIKE '\\\\\\\\\\*' ESCAPE '\\' OR TargetImage LIKE '%\\\\DavWWWRoot\\\\%' ESCAPE '\\') AND (TargetImage LIKE '%\\\\route.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\netsh.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\makecab.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\dxdiag.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\ipconfig.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\explorer.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_access_win_exploit_cve_2025_33053.yml"
+    },
+    {
+        "title": "Potential Exploitation of RCE Vulnerability CVE-2025-33053",
+        "id": "abe06362-a5b9-4371-8724-ebd00cd48a04",
+        "status": "experimental",
+        "description": "Detects potential exploitation of remote code execution vulnerability CVE-2025-33053\nwhich involves unauthorized code execution via WebDAV through external control of file names or paths.\nThe exploit abuses legitimate utilities like iediagcmd.exe or CustomShellHost.exe  by manipulating\ntheir working directories to point to attacker-controlled WebDAV servers, causing them to execute\nmalicious executables (like route.exe) from the WebDAV path instead of legitimate system binaries\nthrough Process.Start() search order manipulation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense-evasion",
+            "attack.t1218",
+            "attack.lateral-movement",
+            "attack.t1105",
+            "detection.emerging-threats",
+            "cve.2025-33053"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE 'C:\\\\Program Files\\\\internet explorer\\\\iediagcmd.exe' ESCAPE '\\' OR ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\CustomShellHost.exe' ESCAPE '\\') AND (CurrentDirectory LIKE '\\\\\\\\\\*' ESCAPE '\\' OR CurrentDirectory LIKE '%\\\\DavWWWRoot\\\\%' ESCAPE '\\' OR Image LIKE '%\\\\DavWWWRoot\\\\%' ESCAPE '\\' OR Image LIKE '\\\\\\\\\\*' ESCAPE '\\') AND (Image LIKE '%\\\\route.exe' ESCAPE '\\' OR Image LIKE '%\\\\netsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\makecab.exe' ESCAPE '\\' OR Image LIKE '%\\\\dxdiag.exe' ESCAPE '\\' OR Image LIKE '%\\\\ipconfig.exe' ESCAPE '\\' OR Image LIKE '%\\\\explorer.exe' ESCAPE '\\')) AND NOT (((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2025_33053.yml"
+    },
+    {
+        "title": "Potential Exploitation of RCE Vulnerability CVE-2025-33053 - Image Load",
+        "id": "04fc4b22-91a6-495a-879d-0144fec5ec03",
+        "status": "experimental",
+        "description": "Detects potential exploitation of remote code execution vulnerability CVE-2025-33053\nby monitoring suspicious image loads from WebDAV paths. The exploit involves malicious executables from\nattacker-controlled WebDAV servers loading the Windows system DLLs like gdi32.dll, netapi32.dll, etc.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.defense-evasion",
+            "attack.t1218",
+            "attack.lateral-movement",
+            "attack.t1105",
+            "detection.emerging-threats",
+            "cve.2025-33053"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '\\\\\\\\\\*' ESCAPE '\\' AND Image LIKE '%\\\\DavWWWRoot\\\\%' ESCAPE '\\' AND (Image LIKE '%\\\\route.exe' ESCAPE '\\' OR Image LIKE '%\\\\netsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\makecab.exe' ESCAPE '\\' OR Image LIKE '%\\\\dxdiag.exe' ESCAPE '\\' OR Image LIKE '%\\\\ipconfig.exe' ESCAPE '\\' OR Image LIKE '%\\\\explorer.exe' ESCAPE '\\'))"
+        ],
+        "filename": "image_load_win_exploit_cve_2025_33053.yml"
+    },
+    {
         "title": "Suspicious Process Spawned by CentreStack Portal AppPool",
         "id": "2d79e371-2a27-42de-87a4-b4213fc72a6a",
         "status": "experimental",
@@ -18275,7 +18347,7 @@
         "author": "Luca Di Bartolomeo",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219",
+            "attack.t1219.002",
             "detection.emerging-threats"
         ],
         "falsepositives": [
@@ -27273,7 +27345,7 @@
         "author": "Bhabesh Raj",
         "tags": [
             "attack.command-and-control",
-            "attack.t1219"
+            "attack.t1219.002"
         ],
         "falsepositives": [
             "Legitimate Atera agent installation"
