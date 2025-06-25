@@ -5034,7 +5034,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%C:\\\\Windows \\\\System32\\\\%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (NewProcessName LIKE '%C:\\\\Windows \\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Windows \\\\SysWOW64\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_uac_bypass_trustedpath.yml"
     },
@@ -7903,6 +7903,27 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND NewProcessName LIKE '%\\\\GUP.exe' ESCAPE '\\' AND NOT (((NewProcessName LIKE '%\\\\Program Files\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Program Files (x86)\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\Users\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Roaming\\\\Notepad++\\\\updater\\\\GUP.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_gup_suspicious_execution.yml"
+    },
+    {
+        "title": "Remote Access Tool - Renamed MeshAgent Execution - Windows",
+        "id": "b471f462-eb0d-4832-be35-28d94bdb4780",
+        "status": "experimental",
+        "description": "Detects the execution of a renamed instance of the Remote Monitoring and Management (RMM) tool, MeshAgent.\nRMM tools such as MeshAgent are commonly utilized by IT administrators for legitimate remote support and system management.\nHowever, malicious actors may exploit these tools by renaming them to bypass detection mechanisms, enabling unauthorized access and control over compromised systems.\n",
+        "author": "Norbert Jaśniewicz (AlphaSOC)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.defense-evasion",
+            "attack.t1219.002",
+            "attack.t1036.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%--meshServiceName%' ESCAPE '\\' OR OriginalFileName LIKE '%meshagent%' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\meshagent.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_remote_access_tools_renamed_meshagent_execution.yml"
     },
     {
         "title": "Suspicious LNK Command-Line Padding with Whitespace Characters",
@@ -21606,6 +21627,27 @@
             "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\rcdll.dll' ESCAPE '\\' AND NOT ((ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\Windows Kits\\\\%' ESCAPE '\\')))"
         ],
         "filename": "image_load_side_load_rcdll.yml"
+    },
+    {
+        "title": "Trusted Path Bypass via Windows Directory Spoofing",
+        "id": "0cbe38c0-270c-41d9-ab79-6e5a9a669290",
+        "status": "experimental",
+        "description": "Detects DLLs loading from a spoofed Windows directory path with an extra space (e.g \"C:\\Windows \\System32\") which can bypass Windows trusted path verification.\nThis technique tricks Windows into treating the path as trusted, allowing malicious DLLs to load with high integrity privileges bypassing UAC.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.privilege-escalation",
+            "attack.t1574.007",
+            "attack.t1548.002"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%:\\\\Windows \\\\System32\\\\%' ESCAPE '\\' OR ImageLoaded LIKE '%:\\\\Windows \\\\SysWOW64\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "image_load_win_trusted_path_bypass.yml"
     },
     {
         "title": "Time Travel Debugging Utility Usage - Image",
