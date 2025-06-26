@@ -1553,6 +1553,26 @@
         "filename": "proc_creation_lnx_remove_package.yml"
     },
     {
+        "title": "Suspicious Download and Execute Pattern via Curl/Wget",
+        "id": "a2d9e2f3-0f43-4c7a-bcd9-9acfc0d723aa",
+        "description": "Detects suspicious use of command-line tools such as curl or wget to download remote\ncontent - particularly scripts - into temporary directories (e.g., /dev/shm, /tmp), followed by\nimmediate execution, indicating potential malicious activity. This pattern is commonly used\nby malicious scripts, stagers, or downloaders in fileless or multi-stage Linux attacks.\n",
+        "author": "Aayush Gupta",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.004",
+            "attack.t1203"
+        ],
+        "falsepositives": [
+            "System update scripts using temporary files",
+            "Installer scripts or automated provisioning tools"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((CommandLine LIKE '%/curl%' ESCAPE '\\' OR CommandLine LIKE '%/wget%' ESCAPE '\\') AND (CommandLine LIKE '%/tmp/%' ESCAPE '\\' OR CommandLine LIKE '%/dev/shm/%' ESCAPE '\\') AND CommandLine LIKE '%sh -c%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_curl_wget_exec_tmp.yml"
+    },
+    {
         "title": "Linux Network Service Scanning Tools Execution",
         "id": "3e102cd9-a70d-4a7a-9508-403963092f31",
         "description": "Detects execution of network scanning and reconnaisance tools. These tools can be used for the enumeration of local or remote network services for example.",
