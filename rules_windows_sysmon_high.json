@@ -1229,6 +1229,25 @@
         "filename": "proc_creation_win_wab_execution_from_non_default_location.yml"
     },
     {
+        "title": "FileFix - Suspicious Child Process from Browser File Upload Abuse",
+        "id": "4be03877-d5b6-4520-85c9-a5911c0a656c",
+        "status": "experimental",
+        "description": "Detects potentially suspicious subprocesses such as LOLBINs spawned by web browsers. This activity could be associated with the \"FileFix\" social engineering technique,\nwhere users are tricked into launching the file explorer via a browser-based phishing page and pasting malicious commands into the address bar.\nThe technique abuses clipboard manipulation and disguises command execution as benign file path access, resulting in covert execution of system utilities.\n",
+        "author": "0xFustang",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.004"
+        ],
+        "falsepositives": [
+            "Legitimate use of PowerShell or other utilities launched from browser extensions or automation tools"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (ParentImage LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msedge.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\firefox.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\brave.exe' ESCAPE '\\') AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\') AND CommandLine LIKE '%#%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_filefix_browsers.yml"
+    },
+    {
         "title": "HackTool - SharpWSUS/WSUSpendu Execution",
         "id": "b0ce780f-10bd-496d-9067-066d23dc3aa5",
         "status": "experimental",
