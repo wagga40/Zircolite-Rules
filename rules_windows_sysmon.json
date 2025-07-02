@@ -750,7 +750,7 @@
     {
         "title": "Suspicious Process Masquerading As SvcHost.EXE",
         "id": "be58d2e2-06c8-4f58-b666-b99f6dc3b6cd",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects a suspicious process that is masquerading as the legitimate \"svchost.exe\" by naming its binary \"svchost.exe\" and executing from an uncommon location.\nAdversaries often disguise their malicious binaries by naming them after legitimate system processes like \"svchost.exe\" to evade detection.\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
@@ -1243,14 +1243,14 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (ParentImage LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msedge.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\firefox.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\brave.exe' ESCAPE '\\') AND (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\') AND CommandLine LIKE '%#%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (ParentImage LIKE '%\\\\brave.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\firefox.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\msedge.exe' ESCAPE '\\') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\') AND CommandLine LIKE '%#%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_filefix_browsers.yml"
     },
     {
         "title": "HackTool - SharpWSUS/WSUSpendu Execution",
         "id": "b0ce780f-10bd-496d-9067-066d23dc3aa5",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of SharpWSUS or WSUSpendu, utilities that allow for lateral movement through WSUS.\nWindows Server Update Services (WSUS) is a critical component of Windows systems and is frequently configured in a way that allows an attacker to circumvent internal networking limitations.\n",
         "author": "@Kostastsale, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -5884,7 +5884,7 @@
     {
         "title": "Bad Opsec Defaults Sacrificial Processes With Improper Arguments",
         "id": "a7c3d773-caef-227e-a7e7-c2f13c622329",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects attackers using tooling with bad opsec defaults.\nE.g. spawning a sacrificial process to inject a capability into the process without taking into account how the process is normally run.\nOne trivial example of this is using rundll32.exe without arguments as a sacrificial process (default in CS, now highlighted by c2lint), running WerFault without arguments (Kraken - credit am0nsec), and other examples.\n",
         "author": "Oleg Kolesnikov @securonix invrep_de, oscd.community, Florian Roth (Nextron Systems), Christian Burkard (Nextron Systems)",
         "tags": [
@@ -6717,7 +6717,7 @@
     {
         "title": "File Explorer Folder Opened Using Explorer Folder Shortcut Via Shell",
         "id": "c3d76afc-93df-461e-8e67-9b2bad3f2ac4",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the initial execution of \"cmd.exe\" which spawns \"explorer.exe\" with the appropriate command line arguments for opening the \"My Computer\" folder.\n",
         "author": "@Kostastsale",
         "tags": [
@@ -8637,7 +8637,7 @@
     {
         "title": "Suspicious File Downloaded From File-Sharing Website Via Certutil.EXE",
         "id": "42a5f1e7-9603-4f6d-97ae-3f37d130d794",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the execution of certutil with certain flags that allow the utility to download files from file-sharing websites.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -9454,7 +9454,7 @@
     {
         "title": "Suspicious Child Process Of Wermgr.EXE",
         "id": "396f6630-f3ac-44e3-bfc8-1b161bc00c4e",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious Windows Error Reporting manager (wermgr.exe) child process",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -9992,7 +9992,7 @@
     {
         "title": "Suspicious Download From File-Sharing Website Via Bitsadmin",
         "id": "8518ed3d-f7c9-4601-a26c-f361a4256a0c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects usage of bitsadmin downloading a file from a suspicious domain",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -10863,7 +10863,7 @@
     {
         "title": "Wusa.EXE Executed By Parent Process Located In Suspicious Location",
         "id": "ef64fc9c-a45e-43cc-8fd8-7d75d73b4c99",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects execution of the \"wusa.exe\" (Windows Update Standalone Installer) utility by a parent process that is located in a suspicious location.\nAttackers could instantiate an instance of \"wusa.exe\" in order to bypass User Account Control (UAC). They can duplicate the access token from \"wusa.exe\" to gain elevated privileges.\n",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
@@ -14877,7 +14877,7 @@
     {
         "title": "Emotet Loader Execution Via .LNK File",
         "id": "1f32d820-1d5c-43fe-8fe2-feef0c952eb7",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the Emotet Epoch4 loader as reported by @malware_traffic back in 2022.\nThe \".lnk\" file was delivered via phishing campaign.\n",
         "author": "@kostastsale",
         "tags": [
@@ -15003,7 +15003,7 @@
     {
         "title": "FakeUpdates/SocGholish Activity",
         "id": "97805087-93ab-4203-b5cb-287cda6aecaa",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects initial execution of FakeUpdates/SocGholish malware via wscript that later executes commands via cmd or powershell.",
         "author": "@kostastsale",
         "tags": [
@@ -16605,6 +16605,28 @@
             "SELECT * FROM logs WHERE ((cs-uri-stem LIKE '%/mifs/rs/api/v2/featureusage%' ESCAPE '\\' AND cs-uri-query LIKE '%format=%' ESCAPE '\\') AND ((cs-uri-query LIKE '%java.lang.Runtime%' ESCAPE '\\' AND cs-uri-query LIKE '%.getMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%getRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%.exec(%' ESCAPE '\\') OR (cs-uri-query LIKE '%java\\%2elang\\%2eRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2egetMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2eexec\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%\\%6a\\%61\\%76\\%61\\%2e\\%6c\\%61\\%6e\\%67\\%2e\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65\\%65\\%28\\%29%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%67\\%65\\%74\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%2e\\%65\\%78\\%65\\%63\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%{7%7}%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7B7%7\\%7D%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7b7\\%2a7\\%7d%' ESCAPE '\\')))"
         ],
         "filename": "web_invanti_epmm_cve_2025_4427_and_cve_2025_4428.yml"
+    },
+    {
+        "title": "Potential Notepad++ CVE-2025-49144 Exploitation",
+        "id": "933f0bb5-0681-4fe7-8a17-4e6cccbaac44",
+        "status": "experimental",
+        "description": "Detects potential exploitation of CVE-2025-49144, a local privilege escalation vulnerability in Notepad++ installers (v8.8.1 and prior) where the installer calls regsvr32.exe without specifying the full path.\nThis allows an attacker to execute arbitrary code with elevated privileges by placing a malicious regsvr32.exe alongside this Legitimate Notepad++ installer.\nThe vulnerability is triggered when the installer attempts to register the NppShell.dll file, which is a component of Notepad++.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
+            "attack.t1574.008",
+            "cve.2025-49144",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND CommandLine LIKE 'regsvr32 /s%' ESCAPE '\\' AND CommandLine LIKE '%\\\\contextMenu\\\\NppShell.dll%' ESCAPE '\\') AND NOT (((Image LIKE 'C:\\\\Windows\\\\System32\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\regsvr32.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2025_49144.yml"
     },
     {
         "title": "Small Sieve Malware Registry Persistence",
@@ -23211,7 +23233,7 @@
     {
         "title": "Driver Added To Disallowed Images In HVCI - Registry",
         "id": "555155a2-03bf-4fe7-af74-d176b3fdbe16",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects changes to the \"HVCIDisallowedImages\" registry value to potentially add a driver to the list, in order to prevent it from loading.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Omar Khaled (@beacon_exe)",
         "tags": [
@@ -24036,7 +24058,7 @@
     {
         "title": "Antivirus Filter Driver Disallowed On Dev Drive - Registry",
         "id": "31e124fb-5dc4-42a0-83b3-44a69c77b271",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects activity that indicates a user disabling the ability for Antivirus mini filter to inspect a \"Dev Drive\".\n",
         "author": "@kostastsale, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -24803,7 +24825,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\CLSID\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\InprocServer32\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\LocalServer32\\\\(Default)' ESCAPE '\\') AND (TargetObject LIKE '%\\\\{1f486a52-3cb1-48fd-8f50-b8dc300d9f9d}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{2155fee3-2419-4373-b102-6843707eb41f}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4590f811-1d3a-11d0-891f-00aa004b2e24}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4de225bf-cf59-4cfc-85f7-68b90f185355}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{ddc05a5a-351a-4e06-8eaf-54ec1bc2dcea}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F56F6FDD-AA9D-4618-A949-C1B91AF43B1A}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F82B4EF1-93A9-4DDE-8015-F7950A1A6E31}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{7849596a-48ea-486e-8937-a2a3009f31a9}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{0b91a74b-ad7c-4a9d-b563-29eef9167172}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{603D3801-BD81-11d0-A3A5-00C04FD706EC}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{30D49246-D217-465F-B00B-AC9DDD652EB7}\\\\%' ESCAPE '\\')) AND ((Details LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\System32\\\\spool\\\\drivers\\\\color\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR Details LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%\\%appdata\\%%' ESCAPE '\\' OR Details LIKE '%\\%temp\\%%' ESCAPE '\\' OR Details LIKE '%\\%tmp\\%%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\CLSID\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\InprocServer32\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\LocalServer32\\\\(Default)' ESCAPE '\\') AND (TargetObject LIKE '%\\\\{1f486a52-3cb1-48fd-8f50-b8dc300d9f9d}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{2155fee3-2419-4373-b102-6843707eb41f}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4590f811-1d3a-11d0-891f-00aa004b2e24}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{4de225bf-cf59-4cfc-85f7-68b90f185355}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{ddc05a5a-351a-4e06-8eaf-54ec1bc2dcea}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F56F6FDD-AA9D-4618-A949-C1B91AF43B1A}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{F82B4EF1-93A9-4DDE-8015-F7950A1A6E31}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{7849596a-48ea-486e-8937-a2a3009f31a9}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{0b91a74b-ad7c-4a9d-b563-29eef9167172}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{603D3801-BD81-11d0-A3A5-00C04FD706EC}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{30D49246-D217-465F-B00B-AC9DDD652EB7}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{A7A63E5C-3877-4840-8727-C1EA9D7A4D50}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{2227A280-3AEA-1069-A2DE-08002B30309D}\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\{2DEA658F-54C1-4227-AF9B-260AB5FC3543}\\\\%' ESCAPE '\\')) AND ((Details LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\System32\\\\spool\\\\drivers\\\\color\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR Details LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Details LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Details LIKE '%\\%appdata\\%%' ESCAPE '\\' OR Details LIKE '%\\%temp\\%%' ESCAPE '\\' OR Details LIKE '%\\%tmp\\%%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (Details LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\Pictures\\\\%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_persistence_com_hijacking_builtin.yml"
     },
@@ -25402,7 +25424,7 @@
     {
         "title": "Suspicious Remote AppX Package Locations",
         "id": "8b48ad89-10d8-4382-a546-50588c410f0d",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects an appx package added to the pipeline of the \"to be processed\" packages which was downloaded from a suspicious domain.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
