@@ -6599,6 +6599,25 @@
         "filename": "proc_creation_win_registry_privilege_escalation_via_service_key.yml"
     },
     {
+        "title": "HackTool - Doppelanger LSASS Dumper Execution",
+        "id": "d474c8fe-bb69-4ea0-b7d9-f682b56d52d3",
+        "status": "experimental",
+        "description": "Detects the execution of the Doppelanger hacktool which is used to dump LSASS memory via process cloning while evading common detection methods",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\Doppelganger.exe' ESCAPE '\\' OR (Hashes LIKE '%IMPHASH=AB94D5217896ADCD765A06B2D52F0AEB%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=65F0EA61156EE0C2A35421926F0C7F78%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_hktl_doppelganger.yml"
+    },
+    {
         "title": "HackTool - Dumpert Process Dumper Execution",
         "id": "2704ab9e-afe2-4854-a3b1-0c0706d03578",
         "status": "test",
@@ -7718,6 +7737,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\Werfault.exe' ESCAPE '\\' OR OriginalFileName = 'WerFault.exe') AND ((ParentUser LIKE '%AUTHORI%' ESCAPE '\\' OR ParentUser LIKE '%AUTORI%' ESCAPE '\\') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND CommandLine LIKE '% -u -p %' ESCAPE '\\' AND CommandLine LIKE '% -ip %' ESCAPE '\\' AND CommandLine LIKE '% -s %' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\lsass.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_werfault_lsass_shtinkering.yml"
+    },
+    {
+        "title": "HackTool - HollowReaper Execution",
+        "id": "85d23b42-9a9d-4f8f-b3d7-d2733c1d58f5",
+        "status": "experimental",
+        "description": "Detects usage of HollowReaper, a process hollowing shellcode launcher used for stealth payload execution through process hollowing.\nIt replaces the memory of a legitimate process with custom shellcode, allowing the attacker to execute payloads under the guise of trusted binaries.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1055.012"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\HollowReaper.exe' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_hktl_hollowreaper.yml"
     },
     {
         "title": "Suspicious Schtasks Execution AppData Folder",
