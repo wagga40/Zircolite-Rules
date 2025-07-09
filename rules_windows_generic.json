@@ -10741,6 +10741,28 @@
         "filename": "proc_creation_win_pua_pingcastle_script_parent.yml"
     },
     {
+        "title": "Attempts of Kerberos Coercion Via DNS SPN Spoofing",
+        "id": "0ed99dda-6a35-11ef-8c99-0242ac120002",
+        "status": "experimental",
+        "description": "Detects the presence of \"UWhRC....AAYBAAAA\" pattern in command line.\nThe pattern \"1UWhRCAAAAA..BAAAA\" is a base64-encoded signature that corresponds to a marshaled CREDENTIAL_TARGET_INFORMATION structure.\nAttackers can use this technique to coerce authentication from victim systems to attacker-controlled hosts.\nIt is one of the strong indicators of a Kerberos coercion attack, where adversaries manipulate DNS records\nto spoof Service Principal Names (SPNs) and redirect authentication requests like in CVE-2025-33073.\nIf you see this pattern in the command line, it is likely an attempt to add spoofed Service Principal Names (SPNs) to DNS records,\nor checking for the presence of such records through the `nslookup` command.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.persistence",
+            "attack.privilege-escalation",
+            "attack.t1557.001",
+            "attack.t1187"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%UWhRCA%' ESCAPE '\\' AND CommandLine LIKE '%BAAAA%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_kerberos_coercion_via_dns_spn_spoofing.yml"
+    },
+    {
         "title": "Suspicious PowerShell Encoded Command Patterns",
         "id": "b9d9cc83-380b-4ba3-8d8f-60c0e7e2930c",
         "status": "test",
@@ -15075,7 +15097,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\Sysmon.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Sysmon64.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%:\\\\Windows\\\\Sysmon.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Sysmon64.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\conhost.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\WerFault.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\WerFaultSecure.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\wevtutil.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\wevtutil.exe%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\Sysmon.exe%' ESCAPE '\\')) OR (NewProcessName = '')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\Sysmon.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\Sysmon64.exe' ESCAPE '\\') AND NOT ((NewProcessName LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\Sysmon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Sysmon64.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%:\\\\Windows\\\\Sysmon.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Sysmon64.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\conhost.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\WerFault.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\WerFaultSecure.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\wevtutil.exe%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\SysWOW64\\\\wevtutil.exe%' ESCAPE '\\')) OR (NewProcessName = '')))"
         ],
         "filename": "proc_creation_win_exploit_cve_2022_41120_sysmon_eop.yml"
     },
@@ -23302,7 +23324,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\%' ESCAPE '\\' AND NOT (((TargetObject LIKE '%Microsoft\\\\Windows\\\\UpdateOrchestrator%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\ngen.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\{B66B135D-DA06-4FC4-95F8-7458E1D10129}%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET Framework\\\\.NET Framework NGEN%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server Manager Performance Monitor\\\\%' ESCAPE '\\') OR (NewProcessName = 'System')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\%' ESCAPE '\\' AND NOT (((TargetObject LIKE '%Microsoft\\\\Windows\\\\UpdateOrchestrator%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\ngen.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\{B66B135D-DA06-4FC4-95F8-7458E1D10129}%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET Framework\\\\.NET Framework NGEN%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server Manager Performance Monitor\\\\%' ESCAPE '\\') OR (NewProcessName = 'System') OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\')))"
         ],
         "filename": "registry_set_taskcache_entry.yml"
     },
@@ -24249,6 +24271,25 @@
         "filename": "registry_set_suspicious_env_variables.yml"
     },
     {
+        "title": "FileFix - Command Evidence in TypedPaths from Browser File Upload Abuse",
+        "id": "4fee3d51-8069-4a4c-a0f7-924fcaff2c70",
+        "status": "experimental",
+        "description": "Detects commonly-used chained commands and strings in the most recent 'url' value of the 'TypedPaths' key, which could be indicative of a user being targeted by the FileFix technique.",
+        "author": "Alfie Champion (delivr.to)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.004"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\TypedPaths\\\\url1' ESCAPE '\\' AND NewValue LIKE '%#%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\') AND (NewValue LIKE '%cmd%' ESCAPE '\\' OR NewValue LIKE '%curl%' ESCAPE '\\' OR NewValue LIKE '%powershell%' ESCAPE '\\' OR NewValue LIKE '%bitsadmin%' ESCAPE '\\' OR NewValue LIKE '%certutil%' ESCAPE '\\' OR NewValue LIKE '%mshta%' ESCAPE '\\' OR NewValue LIKE '%regsvr32%' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_filefix_typedpath_commands.yml"
+    },
+    {
         "title": "Potential Persistence Via Outlook LoadMacroProviderOnBoot Setting",
         "id": "396ae3eb-4174-4b9b-880e-dc0364d78a19",
         "status": "test",
@@ -25185,7 +25226,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (((SourceImage LIKE '%\\\\bash.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cscript.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cvtres.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\defrag.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\dialer.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\dnx.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\excel.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\expand.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\find.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\findstr.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\gpupdate.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\hh.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\installutil.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\lync.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\makecab.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mDNSResponder.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mshta.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mspaint.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\outlook.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\ping.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\provtool.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\python.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\runonce.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\sapcimc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\tstheme.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\userinit.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssadmin.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\w3wp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winscp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winword.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wmic.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wscript.exe' ESCAPE '\\') AND NOT ((SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\Defrag.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\provtool.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\'))) AND NOT ((SourceImage LIKE '%\\\\SysWOW64\\\\explorer.exe' ESCAPE '\\' AND (TargetImage LIKE 'C:\\\\Program Files (x86)\\\\VMware\\\\VMware Tools\\\\vmtoolsd.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files\\\\VMware\\\\VMware Tools\\\\vmtoolsd.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (((SourceImage LIKE '%\\\\bash.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cscript.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\cvtres.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\defrag.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\dialer.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\dnx.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\excel.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\expand.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\find.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\findstr.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\forfiles.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\gpupdate.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\hh.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\installutil.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\lync.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\makecab.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mDNSResponder.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\monitoringhost.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\msbuild.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mshta.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\mspaint.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\outlook.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\ping.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\provtool.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\python.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\runonce.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\sapcimc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\tstheme.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\userinit.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssadmin.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\w3wp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winscp.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\winword.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wmic.exe' ESCAPE '\\' OR SourceImage LIKE '%\\\\wscript.exe' ESCAPE '\\') AND NOT (((SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\Defrag.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\makecab.exe' ESCAPE '\\') AND TargetImage LIKE 'C:\\\\Windows\\\\System32\\\\conhost.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\provtool.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\') OR (SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\userinit.exe' ESCAPE '\\' AND TargetImage LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\') OR (SourceImage LIKE '%\\\\WINWORD.EXE' ESCAPE '\\' AND (TargetImage LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\')))) AND NOT ((SourceImage LIKE '%\\\\SysWOW64\\\\explorer.exe' ESCAPE '\\' AND (TargetImage LIKE 'C:\\\\Program Files (x86)\\\\VMware\\\\VMware Tools\\\\vmtoolsd.exe' ESCAPE '\\' OR TargetImage LIKE 'C:\\\\Program Files\\\\VMware\\\\VMware Tools\\\\vmtoolsd.exe' ESCAPE '\\'))))"
         ],
         "filename": "create_remote_thread_win_susp_relevant_source_image.yml"
     },
@@ -25306,6 +25347,28 @@
             "SELECT * FROM logs WHERE (TargetImage LIKE '%\\\\mstsc.exe' ESCAPE '\\' AND (SourceImage LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\PerfLogs\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR SourceImage LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\'))"
         ],
         "filename": "create_remote_thread_win_mstsc_susp_location.yml"
+    },
+    {
+        "title": "Suspicious DNS Query Indicating Kerberos Coercion via DNS Object SPN Spoofing",
+        "id": "e7a21b5f-d8c4-4ae5-b8d9-93c5d3f28e1c",
+        "status": "experimental",
+        "description": "Detects DNS queries containing patterns associated with Kerberos coercion attacks via DNS object spoofing.\nThe pattern \"1UWhRCAAAAA..BAAAA\" is a base64-encoded signature that corresponds to a marshaled CREDENTIAL_TARGET_INFORMATION structure.\nAttackers can use this technique to coerce authentication from victim systems to attacker-controlled hosts.\nIt is one of the strong indicators of a Kerberos coercion attack, where adversaries manipulate DNS records\nto spoof Service Principal Names (SPNs) and redirect authentication requests like CVE-2025-33073.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.persistence",
+            "attack.privilege-escalation",
+            "attack.t1557.001",
+            "attack.t1187"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (QueryName LIKE '%UWhRCA%' ESCAPE '\\' AND QueryName LIKE '%BAAAA%' ESCAPE '\\')"
+        ],
+        "filename": "dns_query_win_kerberos_coercion_via_dns_object_spoofing.yml"
     },
     {
         "title": "DNS Query for Anonfiles.com Domain - Sysmon",
@@ -26779,6 +26842,27 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4697' AND ServiceFileName LIKE '%mshta%' ESCAPE '\\' AND ServiceFileName LIKE '%vbscript:createobject%' ESCAPE '\\' AND ServiceFileName LIKE '%.run%' ESCAPE '\\' AND ServiceFileName LIKE '%window.close%' ESCAPE '\\')"
         ],
         "filename": "win_security_invoke_obfuscation_via_use_mshta_services_security.yml"
+    },
+    {
+        "title": "Potential Kerberos Coercion by Spoofing SPNs via DNS Manipulation",
+        "id": "b07e58cf-cacc-4135-8473-ccb2eba63dd2",
+        "status": "experimental",
+        "description": "Detects modifications to DNS records in Active Directory where the Distinguished Name (DN) contains a base64-encoded blob\nmatching the pattern \"1UWhRCAAAAA...BAAAA\". This pattern corresponds to a marshaled CREDENTIAL_TARGET_INFORMATION structure,\ncommonly used in Kerberos coercion attacks. Adversaries may exploit this to coerce victim systems into authenticating to\nattacker-controlled hosts by spoofing SPNs via DNS. It is one of the strong indicators of a Kerberos coercion attack,.\nwhere adversaries manipulate DNS records to spoof Service Principal Names (SPNs) and redirect authentication requests like CVE-2025-33073.\nPlease investigate the user account that made the changes, as it is likely a low-privileged account that has been compromised.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1557.003",
+            "attack.persistence",
+            "attack.privilege-escalation"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID IN ('5136', '5137') AND ObjectClass = 'dnsNode' AND ObjectDN LIKE '%UWhRCA%' ESCAPE '\\' AND ObjectDN LIKE '%BAAAA%' ESCAPE '\\' AND ObjectDN LIKE '%CN=MicrosoftDNS%' ESCAPE '\\') OR (EventID = '4662' AND AdditionalInfo LIKE '%UWhRCA%' ESCAPE '\\' AND AdditionalInfo LIKE '%BAAAA%' ESCAPE '\\' AND AdditionalInfo LIKE '%CN=MicrosoftDNS%' ESCAPE '\\')))"
+        ],
+        "filename": "win_security_kerberos_coercion_via_dns_object.yml"
     },
     {
         "title": "Invoke-Obfuscation Obfuscated IEX Invocation - Security",
