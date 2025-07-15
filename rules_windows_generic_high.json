@@ -17383,19 +17383,20 @@
         "title": "Suspicious Active Directory Database Snapshot Via ADExplorer",
         "id": "ef61af62-bc74-4f58-b49b-626448227652",
         "status": "test",
-        "description": "Detects the execution of Sysinternals ADExplorer with the \"-snapshot\" flag in order to save a local copy of the active directory database to a suspicious directory.",
+        "description": "Detects the execution of Sysinternals ADExplorer with the \"-snapshot\" flag in order to save a local copy of the active directory database to a suspicious directory. This can be used by attackers to extract data for Bloodhound, usernames for password spraying or use the meta data for social engineering. The snapshot doesn't contain password hashes but there have been cases, where administrators put passwords in the comment field.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.credential-access",
-            "attack.t1552.001",
-            "attack.t1003.003"
+            "attack.discovery",
+            "attack.t1087.002",
+            "attack.t1069.002",
+            "attack.t1482"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR OriginalFileName = 'AdExp') AND CommandLine LIKE '%snapshot%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\ADExp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64a.exe' ESCAPE '\\') OR OriginalFileName = 'AdExp' OR Description = 'Active Directory Editor' OR Product = 'Sysinternals ADExplorer') AND CommandLine LIKE '%snapshot%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_sysinternals_adexplorer_susp_execution.yml"
     },
@@ -24864,7 +24865,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\atbroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\audiodg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certreq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\consent.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csrss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dashost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\defrag.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dfrgui.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dism.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhst3g.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dwm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\eventvwr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\logonui.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\LsaIso.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ntoskrnl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\runonce.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sihost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Taskmgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winver.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wlanext.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\$WINDOWS.~BT\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\$WinREAgent\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SystemTemp\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\uus\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\pwsh.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\'))) AND NOT ((NewProcessName LIKE '%\\\\SystemRoot\\\\System32\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\atbroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\audiodg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certreq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\conhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\consent.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\csrss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dashost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\defrag.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dfrgui.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dism.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhst3g.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dwm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\eventvwr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\logonui.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\LsaIso.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsass.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\lsm.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ntoskrnl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\runonce.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\services.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sihost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\smss.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Taskmgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\userinit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wininit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\winver.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wlanext.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\') AND NOT (((NewProcessName LIKE 'C:\\\\$WINDOWS.~BT\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\$WinREAgent\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SystemTemp\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\uus\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\pwsh.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\wsl.exe' ESCAPE '\\'))) AND NOT ((NewProcessName LIKE '%\\\\SystemRoot\\\\System32\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_system_exe_anomaly.yml"
     },
@@ -27033,6 +27034,27 @@
         "filename": "proc_creation_win_iis_susp_module_registration.yml"
     },
     {
+        "title": "Potential SSH Tunnel Persistence Install Using A Scheduled Task",
+        "id": "2daa93a0-a5fb-41c5-8cd8-3c11294bfd1f",
+        "status": "experimental",
+        "description": "Detects the creation of new scheduled tasks via commandline, using Schtasks.exe. This rule detects tasks creating that call OpenSSH, which may indicate the creation of reverse SSH tunnel to the attacker's server.",
+        "author": "Rory Duncan",
+        "tags": [
+            "attack.persistence",
+            "attack.execution",
+            "attack.t1053.005",
+            "attack.command-and-control"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR OriginalFileName = 'schtasks.exe') AND ((CommandLine LIKE '% /create %' ESCAPE '\\' AND CommandLine LIKE '%sshd.exe%' ESCAPE '\\' AND CommandLine LIKE '%-f%' ESCAPE '\\') OR (CommandLine LIKE '% /create %' ESCAPE '\\' AND CommandLine LIKE '%ssh.exe%' ESCAPE '\\' AND CommandLine LIKE '%-i%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_schtasks_openssh_tunnelling.yml"
+    },
+    {
         "title": "HackTool - SharpChisel Execution",
         "id": "cf93e05e-d798-4d9e-b522-b0248dc61eaf",
         "status": "test",
@@ -28151,7 +28173,7 @@
         "title": "Suspicious Volume Shadow Copy VSS_PS.dll Load",
         "id": "333cdbe8-27bb-4246-bf82-b41a0dca4b70",
         "status": "test",
-        "description": "Detects the image load of vss_ps.dll by uncommon executables",
+        "description": "Detects the image load of vss_ps.dll by uncommon executables. This DLL is used by the Volume Shadow Copy Service (VSS) to manage shadow copies of files and volumes.\nIt is often abused by attackers to delete or manipulate shadow copies, which can hinder forensic investigations and data recovery efforts.\nThe fact that it is loaded by processes that are not typically associated with VSS operations can indicate suspicious activity.\n",
         "author": "Markus Neis, @markus_neis",
         "tags": [
             "attack.defense-evasion",
@@ -28163,7 +28185,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\') OR (NewProcessName = '')))"
+            "SELECT * FROM logs WHERE ((ImageLoaded LIKE '%\\\\vss\\_ps.dll' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\clussvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dismhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\appcmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\inetsrv\\\\iissetup.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\searchindexer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\srtasks.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\System32\\\\SystemPropertiesAdvanced.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\thor64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\tiworker.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vssvc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\vssadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WmiPrvSE.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\')) OR (CommandLine LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\dismhost.exe {%' ESCAPE '\\') OR (NewProcessName = ''))) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "image_load_dll_vss_ps_susp_load.yml"
     },
