@@ -942,6 +942,27 @@
         "filename": "web_invanti_epmm_cve_2025_4427_and_cve_2025_4428.yml"
     },
     {
+        "title": "Potential SharePoint ToolShell CVE-2025-53770 Exploitation - File Create",
+        "id": "ba479447-721f-42a9-9af2-6dcd517bbdb3",
+        "status": "experimental",
+        "description": "Detects the creation of file such as spinstall0.aspx which may indicate successful exploitation of CVE-2025-53770.\nCVE-2025-53770 is a zero-day vulnerability in SharePoint that allows remote code execution.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.t1190",
+            "cve.2025-53770",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%\\\\spinstall0.aspx' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_exploit_cve_2025_53770.yml"
+    },
+    {
         "title": "Potential Notepad++ CVE-2025-49144 Exploitation",
         "id": "933f0bb5-0681-4fe7-8a17-4e6cccbaac44",
         "status": "experimental",
