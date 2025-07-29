@@ -958,7 +958,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE TargetFilename LIKE '%\\\\spinstall0.aspx' ESCAPE '\\'"
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\Web Server Extensions\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Program Files (x86)\\\\Common Files\\\\Microsoft Shared\\\\Web Server Extensions\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%\\\\15\\\\TEMPLATE\\\\LAYOUTS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\16\\\\TEMPLATE\\\\LAYOUTS\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%\\\\spinstall.aspx' ESCAPE '\\' OR TargetFilename LIKE '%\\\\spinstall_.aspx' ESCAPE '\\' OR TargetFilename LIKE '%\\\\debug\\_dev.js' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_exploit_cve_2025_53770.yml"
     },
@@ -13961,6 +13961,27 @@
         "filename": "file_event_win_lsass_default_dump_file_names.yml"
     },
     {
+        "title": "Suspicious File Write to SharePoint Layouts Directory",
+        "id": "1f0489be-b496-4ddf-b3a9-5900f2044e9c",
+        "status": "experimental",
+        "description": "Detects suspicious file writes to SharePoint layouts directory which could indicate webshell activity or post-exploitation.\nThis behavior has been observed in the exploitation of SharePoint vulnerabilities such as CVE-2025-49704, CVE-2025-49706 or CVE-2025-53770.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.t1190",
+            "attack.persistence",
+            "attack.t1505.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\w3wp.exe' ESCAPE '\\') AND (TargetFilename LIKE 'C:\\\\Program Files\\\\Common Files\\\\Microsoft Shared\\\\Web Server Extensions\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Program Files (x86)\\\\Common Files\\\\Microsoft Shared\\\\Web Server Extensions\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%\\\\15\\\\TEMPLATE\\\\LAYOUTS\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\16\\\\TEMPLATE\\\\LAYOUTS\\\\%' ESCAPE '\\') AND (TargetFilename LIKE '%.asax' ESCAPE '\\' OR TargetFilename LIKE '%.ascx' ESCAPE '\\' OR TargetFilename LIKE '%.ashx' ESCAPE '\\' OR TargetFilename LIKE '%.asmx' ESCAPE '\\' OR TargetFilename LIKE '%.asp' ESCAPE '\\' OR TargetFilename LIKE '%.aspx' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\' OR TargetFilename LIKE '%.cer' ESCAPE '\\' OR TargetFilename LIKE '%.config' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.jsp' ESCAPE '\\' OR TargetFilename LIKE '%.jspx' ESCAPE '\\' OR TargetFilename LIKE '%.php' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_susp_filewrite_in_sharepoint_layouts_dir.yml"
+    },
+    {
         "title": "PCRE.NET Package Temp Files",
         "id": "6e90ae7a-7cd3-473f-a035-4ebb72d961da",
         "status": "test",
@@ -14996,6 +15017,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND (TargetObject LIKE '%SYSTEM\\\\%' ESCAPE '\\' AND TargetObject LIKE '%ControlSet%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Control\\\\Lsa%' ESCAPE '\\') AND ((TargetObject LIKE '%\\\\lmcompatibilitylevel' ESCAPE '\\' AND NewValue IN ('DWORD (0x00000000)', 'DWORD (0x00000001)', 'DWORD (0x00000002)')) OR (TargetObject LIKE '%\\\\NtlmMinClientSec' ESCAPE '\\' AND NewValue IN ('DWORD (0x00000000)', 'DWORD (0x00000010)', 'DWORD (0x00000020)', 'DWORD (0x00000030)')) OR TargetObject LIKE '%\\\\RestrictSendingNTLMTraffic' ESCAPE '\\'))"
         ],
         "filename": "registry_event_net_ntlm_downgrade.yml"
+    },
+    {
+        "title": "Windows Defender Threat Severity Default Action Modified",
+        "id": "5a9e1b2c-8f7d-4a1e-9b3c-0f6d7e5a4b1f",
+        "status": "experimental",
+        "description": "Detects modifications or creations of Windows Defender's default threat action settings based on severity to 'allow' or take 'no action'.\nThis is a highly suspicious configuration change that effectively disables Defender's ability to automatically mitigate threats of a certain severity level,\nallowing malicious software to run unimpeded. An attacker might use this technique to bypass defenses before executing payloads.\n",
+        "author": "Matt Anderson (Huntress)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Legitimate administration via scripts or tools (e.g., SCCM, Intune, GPO enforcement). Correlate with administrative activity.",
+            "Software installations that legitimately modify Defender settings (less common for these specific keys)."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows Defender\\\\Threats\\\\ThreatSeverityDefaultAction\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\1' ESCAPE '\\' OR TargetObject LIKE '%\\\\2' ESCAPE '\\' OR TargetObject LIKE '%\\\\4' ESCAPE '\\' OR TargetObject LIKE '%\\\\5' ESCAPE '\\') AND NewValue IN ('DWORD (0x00000006)', 'DWORD (0x00000009)'))"
+        ],
+        "filename": "registry_event_defender_threat_action_modified.yml"
     },
     {
         "title": "Registry Entries For Azorult Malware",
@@ -18649,7 +18690,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') AND (CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\' OR CommandLine LIKE '%curl %' ESCAPE '\\') AND CommandLine LIKE '% -ur%' ESCAPE '\\' AND CommandLine LIKE '% -me%' ESCAPE '\\' AND CommandLine LIKE '% -b%' ESCAPE '\\' AND CommandLine LIKE '% POST %' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' AND CommandLine LIKE '%--ur%' ESCAPE '\\' AND (CommandLine LIKE '% -d %' ESCAPE '\\' OR CommandLine LIKE '% --data %' ESCAPE '\\'))) OR (NewProcessName LIKE '%\\\\wget.exe' ESCAPE '\\' AND (CommandLine LIKE '%--post-data%' ESCAPE '\\' OR CommandLine LIKE '%--post-file%' ESCAPE '\\'))) AND ((CommandLine LIKE '%Get-Content%' ESCAPE '\\' OR CommandLine LIKE '%GetBytes%' ESCAPE '\\' OR CommandLine LIKE '%hostname%' ESCAPE '\\' OR CommandLine LIKE '%ifconfig%' ESCAPE '\\' OR CommandLine LIKE '%ipconfig%' ESCAPE '\\' OR CommandLine LIKE '%net view%' ESCAPE '\\' OR CommandLine LIKE '%netstat%' ESCAPE '\\' OR CommandLine LIKE '%nltest%' ESCAPE '\\' OR CommandLine LIKE '%qprocess%' ESCAPE '\\' OR CommandLine LIKE '%sc query%' ESCAPE '\\' OR CommandLine LIKE '%systeminfo%' ESCAPE '\\' OR CommandLine LIKE '%tasklist%' ESCAPE '\\' OR CommandLine LIKE '%ToBase64String%' ESCAPE '\\' OR CommandLine LIKE '%whoami%' ESCAPE '\\') OR (CommandLine LIKE '%type %' ESCAPE '\\' AND CommandLine LIKE '% > %' ESCAPE '\\' AND CommandLine LIKE '% C:\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((((NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\') AND (CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-RestMethod%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%irm %' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\') AND CommandLine LIKE '% -ur%' ESCAPE '\\' AND CommandLine LIKE '% -me%' ESCAPE '\\' AND CommandLine LIKE '% -b%' ESCAPE '\\' AND CommandLine LIKE '% POST %' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\curl.exe' ESCAPE '\\' AND CommandLine LIKE '%--ur%' ESCAPE '\\' AND (CommandLine LIKE '% -d %' ESCAPE '\\' OR CommandLine LIKE '% --data %' ESCAPE '\\'))) OR (NewProcessName LIKE '%\\\\wget.exe' ESCAPE '\\' AND (CommandLine LIKE '%--post-data%' ESCAPE '\\' OR CommandLine LIKE '%--post-file%' ESCAPE '\\'))) AND ((CommandLine LIKE '%Get-Content%' ESCAPE '\\' OR CommandLine LIKE '%GetBytes%' ESCAPE '\\' OR CommandLine LIKE '%hostname%' ESCAPE '\\' OR CommandLine LIKE '%ifconfig%' ESCAPE '\\' OR CommandLine LIKE '%ipconfig%' ESCAPE '\\' OR CommandLine LIKE '%net view%' ESCAPE '\\' OR CommandLine LIKE '%netstat%' ESCAPE '\\' OR CommandLine LIKE '%nltest%' ESCAPE '\\' OR CommandLine LIKE '%qprocess%' ESCAPE '\\' OR CommandLine LIKE '%sc query%' ESCAPE '\\' OR CommandLine LIKE '%systeminfo%' ESCAPE '\\' OR CommandLine LIKE '%tasklist%' ESCAPE '\\' OR CommandLine LIKE '%ToBase64String%' ESCAPE '\\' OR CommandLine LIKE '%whoami%' ESCAPE '\\') OR (CommandLine LIKE '%type %' ESCAPE '\\' AND CommandLine LIKE '% > %' ESCAPE '\\' AND CommandLine LIKE '% C:\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_data_exfiltration_via_cli.yml"
     },
@@ -19900,7 +19941,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\') AND (CommandLine LIKE '% -ur%' ESCAPE '\\' OR CommandLine LIKE '% -o%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR (OriginalFileName LIKE 'powershell\\_ise.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'PowerShell.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\')) AND (CommandLine LIKE '%curl %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest%' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%wget %' ESCAPE '\\') AND (CommandLine LIKE '% -ur%' ESCAPE '\\' OR CommandLine LIKE '% -o%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\AppData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%AppData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%Temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_invoke_webrequest_download.yml"
     },
@@ -24509,7 +24550,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%.DownloadString(%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadFile(%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest %' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\') AND (CommandLine LIKE '%;iex $%' ESCAPE '\\' OR CommandLine LIKE '%| IEX%' ESCAPE '\\' OR CommandLine LIKE '%|IEX %' ESCAPE '\\' OR CommandLine LIKE '%I`E`X%' ESCAPE '\\' OR CommandLine LIKE '%I`EX%' ESCAPE '\\' OR CommandLine LIKE '%IE`X%' ESCAPE '\\' OR CommandLine LIKE '%iex %' ESCAPE '\\' OR CommandLine LIKE '%IEX (%' ESCAPE '\\' OR CommandLine LIKE '%IEX(%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Expression%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%.DownloadString(%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadFile(%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-WebRequest %' ESCAPE '\\' OR CommandLine LIKE '%iwr %' ESCAPE '\\' OR CommandLine LIKE '%Invoke-RestMethod %' ESCAPE '\\' OR CommandLine LIKE '%irm %' ESCAPE '\\') AND (CommandLine LIKE '%;iex $%' ESCAPE '\\' OR CommandLine LIKE '%| IEX%' ESCAPE '\\' OR CommandLine LIKE '%|IEX %' ESCAPE '\\' OR CommandLine LIKE '%I`E`X%' ESCAPE '\\' OR CommandLine LIKE '%I`EX%' ESCAPE '\\' OR CommandLine LIKE '%IE`X%' ESCAPE '\\' OR CommandLine LIKE '%iex %' ESCAPE '\\' OR CommandLine LIKE '%IEX (%' ESCAPE '\\' OR CommandLine LIKE '%IEX(%' ESCAPE '\\' OR CommandLine LIKE '%Invoke-Expression%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_download_iex.yml"
     },
@@ -25515,6 +25556,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND OriginalFileName = 'psexesvc.exe' AND NOT (NewProcessName LIKE 'C:\\\\Windows\\\\PSEXESVC.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_renamed_sysinternals_psexec_service.yml"
+    },
+    {
+        "title": "PowerShell Defender Threat Severity Default Action Set to 'Allow' or 'NoAction'",
+        "id": "1e8a9b4d-3c2a-4f9b-8d1e-7c6a5b4f3d2e",
+        "status": "experimental",
+        "description": "Detects the use of PowerShell to execute the 'Set-MpPreference' cmdlet to configure Windows Defender's threat severity default action to 'Allow' (value '6') or 'NoAction' (value '9').\nThis is a highly suspicious configuration change that effectively disables Defender's ability to automatically mitigate threats of a certain severity level.\nAn attacker might use this technique via the command line to bypass defenses before executing payloads.\n",
+        "author": "Matt Anderson (Huntress)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Highly unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%Set-MpPreference%' ESCAPE '\\' AND (CommandLine LIKE '%-LowThreatDefaultAction%' ESCAPE '\\' OR CommandLine LIKE '%-ModerateThreatDefaultAction%' ESCAPE '\\' OR CommandLine LIKE '%-HighThreatDefaultAction%' ESCAPE '\\' OR CommandLine LIKE '%-SevereThreatDefaultAction%' ESCAPE '\\' OR CommandLine LIKE '%-ltdefac %' ESCAPE '\\' OR CommandLine LIKE '%-mtdefac %' ESCAPE '\\' OR CommandLine LIKE '%-htdefac %' ESCAPE '\\' OR CommandLine LIKE '%-stdefac %' ESCAPE '\\') AND (CommandLine LIKE '%Allow%' ESCAPE '\\' OR CommandLine LIKE '%6%' ESCAPE '\\' OR CommandLine LIKE '%NoAction%' ESCAPE '\\' OR CommandLine LIKE '%9%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_defender_default_action_modified.yml"
     },
     {
         "title": "Allow Service Access Using Security Descriptor Tampering Via Sc.EXE",
@@ -27116,6 +27176,25 @@
         "filename": "proc_creation_win_spoolsv_susp_child_processes.yml"
     },
     {
+        "title": "Windows Defender Context Menu Removed",
+        "id": "b9e8c7d6-a5f4-4e3d-8b1a-9f0c8d7e6a5b",
+        "status": "experimental",
+        "description": "Detects the use of reg.exe or PowerShell to delete the Windows Defender context menu handler registry keys.\nThis action removes the \"Scan with Microsoft Defender\" option from the right-click menu for files, directories, and drives.\nAttackers may use this technique to hinder manual, on-demand scans and reduce the visibility of the security product.\n",
+        "author": "Matt Anderson (Huntress)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "May be part of a system customization or \"debloating\" script, but this is highly unusual in a managed corporate environment."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\') OR (OriginalFileName LIKE 'powershell\\_ise.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'PowerShell.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'reg.exe' ESCAPE '\\')) AND (CommandLine LIKE '%del%' ESCAPE '\\' OR CommandLine LIKE '%Remove-Item%' ESCAPE '\\' OR CommandLine LIKE '%ri %' ESCAPE '\\') AND CommandLine LIKE '%\\\\shellex\\\\ContextMenuHandlers\\\\EPP%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_defender_remove_context_menu.yml"
+    },
+    {
         "title": "Suspicious Process By Web Server Process",
         "id": "8202070f-edeb-4d31-a010-a26c72ac5600",
         "status": "test",
@@ -27173,6 +27252,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\All Users\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Default\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\NetworkService\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\addins\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\debug\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Fonts\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Help\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\IME\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Media\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\repair\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\security\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%$Recycle.bin%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\config\\\\systemprofile\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Intel\\\\Logs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RSA\\\\MachineKeys\\\\%' ESCAPE '\\') AND NOT ((NewProcessName LIKE 'C:\\\\Users\\\\Public\\\\IBM\\\\ClientSolutions\\\\Start\\_Programs\\\\%' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\config\\\\systemprofile\\\\Citrix\\\\UpdaterBinaries\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\CitrixReceiverUpdater.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_execution_path.yml"
+    },
+    {
+        "title": "Disabling Windows Defender WMI Autologger Session via Reg.exe",
+        "id": "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6",
+        "status": "experimental",
+        "description": "Detects the use of reg.exe to disable the Event Tracing for Windows (ETW) Autologger session for Windows Defender API and Audit events.\nBy setting the 'Start' value to '0' for the 'DefenderApiLogger' or 'DefenderAuditLogger' session, an attacker can prevent these critical security events\nfrom being logged, effectively blinding monitoring tools that rely on this data. This is a powerful defense evasion technique.\n",
+        "author": "Matt Anderson (Huntress)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Highly unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '%\\\\Control\\\\WMI\\\\Autologger\\\\DefenderApiLogger\\\\Start%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Control\\\\WMI\\\\Autologger\\\\DefenderAuditLogger\\\\Start%' ESCAPE '\\') AND (CommandLine LIKE '%add%' ESCAPE '\\' AND CommandLine LIKE '%0%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '%0x00000001%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_reg_disable_defender_wmi_autologger.yml"
     },
     {
         "title": "Potential Privilege Escalation Using Symlink Between Osk and Cmd",
