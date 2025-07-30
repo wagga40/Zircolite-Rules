@@ -13231,24 +13231,6 @@
         "filename": "file_event_win_uac_bypass_consent_comctl32.yml"
     },
     {
-        "title": ".RDP File Created by Outlook Process",
-        "id": "f748c45a-f8d3-4e6f-b617-fe176f695b8f",
-        "status": "experimental",
-        "description": "Detects the creation of files with the \".rdp\" extensions in the temporary directory that Outlook uses when opening attachments.\nThis can be used to detect spear-phishing campaigns that use RDP files as attachments.\n",
-        "author": "Florian Roth",
-        "tags": [
-            "attack.defense-evasion"
-        ],
-        "falsepositives": [
-            "Whenever someone receives an RDP file as an email attachment and decides to save or open it right from the attachments"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND TargetFilename LIKE '%.rdp' ESCAPE '\\' AND ((TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.Outlook\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Olk\\\\Attachments\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Windows\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Content.Outlook\\\\%' ESCAPE '\\')))"
-        ],
-        "filename": "file_event_win_office_outlook_rdp_file_creation.yml"
-    },
-    {
         "title": "PDF File Created By RegEdit.EXE",
         "id": "145095eb-e273-443b-83d0-f9b519b7867b",
         "status": "test",
@@ -14034,7 +14016,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\') AND (TargetFilename LIKE '%.doc.%' ESCAPE '\\' OR TargetFilename LIKE '%.docx.%' ESCAPE '\\' OR TargetFilename LIKE '%.gif.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpeg.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpg.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp3.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp4.%' ESCAPE '\\' OR TargetFilename LIKE '%.pdf.%' ESCAPE '\\' OR TargetFilename LIKE '%.png.%' ESCAPE '\\' OR TargetFilename LIKE '%.ppt.%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx.%' ESCAPE '\\' OR TargetFilename LIKE '%.svg.%' ESCAPE '\\' OR TargetFilename LIKE '%.xls.%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx.%' ESCAPE '\\')) OR (TargetFilename LIKE '%.rar.exe' ESCAPE '\\' OR TargetFilename LIKE '%.zip.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.svg' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\') AND (TargetFilename LIKE '%.doc.%' ESCAPE '\\' OR TargetFilename LIKE '%.docx.%' ESCAPE '\\' OR TargetFilename LIKE '%.gif.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpeg.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpg.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp3.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp4.%' ESCAPE '\\' OR TargetFilename LIKE '%.pdf.%' ESCAPE '\\' OR TargetFilename LIKE '%.png.%' ESCAPE '\\' OR TargetFilename LIKE '%.ppt.%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx.%' ESCAPE '\\' OR TargetFilename LIKE '%.rtf.%' ESCAPE '\\' OR TargetFilename LIKE '%.svg.%' ESCAPE '\\' OR TargetFilename LIKE '%.txt.%' ESCAPE '\\' OR TargetFilename LIKE '%.xls.%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx.%' ESCAPE '\\')) OR (TargetFilename LIKE '%.rar.exe' ESCAPE '\\' OR TargetFilename LIKE '%.zip.exe' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_susp_double_extension.yml"
     },
@@ -14271,6 +14253,25 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\Windows\\\\PSEXEC-%' ESCAPE '\\' AND TargetFilename LIKE '%.key' ESCAPE '\\')"
         ],
         "filename": "file_event_win_sysinternals_psexec_service_key.yml"
+    },
+    {
+        "title": "Suspicious File Created in Outlook Temporary Directory",
+        "id": "fabb0e80-030c-4e3e-a104-d09676991ac3",
+        "status": "experimental",
+        "description": "Detects the creation of files with suspicious file extensions in the temporary directory that Outlook uses when opening attachments.\nThis can be used to detect spear-phishing campaigns that use suspicious files as attachments, which may contain malicious code.\n",
+        "author": "Florian Roth (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.t1566.001"
+        ],
+        "falsepositives": [
+            "Opening of headers or footers in email signatures that include SVG images or legitimate SVG attachments"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetFilename LIKE '%.cpl' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.rdp' ESCAPE '\\' OR TargetFilename LIKE '%.svg' ESCAPE '\\' OR TargetFilename LIKE '%.vba' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\') AND ((TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.Outlook\\_%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Olk\\\\Attachments\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Windows\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Content.Outlook\\\\%' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_office_outlook_susp_file_creation_in_temp_dir.yml"
     },
     {
         "title": "Wmiexec Default Output File",
