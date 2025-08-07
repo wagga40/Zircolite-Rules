@@ -16013,7 +16013,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\EventLog\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\CustomSD' ESCAPE '\\') OR ((TargetObject LIKE '%\\\\Policies\\\\Microsoft\\\\Windows\\\\EventLog\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels%' ESCAPE '\\') AND TargetObject LIKE '%\\\\ChannelAccess' ESCAPE '\\')) AND (Details LIKE '%D:(D;%' ESCAPE '\\' OR (Details LIKE '%D:(%' ESCAPE '\\' AND Details LIKE '%)(D;%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((((TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\EventLog\\\\%' ESCAPE '\\' AND TargetObject LIKE '%\\\\CustomSD' ESCAPE '\\') OR ((TargetObject LIKE '%\\\\Policies\\\\Microsoft\\\\Windows\\\\EventLog\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels%' ESCAPE '\\') AND TargetObject LIKE '%\\\\ChannelAccess' ESCAPE '\\')) AND (Details LIKE '%D:(D;%' ESCAPE '\\' OR (Details LIKE '%D:(%' ESCAPE '\\' AND Details LIKE '%)(D;%' ESCAPE '\\'))) AND NOT ((Image LIKE 'C:\\\\Windows\\\\servicing\\\\TrustedInstaller.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\'))) AND NOT ((Image = '') OR (Image = '')))"
         ],
         "filename": "registry_set_disable_windows_event_log_access.yml"
     },
