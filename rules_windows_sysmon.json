@@ -2819,7 +2819,8 @@
         "author": "Sreeman, Florian Roth (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1105"
+            "attack.t1105",
+            "attack.t1564.003"
         ],
         "falsepositives": [
             "Unknown"
@@ -7111,7 +7112,7 @@
         "author": "Aedan Russell, frack113, X__Junior (Nextron Systems)",
         "tags": [
             "attack.persistence",
-            "attack.t1176"
+            "attack.t1176.001"
         ],
         "falsepositives": [
             "Unknown"
@@ -9381,7 +9382,8 @@
         "tags": [
             "attack.credential-access",
             "attack.collection",
-            "attack.t1185"
+            "attack.t1185",
+            "attack.t1564.003"
         ],
         "falsepositives": [
             "Unknown"
@@ -12427,7 +12429,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Winlogon\\\\SpecialAccounts\\\\UserList%' ESCAPE '\\' AND Details = 'DWORD (0x00000000)')"
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Winlogon\\\\SpecialAccounts\\\\UserList%' ESCAPE '\\' AND Details = 'DWORD (0x00000000)')"
         ],
         "filename": "registry_set_special_accounts.yml"
     },
@@ -13110,7 +13112,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND EventType = 'SetValue' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\Windows Error Reporting\\\\Hangs\\\\ReflectDebugger' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows\\\\Windows Error Reporting\\\\Hangs\\\\ReflectDebugger' ESCAPE '\\')"
         ],
         "filename": "registry_set_persistence_reflectdebugger.yml"
     },
@@ -14642,6 +14644,27 @@
         "filename": "image_load_side_load_from_non_system_location.yml"
     },
     {
+        "title": "Potential JLI.dll Side-Loading",
+        "id": "7a3b6d1f-4a2b-4f8c-9d7e-e9f8cbf21a35",
+        "status": "experimental",
+        "description": "Detects potential DLL side-loading of jli.dll.\nJLI.dll has been observed being side-loaded by Java processes by various threat actors, including APT41, XWorm,\nand others in order to load malicious payloads in context of legitimate Java processes.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.persistence",
+            "attack.privilege-escalation",
+            "attack.t1574.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ImageLoaded LIKE '%\\\\jli.dll' ESCAPE '\\' AND NOT (((ImageLoaded LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ImageLoaded LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') AND Description = 'OpenJDK Platform binary' AND OriginalFileName = 'jli.dll' AND Product LIKE 'OpenJDK Platform%' ESCAPE '\\' AND Signed = 'true')))"
+        ],
+        "filename": "image_load_side_load_jli.yml"
+    },
+    {
         "title": "Wmiprvse Wbemcomn DLL Hijack",
         "id": "7707a579-e0d8-4886-a853-ce47e4575aaa",
         "status": "test",
@@ -15411,7 +15434,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\csrss.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsass.exe' ESCAPE '\\' OR Image LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\sihost.exe' ESCAPE '\\' OR Image LIKE '%\\\\smss.exe' ESCAPE '\\' OR Image LIKE '%\\\\wininit.exe' ESCAPE '\\' OR Image LIKE '%\\\\winlogon.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.txt' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\')) OR ((Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\'))) AND NOT ((Image LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\\\_\\_PSScriptPolicyTest\\_%' ESCAPE '\\' AND TargetFilename LIKE '%.ps1' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%C:\\\\Windows\\\\System32\\\\GroupPolicy\\\\DataStore\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Policies\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Machine\\\\Scripts\\\\Startup\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\csrss.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsass.exe' ESCAPE '\\' OR Image LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\sihost.exe' ESCAPE '\\' OR Image LIKE '%\\\\smss.exe' ESCAPE '\\' OR Image LIKE '%\\\\wininit.exe' ESCAPE '\\' OR Image LIKE '%\\\\winlogon.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.txt' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\')) OR ((Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\'))) AND NOT ((Image LIKE 'C:\\\\Windows\\\\System32\\\\dllhost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\\\_\\_PSScriptPolicyTest\\_%' ESCAPE '\\' AND TargetFilename LIKE '%.ps1' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%C:\\\\Windows\\\\System32\\\\GroupPolicy\\\\DataStore\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\sysvol\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Policies\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Machine\\\\Scripts\\\\Startup\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%C:\\\\Program Files\\\\WindowsApps\\\\Clipchamp%' ESCAPE '\\' AND TargetFilename LIKE '%.ps1%' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_shell_write_susp_files_extensions.yml"
     },
@@ -28528,7 +28551,8 @@
         "author": "frack113",
         "tags": [
             "attack.credential-access",
-            "attack.t1003.003"
+            "attack.t1003.003",
+            "attack.ds0005"
         ],
         "falsepositives": [
             "Legitimate PowerShell scripts"
