@@ -3162,7 +3162,7 @@
     {
         "title": "Suspicious File Download From File Sharing Websites -  File Stream",
         "id": "52182dfb-afb7-41db-b4bc-5336cb29b464",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the download of suspicious file type from a well-known file and paste sharing domain",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -8128,6 +8128,25 @@
         "filename": "proc_creation_win_malware_kalambur_curl_socks_tor.yml"
     },
     {
+        "title": "FunkLocker Ransomware File Creation",
+        "id": "2c76a22b-702d-48fd-8fa9-e41e2fe203b3",
+        "status": "experimental",
+        "description": "Detects the creation of files with the \".funksec\" extension, which is appended to encrypted files by the FunkLocker ransomware.",
+        "author": "Saiprashanth Pulisetti ( @Prashanthblogs)",
+        "tags": [
+            "attack.t1486",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%.funksec' ESCAPE '\\'"
+        ],
+        "filename": "file_event_win_malware_funklocker_ransomware_extension.yml"
+    },
+    {
         "title": "Katz Stealer DLL Loaded",
         "id": "e6c7ab7c-c79d-4b84-b913-b2ec3f8e8a98",
         "status": "experimental",
@@ -8322,6 +8341,31 @@
             "SELECT * FROM logs WHERE ((SourceImage LIKE 'C:\\\\Program Files\\\\internet explorer\\\\iediagcmd.exe' ESCAPE '\\' OR SourceImage LIKE 'C:\\\\Windows\\\\System32\\\\CustomShellHost.exe' ESCAPE '\\') AND (TargetImage LIKE '\\\\\\\\\\*' ESCAPE '\\' OR TargetImage LIKE '%\\\\DavWWWRoot\\\\%' ESCAPE '\\') AND (TargetImage LIKE '%\\\\route.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\netsh.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\makecab.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\dxdiag.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\ipconfig.exe' ESCAPE '\\' OR TargetImage LIKE '%\\\\explorer.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_access_win_exploit_cve_2025_33053.yml"
+    },
+    {
+        "title": "Potential Exploitation of CrushFTP RCE Vulnerability (CVE-2025-54309)",
+        "id": "0fdc7c7f-c690-4217-9ae3-31f5156eed72",
+        "status": "experimental",
+        "description": "Detects suspicious child processes created by CrushFTP. It could be an indication of exploitation of a RCE vulnerability such as CVE-2025-54309.",
+        "author": "Nisarg Suthar",
+        "tags": [
+            "attack.initial-access",
+            "attack.execution",
+            "attack.t1059.001",
+            "attack.t1059.003",
+            "attack.t1068",
+            "attack.t1190",
+            "cve.2025-54309",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Legitimate administrative command execution"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\crushftp.exe' ESCAPE '\\' AND (((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND CommandLine LIKE '%IEX%' ESCAPE '\\' AND CommandLine LIKE '%enc%' ESCAPE '\\' AND CommandLine LIKE '%Hidden%' ESCAPE '\\' AND CommandLine LIKE '%bypass%' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND (CommandLine LIKE '%/c powershell%' ESCAPE '\\' OR CommandLine LIKE '%whoami%' ESCAPE '\\' OR CommandLine LIKE '%net.exe%' ESCAPE '\\' OR CommandLine LIKE '%net1.exe%' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2025_54309.yml"
     },
     {
         "title": "Potential Notepad++ CVE-2025-49144 Exploitation",
@@ -12619,7 +12663,7 @@
     {
         "title": "BITS Transfer Job Download From File Sharing Domains",
         "id": "d635249d-86b5-4dad-a8c7-d7272b788586",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects BITS transfer job downloading files from a file sharing domain.",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -12679,7 +12723,7 @@
     {
         "title": "HTTP Logging Disabled On IIS Server",
         "id": "e8ebd53a-30c2-45bd-81bb-74befba07bdb",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects changes to of the IIS server configuration in order to disable HTTP logging for successful requests.",
         "author": "frack113",
         "tags": [
@@ -13777,7 +13821,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '42' AND Provider_Name = 'Kerberos-Key-Distribution-Center' AND Level = '2')"
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '42' AND Provider_Name IN ('Kerberos-Key-Distribution-Center', 'Microsoft-Windows-Kerberos-Key-Distribution-Center') AND Level = '2')"
         ],
         "filename": "win_system_kdcsvc_rc4_downgrade.yml"
     },
@@ -17136,6 +17180,25 @@
         "filename": "registry_set_change_winevt_channelaccess.yml"
     },
     {
+        "title": "Potential ClickFix Execution Pattern - Registry",
+        "id": "f5fe36cf-f1ec-4c23-903d-09a3110f6bbb",
+        "status": "experimental",
+        "description": "Detects potential ClickFix malware execution patterns by monitoring registry modifications in RunMRU keys containing HTTP/HTTPS links.\nClickFix is known to be distributed through phishing campaigns and uses techniques like clipboard hijacking and fake CAPTCHA pages.\nThrough the fakecaptcha pages, the adversary tricks users into opening the Run dialog box and pasting clipboard-hijacked content,\nsuch as one-liners that execute remotely hosted malicious files or scripts.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.001"
+        ],
+        "falsepositives": [
+            "Legitimate applications using RunMRU with HTTP links"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU\\\\%' ESCAPE '\\' AND (NewValue LIKE '%http://%' ESCAPE '\\' OR NewValue LIKE '%https://%' ESCAPE '\\') AND ((NewValue LIKE '%account%' ESCAPE '\\' OR NewValue LIKE '%anti-bot%' ESCAPE '\\' OR NewValue LIKE '%botcheck%' ESCAPE '\\' OR NewValue LIKE '%captcha%' ESCAPE '\\' OR NewValue LIKE '%challenge%' ESCAPE '\\' OR NewValue LIKE '%confirmation%' ESCAPE '\\' OR NewValue LIKE '%fraud%' ESCAPE '\\' OR NewValue LIKE '%human%' ESCAPE '\\' OR NewValue LIKE '%identificator%' ESCAPE '\\' OR NewValue LIKE '%identity%' ESCAPE '\\' OR NewValue LIKE '%robot%' ESCAPE '\\' OR NewValue LIKE '%validation%' ESCAPE '\\' OR NewValue LIKE '%verification%' ESCAPE '\\' OR NewValue LIKE '%verify%' ESCAPE '\\') OR (NewValue LIKE '%\\%comspec\\%%' ESCAPE '\\' OR NewValue LIKE '%bitsadmin%' ESCAPE '\\' OR NewValue LIKE '%certutil%' ESCAPE '\\' OR NewValue LIKE '%cmd%' ESCAPE '\\' OR NewValue LIKE '%cscript%' ESCAPE '\\' OR NewValue LIKE '%curl%' ESCAPE '\\' OR NewValue LIKE '%mshta%' ESCAPE '\\' OR NewValue LIKE '%powershell%' ESCAPE '\\' OR NewValue LIKE '%pwsh%' ESCAPE '\\' OR NewValue LIKE '%regsvr32%' ESCAPE '\\' OR NewValue LIKE '%rundll32%' ESCAPE '\\' OR NewValue LIKE '%schtasks%' ESCAPE '\\' OR NewValue LIKE '%wget%' ESCAPE '\\' OR NewValue LIKE '%wscript%' ESCAPE '\\')))"
+        ],
+        "filename": "registry_set_potential_clickfix_execution.yml"
+    },
+    {
         "title": "Suspicious Environment Variable Has Been Registered",
         "id": "966315ef-c5e1-4767-ba25-fce9c8de3660",
         "status": "test",
@@ -20207,7 +20270,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%accepteula%' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\' AND CommandLine LIKE '% \\\\\\\\\\*' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine LIKE '%accepteula%' ESCAPE '\\' AND CommandLine LIKE '% -u %' ESCAPE '\\' AND CommandLine LIKE '% -p %' ESCAPE '\\' AND CommandLine LIKE '% \\\\\\\\\\*' ESCAPE '\\') AND NOT (((CommandLine LIKE '%\\\\\\\\localhost%' ESCAPE '\\' OR CommandLine LIKE '%\\\\\\\\127.%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_sysinternals_psexec_remote_execution.yml"
     },
@@ -20935,14 +20998,15 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.command-and-control",
-            "attack.t1071.001"
+            "attack.t1071.001",
+            "attack.t1219"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((((OriginalFileName = '' AND CommandLine LIKE '%.exe tunnel' ESCAPE '\\') OR (CommandLine LIKE '%.exe tunnel%' ESCAPE '\\' AND CommandLine LIKE '%--name %' ESCAPE '\\' AND CommandLine LIKE '%--accept-server-license-terms%' ESCAPE '\\') OR (CommandLine LIKE '%tunnel %' ESCAPE '\\' AND CommandLine LIKE '%service%' ESCAPE '\\' AND CommandLine LIKE '%internal-run%' ESCAPE '\\' AND CommandLine LIKE '%tunnel-service.log%' ESCAPE '\\')) AND NOT (((NewProcessName LIKE '%\\\\code-tunnel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\code.exe' ESCAPE '\\')))) OR ((ParentCommandLine LIKE '% tunnel' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%/d /c %' ESCAPE '\\' AND CommandLine LIKE '%\\\\servers\\\\Stable-%' ESCAPE '\\' AND CommandLine LIKE '%code-server.cmd%' ESCAPE '\\') AND NOT (((ParentProcessName LIKE '%\\\\code-tunnel.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\code.exe' ESCAPE '\\'))))))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((((OriginalFileName = '' AND CommandLine LIKE '%.exe tunnel' ESCAPE '\\') OR (CommandLine LIKE '%.exe tunnel%' ESCAPE '\\' AND CommandLine LIKE '%--accept-server-license-terms%' ESCAPE '\\') OR (CommandLine LIKE '%tunnel %' ESCAPE '\\' AND CommandLine LIKE '%service%' ESCAPE '\\' AND CommandLine LIKE '%internal-run%' ESCAPE '\\' AND CommandLine LIKE '%tunnel-service.log%' ESCAPE '\\')) AND NOT (((NewProcessName LIKE '%\\\\code-tunnel.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\code.exe' ESCAPE '\\')))) OR ((ParentCommandLine LIKE '% tunnel' ESCAPE '\\' AND NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%/d /c %' ESCAPE '\\' AND CommandLine LIKE '%\\\\servers\\\\Stable-%' ESCAPE '\\' AND CommandLine LIKE '%code-server.cmd%' ESCAPE '\\') AND NOT (((ParentProcessName LIKE '%\\\\code-tunnel.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\code.exe' ESCAPE '\\'))))))"
         ],
         "filename": "proc_creation_win_vscode_tunnel_renamed_execution.yml"
     },
@@ -22100,7 +22164,7 @@
     {
         "title": "Suspicious File Download From File Sharing Domain Via Curl.EXE",
         "id": "56454143-524f-49fb-b1c6-3fb8b1ad41fb",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potentially suspicious file download from file sharing domains using curl.exe",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -23907,6 +23971,26 @@
         "filename": "proc_creation_win_explorer_folder_shortcut_via_shell_binary.yml"
     },
     {
+        "title": "Suspicious Velociraptor Child Process",
+        "id": "4bc90587-e6ca-4b41-be0b-ed4d04e4ed0c",
+        "status": "experimental",
+        "description": "Detects the suspicious use of the Velociraptor DFIR tool to execute other tools or download additional payloads, as seen in a campaign where it was abused for remote access and to stage further attacks.",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
+            "attack.t1219"
+        ],
+        "falsepositives": [
+            "Legitimate administrators or incident responders might use Velociraptor to execute scripts or tools. However, the combination of Velociraptor spawning these specific processes with these command lines is suspicious. Tuning may be required to exclude known administrative actions or specific scripts."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\Velociraptor.exe' ESCAPE '\\' AND ((CommandLine LIKE '%code.exe%' ESCAPE '\\' AND CommandLine LIKE '%tunnel%' ESCAPE '\\' AND CommandLine LIKE '%--accept-server-license-terms%' ESCAPE '\\') OR (CommandLine LIKE '%msiexec%' ESCAPE '\\' AND CommandLine LIKE '%/i%' ESCAPE '\\' AND CommandLine LIKE '%http%' ESCAPE '\\') OR ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%Invoke-WebRequest %' ESCAPE '\\' OR CommandLine LIKE '%IWR %' ESCAPE '\\' OR CommandLine LIKE '%.DownloadFile%' ESCAPE '\\' OR CommandLine LIKE '%.DownloadString%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_susp_velociraptor_child_process.yml"
+    },
+    {
         "title": "Service DACL Abuse To Hide Services Via Sc.EXE",
         "id": "a537cfc3-4297-4789-92b5-345bfd845ad0",
         "status": "test",
@@ -24028,7 +24112,7 @@
     {
         "title": "Suspicious File Download From File Sharing Domain Via Wget.EXE",
         "id": "a0d7e4d2-bede-4141-8896-bc6e237e977c",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potentially suspicious file downloads from file sharing domains using wget.exe",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -24369,7 +24453,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\Lsa\\\\%' ESCAPE '\\' AND CommandLine LIKE '%DisableRestrictedAdmin%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\Lsa%' ESCAPE '\\' AND CommandLine LIKE '%DisableRestrictedAdmin%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_reg_lsa_disable_restricted_admin.yml"
     },
@@ -25137,7 +25221,7 @@
     {
         "title": "Potentially Suspicious File Download From File Sharing Domain Via PowerShell.EXE",
         "id": "b6e04788-29e1-4557-bb14-77f761848ab8",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects potentially suspicious file downloads from file sharing domains using PowerShell.exe",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
@@ -26704,7 +26788,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName = 'REGSVR32.EXE') AND (CommandLine LIKE '%.bin' ESCAPE '\\' OR CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\' OR CommandLine LIKE '%.temp' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\' OR CommandLine LIKE '%.tmp' ESCAPE '\\' OR CommandLine LIKE '%.rtf' ESCAPE '\\' OR CommandLine LIKE '%.txt' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR OriginalFileName = 'REGSVR32.EXE') AND (CommandLine LIKE '%.bin' ESCAPE '\\' OR CommandLine LIKE '%.bmp' ESCAPE '\\' OR CommandLine LIKE '%.cr2' ESCAPE '\\' OR CommandLine LIKE '%.dat' ESCAPE '\\' OR CommandLine LIKE '%.eps' ESCAPE '\\' OR CommandLine LIKE '%.gif' ESCAPE '\\' OR CommandLine LIKE '%.ico' ESCAPE '\\' OR CommandLine LIKE '%.jpeg' ESCAPE '\\' OR CommandLine LIKE '%.jpg' ESCAPE '\\' OR CommandLine LIKE '%.log' ESCAPE '\\' OR CommandLine LIKE '%.nef' ESCAPE '\\' OR CommandLine LIKE '%.orf' ESCAPE '\\' OR CommandLine LIKE '%.png' ESCAPE '\\' OR CommandLine LIKE '%.raw' ESCAPE '\\' OR CommandLine LIKE '%.rtf' ESCAPE '\\' OR CommandLine LIKE '%.sr2' ESCAPE '\\' OR CommandLine LIKE '%.temp' ESCAPE '\\' OR CommandLine LIKE '%.tif' ESCAPE '\\' OR CommandLine LIKE '%.tiff' ESCAPE '\\' OR CommandLine LIKE '%.tmp' ESCAPE '\\' OR CommandLine LIKE '%.txt' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_regsvr32_susp_extensions.yml"
     },
@@ -28956,7 +29040,7 @@
         "id": "ce72ef99-22f1-43d4-8695-419dcb5d9330",
         "status": "test",
         "description": "Detects the usage of binaries such as 'net', 'sc' or 'powershell' in order to stop, pause, disable or delete critical or important Windows services such as AV, Backup, etc. As seen being used in some ransomware scripts\n",
-        "author": "Nasreddine Bencherchali (Nextron Systems), frack113 , X__Junior",
+        "author": "Nasreddine Bencherchali (Nextron Systems), frack113 , X__Junior (Nextron Systems)",
         "tags": [
             "attack.defense-evasion",
             "attack.impact",
@@ -28968,7 +29052,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName IN ('net.exe', 'net1.exe', 'PowerShell.EXE', 'psservice.exe', 'pwsh.dll', 'sc.exe') OR (NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sc.exe' ESCAPE '\\')) AND ((CommandLine LIKE '% delete %' ESCAPE '\\' OR CommandLine LIKE '% pause %' ESCAPE '\\' OR CommandLine LIKE '% stop %' ESCAPE '\\' OR CommandLine LIKE '%Stop-Service %' ESCAPE '\\' OR CommandLine LIKE '%Remove-Service %' ESCAPE '\\') OR (CommandLine LIKE '%config%' ESCAPE '\\' AND CommandLine LIKE '%start=disabled%' ESCAPE '\\')) AND (CommandLine LIKE '%143Svc%' ESCAPE '\\' OR CommandLine LIKE '%Acronis VSS Provider%' ESCAPE '\\' OR CommandLine LIKE '%AcronisAgent%' ESCAPE '\\' OR CommandLine LIKE '%AcrSch2Svc%' ESCAPE '\\' OR CommandLine LIKE '%AdobeARMservice%' ESCAPE '\\' OR CommandLine LIKE '%AHS Service%' ESCAPE '\\' OR CommandLine LIKE '%Antivirus%' ESCAPE '\\' OR CommandLine LIKE '%Apache4%' ESCAPE '\\' OR CommandLine LIKE '%ARSM%' ESCAPE '\\' OR CommandLine LIKE '%aswBcc%' ESCAPE '\\' OR CommandLine LIKE '%AteraAgent%' ESCAPE '\\' OR CommandLine LIKE '%Avast Business Console Client Antivirus Service%' ESCAPE '\\' OR CommandLine LIKE '%avast! Antivirus%' ESCAPE '\\' OR CommandLine LIKE '%AVG Antivirus%' ESCAPE '\\' OR CommandLine LIKE '%avgAdminClient%' ESCAPE '\\' OR CommandLine LIKE '%AvgAdminServer%' ESCAPE '\\' OR CommandLine LIKE '%AVP1%' ESCAPE '\\' OR CommandLine LIKE '%BackupExec%' ESCAPE '\\' OR CommandLine LIKE '%bedbg%' ESCAPE '\\' OR CommandLine LIKE '%BITS%' ESCAPE '\\' OR CommandLine LIKE '%BrokerInfrastructure%' ESCAPE '\\' OR CommandLine LIKE '%CASLicenceServer%' ESCAPE '\\' OR CommandLine LIKE '%CASWebServer%' ESCAPE '\\' OR CommandLine LIKE '%Client Agent 7.60%' ESCAPE '\\' OR CommandLine LIKE '%Core Browsing Protection%' ESCAPE '\\' OR CommandLine LIKE '%Core Mail Protection%' ESCAPE '\\' OR CommandLine LIKE '%Core Scanning Server%' ESCAPE '\\' OR CommandLine LIKE '%DCAgent%' ESCAPE '\\' OR CommandLine LIKE '%dwmrcs%' ESCAPE '\\' OR CommandLine LIKE '%EhttpSr%' ESCAPE '\\' OR CommandLine LIKE '%ekrn%' ESCAPE '\\' OR CommandLine LIKE '%Enterprise Client Service%' ESCAPE '\\' OR CommandLine LIKE '%epag%' ESCAPE '\\' OR CommandLine LIKE '%EPIntegrationService%' ESCAPE '\\' OR CommandLine LIKE '%EPProtectedService%' ESCAPE '\\' OR CommandLine LIKE '%EPRedline%' ESCAPE '\\' OR CommandLine LIKE '%EPSecurityService%' ESCAPE '\\' OR CommandLine LIKE '%EPUpdateService%' ESCAPE '\\' OR CommandLine LIKE '%EraserSvc11710%' ESCAPE '\\' OR CommandLine LIKE '%EsgShKernel%' ESCAPE '\\' OR CommandLine LIKE '%ESHASRV%' ESCAPE '\\' OR CommandLine LIKE '%FA\\_Scheduler%' ESCAPE '\\' OR CommandLine LIKE '%FirebirdGuardianDefaultInstance%' ESCAPE '\\' OR CommandLine LIKE '%FirebirdServerDefaultInstance%' ESCAPE '\\' OR CommandLine LIKE '%FontCache3.0.0.0%' ESCAPE '\\' OR CommandLine LIKE '%HealthTLService%' ESCAPE '\\' OR CommandLine LIKE '%hmpalertsvc%' ESCAPE '\\' OR CommandLine LIKE '%HMS%' ESCAPE '\\' OR CommandLine LIKE '%HostControllerService%' ESCAPE '\\' OR CommandLine LIKE '%hvdsvc%' ESCAPE '\\' OR CommandLine LIKE '%IAStorDataMgrSvc%' ESCAPE '\\' OR CommandLine LIKE '%IBMHPS%' ESCAPE '\\' OR CommandLine LIKE '%ibmspsvc%' ESCAPE '\\' OR CommandLine LIKE '%IISAdmin%' ESCAPE '\\' OR CommandLine LIKE '%IMANSVC%' ESCAPE '\\' OR CommandLine LIKE '%IMAP4Svc%' ESCAPE '\\' OR CommandLine LIKE '%instance2%' ESCAPE '\\' OR CommandLine LIKE '%KAVFS%' ESCAPE '\\' OR CommandLine LIKE '%KAVFSGT%' ESCAPE '\\' OR CommandLine LIKE '%kavfsslp%' ESCAPE '\\' OR CommandLine LIKE '%KeyIso%' ESCAPE '\\' OR CommandLine LIKE '%klbackupdisk%' ESCAPE '\\' OR CommandLine LIKE '%klbackupflt%' ESCAPE '\\' OR CommandLine LIKE '%klflt%' ESCAPE '\\' OR CommandLine LIKE '%klhk%' ESCAPE '\\' OR CommandLine LIKE '%KLIF%' ESCAPE '\\' OR CommandLine LIKE '%klim6%' ESCAPE '\\' OR CommandLine LIKE '%klkbdflt%' ESCAPE '\\' OR CommandLine LIKE '%klmouflt%' ESCAPE '\\' OR CommandLine LIKE '%klnagent%' ESCAPE '\\' OR CommandLine LIKE '%klpd%' ESCAPE '\\' OR CommandLine LIKE '%kltap%' ESCAPE '\\' OR CommandLine LIKE '%KSDE1.0.0%' ESCAPE '\\' OR CommandLine LIKE '%LogProcessorService%' ESCAPE '\\' OR CommandLine LIKE '%M8EndpointAgent%' ESCAPE '\\' OR CommandLine LIKE '%macmnsvc%' ESCAPE '\\' OR CommandLine LIKE '%masvc%' ESCAPE '\\' OR CommandLine LIKE '%MBAMService%' ESCAPE '\\' OR CommandLine LIKE '%MBCloudEA%' ESCAPE '\\' OR CommandLine LIKE '%MBEndpointAgent%' ESCAPE '\\' OR CommandLine LIKE '%McAfeeDLPAgentService%' ESCAPE '\\' OR CommandLine LIKE '%McAfeeEngineService%' ESCAPE '\\' OR CommandLine LIKE '%MCAFEEEVENTPARSERSRV%' ESCAPE '\\' OR CommandLine LIKE '%McAfeeFramework%' ESCAPE '\\' OR CommandLine LIKE '%MCAFEETOMCATSRV530%' ESCAPE '\\' OR CommandLine LIKE '%McShield%' ESCAPE '\\' OR CommandLine LIKE '%McTaskManager%' ESCAPE '\\' OR CommandLine LIKE '%mfefire%' ESCAPE '\\' OR CommandLine LIKE '%mfemms%' ESCAPE '\\' OR CommandLine LIKE '%mfevto%' ESCAPE '\\' OR CommandLine LIKE '%mfevtp%' ESCAPE '\\' OR CommandLine LIKE '%mfewc%' ESCAPE '\\' OR CommandLine LIKE '%MMS%' ESCAPE '\\' OR CommandLine LIKE '%mozyprobackup%' ESCAPE '\\' OR CommandLine LIKE '%mpssvc%' ESCAPE '\\' OR CommandLine LIKE '%MSComplianceAudit%' ESCAPE '\\' OR CommandLine LIKE '%MSDTC%' ESCAPE '\\' OR CommandLine LIKE '%MsDtsServer%' ESCAPE '\\' OR CommandLine LIKE '%MSExchange%' ESCAPE '\\' OR CommandLine LIKE '%msftesq1SPROO%' ESCAPE '\\' OR CommandLine LIKE '%msftesql$PROD%' ESCAPE '\\' OR CommandLine LIKE '%msftesql$SQLEXPRESS%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$SQL\\_2008%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$SYSTEM\\_BGC%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$TPS%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$TPSAMA%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAPSTPS%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAPSTPSAMA%' ESCAPE '\\' OR CommandLine LIKE '%mssecflt%' ESCAPE '\\' OR CommandLine LIKE '%MSSQ!I.SPROFXENGAGEMEHT%' ESCAPE '\\' OR CommandLine LIKE '%MSSQ0SHAREPOINT%' ESCAPE '\\' OR CommandLine LIKE '%MSSQ0SOPHOS%' ESCAPE '\\' OR CommandLine LIKE '%MSSQL%' ESCAPE '\\' OR CommandLine LIKE '%MSSQLFDLauncher$%' ESCAPE '\\' OR CommandLine LIKE '%MySQL%' ESCAPE '\\' OR CommandLine LIKE '%NanoServiceMain%' ESCAPE '\\' OR CommandLine LIKE '%NetMsmqActivator%' ESCAPE '\\' OR CommandLine LIKE '%NetPipeActivator%' ESCAPE '\\' OR CommandLine LIKE '%netprofm%' ESCAPE '\\' OR CommandLine LIKE '%NetTcpActivator%' ESCAPE '\\' OR CommandLine LIKE '%NetTcpPortSharing%' ESCAPE '\\' OR CommandLine LIKE '%ntrtscan%' ESCAPE '\\' OR CommandLine LIKE '%nvspwmi%' ESCAPE '\\' OR CommandLine LIKE '%ofcservice%' ESCAPE '\\' OR CommandLine LIKE '%Online Protection System%' ESCAPE '\\' OR CommandLine LIKE '%OracleClientCache80%' ESCAPE '\\' OR CommandLine LIKE '%OracleDBConsole%' ESCAPE '\\' OR CommandLine LIKE '%OracleMTSRecoveryService%' ESCAPE '\\' OR CommandLine LIKE '%OracleOraDb11g\\_home1%' ESCAPE '\\' OR CommandLine LIKE '%OracleService%' ESCAPE '\\' OR CommandLine LIKE '%OracleVssWriter%' ESCAPE '\\' OR CommandLine LIKE '%osppsvc%' ESCAPE '\\' OR CommandLine LIKE '%PandaAetherAgent%' ESCAPE '\\' OR CommandLine LIKE '%PccNTUpd%' ESCAPE '\\' OR CommandLine LIKE '%PDVFSService%' ESCAPE '\\' OR CommandLine LIKE '%POP3Svc%' ESCAPE '\\' OR CommandLine LIKE '%postgresql-x64-9.4%' ESCAPE '\\' OR CommandLine LIKE '%POVFSService%' ESCAPE '\\' OR CommandLine LIKE '%PSUAService%' ESCAPE '\\' OR CommandLine LIKE '%Quick Update Service%' ESCAPE '\\' OR CommandLine LIKE '%RepairService%' ESCAPE '\\' OR CommandLine LIKE '%ReportServer%' ESCAPE '\\' OR CommandLine LIKE '%ReportServer$%' ESCAPE '\\' OR CommandLine LIKE '%RESvc%' ESCAPE '\\' OR CommandLine LIKE '%RpcEptMapper%' ESCAPE '\\' OR CommandLine LIKE '%sacsvr%' ESCAPE '\\' OR CommandLine LIKE '%SamSs%' ESCAPE '\\' OR CommandLine LIKE '%SAVAdminService%' ESCAPE '\\' OR CommandLine LIKE '%SAVService%' ESCAPE '\\' OR CommandLine LIKE '%ScSecSvc%' ESCAPE '\\' OR CommandLine LIKE '%SDRSVC%' ESCAPE '\\' OR CommandLine LIKE '%SearchExchangeTracing%' ESCAPE '\\' OR CommandLine LIKE '%sense%' ESCAPE '\\' OR CommandLine LIKE '%SentinelAgent%' ESCAPE '\\' OR CommandLine LIKE '%SentinelHelperService%' ESCAPE '\\' OR CommandLine LIKE '%SepMasterService%' ESCAPE '\\' OR CommandLine LIKE '%ShMonitor%' ESCAPE '\\' OR CommandLine LIKE '%Smcinst%' ESCAPE '\\' OR CommandLine LIKE '%SmcService%' ESCAPE '\\' OR CommandLine LIKE '%SMTPSvc%' ESCAPE '\\' OR CommandLine LIKE '%SNAC%' ESCAPE '\\' OR CommandLine LIKE '%SntpService%' ESCAPE '\\' OR CommandLine LIKE '%Sophos%' ESCAPE '\\' OR CommandLine LIKE '%SQ1SafeOLRService%' ESCAPE '\\' OR CommandLine LIKE '%SQL Backups%' ESCAPE '\\' OR CommandLine LIKE '%SQL Server%' ESCAPE '\\' OR CommandLine LIKE '%SQLAgent%' ESCAPE '\\' OR CommandLine LIKE '%SQLANYs\\_Sage\\_FAS\\_Fixed\\_Assets%' ESCAPE '\\' OR CommandLine LIKE '%SQLBrowser%' ESCAPE '\\' OR CommandLine LIKE '%SQLsafe%' ESCAPE '\\' OR CommandLine LIKE '%SQLSERVERAGENT%' ESCAPE '\\' OR CommandLine LIKE '%SQLTELEMETRY%' ESCAPE '\\' OR CommandLine LIKE '%SQLWriter%' ESCAPE '\\' OR CommandLine LIKE '%SSISTELEMETRY130%' ESCAPE '\\' OR CommandLine LIKE '%SstpSvc%' ESCAPE '\\' OR CommandLine LIKE '%storflt%' ESCAPE '\\' OR CommandLine LIKE '%svcGenericHost%' ESCAPE '\\' OR CommandLine LIKE '%swc\\_service%' ESCAPE '\\' OR CommandLine LIKE '%swi\\_filter%' ESCAPE '\\' OR CommandLine LIKE '%swi\\_service%' ESCAPE '\\' OR CommandLine LIKE '%swi\\_update%' ESCAPE '\\' OR CommandLine LIKE '%Symantec%' ESCAPE '\\' OR CommandLine LIKE '%sysmon%' ESCAPE '\\' OR CommandLine LIKE '%TeamViewer%' ESCAPE '\\' OR CommandLine LIKE '%Telemetryserver%' ESCAPE '\\' OR CommandLine LIKE '%ThreatLockerService%' ESCAPE '\\' OR CommandLine LIKE '%TMBMServer%' ESCAPE '\\' OR CommandLine LIKE '%TmCCSF%' ESCAPE '\\' OR CommandLine LIKE '%TmFilter%' ESCAPE '\\' OR CommandLine LIKE '%TMiCRCScanService%' ESCAPE '\\' OR CommandLine LIKE '%tmlisten%' ESCAPE '\\' OR CommandLine LIKE '%TMLWCSService%' ESCAPE '\\' OR CommandLine LIKE '%TmPfw%' ESCAPE '\\' OR CommandLine LIKE '%TmPreFilter%' ESCAPE '\\' OR CommandLine LIKE '%TmProxy%' ESCAPE '\\' OR CommandLine LIKE '%TMSmartRelayService%' ESCAPE '\\' OR CommandLine LIKE '%tmusa%' ESCAPE '\\' OR CommandLine LIKE '%Tomcat%' ESCAPE '\\' OR CommandLine LIKE '%Trend Micro Deep Security Manager%' ESCAPE '\\' OR CommandLine LIKE '%TrueKey%' ESCAPE '\\' OR CommandLine LIKE '%UFNet%' ESCAPE '\\' OR CommandLine LIKE '%UI0Detect%' ESCAPE '\\' OR CommandLine LIKE '%UniFi%' ESCAPE '\\' OR CommandLine LIKE '%UTODetect%' ESCAPE '\\' OR CommandLine LIKE '%vds%' ESCAPE '\\' OR CommandLine LIKE '%Veeam%' ESCAPE '\\' OR CommandLine LIKE '%VeeamDeploySvc%' ESCAPE '\\' OR CommandLine LIKE '%Veritas System Recovery%' ESCAPE '\\' OR CommandLine LIKE '%vmic%' ESCAPE '\\' OR CommandLine LIKE '%VMTools%' ESCAPE '\\' OR CommandLine LIKE '%vmvss%' ESCAPE '\\' OR CommandLine LIKE '%VSApiNt%' ESCAPE '\\' OR CommandLine LIKE '%VSS%' ESCAPE '\\' OR CommandLine LIKE '%W3Svc%' ESCAPE '\\' OR CommandLine LIKE '%wbengine%' ESCAPE '\\' OR CommandLine LIKE '%WdNisSvc%' ESCAPE '\\' OR CommandLine LIKE '%WeanClOudSve%' ESCAPE '\\' OR CommandLine LIKE '%Weems JY%' ESCAPE '\\' OR CommandLine LIKE '%WinDefend%' ESCAPE '\\' OR CommandLine LIKE '%wmms%' ESCAPE '\\' OR CommandLine LIKE '%wozyprobackup%' ESCAPE '\\' OR CommandLine LIKE '%WPFFontCache\\_v0400%' ESCAPE '\\' OR CommandLine LIKE '%WRSVC%' ESCAPE '\\' OR CommandLine LIKE '%wsbexchange%' ESCAPE '\\' OR CommandLine LIKE '%WSearch%' ESCAPE '\\' OR CommandLine LIKE '%wscsvc%' ESCAPE '\\' OR CommandLine LIKE '%Zoolz 2 Service%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((OriginalFileName LIKE 'net.exe' ESCAPE '\\' OR OriginalFileName LIKE 'net1.exe' ESCAPE '\\' OR OriginalFileName LIKE 'PowerShell\\_ISE.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'PowerShell.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'psservice.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'sc.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wmic.exe' ESCAPE '\\') OR (NewProcessName LIKE '%\\\\net.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\net1.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PowerShell\\_ISE.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\')) AND ((CommandLine LIKE '% delete %' ESCAPE '\\' OR CommandLine LIKE '%.delete()%' ESCAPE '\\' OR CommandLine LIKE '% pause %' ESCAPE '\\' OR CommandLine LIKE '% stop %' ESCAPE '\\' OR CommandLine LIKE '%Stop-Service %' ESCAPE '\\' OR CommandLine LIKE '%Remove-Service %' ESCAPE '\\') OR (CommandLine LIKE '%config%' ESCAPE '\\' AND CommandLine LIKE '%start=disabled%' ESCAPE '\\')) AND (CommandLine LIKE '%143Svc%' ESCAPE '\\' OR CommandLine LIKE '%Acronis VSS Provider%' ESCAPE '\\' OR CommandLine LIKE '%AcronisAgent%' ESCAPE '\\' OR CommandLine LIKE '%AcrSch2Svc%' ESCAPE '\\' OR CommandLine LIKE '%AdobeARMservice%' ESCAPE '\\' OR CommandLine LIKE '%AHS Service%' ESCAPE '\\' OR CommandLine LIKE '%Antivirus%' ESCAPE '\\' OR CommandLine LIKE '%Apache4%' ESCAPE '\\' OR CommandLine LIKE '%ARSM%' ESCAPE '\\' OR CommandLine LIKE '%aswBcc%' ESCAPE '\\' OR CommandLine LIKE '%AteraAgent%' ESCAPE '\\' OR CommandLine LIKE '%Avast Business Console Client Antivirus Service%' ESCAPE '\\' OR CommandLine LIKE '%avast! Antivirus%' ESCAPE '\\' OR CommandLine LIKE '%AVG Antivirus%' ESCAPE '\\' OR CommandLine LIKE '%avgAdminClient%' ESCAPE '\\' OR CommandLine LIKE '%AvgAdminServer%' ESCAPE '\\' OR CommandLine LIKE '%AVP1%' ESCAPE '\\' OR CommandLine LIKE '%BackupExec%' ESCAPE '\\' OR CommandLine LIKE '%bedbg%' ESCAPE '\\' OR CommandLine LIKE '%BITS%' ESCAPE '\\' OR CommandLine LIKE '%BrokerInfrastructure%' ESCAPE '\\' OR CommandLine LIKE '%CASLicenceServer%' ESCAPE '\\' OR CommandLine LIKE '%CASWebServer%' ESCAPE '\\' OR CommandLine LIKE '%Client Agent 7.60%' ESCAPE '\\' OR CommandLine LIKE '%Core Browsing Protection%' ESCAPE '\\' OR CommandLine LIKE '%Core Mail Protection%' ESCAPE '\\' OR CommandLine LIKE '%Core Scanning Server%' ESCAPE '\\' OR CommandLine LIKE '%DCAgent%' ESCAPE '\\' OR CommandLine LIKE '%dwmrcs%' ESCAPE '\\' OR CommandLine LIKE '%EhttpSr%' ESCAPE '\\' OR CommandLine LIKE '%ekrn%' ESCAPE '\\' OR CommandLine LIKE '%Enterprise Client Service%' ESCAPE '\\' OR CommandLine LIKE '%epag%' ESCAPE '\\' OR CommandLine LIKE '%EPIntegrationService%' ESCAPE '\\' OR CommandLine LIKE '%EPProtectedService%' ESCAPE '\\' OR CommandLine LIKE '%EPRedline%' ESCAPE '\\' OR CommandLine LIKE '%EPSecurityService%' ESCAPE '\\' OR CommandLine LIKE '%EPUpdateService%' ESCAPE '\\' OR CommandLine LIKE '%EraserSvc11710%' ESCAPE '\\' OR CommandLine LIKE '%EsgShKernel%' ESCAPE '\\' OR CommandLine LIKE '%ESHASRV%' ESCAPE '\\' OR CommandLine LIKE '%FA\\_Scheduler%' ESCAPE '\\' OR CommandLine LIKE '%FirebirdGuardianDefaultInstance%' ESCAPE '\\' OR CommandLine LIKE '%FirebirdServerDefaultInstance%' ESCAPE '\\' OR CommandLine LIKE '%FontCache3.0.0.0%' ESCAPE '\\' OR CommandLine LIKE '%HealthTLService%' ESCAPE '\\' OR CommandLine LIKE '%hmpalertsvc%' ESCAPE '\\' OR CommandLine LIKE '%HMS%' ESCAPE '\\' OR CommandLine LIKE '%HostControllerService%' ESCAPE '\\' OR CommandLine LIKE '%hvdsvc%' ESCAPE '\\' OR CommandLine LIKE '%IAStorDataMgrSvc%' ESCAPE '\\' OR CommandLine LIKE '%IBMHPS%' ESCAPE '\\' OR CommandLine LIKE '%ibmspsvc%' ESCAPE '\\' OR CommandLine LIKE '%IISAdmin%' ESCAPE '\\' OR CommandLine LIKE '%IMANSVC%' ESCAPE '\\' OR CommandLine LIKE '%IMAP4Svc%' ESCAPE '\\' OR CommandLine LIKE '%instance2%' ESCAPE '\\' OR CommandLine LIKE '%KAVFS%' ESCAPE '\\' OR CommandLine LIKE '%KAVFSGT%' ESCAPE '\\' OR CommandLine LIKE '%kavfsslp%' ESCAPE '\\' OR CommandLine LIKE '%KeyIso%' ESCAPE '\\' OR CommandLine LIKE '%klbackupdisk%' ESCAPE '\\' OR CommandLine LIKE '%klbackupflt%' ESCAPE '\\' OR CommandLine LIKE '%klflt%' ESCAPE '\\' OR CommandLine LIKE '%klhk%' ESCAPE '\\' OR CommandLine LIKE '%KLIF%' ESCAPE '\\' OR CommandLine LIKE '%klim6%' ESCAPE '\\' OR CommandLine LIKE '%klkbdflt%' ESCAPE '\\' OR CommandLine LIKE '%klmouflt%' ESCAPE '\\' OR CommandLine LIKE '%klnagent%' ESCAPE '\\' OR CommandLine LIKE '%klpd%' ESCAPE '\\' OR CommandLine LIKE '%kltap%' ESCAPE '\\' OR CommandLine LIKE '%KSDE1.0.0%' ESCAPE '\\' OR CommandLine LIKE '%LogProcessorService%' ESCAPE '\\' OR CommandLine LIKE '%M8EndpointAgent%' ESCAPE '\\' OR CommandLine LIKE '%macmnsvc%' ESCAPE '\\' OR CommandLine LIKE '%masvc%' ESCAPE '\\' OR CommandLine LIKE '%MBAMService%' ESCAPE '\\' OR CommandLine LIKE '%MBCloudEA%' ESCAPE '\\' OR CommandLine LIKE '%MBEndpointAgent%' ESCAPE '\\' OR CommandLine LIKE '%McAfeeDLPAgentService%' ESCAPE '\\' OR CommandLine LIKE '%McAfeeEngineService%' ESCAPE '\\' OR CommandLine LIKE '%MCAFEEEVENTPARSERSRV%' ESCAPE '\\' OR CommandLine LIKE '%McAfeeFramework%' ESCAPE '\\' OR CommandLine LIKE '%MCAFEETOMCATSRV530%' ESCAPE '\\' OR CommandLine LIKE '%McShield%' ESCAPE '\\' OR CommandLine LIKE '%McTaskManager%' ESCAPE '\\' OR CommandLine LIKE '%mfefire%' ESCAPE '\\' OR CommandLine LIKE '%mfemms%' ESCAPE '\\' OR CommandLine LIKE '%mfevto%' ESCAPE '\\' OR CommandLine LIKE '%mfevtp%' ESCAPE '\\' OR CommandLine LIKE '%mfewc%' ESCAPE '\\' OR CommandLine LIKE '%MMS%' ESCAPE '\\' OR CommandLine LIKE '%mozyprobackup%' ESCAPE '\\' OR CommandLine LIKE '%mpssvc%' ESCAPE '\\' OR CommandLine LIKE '%MSComplianceAudit%' ESCAPE '\\' OR CommandLine LIKE '%MSDTC%' ESCAPE '\\' OR CommandLine LIKE '%MsDtsServer%' ESCAPE '\\' OR CommandLine LIKE '%MSExchange%' ESCAPE '\\' OR CommandLine LIKE '%msftesq1SPROO%' ESCAPE '\\' OR CommandLine LIKE '%msftesql$PROD%' ESCAPE '\\' OR CommandLine LIKE '%msftesql$SQLEXPRESS%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$SQL\\_2008%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$SYSTEM\\_BGC%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$TPS%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAP$TPSAMA%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAPSTPS%' ESCAPE '\\' OR CommandLine LIKE '%MSOLAPSTPSAMA%' ESCAPE '\\' OR CommandLine LIKE '%mssecflt%' ESCAPE '\\' OR CommandLine LIKE '%MSSQ!I.SPROFXENGAGEMEHT%' ESCAPE '\\' OR CommandLine LIKE '%MSSQ0SHAREPOINT%' ESCAPE '\\' OR CommandLine LIKE '%MSSQ0SOPHOS%' ESCAPE '\\' OR CommandLine LIKE '%MSSQL%' ESCAPE '\\' OR CommandLine LIKE '%MSSQLFDLauncher$%' ESCAPE '\\' OR CommandLine LIKE '%MySQL%' ESCAPE '\\' OR CommandLine LIKE '%NanoServiceMain%' ESCAPE '\\' OR CommandLine LIKE '%NetMsmqActivator%' ESCAPE '\\' OR CommandLine LIKE '%NetPipeActivator%' ESCAPE '\\' OR CommandLine LIKE '%netprofm%' ESCAPE '\\' OR CommandLine LIKE '%NetTcpActivator%' ESCAPE '\\' OR CommandLine LIKE '%NetTcpPortSharing%' ESCAPE '\\' OR CommandLine LIKE '%ntrtscan%' ESCAPE '\\' OR CommandLine LIKE '%nvspwmi%' ESCAPE '\\' OR CommandLine LIKE '%ofcservice%' ESCAPE '\\' OR CommandLine LIKE '%Online Protection System%' ESCAPE '\\' OR CommandLine LIKE '%OracleClientCache80%' ESCAPE '\\' OR CommandLine LIKE '%OracleDBConsole%' ESCAPE '\\' OR CommandLine LIKE '%OracleMTSRecoveryService%' ESCAPE '\\' OR CommandLine LIKE '%OracleOraDb11g\\_home1%' ESCAPE '\\' OR CommandLine LIKE '%OracleService%' ESCAPE '\\' OR CommandLine LIKE '%OracleVssWriter%' ESCAPE '\\' OR CommandLine LIKE '%osppsvc%' ESCAPE '\\' OR CommandLine LIKE '%PandaAetherAgent%' ESCAPE '\\' OR CommandLine LIKE '%PccNTUpd%' ESCAPE '\\' OR CommandLine LIKE '%PDVFSService%' ESCAPE '\\' OR CommandLine LIKE '%POP3Svc%' ESCAPE '\\' OR CommandLine LIKE '%postgresql-x64-9.4%' ESCAPE '\\' OR CommandLine LIKE '%POVFSService%' ESCAPE '\\' OR CommandLine LIKE '%PSUAService%' ESCAPE '\\' OR CommandLine LIKE '%Quick Update Service%' ESCAPE '\\' OR CommandLine LIKE '%RepairService%' ESCAPE '\\' OR CommandLine LIKE '%ReportServer%' ESCAPE '\\' OR CommandLine LIKE '%ReportServer$%' ESCAPE '\\' OR CommandLine LIKE '%RESvc%' ESCAPE '\\' OR CommandLine LIKE '%RpcEptMapper%' ESCAPE '\\' OR CommandLine LIKE '%sacsvr%' ESCAPE '\\' OR CommandLine LIKE '%SamSs%' ESCAPE '\\' OR CommandLine LIKE '%SAVAdminService%' ESCAPE '\\' OR CommandLine LIKE '%SAVService%' ESCAPE '\\' OR CommandLine LIKE '%ScSecSvc%' ESCAPE '\\' OR CommandLine LIKE '%SDRSVC%' ESCAPE '\\' OR CommandLine LIKE '%SearchExchangeTracing%' ESCAPE '\\' OR CommandLine LIKE '%sense%' ESCAPE '\\' OR CommandLine LIKE '%SentinelAgent%' ESCAPE '\\' OR CommandLine LIKE '%SentinelHelperService%' ESCAPE '\\' OR CommandLine LIKE '%SepMasterService%' ESCAPE '\\' OR CommandLine LIKE '%ShMonitor%' ESCAPE '\\' OR CommandLine LIKE '%Smcinst%' ESCAPE '\\' OR CommandLine LIKE '%SmcService%' ESCAPE '\\' OR CommandLine LIKE '%SMTPSvc%' ESCAPE '\\' OR CommandLine LIKE '%SNAC%' ESCAPE '\\' OR CommandLine LIKE '%SntpService%' ESCAPE '\\' OR CommandLine LIKE '%Sophos%' ESCAPE '\\' OR CommandLine LIKE '%SQ1SafeOLRService%' ESCAPE '\\' OR CommandLine LIKE '%SQL Backups%' ESCAPE '\\' OR CommandLine LIKE '%SQL Server%' ESCAPE '\\' OR CommandLine LIKE '%SQLAgent%' ESCAPE '\\' OR CommandLine LIKE '%SQLANYs\\_Sage\\_FAS\\_Fixed\\_Assets%' ESCAPE '\\' OR CommandLine LIKE '%SQLBrowser%' ESCAPE '\\' OR CommandLine LIKE '%SQLsafe%' ESCAPE '\\' OR CommandLine LIKE '%SQLSERVERAGENT%' ESCAPE '\\' OR CommandLine LIKE '%SQLTELEMETRY%' ESCAPE '\\' OR CommandLine LIKE '%SQLWriter%' ESCAPE '\\' OR CommandLine LIKE '%SSISTELEMETRY130%' ESCAPE '\\' OR CommandLine LIKE '%SstpSvc%' ESCAPE '\\' OR CommandLine LIKE '%storflt%' ESCAPE '\\' OR CommandLine LIKE '%svcGenericHost%' ESCAPE '\\' OR CommandLine LIKE '%swc\\_service%' ESCAPE '\\' OR CommandLine LIKE '%swi\\_filter%' ESCAPE '\\' OR CommandLine LIKE '%swi\\_service%' ESCAPE '\\' OR CommandLine LIKE '%swi\\_update%' ESCAPE '\\' OR CommandLine LIKE '%Symantec%' ESCAPE '\\' OR CommandLine LIKE '%sysmon%' ESCAPE '\\' OR CommandLine LIKE '%TeamViewer%' ESCAPE '\\' OR CommandLine LIKE '%Telemetryserver%' ESCAPE '\\' OR CommandLine LIKE '%ThreatLockerService%' ESCAPE '\\' OR CommandLine LIKE '%TMBMServer%' ESCAPE '\\' OR CommandLine LIKE '%TmCCSF%' ESCAPE '\\' OR CommandLine LIKE '%TmFilter%' ESCAPE '\\' OR CommandLine LIKE '%TMiCRCScanService%' ESCAPE '\\' OR CommandLine LIKE '%tmlisten%' ESCAPE '\\' OR CommandLine LIKE '%TMLWCSService%' ESCAPE '\\' OR CommandLine LIKE '%TmPfw%' ESCAPE '\\' OR CommandLine LIKE '%TmPreFilter%' ESCAPE '\\' OR CommandLine LIKE '%TmProxy%' ESCAPE '\\' OR CommandLine LIKE '%TMSmartRelayService%' ESCAPE '\\' OR CommandLine LIKE '%tmusa%' ESCAPE '\\' OR CommandLine LIKE '%Tomcat%' ESCAPE '\\' OR CommandLine LIKE '%Trend Micro Deep Security Manager%' ESCAPE '\\' OR CommandLine LIKE '%TrueKey%' ESCAPE '\\' OR CommandLine LIKE '%UFNet%' ESCAPE '\\' OR CommandLine LIKE '%UI0Detect%' ESCAPE '\\' OR CommandLine LIKE '%UniFi%' ESCAPE '\\' OR CommandLine LIKE '%UTODetect%' ESCAPE '\\' OR CommandLine LIKE '%vds%' ESCAPE '\\' OR CommandLine LIKE '%Veeam%' ESCAPE '\\' OR CommandLine LIKE '%VeeamDeploySvc%' ESCAPE '\\' OR CommandLine LIKE '%Veritas System Recovery%' ESCAPE '\\' OR CommandLine LIKE '%vmic%' ESCAPE '\\' OR CommandLine LIKE '%VMTools%' ESCAPE '\\' OR CommandLine LIKE '%vmvss%' ESCAPE '\\' OR CommandLine LIKE '%VSApiNt%' ESCAPE '\\' OR CommandLine LIKE '%VSS%' ESCAPE '\\' OR CommandLine LIKE '%W3Svc%' ESCAPE '\\' OR CommandLine LIKE '%wbengine%' ESCAPE '\\' OR CommandLine LIKE '%WdNisSvc%' ESCAPE '\\' OR CommandLine LIKE '%WeanClOudSve%' ESCAPE '\\' OR CommandLine LIKE '%Weems JY%' ESCAPE '\\' OR CommandLine LIKE '%WinDefend%' ESCAPE '\\' OR CommandLine LIKE '%wmms%' ESCAPE '\\' OR CommandLine LIKE '%wozyprobackup%' ESCAPE '\\' OR CommandLine LIKE '%WPFFontCache\\_v0400%' ESCAPE '\\' OR CommandLine LIKE '%WRSVC%' ESCAPE '\\' OR CommandLine LIKE '%wsbexchange%' ESCAPE '\\' OR CommandLine LIKE '%WSearch%' ESCAPE '\\' OR CommandLine LIKE '%wscsvc%' ESCAPE '\\' OR CommandLine LIKE '%Zoolz 2 Service%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_service_tamper.yml"
     },
