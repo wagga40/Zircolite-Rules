@@ -942,9 +942,9 @@
     {
         "title": "Potential File Extension Spoofing Using Right-to-Left Override",
         "id": "979baf41-ca44-4540-9d0c-4fcef3b5a3a4",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious filenames that contain a right-to-left override character and a potentially spoofed file extensions.\n",
-        "author": "Jonathan Peters (Nextron Systems), Florian Roth (Nextron Systems)",
+        "author": "Jonathan Peters (Nextron Systems), Florian Roth (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.defense-evasion",
@@ -955,7 +955,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%\\\\u202e%' ESCAPE '\\' AND (TargetFilename LIKE '%fpd..%' ESCAPE '\\' OR TargetFilename LIKE '%nls..%' ESCAPE '\\' OR TargetFilename LIKE '%vsc..%' ESCAPE '\\' OR TargetFilename LIKE '%xcod.%' ESCAPE '\\' OR TargetFilename LIKE '%xslx.%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetFilename LIKE '%\\\\u202e%' ESCAPE '\\' OR TargetFilename LIKE '%[U+202E]%' ESCAPE '\\') AND (TargetFilename LIKE '%3pm.%' ESCAPE '\\' OR TargetFilename LIKE '%4pm.%' ESCAPE '\\' OR TargetFilename LIKE '%cod.%' ESCAPE '\\' OR TargetFilename LIKE '%fdp.%' ESCAPE '\\' OR TargetFilename LIKE '%ftr.%' ESCAPE '\\' OR TargetFilename LIKE '%gepj.%' ESCAPE '\\' OR TargetFilename LIKE '%gnp.%' ESCAPE '\\' OR TargetFilename LIKE '%gpj.%' ESCAPE '\\' OR TargetFilename LIKE '%ism.%' ESCAPE '\\' OR TargetFilename LIKE '%lmth.%' ESCAPE '\\' OR TargetFilename LIKE '%nls.%' ESCAPE '\\' OR TargetFilename LIKE '%piz.%' ESCAPE '\\' OR TargetFilename LIKE '%slx.%' ESCAPE '\\' OR TargetFilename LIKE '%tdo.%' ESCAPE '\\' OR TargetFilename LIKE '%vsc.%' ESCAPE '\\' OR TargetFilename LIKE '%vwm.%' ESCAPE '\\' OR TargetFilename LIKE '%xcod.%' ESCAPE '\\' OR TargetFilename LIKE '%xslx.%' ESCAPE '\\' OR TargetFilename LIKE '%xtpp.%' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_susp_right_to_left_override_extension_spoofing.yml"
     },
@@ -4037,6 +4037,26 @@
         "filename": "proc_creation_win_hktl_xordump.yml"
     },
     {
+        "title": "Potentially Suspicious Child Processes Spawned by ConHost",
+        "id": "dfa03a09-8b92-4d83-8e74-f72839b1c407",
+        "status": "experimental",
+        "description": "Detects suspicious child processes related to Windows Shell utilities spawned by `conhost.exe`, which could indicate malicious activity using trusted system components.",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.t1202",
+            "attack.defense-evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Legitimate administrative tasks using `conhost.exe` to spawn child processes such as `cmd.exe`, `powershell.exe`, or `regsvr32.exe`."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\conhost.exe' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (OriginalFileName LIKE 'cmd.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'mshta.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wscript.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_conhost_susp_winshell_child_process.yml"
+    },
+    {
         "title": "HackTool - TruffleSnout Execution",
         "id": "69ca006d-b9a9-47f5-80ff-ecd4d25d481a",
         "status": "test",
@@ -4898,6 +4918,27 @@
         "filename": "proc_creation_win_certutil_encode_susp_extensions.yml"
     },
     {
+        "title": "Security Event Logging Disabled via MiniNt Registry Key - Process",
+        "id": "1a4bd6af-99ac-4466-b5b2-7b72b4a05462",
+        "status": "experimental",
+        "description": "Detects attempts to disable security event logging by adding the `MiniNt` registry key.\nThis key is used to disable the Windows Event Log service, which collects and stores event logs from the operating system and applications.\nAdversaries may want to disable this service to prevent logging of security events that could be used to detect their activities.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.002",
+            "attack.t1112",
+            "car.2022-03-001"
+        ],
+        "falsepositives": [
+            "Highly Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '% add %' ESCAPE '\\' AND CommandLine LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\MiniNt%' ESCAPE '\\')) OR (((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%New-Item %' ESCAPE '\\' OR CommandLine LIKE '%ni %' ESCAPE '\\') AND CommandLine LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\MiniNt%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_event_logging_disable_via_key_minint.yml"
+    },
+    {
         "title": "Deletion of Volume Shadow Copies via WMI with PowerShell",
         "id": "21ff4ca9-f13a-41ad-b828-0077b2af2e40",
         "status": "test",
@@ -5229,6 +5270,28 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%\\\\Microsoft\\\\Office\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Excel\\\\Security%' ESCAPE '\\' AND CommandLine LIKE '%PythonFunctionWarnings%' ESCAPE '\\' AND CommandLine LIKE '% 0%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_registry_office_disable_python_security_warnings.yml"
+    },
+    {
+        "title": "Scheduled Task Creation Masquerading as System Processes",
+        "id": "9f8573c9-22b4-40e3-89c1-72bc2b8d49ab",
+        "status": "experimental",
+        "description": "Detects the creation of scheduled tasks that involve system processes, which may indicate malicious actors masquerading as or abusing these processes to execute payloads or maintain persistence.",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.t1053.005",
+            "attack.defense-evasion",
+            "attack.t1036.004",
+            "attack.t1036.005"
+        ],
+        "falsepositives": [
+            "Legitimate system administration tasks scheduling trusted system processes."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR OriginalFileName = 'schtasks.exe') AND ((CommandLine LIKE '% -create %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\') AND (CommandLine LIKE '% audiodg%' ESCAPE '\\' OR CommandLine LIKE '% conhost%' ESCAPE '\\' OR CommandLine LIKE '% dwm.exe%' ESCAPE '\\' OR CommandLine LIKE '% explorer%' ESCAPE '\\' OR CommandLine LIKE '% lsass%' ESCAPE '\\' OR CommandLine LIKE '% lsm%' ESCAPE '\\' OR CommandLine LIKE '% mmc%' ESCAPE '\\' OR CommandLine LIKE '% msiexec%' ESCAPE '\\' OR CommandLine LIKE '% regsvr32%' ESCAPE '\\' OR CommandLine LIKE '% rundll32%' ESCAPE '\\' OR CommandLine LIKE '% services%' ESCAPE '\\' OR CommandLine LIKE '% spoolsv%' ESCAPE '\\' OR CommandLine LIKE '% svchost%' ESCAPE '\\' OR CommandLine LIKE '% taskeng%' ESCAPE '\\' OR CommandLine LIKE '% taskhost%' ESCAPE '\\' OR CommandLine LIKE '% wininit%' ESCAPE '\\' OR CommandLine LIKE '% winlogon%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_schtasks_system_process.yml"
     },
     {
         "title": "Unusual Child Process of dns.exe",
@@ -7619,6 +7682,25 @@
         "filename": "proc_creation_win_powershell_webclient_casing.yml"
     },
     {
+        "title": "Suspicious Uninstall of Windows Defender Feature via PowerShell",
+        "id": "c443012c-7928-43bf-ac20-7eda5efe61ad",
+        "status": "experimental",
+        "description": "Detects the use of PowerShell with Uninstall-WindowsFeature or Remove-WindowsFeature cmdlets to disable or remove the Windows Defender GUI feature, a common technique used by adversaries to evade defenses.\n",
+        "author": "yxinmiracle",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR (OriginalFileName LIKE 'PowerShell\\_ISE.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'PowerShell.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\')) AND (CommandLine LIKE '%Uninstall-WindowsFeature%' ESCAPE '\\' OR CommandLine LIKE '%Remove-WindowsFeature%' ESCAPE '\\') AND CommandLine LIKE '%Windows-Defender%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_powershell_uninstall_defender_feature.yml"
+    },
+    {
         "title": "PowerShell Web Access Feature Enabled Via DISM",
         "id": "7e8f2d3b-9c1a-4f67-b9e8-8d9006e0e51f",
         "status": "test",
@@ -8177,7 +8259,7 @@
     {
         "title": "HackTool - CoercedPotato Execution",
         "id": "e8d34729-86a4-4140-adfd-0a29c2106307",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects the use of CoercedPotato, a tool for privilege escalation",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
@@ -11363,6 +11445,29 @@
         "filename": "proc_creation_win_reg_disable_defender_wmi_autologger.yml"
     },
     {
+        "title": "MMC Executing Files with Reversed Extensions Using RTLO Abuse",
+        "id": "9cfe4b27-1e56-48b4-b7a8-d46851c91a44",
+        "status": "experimental",
+        "description": "Detects malicious behavior where the MMC utility (`mmc.exe`) executes files with reversed extensions caused by Right-to-Left Override (RLO) abuse, disguising them as document formats.",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.002",
+            "attack.defense-evasion",
+            "attack.t1218.014",
+            "attack.t1036.002"
+        ],
+        "falsepositives": [
+            "Legitimate administrative actions using MMC to execute misnamed `.msc` files.",
+            "Unconventional but non-malicious usage of RLO or reversed extensions."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\mmc.exe' ESCAPE '\\' OR OriginalFileName = 'MMC.exe') AND (CommandLine LIKE '%cod.msc%' ESCAPE '\\' OR CommandLine LIKE '%fdp.msc%' ESCAPE '\\' OR CommandLine LIKE '%ftr.msc%' ESCAPE '\\' OR CommandLine LIKE '%lmth.msc%' ESCAPE '\\' OR CommandLine LIKE '%slx.msc%' ESCAPE '\\' OR CommandLine LIKE '%tdo.msc%' ESCAPE '\\' OR CommandLine LIKE '%xcod.msc%' ESCAPE '\\' OR CommandLine LIKE '%xslx.msc%' ESCAPE '\\' OR CommandLine LIKE '%xtpp.msc%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_mmc_rlo_abuse_pattern.yml"
+    },
+    {
         "title": "Suspicious Redirection to Local Admin Share",
         "id": "ab9e3b40-0c85-4ba1-aede-455d226fd124",
         "status": "test",
@@ -12914,7 +13019,7 @@
     {
         "title": "Suspicious ShellExec_RunDLL Call Via Ordinal",
         "id": "8823e85d-31d8-473e-b7f4-92da070f0fc6",
-        "status": "experimental",
+        "status": "test",
         "description": "Detects suspicious call to the \"ShellExec_RunDLL\" exported function of SHELL32.DLL through the ordinal number to launch other commands.\nAdversary might only use the ordinal number in order to bypass existing detection that alert on usage of ShellExec_RunDLL on CommandLine.\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
@@ -13168,7 +13273,7 @@
         "id": "ad691d92-15f2-4181-9aa4-723c74f9ddc3",
         "status": "test",
         "description": "Detects the presence of the \"u202+E\" character, which causes a terminal, browser, or operating system to render text in a right-to-left sequence.\nThis is used as an obfuscation and masquerading techniques.\n",
-        "author": "Micah Babinski, @micahbabinski",
+        "author": "Micah Babinski, @micahbabinski, Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.defense-evasion",
             "attack.t1036.002"
@@ -13178,7 +13283,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%‮%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (CommandLine LIKE '%\\\\u202e%' ESCAPE '\\' OR CommandLine LIKE '%[U+202E]%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_right_to_left_override.yml"
     },
@@ -15347,7 +15452,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '22' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND QueryName LIKE '%.onion%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '22' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (QueryName LIKE '%.hiddenservice.net' ESCAPE '\\' OR QueryName LIKE '%.onion.ca' ESCAPE '\\' OR QueryName LIKE '%.onion.cab' ESCAPE '\\' OR QueryName LIKE '%.onion.casa' ESCAPE '\\' OR QueryName LIKE '%.onion.city' ESCAPE '\\' OR QueryName LIKE '%.onion.direct' ESCAPE '\\' OR QueryName LIKE '%.onion.dog' ESCAPE '\\' OR QueryName LIKE '%.onion.glass' ESCAPE '\\' OR QueryName LIKE '%.onion.gq' ESCAPE '\\' OR QueryName LIKE '%.onion.ink' ESCAPE '\\' OR QueryName LIKE '%.onion.it' ESCAPE '\\' OR QueryName LIKE '%.onion.link' ESCAPE '\\' OR QueryName LIKE '%.onion.lt' ESCAPE '\\' OR QueryName LIKE '%.onion.lu' ESCAPE '\\' OR QueryName LIKE '%.onion.nu' ESCAPE '\\' OR QueryName LIKE '%.onion.pet' ESCAPE '\\' OR QueryName LIKE '%.onion.plus' ESCAPE '\\' OR QueryName LIKE '%.onion.rip' ESCAPE '\\' OR QueryName LIKE '%.onion.sh' ESCAPE '\\' OR QueryName LIKE '%.onion.to' ESCAPE '\\' OR QueryName LIKE '%.onion.top' ESCAPE '\\' OR QueryName LIKE '%.onion' ESCAPE '\\' OR QueryName LIKE '%.s1.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s2.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s3.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s4.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s5.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.t2w.pw' ESCAPE '\\' OR QueryName LIKE '%.tor2web.ae.org' ESCAPE '\\' OR QueryName LIKE '%.tor2web.blutmagie.de' ESCAPE '\\' OR QueryName LIKE '%.tor2web.com' ESCAPE '\\' OR QueryName LIKE '%.tor2web.fi' ESCAPE '\\' OR QueryName LIKE '%.tor2web.io' ESCAPE '\\' OR QueryName LIKE '%.tor2web.org' ESCAPE '\\' OR QueryName LIKE '%.tor2web.xyz' ESCAPE '\\' OR QueryName LIKE '%.torlink.co' ESCAPE '\\'))"
         ],
         "filename": "dns_query_win_tor_onion_domain_query.yml"
     },
@@ -20413,6 +20518,26 @@
         "filename": "zeek_http_katz_stealer_susp_useragent.yml"
     },
     {
+        "title": "MacOS FileGrabber Infostealer",
+        "id": "e710a880-1f18-4417-b6a0-b5afdf7e305a",
+        "status": "experimental",
+        "description": "Detects execution of FileGrabber on macOS, which is associated with Amos infostealer campaigns targeting sensitive user files.",
+        "author": "Jason Phang Vern - Onn (Gen Digital)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.002",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (CommandLine LIKE '%FileGrabber%' ESCAPE '\\' AND CommandLine LIKE '%/tmp%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_macos_malware_amos_filegrabber.yml"
+    },
+    {
         "title": "Exploit for CVE-2015-1641",
         "id": "7993792c-5ce2-4475-a3db-a3a5539827ef",
         "status": "stable",
@@ -22014,7 +22139,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND (TargetFilename LIKE '%/11111.tar' ESCAPE '\\' OR TargetFilename LIKE '%/aacore.sh' ESCAPE '\\' OR TargetFilename LIKE '%/appcheck.sh' ESCAPE '\\' OR TargetFilename LIKE '%/autoins' ESCAPE '\\' OR TargetFilename LIKE '%/BarracudaMailService' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.daily/core\\_check.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.daily/core.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.hourly/aacore.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.hourly/appcheck.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.hourly/core.sh' ESCAPE '\\' OR TargetFilename LIKE '%/get\\_fs\\_info.pl' ESCAPE '\\' OR TargetFilename LIKE '%/imgdata.jpg' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_att\\_v2.tar' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_bvp74\\_auth.tar' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_helo.tar' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_reuse.tar' ESCAPE '\\' OR TargetFilename LIKE '%/intent\\_helo' ESCAPE '\\' OR TargetFilename LIKE '%/intent\\_reuse' ESCAPE '\\' OR TargetFilename LIKE '%/intentbas' ESCAPE '\\' OR TargetFilename LIKE '%/mknod' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_attachment.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_content.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_require\\_helo.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_rtf' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_sender.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_udp.so' ESCAPE '\\' OR TargetFilename LIKE '%/nfsd\\_stub.ko' ESCAPE '\\' OR TargetFilename LIKE '%/resize\\_reisertab' ESCAPE '\\' OR TargetFilename LIKE '%/resize\\_risertab' ESCAPE '\\' OR TargetFilename LIKE '%/resize2fstab' ESCAPE '\\' OR TargetFilename LIKE '%/rverify' ESCAPE '\\' OR TargetFilename LIKE '%/saslautchd' ESCAPE '\\' OR TargetFilename LIKE '%/sendscd' ESCAPE '\\' OR TargetFilename LIKE '%/snapshot.tar' ESCAPE '\\' OR TargetFilename LIKE '%/tmp/p' ESCAPE '\\' OR TargetFilename LIKE '%/tmp/p7' ESCAPE '\\' OR TargetFilename LIKE '%/tmp/t' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_v2.sh' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_v31.sh' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_v35.sh' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_version' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '11' AND (TargetFilename LIKE '%/11111.tar' ESCAPE '\\' OR TargetFilename LIKE '%/aacore.sh' ESCAPE '\\' OR TargetFilename LIKE '%/appcheck.sh' ESCAPE '\\' OR TargetFilename LIKE '%/autoins' ESCAPE '\\' OR TargetFilename LIKE '%/BarracudaMailService' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.daily/core\\_check.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.daily/core.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.hourly/aacore.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.hourly/appcheck.sh' ESCAPE '\\' OR TargetFilename LIKE '%/etc/cron.hourly/core.sh' ESCAPE '\\' OR TargetFilename LIKE '%/get\\_fs\\_info.pl' ESCAPE '\\' OR TargetFilename LIKE '%/imgdata.jpg' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_att\\_v2.tar' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_bvp74\\_auth.tar' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_helo.tar' ESCAPE '\\' OR TargetFilename LIKE '%/install\\_reuse.tar' ESCAPE '\\' OR TargetFilename LIKE '%/intent\\_helo' ESCAPE '\\' OR TargetFilename LIKE '%/intent\\_reuse' ESCAPE '\\' OR TargetFilename LIKE '%/intentbas' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_attachment.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_content.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_require\\_helo.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_rtf' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_sender.lua' ESCAPE '\\' OR TargetFilename LIKE '%/mod\\_udp.so' ESCAPE '\\' OR TargetFilename LIKE '%/nfsd\\_stub.ko' ESCAPE '\\' OR TargetFilename LIKE '%/resize\\_reisertab' ESCAPE '\\' OR TargetFilename LIKE '%/resize\\_risertab' ESCAPE '\\' OR TargetFilename LIKE '%/resize2fstab' ESCAPE '\\' OR TargetFilename LIKE '%/rverify' ESCAPE '\\' OR TargetFilename LIKE '%/saslautchd' ESCAPE '\\' OR TargetFilename LIKE '%/sendscd' ESCAPE '\\' OR TargetFilename LIKE '%/snapshot.tar' ESCAPE '\\' OR TargetFilename LIKE '%/tmp/p' ESCAPE '\\' OR TargetFilename LIKE '%/tmp/p7' ESCAPE '\\' OR TargetFilename LIKE '%/tmp/t' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_v2.sh' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_v31.sh' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_v35.sh' ESCAPE '\\' OR TargetFilename LIKE '%/update\\_version' ESCAPE '\\'))"
         ],
         "filename": "file_event_lnx_apt_unc4841_file_indicators.yml"
     },
@@ -22709,12 +22834,13 @@
         "title": "Disable Security Events Logging Adding Reg Key MiniNt",
         "id": "919f2ef0-be2d-4a7a-b635-eb2b41fde044",
         "status": "test",
-        "description": "Detects the addition of a key 'MiniNt' to the registry. Upon a reboot, Windows Event Log service will stopped write events.",
+        "description": "Detects the addition of a key 'MiniNt' to the registry. Upon a reboot, Windows Event Log service will stop writing events.",
         "author": "Ilyas Ochkov, oscd.community",
         "tags": [
             "attack.defense-evasion",
-            "attack.t1562.001",
-            "attack.t1112"
+            "attack.t1562.002",
+            "attack.t1112",
+            "car.2022-03-001"
         ],
         "falsepositives": [
             "Unknown"
@@ -24164,6 +24290,27 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\PortNumber' ESCAPE '\\' AND NOT ((Details = 'DWORD (0x00000d3d)')))"
         ],
         "filename": "registry_set_change_rdp_port.yml"
+    },
+    {
+        "title": "Security Event Logging Disabled via MiniNt Registry Key - Registry Set",
+        "id": "8839e550-52d7-4958-9f2f-e13c1e736838",
+        "status": "experimental",
+        "description": "Detects the addition of the 'MiniNt' key to the registry. Upon a reboot, Windows Event Log service will stop writing events.\nWindows Event Log is a service that collects and stores event logs from the operating system and applications. It is an important component of Windows security and auditing.\nAdversary may want to disable this service to disable logging of security events which could be used to detect their activities.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.002",
+            "attack.t1112",
+            "car.2022-03-001"
+        ],
+        "falsepositives": [
+            "Highly Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE 'HKLM\\\\System\\\\CurrentControlSet\\\\Control\\\\MiniNt\\\\(Default)' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_create_minint_key.yml"
     },
     {
         "title": "New Netsh Helper DLL Registered From A Suspicious Location",
@@ -29017,7 +29164,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-DNS Client Events/Operational' AND EventID = '3008' AND QueryName LIKE '%.onion%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-DNS Client Events/Operational' AND EventID = '3008' AND (QueryName LIKE '%.hiddenservice.net' ESCAPE '\\' OR QueryName LIKE '%.onion.ca' ESCAPE '\\' OR QueryName LIKE '%.onion.cab' ESCAPE '\\' OR QueryName LIKE '%.onion.casa' ESCAPE '\\' OR QueryName LIKE '%.onion.city' ESCAPE '\\' OR QueryName LIKE '%.onion.direct' ESCAPE '\\' OR QueryName LIKE '%.onion.dog' ESCAPE '\\' OR QueryName LIKE '%.onion.glass' ESCAPE '\\' OR QueryName LIKE '%.onion.gq' ESCAPE '\\' OR QueryName LIKE '%.onion.guide' ESCAPE '\\' OR QueryName LIKE '%.onion.in.net' ESCAPE '\\' OR QueryName LIKE '%.onion.ink' ESCAPE '\\' OR QueryName LIKE '%.onion.it' ESCAPE '\\' OR QueryName LIKE '%.onion.link' ESCAPE '\\' OR QueryName LIKE '%.onion.lt' ESCAPE '\\' OR QueryName LIKE '%.onion.lu' ESCAPE '\\' OR QueryName LIKE '%.onion.ly' ESCAPE '\\' OR QueryName LIKE '%.onion.mn' ESCAPE '\\' OR QueryName LIKE '%.onion.network' ESCAPE '\\' OR QueryName LIKE '%.onion.nu' ESCAPE '\\' OR QueryName LIKE '%.onion.pet' ESCAPE '\\' OR QueryName LIKE '%.onion.plus' ESCAPE '\\' OR QueryName LIKE '%.onion.pt' ESCAPE '\\' OR QueryName LIKE '%.onion.pw' ESCAPE '\\' OR QueryName LIKE '%.onion.rip' ESCAPE '\\' OR QueryName LIKE '%.onion.sh' ESCAPE '\\' OR QueryName LIKE '%.onion.si' ESCAPE '\\' OR QueryName LIKE '%.onion.to' ESCAPE '\\' OR QueryName LIKE '%.onion.top' ESCAPE '\\' OR QueryName LIKE '%.onion.ws' ESCAPE '\\' OR QueryName LIKE '%.onion' ESCAPE '\\' OR QueryName LIKE '%.s1.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s2.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s3.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s4.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.s5.tor-gateways.de' ESCAPE '\\' OR QueryName LIKE '%.t2w.pw' ESCAPE '\\' OR QueryName LIKE '%.tor2web.ae.org' ESCAPE '\\' OR QueryName LIKE '%.tor2web.blutmagie.de' ESCAPE '\\' OR QueryName LIKE '%.tor2web.com' ESCAPE '\\' OR QueryName LIKE '%.tor2web.fi' ESCAPE '\\' OR QueryName LIKE '%.tor2web.io' ESCAPE '\\' OR QueryName LIKE '%.tor2web.org' ESCAPE '\\' OR QueryName LIKE '%.tor2web.xyz' ESCAPE '\\' OR QueryName LIKE '%.torlink.co' ESCAPE '\\'))"
         ],
         "filename": "win_dns_client_tor_onion.yml"
     },
