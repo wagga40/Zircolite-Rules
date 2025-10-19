@@ -2698,6 +2698,24 @@
         "filename": "proc_creation_lnx_susp_curl_useragent.yml"
     },
     {
+        "title": "Linux Sudo Chroot Execution",
+        "id": "f2bed782-994e-4f40-9cd5-518198cb3fba",
+        "description": "Detects the execution of 'sudo' command with '--chroot' option, which is used to change the root directory for command execution.\nAttackers may use this technique to evade detection and execute commands in a modified environment.\nThis can be part of a privilege escalation strategy, as it allows the execution of commands with elevated privileges in a controlled environment as seen in CVE-2025-32463.\nWhile investigating, look out for unusual or unexpected use of 'sudo --chroot' in conjunction with other commands or scripts such as execution from temporary directories or unusual user accounts.\n",
+        "author": "Swachchhanda Shrawn Poudel (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1068"
+        ],
+        "falsepositives": [
+            "Legitimate administrative tasks or scripts that use 'sudo --chroot' for containerization, testing, or system management."
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/sudo' ESCAPE '\\' AND (CommandLine LIKE '% --chroot %' ESCAPE '\\' OR CommandLine LIKE '%sudo -R %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_chroot_execution.yml"
+    },
+    {
         "title": "Linux Recon Indicators",
         "id": "0cf7a157-8879-41a2-8f55-388dd23746b7",
         "description": "Detects events with patterns found in commands used for reconnaissance on linux systems",
@@ -3376,6 +3394,25 @@
             "SELECT * FROM logs WHERE (Image LIKE '%crontab' ESCAPE '\\' AND CommandLine LIKE '%/tmp/%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_schedule_task_job_cron.yml"
+    },
+    {
+        "title": "PUA - TruffleHog Execution - Linux",
+        "id": "d7a650c4-226c-451e-948f-cc490db506aa",
+        "description": "Detects execution of TruffleHog, a tool used to search for secrets in different platforms like Git, Jira, Slack, SharePoint, etc. that could be used maliciously.\nWhile it is a legitimate tool, intended for use in CI pipelines and security assessments,\nIt was observed in the Shai-Hulud malware campaign targeting npm packages to steal sensitive information.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.discovery",
+            "attack.t1083",
+            "attack.t1552.001"
+        ],
+        "falsepositives": [
+            "Legitimate use of TruffleHog by security teams or developers."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/trufflehog' ESCAPE '\\' OR ((CommandLine LIKE '% docker --image %' ESCAPE '\\' OR CommandLine LIKE '% Git %' ESCAPE '\\' OR CommandLine LIKE '% GitHub %' ESCAPE '\\' OR CommandLine LIKE '% Jira %' ESCAPE '\\' OR CommandLine LIKE '% Slack %' ESCAPE '\\' OR CommandLine LIKE '% Confluence %' ESCAPE '\\' OR CommandLine LIKE '% SharePoint %' ESCAPE '\\' OR CommandLine LIKE '% s3 %' ESCAPE '\\' OR CommandLine LIKE '% gcs %' ESCAPE '\\') AND CommandLine LIKE '% --results=verified%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_pua_trufflehog.yml"
     },
     {
         "title": "Communication To Ngrok Tunneling Service - Linux",

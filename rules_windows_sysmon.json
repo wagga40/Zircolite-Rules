@@ -25406,6 +25406,71 @@
         "filename": "file_event_win_malware_funklocker_ransomware_extension.yml"
     },
     {
+        "title": "Shai-Hulud Malicious GitHub Workflow Creation",
+        "id": "0aba5685-6db6-486f-88ef-29a99c545cfd",
+        "status": "experimental",
+        "description": "Detects creation of shai-hulud-workflow.yml file associated with Shai Hulud worm targeting NPM supply chain attack that exfiltrates GitHub secrets",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.credential-access",
+            "attack.t1552.001",
+            "attack.collection",
+            "attack.t1119",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND TargetFilename LIKE '%.github/workflows/shai-hulud-workflow.yml' ESCAPE '\\')"
+        ],
+        "filename": "file_event_lnx_mal_shai_hulud_workflow.yml"
+    },
+    {
+        "title": "Shai-Hulud NPM Attack GitHub Activity",
+        "id": "69fa9174-4370-4646-8d48-6a22e2853402",
+        "status": "experimental",
+        "description": "Detects GitHub activity associated with the 'Shai-Hulud' NPM supply chain attack. The attack involves malicious NPM packages that use stolen GitHub tokens to create a new branch,\ninject a malicious workflow file to exfiltrate secrets, and make private repositories public.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.impact",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE logs MATCH ('\"shai-hulud-workflow.yml\"')"
+        ],
+        "filename": "github_mal_shai_hulud_npm_attack.yml"
+    },
+    {
+        "title": "Shai-Hulud NPM Package Malicious Exfiltration via Curl",
+        "id": "efd2eb09-b72e-4a61-8dc7-b1382a1e8983",
+        "status": "experimental",
+        "description": "Detects potential Shai Hulud NPM package attack attempting to exfiltrate data via curl to external webhook sites.",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1041",
+            "attack.collection",
+            "attack.t1005",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Image LIKE '%/curl' ESCAPE '\\' AND CommandLine LIKE '%curl%' ESCAPE '\\' AND CommandLine LIKE '%-d%' ESCAPE '\\' AND CommandLine LIKE '%webhook.site/bb8ca5f6-4175-45d2-b042-fc9ebb8170b7%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_mal_shai_hululd_exfiltration.yml"
+    },
+    {
         "title": "MacOS FileGrabber Infostealer",
         "id": "e710a880-1f18-4417-b6a0-b5afdf7e305a",
         "status": "experimental",
@@ -25491,6 +25556,27 @@
             "SELECT * FROM logs WHERE ((cs-uri-stem LIKE '%/mifs/rs/api/v2/featureusage%' ESCAPE '\\' AND cs-uri-query LIKE '%format=%' ESCAPE '\\') AND ((cs-uri-query LIKE '%java.lang.Runtime%' ESCAPE '\\' AND cs-uri-query LIKE '%.getMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%getRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%.exec(%' ESCAPE '\\') OR (cs-uri-query LIKE '%java\\%2elang\\%2eRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2egetMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2eexec\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%\\%6a\\%61\\%76\\%61\\%2e\\%6c\\%61\\%6e\\%67\\%2e\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65\\%65\\%28\\%29%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%67\\%65\\%74\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%2e\\%65\\%78\\%65\\%63\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%{7%7}%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7B7%7\\%7D%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7b7\\%2a7\\%7d%' ESCAPE '\\')))"
         ],
         "filename": "web_invanti_epmm_cve_2025_4427_and_cve_2025_4428.yml"
+    },
+    {
+        "title": "Non-Standard Nsswitch.Conf Creation - Potential CVE-2025-32463 Exploitation",
+        "id": "10ac0730-c24e-4f4c-81f8-b13a1ac95a1d",
+        "status": "experimental",
+        "description": "Detects the creation of nsswitch.conf files in non-standard directories, which may indicate exploitation of CVE-2025-32463.\nThis vulnerability requires an attacker to create a nsswitch.conf in a directory that will be used during sudo chroot operations.\nWhen sudo executes, it loads malicious shared libraries from user-controlled locations within the chroot environment,\npotentially leading to arbitrary code execution and privilege escalation.\n",
+        "author": "Swachchhanda Shrawn Poudel (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1068",
+            "cve.2025-32463",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Backup locations"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND TargetFilename LIKE '%/etc/nsswitch.conf' ESCAPE '\\' AND NOT ((TargetFilename = '/etc/nsswitch.conf')))"
+        ],
+        "filename": "file_event_lnx_exploit_cve_2025_32463.yml"
     },
     {
         "title": "Potential Java WebShell Upload in SAP NetViewer Server",
