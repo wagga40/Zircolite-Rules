@@ -2461,6 +2461,25 @@
         "filename": "proc_creation_lnx_susp_shell_script_exec_from_susp_location.yml"
     },
     {
+        "title": "Mask System Power Settings Via Systemctl",
+        "id": "c172b7b5-f3a1-4af2-90b7-822c63df86cb",
+        "description": "Detects the use of systemctl mask to disable system power management targets such as suspend, hibernate, or hybrid sleep.\nAdversaries may mask these targets to prevent a system from entering sleep or shutdown states, ensuring their malicious processes remain active and uninterrupted.\nThis behavior can be associated with persistence or defense evasion, as it impairs normal system power operations to maintain long-term access or avoid termination of malicious activity.\n",
+        "author": "Milad Cheraghi, Nasreddine Bencherchali",
+        "tags": [
+            "attack.persistence",
+            "attack.impact",
+            "attack.t1653"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/systemctl' ESCAPE '\\' AND CommandLine LIKE '% mask%' ESCAPE '\\' AND (CommandLine LIKE '%suspend.target%' ESCAPE '\\' OR CommandLine LIKE '%hibernate.target%' ESCAPE '\\' OR CommandLine LIKE '%hybrid-sleep.target%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_systemctl_mask_power_settings.yml"
+    },
+    {
         "title": "Shell Execution via Nice - Linux",
         "id": "093d68c7-762a-42f4-9f46-95e79142571a",
         "description": "Detects the use of the \"nice\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",

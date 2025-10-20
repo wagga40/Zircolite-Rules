@@ -19317,9 +19317,11 @@
         "title": "Suspicious Startup Folder Persistence",
         "id": "28208707-fe31-437f-9a7f-4b1108b94d2e",
         "status": "test",
-        "description": "Detects when a file with a suspicious extension is created in the startup folder",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "description": "Detects the creation of potentially malicious script and executable files in Windows startup folders, which is a common persistence technique used by threat actors.\nThese files (.ps1, .vbs, .js, .bat, etc.) are automatically executed when a user logs in, making the Startup folder an attractive target for attackers.\nThis technique is frequently observed in malvertising campaigns and malware distribution where attackers attempt to maintain long-term access to compromised systems.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.execution",
+            "attack.t1204.002",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -19328,7 +19330,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.jar' ESCAPE '\\' OR TargetFilename LIKE '%.msi' ESCAPE '\\' OR TargetFilename LIKE '%.scr' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.jar' ESCAPE '\\' OR TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.jse' ESCAPE '\\' OR TargetFilename LIKE '%.msi' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.psd1' ESCAPE '\\' OR TargetFilename LIKE '%.psm1' ESCAPE '\\' OR TargetFilename LIKE '%.scr' ESCAPE '\\' OR TargetFilename LIKE '%.url' ESCAPE '\\' OR TargetFilename LIKE '%.vba' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.wsf' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_susp_startup_folder_persistence.yml"
     },
