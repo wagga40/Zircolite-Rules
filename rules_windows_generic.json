@@ -9736,6 +9736,25 @@
         "filename": "proc_creation_win_hktl_purplesharp_indicators.yml"
     },
     {
+        "title": "RunMRU Registry Key Deletion",
+        "id": "c11aecef-9c37-45a6-9c07-bc0782f963fd",
+        "status": "experimental",
+        "description": "Detects deletion of the RunMRU registry key, which stores the history of commands executed via the Run dialog.\nIn the clickfix techniques, the phishing lures instruct users to open a run dialog through (Win + R) and execute malicious commands.\nAdversaries may delete this key to cover their tracks after executing commands.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1070.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '% del%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_reg_delete_runmru.yml"
+    },
+    {
         "title": "PrintBrm ZIP Creation of Extraction",
         "id": "cafeeba3-01da-4ab4-b6c4-a31b1d9730c7",
         "status": "test",
@@ -25286,6 +25305,25 @@
         "filename": "registry_delete_exploit_guard_protected_folders.yml"
     },
     {
+        "title": "RunMRU Registry Key Deletion - Registry",
+        "id": "3a9b8c1e-5b2e-4f7a-9d1c-2a7f3b6e1c55",
+        "status": "experimental",
+        "description": "Detects attempts to delete the RunMRU registry key, which stores the history of commands executed via the run dialog.\nIn the clickfix techniques, the phishing lures instruct users to open a run dialog through (Win + R) and execute malicious commands.\nAdversaries may delete this key to cover their tracks after executing commands.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1070.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU' ESCAPE '\\'"
+        ],
+        "filename": "registry_delete_runmru.yml"
+    },
+    {
         "title": "Potential Persistence Via New AMSI Providers - Registry",
         "id": "33efc23c-6ea2-4503-8cfe-bdf82ce8f705",
         "status": "test",
@@ -29112,7 +29150,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID = '4657' AND (ObjectName LIKE '%WINEVT\\\\Publishers\\\\{5770385f-c22a-43e0-bf4c-06f5698ffbd9}%' ESCAPE '\\' OR ObjectName LIKE '%WINEVT\\\\Channels\\\\Microsoft-Windows-Sysmon/Operational%' ESCAPE '\\') AND ObjectValueName = 'Enabled' AND NewValue = '0') OR (EventID = '4663' AND (ObjectName LIKE '%WINEVT\\\\Publishers\\\\{5770385f-c22a-43e0-bf4c-06f5698ffbd9}%' ESCAPE '\\' OR ObjectName LIKE '%WINEVT\\\\Channels\\\\Microsoft-Windows-Sysmon/Operational%' ESCAPE '\\') AND AccessMask = '65536')))"
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND ((EventID = '4657' AND (ObjectName LIKE '%WINEVT\\\\Publishers\\\\{5770385f-c22a-43e0-bf4c-06f5698ffbd9}%' ESCAPE '\\' OR ObjectName LIKE '%WINEVT\\\\Channels\\\\Microsoft-Windows-Sysmon/Operational%' ESCAPE '\\') AND ObjectValueName = 'Enabled' AND NewValue = '0') OR (EventID = '4663' AND (ObjectName LIKE '%WINEVT\\\\Publishers\\\\{5770385f-c22a-43e0-bf4c-06f5698ffbd9}%' ESCAPE '\\' OR ObjectName LIKE '%WINEVT\\\\Channels\\\\Microsoft-Windows-Sysmon/Operational%' ESCAPE '\\') AND AccessMask = '0x10000')))"
         ],
         "filename": "win_security_sysmon_channel_reference_deletion.yml"
     },
