@@ -74,6 +74,7 @@
         "description": "Detects users trying to exploit sudo vulnerability reported in CVE-2019-14287",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1068",
             "attack.t1548.003",
@@ -112,6 +113,7 @@
         "description": "Detects execution of the \"esxcli\" command with the \"system\" and \"permission\" flags in order to assign admin permissions to an account.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.t1059.012",
@@ -387,6 +389,7 @@
         "description": "Detects suspicious change of file privileges with chown and chmod commands",
         "author": "Ömer Günal",
         "tags": [
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1548.001"
@@ -1264,6 +1267,7 @@
         "description": "Detects the command line executed when TeamViewer starts a session started by a remote host.\nOnce a connection has been started, an investigator can verify the connection details by viewing the \"incoming_connections.txt\" log file in the TeamViewer folder.\n",
         "author": "Josh Nickels, Qi Nan",
         "tags": [
+            "attack.persistence",
             "attack.initial-access",
             "attack.t1133"
         ],
@@ -1613,6 +1617,8 @@
         "description": "Detects the use of at/atd which are utilities that are used to schedule tasks.\nThey are often abused by adversaries to maintain persistence or to perform task scheduling for initial or recurring execution of malicious code\n",
         "author": "Ömer Günal, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053.002"
         ],
@@ -1899,6 +1905,7 @@
         "description": "Detects the doas tool execution in linux host platform. This utility tool allow standard users to perform tasks as root, the same way sudo does.",
         "author": "Sittikorn S, Teoderick Contreras",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],
@@ -1936,6 +1943,7 @@
         "description": "Detects the injection of code by overwriting the memory map of a Linux process using the \"dd\" Linux command.",
         "author": "Joseph Kamau",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055.009"
         ],
@@ -2332,6 +2340,7 @@
         "description": "Detect unix shell configuration modification. Adversaries may establish persistence through executing malicious commands triggered when a new shell is opened.",
         "author": "Peter Matkovski, IAI",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.004"
         ],
@@ -2550,6 +2559,7 @@
         "description": "Detects the start, reload or restart of a service.",
         "author": "Jakob Weinzettl, oscd.community, CheraghiMilad",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1543.002"
         ],
@@ -2570,6 +2580,8 @@
         "description": "Detects calls to hidden files or files located in hidden directories in NIX systems.",
         "author": "David Burkett, @signalblur",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -2657,6 +2669,7 @@
         "description": "Detects the use of the `personality` syscall with the ADDR_NO_RANDOMIZE flag (0x0040000),\nwhich disables Address Space Layout Randomization (ASLR) in Linux. This is often used by attackers\nexploit development, or to bypass memory protection mechanisms.\nA successful use of this flag can reduce the effectiveness of ASLR and make memory corruption\nattacks more reliable.\n",
         "author": "Milad Cheraghi",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1562.001",
             "attack.t1055.009"
@@ -2750,6 +2763,7 @@
         "description": "Detects a creation of systemd services which could be used by adversaries to execute malicious code.",
         "author": "Pawel Mazur",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1543.002"
         ],
@@ -2840,6 +2854,8 @@
         "description": "Identifies modification of ld.so.preload for shared object injection. This technique is used by attackers to load arbitrary code into processes.",
         "author": "E.M. Anhaus (originally from Atomic Blue Detections, Tony Lambert), oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.006"
         ],
@@ -2858,6 +2874,7 @@
         "description": "Detects attempts to discover the files with setuid/setgid capability on them. That would allow adversary to escalate their privileges.",
         "author": "Pawel Mazur",
         "tags": [
+            "attack.defense-evasion",
             "attack.collection",
             "attack.privilege-escalation",
             "attack.t1123",
@@ -2970,6 +2987,7 @@
         "description": "Detect attempt to enable auditing of TTY input",
         "author": "Pawel Mazur",
         "tags": [
+            "attack.collection",
             "attack.credential-access",
             "attack.t1003",
             "attack.t1056.001"
@@ -3139,6 +3157,7 @@
         "description": "Detects usage of the `mknod` syscall to create special files (e.g., character or block devices).\nAttackers or malware might use `mknod` to create fake devices, interact with kernel interfaces,\nor establish covert channels in Linux systems.\nMonitoring the use of `mknod` is important because this syscall is rarely used by legitimate applications,\nand it can be abused to bypass file system restrictions or create backdoors.\n",
         "author": "Milad Cheraghi",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1543.003"
         ],
@@ -3229,6 +3248,7 @@
         "description": "Detects potential PwnKit exploitation CVE-2021-4034 in auth logs",
         "author": "Sreeman",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548.001"
         ],
@@ -3265,6 +3285,7 @@
         "description": "Detects the ld.so preload persistence file. See `man ld.so` for more information.",
         "author": "Christian Burkard (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1574.006"
@@ -3338,6 +3359,8 @@
         "description": "Detects suspicious modification of crontab file.",
         "author": "Pawel Mazur",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053.003"
         ],
@@ -3356,6 +3379,7 @@
         "description": "Detects users trying to exploit sudo vulnerability reported in CVE-2019-14287",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1068",
             "attack.t1548.003",
@@ -3394,6 +3418,8 @@
         "description": "Detects creation of sudoers file or files in \"sudoers.d\" directory which can be used a potential method to persiste privileges for a specific user.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053.003"
         ],
@@ -3465,6 +3491,8 @@
         "description": "Detects the creation of \"ebpfbackdoor\" files in both \"cron.d\" and \"sudoers.d\" directories. Which both are related to the TripleCross persistence method",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.defense-evasion",
             "attack.t1053.003"
@@ -3484,6 +3512,8 @@
         "description": "Detects creation of cron file or files in Cron directories which could indicates potential persistence.",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053.003"
         ],
@@ -3502,6 +3532,7 @@
         "description": "Detects the creation of doas.conf file in linux host platform.",
         "author": "Sittikorn S, Teoderick Contreras",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],

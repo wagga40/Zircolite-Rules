@@ -172,6 +172,7 @@
         "description": "Detects the process injection of a LittleCorporal generated Maldoc.",
         "author": "Christian Burkard (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.t1204.002",
@@ -295,6 +296,7 @@
         "description": "Detects when a process tries to access the memory of svchost to potentially dump credentials.",
         "author": "Florent Labouyrie",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],
@@ -394,6 +396,7 @@
         "description": "Detects an unexpected file being deleted by dns.exe which my indicate activity related to remote code execution or other forms of exploitation as seen in CVE-2020-1350 (SigRed)",
         "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
+            "attack.persistence",
             "attack.initial-access",
             "attack.t1133"
         ],
@@ -432,6 +435,7 @@
         "description": "Detects an unexpected file being modified by dns.exe which my indicate activity related to remote code execution or other forms of exploitation as seen in CVE-2020-1350 (SigRed)",
         "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
+            "attack.persistence",
             "attack.initial-access",
             "attack.t1133"
         ],
@@ -611,6 +615,7 @@
         "description": "Get-Variable is a valid PowerShell cmdlet\nWindowsApps is by default in the path where PowerShell is executed.\nSo when the Get-Variable command is issued on PowerShell execution, the system first looks for the Get-Variable executable in the path and executes the malicious binary instead of looking for the PowerShell cmdlet.\n",
         "author": "frack113",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546",
             "attack.defense-evasion",
@@ -826,6 +831,7 @@
         "description": "Detects the creation of a macro file for Outlook.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.command-and-control",
             "attack.t1137",
@@ -907,6 +913,7 @@
         "description": "Detects the creation of tasks from processes executed from suspicious locations",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.execution",
             "attack.t1053"
@@ -1121,6 +1128,7 @@
         "description": "Detects msdt.exe creating files in suspicious directories which could be a sign of exploitation of either Follina or Dogwalk vulnerabilities",
         "author": "Vadim Varganov, Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "cve.2022-30190"
@@ -1259,6 +1267,7 @@
         "description": "Adversaries may execute their own malicious payloads by hijacking vulnerable file path references.\nAdversaries can take advantage of paths that lack surrounding quotations by placing an executable in a higher level directory within the path, so that Windows will choose the adversary's executable to launch.\n",
         "author": "frack113",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.009"
         ],
@@ -1403,6 +1412,7 @@
         "description": "Detects WinRAR creating files in Windows startup locations, which may indicate an attempt to establish persistence by adding malicious files to the Startup folder.\nThis kind of behaviour has been associated with exploitation of WinRAR path traversal vulnerability CVE-2025-6218 or CVE-2025-8088.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -1728,6 +1738,7 @@
         "description": "Detects file writes of WMI script event consumer",
         "author": "Thomas Patzke",
         "tags": [
+            "attack.privilege-escalation",
             "attack.t1546.003",
             "attack.persistence"
         ],
@@ -1747,6 +1758,7 @@
         "description": "Detects PowerShell writing startup shortcuts.\nThis procedure was highlighted in Red Canary Intel Insights Oct. 2021, \"We frequently observe adversaries using PowerShell to write malicious .lnk files into the startup directory to establish persistence.\nAccordingly, this detection opportunity is likely to identify persistence mechanisms in multiple threats.\nIn the context of Yellow Cockatoo, this persistence mechanism eventually launches the command-line script that leads to the installation of a malicious DLL\"\n",
         "author": "Christopher Peacock '@securepeacock', SCYTHE",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -1766,6 +1778,7 @@
         "description": "Detects the creation of potentially malicious script and executable files in Windows startup folders, which is a common persistence technique used by threat actors.\nThese files (.ps1, .vbs, .js, .bat, etc.) are automatically executed when a user logs in, making the Startup folder an attractive target for attackers.\nThis technique is frequently observed in malvertising campaigns and malware distribution where attackers attempt to maintain long-term access to compromised systems.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.t1204.002",
             "attack.persistence",
@@ -1964,6 +1977,7 @@
         "description": "Detects a phishing attack which expands a ZIP file containing a malicious shortcut.\nIf the victim expands the ZIP file via the explorer process, then the explorer process expands the malicious ZIP file and drops a malicious shortcut redirected to a backdoor into the Startup folder.\nAdditionally, the file name of the malicious shortcut in Startup folder contains {0AFACED1-E828-11D1-9187-B532F1E9575D} meaning the folder shortcut operation.\n",
         "author": "Greg (rule)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547"
         ],
@@ -2883,6 +2897,7 @@
         "description": "Detects the execution of the hacktool Rubeus using specific command line flags",
         "author": "Christian Burkard (Nextron Systems), Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.credential-access",
             "attack.t1003",
             "attack.t1558.003",
@@ -3224,6 +3239,8 @@
         "description": "Uses PowerShell to install/copy a file into a system directory such as \"System32\" or \"SysWOW64\"",
         "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.credential-access",
             "attack.t1556.002"
         ],
@@ -3862,6 +3879,8 @@
         "description": "Detects the use of SharpUp, a tool for local privilege escalation",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.discovery",
             "attack.execution",
@@ -3983,6 +4002,7 @@
         "description": "Detects the malicious use of a control panel item",
         "author": "Kyaw Min Thein, Furkan Caliskan (@caliskanfurkan_)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.defense-evasion",
             "attack.t1218.002",
@@ -4165,6 +4185,7 @@
         "description": "Detects uncommon \"userinit.exe\" child processes, which could be a sign of uncommon shells or login scripts used for persistence.",
         "author": "Tom Ueltschi (@c_APT_ure), Tim Shelton",
         "tags": [
+            "attack.privilege-escalation",
             "attack.t1037.001",
             "attack.persistence"
         ],
@@ -4307,6 +4328,7 @@
         "description": "Detects a regedit started with TrustedInstaller privileges or by ProcessHacker.exe",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],
@@ -4771,6 +4793,7 @@
         "description": "Detects the creation of scheduled tasks that involves a temporary folder and runs only once",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1053.005"
@@ -4945,6 +4968,7 @@
         "description": "Detects attempts to disable security event logging by adding the `MiniNt` registry key.\nThis key is used to disable the Windows Event Log service, which collects and stores event logs from the operating system and applications.\nAdversaries may want to disable this service to prevent logging of security events that could be used to detect their activities.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1562.002",
             "attack.t1112",
@@ -5008,6 +5032,7 @@
         "description": "Identifies use of Fodhelper.exe to bypass User Account Control. Adversaries use this technique to execute privileged processes.",
         "author": "E.M. Anhaus (originally from Atomic Blue Detections, Tony Lambert), oscd.community",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548.002"
         ],
@@ -5048,6 +5073,8 @@
         "description": "Detects the installation of a DNS plugin DLL via ServerLevelPluginDll parameter in registry, which can be used to execute code in context of the DNS server (restart required)",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001",
             "attack.t1112"
@@ -5068,6 +5095,7 @@
         "description": "Detects the creation of a schtask that potentially executes a base64 encoded payload stored in the Windows Registry using PowerShell.",
         "author": "pH-T (Nextron Systems), @Kostastsale, TheDFIRReport, X__Junior (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1053.005",
@@ -5299,6 +5327,8 @@
         "description": "Detects the creation of scheduled tasks that involve system processes, which may indicate malicious actors masquerading as or abusing these processes to execute payloads or maintain persistence.",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053.005",
             "attack.defense-evasion",
@@ -5321,6 +5351,7 @@
         "description": "Detects an unexpected process spawning from dns.exe which may indicate activity related to remote code execution or other forms of exploitation as seen in CVE-2020-1350 (SigRed)",
         "author": "Tim Rauch, Elastic (idea)",
         "tags": [
+            "attack.persistence",
             "attack.initial-access",
             "attack.t1133"
         ],
@@ -5607,6 +5638,7 @@
         "description": "Detects suspicious DACL modifications to deny access to a service that affects critical trustees. This can be used to hide services or make them unstoppable.",
         "author": "Jonhnathan Ribeiro, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1543.003"
         ],
@@ -5687,6 +5719,7 @@
         "description": "Detects the creation of a schtask that executes a file from C:\\Users\\<USER>\\AppData\\Local",
         "author": "pH-T (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1053.005",
@@ -5994,6 +6027,7 @@
         "description": "Detects suspicious starts of explorer.exe that use the /NOUACCHECK flag that allows to run all sub processes of that newly started explorer.exe without any UAC checks",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1548.002"
         ],
@@ -6032,6 +6066,8 @@
         "description": "Detects various execution patterns of the CrackMapExec pentesting framework",
         "author": "Thomas Patzke",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.execution",
             "attack.t1047",
             "attack.t1053",
@@ -6206,6 +6242,8 @@
         "description": "Detects using SettingSyncHost.exe to run hijacked binary",
         "author": "Anton Kutepov, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.execution",
             "attack.defense-evasion",
             "attack.t1574.008"
@@ -6226,6 +6264,7 @@
         "description": "Detects the suspicious execution of a utility to convert Windows 3.x .grp files or for persistence purposes by malicious software or actors",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547"
         ],
@@ -6397,7 +6436,7 @@
         "title": "HackTool - Windows Credential Editor (WCE) Execution",
         "id": "7aa7009a-28b9-4344-8c1f-159489a390df",
         "status": "test",
-        "description": "Detects the use of Windows Credential Editor (WCE)",
+        "description": "Detects the use of Windows Credential Editor (WCE), a popular post-exploitation tool used to extract plaintext passwords, hash, PIN code and Kerberos tickets from memory.\nIt is often used by threat actors for credential dumping and lateral movement within compromised networks.\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.credential-access",
@@ -6405,11 +6444,11 @@
             "attack.s0005"
         ],
         "falsepositives": [
-            "Another service that uses a single -s command line switch"
+            "Unknown"
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Hashes LIKE '%IMPHASH=a53a02b997935fd8eedcb5f7abab9b9f%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=e96a73c7bf33a464c510ede582318bf2%' ESCAPE '\\') OR (CommandLine LIKE '%.exe -S' ESCAPE '\\' AND ParentImage LIKE '%\\\\services.exe' ESCAPE '\\')) AND NOT (Image LIKE '%\\\\clussvc.exe' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\WCE.exe' ESCAPE '\\' OR Image LIKE '%\\\\WCE64.exe' ESCAPE '\\') OR (Hashes LIKE '%IMPHASH=136F0A8572C058A96436C82E541E4C41%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=589657C64DDE88533186C39F82FA1F50%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=6BFE09EFCB4FFDE061EBDBAFC4DB84CF%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=7D490037BF450877E6D0287BDCFF8D2E%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=8AB93B061287C79F3088C5BC7E7D97ED%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=A53A02B997935FD8EEDCB5F7ABAB9B9F%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=BA434A7A729EEC20E136CA4C32D6C740%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=BD1D1547DA13C0FCB6C15E86217D5EB8%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=E96A73C7BF33A464C510EDE582318BF2%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_wce.yml"
     },
@@ -6439,6 +6478,8 @@
         "description": "Detects scheduled task creations or modification on a suspicious schedule type",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.execution",
             "attack.t1053.005"
         ],
@@ -6706,6 +6747,7 @@
         "description": "Detects changes to the \"DisableRestrictedAdmin\" registry value in order to disable or enable RestrictedAdmin mode.\nRestrictedAdmin mode prevents the transmission of reusable credentials to the remote system to which you connect using Remote Desktop.\nThis prevents your credentials from being harvested during the initial connection process if the remote server has been compromise\n",
         "author": "frack113",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -6850,6 +6892,7 @@
         "description": "The Tasks folder in system32 and syswow64 are globally writable paths.\nAdversaries can take advantage of this and load or influence any script hosts or ANY .NET Application\nin Tasks to load and execute a custom assembly into cscript, wscript, regsvr32, mshta, eventvwr\n",
         "author": "Sreeman",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.persistence",
             "attack.execution",
@@ -6893,6 +6936,8 @@
         "description": "Detects execution of VMware Xfer utility (VMwareXferlogs.exe) from the non-default directory which may be an attempt to sideload arbitrary DLL",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -6992,6 +7037,7 @@
         "description": "Detects when an adversary uses the reg.exe utility to add or modify new keys or subkeys",
         "author": "frack113, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112",
             "attack.t1562.001"
@@ -7223,6 +7269,7 @@
         "description": "Detects a WMI backdoor in Exchange Transport Agents via WMI event filters",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.003"
         ],
@@ -7552,6 +7599,7 @@
         "description": "Detects suspicious powershell execution via a schedule task where the command ends with an suspicious flags to hide the powershell instance instead of executeing scripts or commands. This could be a sign of persistence via PowerShell \"Get-Variable\" technique as seen being used in Colibri Loader",
         "author": "pH-T (Nextron Systems), Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1053.005",
@@ -7728,6 +7776,8 @@
         "description": "Detects the use of DISM to enable the PowerShell Web Access feature, which could be used for remote access and potential abuse",
         "author": "Michael Haag",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1548.002"
         ],
@@ -7927,6 +7977,7 @@
         "description": "Detects suspicious activity where the WMIC process is used to create an autorun registry entry via reg.exe, which is often indicative of persistence mechanisms employed by malware.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1547.001",
@@ -8204,6 +8255,7 @@
         "description": "Detects the suspicious use of the Velociraptor DFIR tool to execute other tools or download additional payloads, as seen in a campaign where it was abused for remote access and to stage further attacks.",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.command-and-control",
             "attack.persistence",
             "attack.defense-evasion",
             "attack.t1219"
@@ -8419,6 +8471,7 @@
         "description": "Detects the import of an alternate data stream with regini.exe, regini.exe can be used to modify registry keys.",
         "author": "Eli Salem, Sander Wiebing, oscd.community",
         "tags": [
+            "attack.persistence",
             "attack.t1112",
             "attack.defense-evasion"
         ],
@@ -8476,6 +8529,7 @@
         "description": "Detects command line parameters used by ADCSPwn, a tool to escalate privileges in an active directory network by coercing authenticate from machine accounts and relaying to the certificate service",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.credential-access",
             "attack.t1557.001"
         ],
@@ -8594,6 +8648,7 @@
         "description": "Detects the presence of \"UWhRC....AAYBAAAA\" pattern in command line.\nThe pattern \"1UWhRCAAAAA..BAAAA\" is a base64-encoded signature that corresponds to a marshaled CREDENTIAL_TARGET_INFORMATION structure.\nAttackers can use this technique to coerce authentication from victim systems to attacker-controlled hosts.\nIt is one of the strong indicators of a Kerberos coercion attack, where adversaries manipulate DNS records\nto spoof Service Principal Names (SPNs) and redirect authentication requests like in CVE-2025-33073.\nIf you see this pattern in the command line, it is likely an attempt to add spoofed Service Principal Names (SPNs) to DNS records,\nor checking for the presence of such records through the `nslookup` command.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.credential-access",
             "attack.persistence",
             "attack.privilege-escalation",
@@ -8635,6 +8690,7 @@
         "description": "Detection of unusual child processes by different system processes",
         "author": "Semanur Guneysu @semanurtg, oscd.community",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],
@@ -8654,6 +8710,7 @@
         "description": "Detects the creation of new scheduled tasks via commandline, using Schtasks.exe. This rule detects tasks creating that call OpenSSH, which may indicate the creation of reverse SSH tunnel to the attacker's server.",
         "author": "Rory Duncan",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.execution",
             "attack.t1053.005",
@@ -8929,6 +8986,8 @@
         "description": "Detects scheduled task creation using \"schtasks\" that contain potentially suspicious or uncommon commands",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.execution",
             "attack.t1053.005"
         ],
@@ -9131,6 +9190,7 @@
         "description": "Detects indicators of a UAC bypass method by mocking directories",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1548.002"
         ],
@@ -9294,6 +9354,7 @@
         "description": "Detects the execution of \"dctask64.exe\", a signed binary by ZOHO Corporation part of ManageEngine Endpoint Central.\nThis binary can be abused for DLL injection, arbitrary command and process execution.\n",
         "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055.001"
         ],
@@ -9465,6 +9526,7 @@
         "description": "Detects different hacktools used for relay attacks on Windows for privilege escalation",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.execution",
             "attack.credential-access",
             "attack.t1557.001"
@@ -9601,6 +9663,7 @@
         "description": "Detects a renamed \"dctask64.exe\" execution, a signed binary by ZOHO Corporation part of ManageEngine Endpoint Central.\nThis binary can be abused for DLL injection, arbitrary command and process execution.\n",
         "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1036",
             "attack.t1055.001",
@@ -9859,6 +9922,8 @@
         "description": "Detects the execution of Xwizard tool from a non-default directory.\nWhen executed from a non-default directory, this utility can be abused in order to side load a custom version of \"xwizards.dll\".\n",
         "author": "Christian Burkard (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -9897,6 +9962,7 @@
         "description": "Detects addition of users to highly privileged groups via \"Net\" or \"Add-LocalGroupMember\".",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1098"
         ],
@@ -10011,6 +10077,7 @@
         "description": "Detects the use of the Dinject PowerShell cradle based on the specific flags",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055"
         ],
@@ -10321,6 +10388,7 @@
         "description": "By replacing the sticky keys executable with the local admins CMD executable, an attacker is able to access a privileged windows console session without authenticating to the system.\nWhen the sticky keys are \"activated\" the privilleged shell is launched.\n",
         "author": "Sreeman",
         "tags": [
+            "attack.persistence",
             "attack.t1546.008",
             "attack.privilege-escalation"
         ],
@@ -10340,6 +10408,7 @@
         "description": "Detects chromium based browsers starting in headless and debugging mode and pointing to a user profile. This could be a sign of data stealing or remote control",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.credential-access",
             "attack.collection",
             "attack.t1185",
@@ -10589,6 +10658,7 @@
         "description": "Detects suspicious DACL modifications to allow access to a service from a suspicious trustee. This can be used to override access restrictions set by previous ACLs.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1543.003"
         ],
@@ -10597,7 +10667,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%A;%' ESCAPE '\\') AND (CommandLine LIKE '%;IU%' ESCAPE '\\' OR CommandLine LIKE '%;SU%' ESCAPE '\\' OR CommandLine LIKE '%;BA%' ESCAPE '\\' OR CommandLine LIKE '%;SY%' ESCAPE '\\' OR CommandLine LIKE '%;WD%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\sc.exe' ESCAPE '\\' OR OriginalFileName = 'sc.exe') AND (CommandLine LIKE '%sdset%' ESCAPE '\\' AND CommandLine LIKE '%A;%' ESCAPE '\\') AND (CommandLine LIKE '%;IU%' ESCAPE '\\' OR CommandLine LIKE '%;SU%' ESCAPE '\\' OR CommandLine LIKE '%;BA%' ESCAPE '\\' OR CommandLine LIKE '%;SY%' ESCAPE '\\' OR CommandLine LIKE '%;WD%' ESCAPE '\\')) AND NOT ((ParentImage LIKE 'C:\\\\Hexnode\\\\Hexnode Agent\\\\Current\\\\HexnodeAgent.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_sc_sdset_allow_service_changes.yml"
     },
@@ -10726,6 +10796,7 @@
         "description": "Detects the execution of \"reg.exe\" for enabling/disabling the RDP service on the host by tampering with the 'CurrentControlSet\\Control\\Terminal Server' values",
         "author": "pH-T (Nextron Systems), @Kostastsale, TheDFIRReport",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.lateral-movement",
             "attack.t1021.001",
@@ -10747,6 +10818,7 @@
         "description": "Detects WMIC executions in which an event consumer gets created. This could be used to establish persistence",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.003"
         ],
@@ -10902,6 +10974,8 @@
         "description": "Detects the execution of the hacktool SharPersist - used to deploy various different kinds of persistence mechanisms",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053"
         ],
@@ -11037,6 +11111,7 @@
         "description": "Detection of child processes spawned with SYSTEM privileges by parents with LOCAL SERVICE or NETWORK SERVICE accounts",
         "author": "Teymur Kheirkhabarov, Roberto Rodriguez (@Cyb3rWard0g), Open Threat Research (OTR)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1134.002"
         ],
@@ -11135,6 +11210,8 @@
         "description": "Detect modification of services configuration (ImagePath, FailureCommand and ServiceDLL) in registry by processes with Medium integrity level",
         "author": "Teymur Kheirkhabarov",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.011"
         ],
@@ -11389,6 +11466,7 @@
         "description": "Detects usage of HollowReaper, a process hollowing shellcode launcher used for stealth payload execution through process hollowing.\nIt replaces the memory of a legitimate process with custom shellcode, allowing the attacker to execute payloads under the guise of trusted binaries.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055.012"
         ],
@@ -11791,6 +11869,7 @@
         "description": "Detects actions that clear the local ShimCache and remove forensic evidence",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -11830,6 +11909,7 @@
         "description": "Detects a \"dllhost\" process spawning with no commandline arguments which is very rare to happen and could indicate process injection activity or malware mimicking similar system processes.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055"
         ],
@@ -12169,6 +12249,7 @@
         "description": "Detects suspicious DACL modifications via the \"Set-Service\" cmdlet using the \"SecurityDescriptorSddl\" flag (Only available with PowerShell 7) that can be used to hide services or make them unstopable",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1543.003"
         ],
@@ -12340,6 +12421,7 @@
         "description": "Detects when a program changes the default file association of any extension to an executable.\nWhen a file is opened, the default program used to open the file (also called the file association or handler) is checked. File association selections are stored in the Windows Registry and can be edited by users, administrators, or programs that have Registry access or by administrators using the built-in assoc utility. Applications can modify the file association for a given file extension to call an arbitrary program when a file with the given extension is opened.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.001"
         ],
@@ -12434,6 +12516,7 @@
         "description": "Detects the execution of different compiled Windows binaries of the impacket toolset (based on names or part of their names - could lead to false positives)",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.execution",
             "attack.credential-access",
             "attack.t1557.001"
@@ -12454,6 +12537,8 @@
         "description": "Detects potential sideloading of \"mpclient.dll\" by Windows Defender processes (\"MpCmdRun\" and \"NisSrv\") from their non-default directory.",
         "author": "Bhabesh Raj",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -12587,6 +12672,8 @@
         "description": "Detects an interactive AT job, which may be used as a form of privilege escalation.",
         "author": "E.M. Anhaus (originally from Atomic Blue Detections, Endgame), oscd.community",
         "tags": [
+            "attack.persistence",
+            "attack.execution",
             "attack.privilege-escalation",
             "attack.t1053.002"
         ],
@@ -12743,6 +12830,7 @@
         "description": "Detects the creation or update of a scheduled task to run with \"NT AUTHORITY\\SYSTEM\" privileges",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1053.005"
@@ -12841,6 +12929,7 @@
         "description": "Detects KrbRelayUp used to perform a universal no-fix local privilege escalation in Windows domain environments where LDAP signing is not enforced",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.credential-access",
             "attack.t1558.003",
             "attack.lateral-movement",
@@ -12881,6 +12970,8 @@
         "description": "Detects renamed vmnat.exe or portable version that can be used for DLL side-loading",
         "author": "elhoim",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -12975,6 +13066,7 @@
         "description": "Detects addition of users to the local Remote Desktop Users group via \"Net\" or \"Add-LocalGroupMember\".",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.initial-access",
             "attack.persistence",
             "attack.lateral-movement",
             "attack.t1133",
@@ -13310,6 +13402,8 @@
         "description": "Detects when an attacker tries to modify an already existing scheduled tasks to run from a suspicious location\nAttackers can create a simple looking task in order to avoid detection on creation as it's often the most focused on\nInstead they modify the task after creation to include their malicious payload\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.execution",
             "attack.t1053.005"
         ],
@@ -13539,6 +13633,8 @@
         "description": "Detects execution of the Notepad++ updater in a suspicious directory, which is often used in DLL side-loading attacks",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -13638,6 +13734,7 @@
         "description": "Search for usage of reg or Powershell by non-privileged users to modify service configuration in registry",
         "author": "Teymur Kheirkhabarov (idea), Ryan Plas (rule), oscd.community",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -13736,6 +13833,7 @@
         "description": "Detects potential process injection via Microsoft Remote Asssistance (Msra.exe) by looking at suspicious child processes spawned from the aforementioned process. It has been a target used by many threat actors and used for discovery and persistence tactics",
         "author": "Alexander McDonald",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055"
         ],
@@ -13953,6 +14051,7 @@
         "description": "Detects suspicious process related to rundll32 based on command line that invokes inline VBScript as seen being used by UNC2452",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055"
         ],
@@ -14001,6 +14100,25 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND ParentImage LIKE '%\\\\ScreenConnect.Service.exe' ESCAPE '\\' AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\csc.exe' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_remote_access_tools_screenconnect_webshell.yml"
+    },
+    {
+        "title": "Installation of WSL Kali-Linux",
+        "id": "eca8ae39-5c3c-4321-b538-9e64fe25822e",
+        "status": "experimental",
+        "description": "Detects installation of Kali Linux distribution through Windows Subsystem for Linux (WSL).\nAttackers may use Kali Linux WSL to leverage its penetration testing tools and capabilities for malicious purposes.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Legitimate installation or usage of Kali Linux WSL by administrators or security teams"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\wsl.exe' ESCAPE '\\' OR OriginalFileName = 'wsl') AND (CommandLine LIKE '% --install %' ESCAPE '\\' OR CommandLine LIKE '% -i %' ESCAPE '\\') AND CommandLine LIKE '%kali%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_wsl_kali_linux_installation.yml"
     },
     {
         "title": "Suspicious Child Process Of Wermgr.EXE",
@@ -14130,6 +14248,7 @@
         "description": "Detects execution of chromium based browser in headless mode using the \"dump-dom\" command line to download files",
         "author": "Sreeman, Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.command-and-control",
             "attack.t1105",
             "attack.t1564.003"
@@ -14427,6 +14546,8 @@
         "description": "Detects scheduled task creations that have suspicious action command and folder combinations",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.execution",
             "attack.t1053.005"
         ],
@@ -14446,6 +14567,7 @@
         "description": "Detects the execution of the hacktool Rubeus via PE information of command line parameters",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.credential-access",
             "attack.t1003",
             "attack.t1558.003",
@@ -14481,6 +14603,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName IN ('PingCastleReporting.exe', 'PingCastleCloud.exe', 'PingCastle.exe') OR (CommandLine LIKE '%--scanner aclcheck%' ESCAPE '\\' OR CommandLine LIKE '%--scanner antivirus%' ESCAPE '\\' OR CommandLine LIKE '%--scanner computerversion%' ESCAPE '\\' OR CommandLine LIKE '%--scanner foreignusers%' ESCAPE '\\' OR CommandLine LIKE '%--scanner laps\\_bitlocker%' ESCAPE '\\' OR CommandLine LIKE '%--scanner localadmin%' ESCAPE '\\' OR CommandLine LIKE '%--scanner nullsession%' ESCAPE '\\' OR CommandLine LIKE '%--scanner nullsession-trust%' ESCAPE '\\' OR CommandLine LIKE '%--scanner oxidbindings%' ESCAPE '\\' OR CommandLine LIKE '%--scanner remote%' ESCAPE '\\' OR CommandLine LIKE '%--scanner share%' ESCAPE '\\' OR CommandLine LIKE '%--scanner smb%' ESCAPE '\\' OR CommandLine LIKE '%--scanner smb3querynetwork%' ESCAPE '\\' OR CommandLine LIKE '%--scanner spooler%' ESCAPE '\\' OR CommandLine LIKE '%--scanner startup%' ESCAPE '\\' OR CommandLine LIKE '%--scanner zerologon%' ESCAPE '\\') OR CommandLine LIKE '%--no-enum-limit%' ESCAPE '\\' OR (CommandLine LIKE '%--healthcheck%' ESCAPE '\\' AND CommandLine LIKE '%--level Full%' ESCAPE '\\') OR (CommandLine LIKE '%--healthcheck%' ESCAPE '\\' AND CommandLine LIKE '%--server %' ESCAPE '\\')) AND NOT (((Image LIKE '%\\\\PingCastleReporting.exe' ESCAPE '\\' OR Image LIKE '%\\\\PingCastleCloud.exe' ESCAPE '\\' OR Image LIKE '%\\\\PingCastle.exe' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_renamed_pingcastle.yml"
+    },
+    {
+        "title": "WSL Kali-Linux Usage",
+        "id": "6f1a11aa-4b8a-4b7f-9e13-4d3e4ff0e0d4",
+        "status": "experimental",
+        "description": "Detects the use of Kali Linux through Windows Subsystem for Linux",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1202"
+        ],
+        "falsepositives": [
+            "Legitimate installation or usage of Kali Linux WSL by administrators or security teams"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((((Image LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\packages\\\\KaliLinux%' ESCAPE '\\') OR (Image LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\kali.exe%' ESCAPE '\\')) OR (Image LIKE '%:\\\\Program Files\\\\WindowsApps\\\\KaliLinux.%' ESCAPE '\\' AND Image LIKE '%\\\\kali.exe' ESCAPE '\\')) OR (((ParentImage LIKE '%\\\\wsl.exe' ESCAPE '\\' OR ParentImage LIKE '%\\\\wslhost.exe' ESCAPE '\\') AND ((Image LIKE '%\\\\kali.exe%' ESCAPE '\\' OR Image LIKE '%\\\\KaliLinux%' ESCAPE '\\') OR (CommandLine LIKE '%Kali.exe%' ESCAPE '\\' OR CommandLine LIKE '%Kali-linux%' ESCAPE '\\' OR CommandLine LIKE '%kalilinux%' ESCAPE '\\'))) AND NOT (((CommandLine LIKE '% -i %' ESCAPE '\\' OR CommandLine LIKE '% --install %' ESCAPE '\\' OR CommandLine LIKE '% --unregister %' ESCAPE '\\'))))))"
+        ],
+        "filename": "proc_creation_win_wsl_kali_linux_usage.yml"
     },
     {
         "title": "Outlook EnableUnsafeClientMailRules Setting Enabled",
@@ -14627,6 +14768,7 @@
         "description": "Detects the use of parent process ID spoofing tools like Didier Stevens tool SelectMyParent",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1134.004"
         ],
@@ -14738,6 +14880,7 @@
         "description": "Detects changes to the \"NoLMHash\" registry value in order to allow Windows to store LM Hashes.\nBy setting this registry value to \"0\" (DWORD), Windows will be allowed to store a LAN manager hash of your password in Active Directory and local SAM databases.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -14780,6 +14923,7 @@
         "description": "Detects the addition of a new LogonScript to the registry value \"UserInitMprLogonScript\" for potential persistence",
         "author": "Tom Ueltschi (@c_APT_ure)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1037.001"
         ],
@@ -14878,6 +15022,7 @@
         "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service starting",
         "author": "Teymur Kheirkhabarov, Ecco, Florian Roth",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1134.001",
             "attack.t1134.002"
@@ -15420,6 +15565,7 @@
         "description": "Detects a network connection that is initiated by the \"notepad.exe\" process.\nThis might be a sign of process injection from a beacon process or something similar.\nNotepad rarely initiates a network communication except when printing documents for example.\n",
         "author": "EagleEye Team",
         "tags": [
+            "attack.privilege-escalation",
             "attack.command-and-control",
             "attack.execution",
             "attack.defense-evasion",
@@ -15517,6 +15663,7 @@
         "description": "Detects DNS queries containing patterns associated with Kerberos coercion attacks via DNS object spoofing.\nThe pattern \"1UWhRCAAAAA..BAAAA\" is a base64-encoded signature that corresponds to a marshaled CREDENTIAL_TARGET_INFORMATION structure.\nAttackers can use this technique to coerce authentication from victim systems to attacker-controlled hosts.\nIt is one of the strong indicators of a Kerberos coercion attack, where adversaries manipulate DNS records\nto spoof Service Principal Names (SPNs) and redirect authentication requests like CVE-2025-33073.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.credential-access",
             "attack.persistence",
             "attack.privilege-escalation",
@@ -15682,6 +15829,7 @@
         "description": "Detects exploitation attempt of Cleo's CVE-2024-50623 by looking for a \"cmd.exe\" process spawning from the Celo software suite with suspicious Powershell commandline.\n",
         "author": "Tanner Filip, Austin Worline, Chad Hudson, Matt Anderson",
         "tags": [
+            "attack.initial-access",
             "attack.execution",
             "attack.t1190",
             "cve.2024-50623",
@@ -15703,6 +15851,7 @@
         "description": "Detects the execution of more.com and vbc.exe in the process tree.\nThis behavior was observed by a set of samples related to Lummac Stealer.\nThe Lummac payload is injected into the vbc.exe process.\n",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055",
             "detection.emerging-threats"
@@ -15744,6 +15893,7 @@
         "description": "Detects potential sideloading of malicious \"aclui.dll\" by OleView.This behavior was observed in Raspberry-Robin variants reported by chekpoint research on Feburary 2024.\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001",
@@ -15765,6 +15915,7 @@
         "description": "Detects the setting of a new value in the Autorun key that is used by the Kapeka backdoor for persistence.",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "detection.emerging-threats"
@@ -15785,6 +15936,8 @@
         "description": "Detects Kapeka backdoor persistence activity.\nDepending on the process privileges, the Kapeka dropper then sets persistence for the backdoor either as a scheduled task (if admin or SYSTEM) or autorun registry (if not).\nFor the scheduled task, it creates a scheduled task called \"Sens Api\" via schtasks command, which is set to run upon system startup as SYSTEM.\nTo establish persistence through the autorun utility, it adds an autorun entry called \"Sens Api\" under HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run via the \"reg add\" command.\nBoth persistence mechanisms are set to launch the binary by calling rundll32 and passing the backdoor's first export ordinal (#1) without any additional argument.\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053.005",
             "detection.emerging-threats"
@@ -15888,6 +16041,7 @@
         "description": "Detects changes to the \"Winlogon\" registry key where a process will set the value of the \"Shell\" to a value that was observed being used by KamiKakaBot samples in order to achieve persistence.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), X__Junior",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "detection.emerging-threats"
@@ -15966,6 +16120,7 @@
         "description": "Detects the setting of a custom protocol handler with the name \"rogue\".\nSeen being created by Forest Blizzard APT as reported by MSFT.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "detection.emerging-threats"
@@ -15986,6 +16141,7 @@
         "description": "Detects the setting of the DLL that handles the custom protocol handler.\nSeen being created by Forest Blizzard APT as reported by MSFT.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "detection.emerging-threats"
@@ -16161,6 +16317,8 @@
         "description": "Detects the installation of a service named \"javamtsup\" on the system.\nThe CosmicDuke info stealer uses Windows services typically named \"javamtsup\" for persistence.\n",
         "author": "Florian Roth (Nextron Systems), Daniil Yugoslavskiy, oscd.community (update)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1543.003",
             "attack.t1569.002",
@@ -16221,6 +16379,7 @@
         "description": "This method detects a service install of the malicious Microsoft Network Realtime Inspection Service service described in StoneDrill report by Kaspersky",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.g0064",
             "attack.t1543.003",
@@ -16242,6 +16401,8 @@
         "description": "Detects the execution of an executable that is typically used by PlugX for DLL side loading starting from an uncommon location",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.s0013",
             "attack.defense-evasion",
             "attack.t1574.001",
@@ -16285,6 +16446,7 @@
         "description": "This method detects malicious services mentioned in Turla PNG dropper report by NCC Group in November 2018",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.g0010",
             "attack.t1543.003",
@@ -16327,6 +16489,7 @@
         "description": "This method detects a service install of malicious services mentioned in Carbon Paper - Turla report by ESET",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.g0010",
             "attack.t1543.003",
@@ -16348,6 +16511,7 @@
         "description": "Detects communication to C2 servers mentioned in the operational notes of the ShadowBroker leak of EquationGroup C2 tools",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.exfiltration",
             "attack.command-and-control",
             "attack.g0020",
             "attack.t1041",
@@ -16477,6 +16641,8 @@
         "description": "Detects OilRig schedule task persistence as reported by Nyotron in their March 2018 report",
         "author": "Florian Roth (Nextron Systems), Markus Neis, Jonhnathan Ribeiro, Daniil Yugoslavskiy, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.g0049",
             "attack.t1053.005",
@@ -16504,6 +16670,8 @@
         "description": "Detects OilRig registry persistence as reported by Nyotron in their March 2018 report",
         "author": "Florian Roth (Nextron Systems), Markus Neis, Jonhnathan Ribeiro, Daniil Yugoslavskiy, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.g0049",
             "attack.t1053.005",
@@ -16531,6 +16699,8 @@
         "description": "Detects OilRig activity as reported by Nyotron in their March 2018 report",
         "author": "Florian Roth (Nextron Systems), Markus Neis, Jonhnathan Ribeiro, Daniil Yugoslavskiy, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.g0049",
             "attack.t1053.005",
@@ -16558,6 +16728,8 @@
         "description": "Detects OilRig schedule task persistence as reported by Nyotron in their March 2018 report",
         "author": "Florian Roth (Nextron Systems), Markus Neis, Jonhnathan Ribeiro, Daniil Yugoslavskiy, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.g0049",
             "attack.t1053.005",
@@ -16626,6 +16798,7 @@
         "description": "Detects registry keys created in OceanLotus (also known as APT32) attacks",
         "author": "megan201296, Jonhnathan Ribeiro",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112",
             "detection.emerging-threats"
@@ -16691,6 +16864,8 @@
         "description": "Detects the execution of DLL side-loading malware used by threat group Emissary Panda aka APT27",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001",
             "attack.g0027",
@@ -17035,6 +17210,8 @@
         "description": "Attempts to detect system changes made by Blue Mockingbird",
         "author": "Trent Liffick (@tliffick)",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.execution",
             "attack.t1112",
             "attack.t1047",
@@ -17097,6 +17274,7 @@
         "description": "Detects FlowCloud malware registry markers from threat group TA410.\nThe malware stores its configuration in the registry alongside drivers utilized by the malware's keylogger components.\n",
         "author": "NVISO",
         "tags": [
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1112",
             "detection.emerging-threats"
@@ -17221,6 +17399,7 @@
         "description": "Detects suspicious inline VBScript keywords as used by UNC2452",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "detection.emerging-threats"
@@ -17261,6 +17440,7 @@
         "description": "Detects registry key used by Leviathan APT in Malaysian focused campaign",
         "author": "Aidan Bracher",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "detection.emerging-threats"
@@ -17324,6 +17504,8 @@
         "description": "Detects specific process characteristics of Winnti malware noticed in Dec/Jan 2020 in a campaign against Honk Kong universities",
         "author": "Florian Roth (Nextron Systems), Markus Neis",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001",
             "attack.g0044",
@@ -17345,6 +17527,8 @@
         "description": "Detects specific process characteristics of Winnti Pipemon malware reported by ESET",
         "author": "Florian Roth (Nextron Systems), oscd.community",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001",
             "attack.g0044",
@@ -17366,6 +17550,8 @@
         "description": "Detects specific process characteristics of Chinese TAIDOOR RAT malware load",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
             "attack.execution",
             "attack.t1055.001",
             "detection.emerging-threats"
@@ -17634,6 +17820,7 @@
         "description": "Detects files created during the local privilege exploitation of CVE-2022-24527 Microsoft Connected Cache",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.execution",
             "attack.privilege-escalation",
             "attack.t1059.001",
             "cve.2022-24527",
@@ -17763,6 +17950,7 @@
         "description": "Detects execution of ChromeLoader malware via a registered scheduled task",
         "author": "@kostastsale",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1053.005",
@@ -17865,6 +18053,7 @@
         "description": "Detects post exploitation execution technique of the Serpent backdoor.\nAccording to Proofpoint, one of the commands that the backdoor ran was via creating a temporary scheduled task using an unusual method.\nIt creates a fictitious windows event and a trigger in which once the event is created, it executes the payload.\n",
         "author": "@kostastsale",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1053.005",
@@ -17950,6 +18139,7 @@
         "description": "This rule detects the execution of the extended storage procedure backdoor named Maggie in the context of Microsoft SQL server",
         "author": "Denis Szadkowski, DIRT / DCSO CyTec",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546",
             "detection.emerging-threats"
@@ -17970,6 +18160,8 @@
         "description": "Detects specific process parameters as used by ACTINIUM scheduled task persistence creation.",
         "author": "Andreas Hunkeler (@Karneades)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053",
             "attack.t1053.005",
@@ -18012,6 +18204,7 @@
         "description": "Detects attempts to exploit a Rejetto HTTP File Server (HFS) via CVE-2014-6287",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.initial-access",
             "attack.t1190",
             "attack.t1505.003",
@@ -18034,6 +18227,9 @@
         "description": "Detects commands used by Turla group as reported by ESET in May 2020",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.g0010",
             "attack.execution",
             "attack.t1059.001",
@@ -18213,6 +18409,8 @@
         "description": "Detects patterns as noticed in exploitation of Windows CVE-2021-31979 CVE-2021-33771 vulnerability and DevilsTongue malware by threat group Sourgum",
         "author": "Sittikorn S",
         "tags": [
+            "attack.initial-access",
+            "attack.execution",
             "attack.credential-access",
             "attack.t1566",
             "attack.t1203",
@@ -18236,6 +18434,8 @@
         "description": "Detects patterns as noticed in exploitation of Windows CVE-2021-31979 CVE-2021-33771 vulnerability and DevilsTongue malware by threat group Sourgum",
         "author": "Sittikorn S, frack113",
         "tags": [
+            "attack.initial-access",
+            "attack.execution",
             "attack.credential-access",
             "attack.t1566",
             "attack.t1203",
@@ -18321,6 +18521,7 @@
         "description": "Detects a explorer.exe sub process of the RazerInstaller software which can be invoked from the installer to select a different installation folder but can also be exploited to escalate privileges to LOCAL SYSTEM",
         "author": "Florian Roth (Nextron Systems), Maxime Thiebaut",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1553",
             "detection.emerging-threats"
@@ -18613,6 +18814,7 @@
         "description": "Detects the suspicious file that is created from PoC code against Windows Print Spooler Remote Code Execution Vulnerability CVE-2021-34527 (PrinterNightmare), CVE-2021-1675 .",
         "author": "Sittikorn S, Nuttakorn T, Tim Shelton",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1055",
             "detection.emerging-threats"
@@ -18741,6 +18943,7 @@
         "description": "Detects the renaming of an existing computer account to a account name that doesn't contain a $ symbol as seen in attacks against CVE-2021-42287",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.persistence",
             "attack.t1036",
@@ -19168,6 +19371,27 @@
         "filename": "file_event_win_malware_devil_bait_script_drop.yml"
     },
     {
+        "title": "Blackbyte Ransomware Registry",
+        "id": "83314318-052a-4c90-a1ad-660ece38d276",
+        "status": "test",
+        "description": "Detects specific windows registry modifications made by BlackByte ransomware variants.\nBlackByte set three different registry values to escalate privileges and begin setting the stage for lateral movement and encryption.\nThis rule triggers when any of the following registry keys are set to DWORD 1, however all three should be investigated as part of a larger BlackByte ransomware detection and response effort.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
+            "attack.t1112",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetObject LIKE 'HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LocalAccountTokenFilterPolicy' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\EnableLinkedConnections' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\FileSystem\\\\LongPathsEnabled' ESCAPE '\\') AND Details = 'DWORD (0x00000001)')"
+        ],
+        "filename": "registry_set_win_malware_blackbyte_privesc_registry.yml"
+    },
+    {
         "title": "Potential BlackByte Ransomware Activity",
         "id": "999e8307-a775-4d5f-addc-4855632335be",
         "status": "test",
@@ -19220,6 +19444,8 @@
         "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
         "author": "Bhabesh Raj",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1574.001",
             "detection.emerging-threats"
@@ -19240,6 +19466,8 @@
         "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
         "author": "Bhabesh Raj",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1574.001",
             "detection.emerging-threats"
@@ -19260,6 +19488,8 @@
         "description": "Detects the use of Pingback backdoor that creates ICMP tunnel for C2 as described in the trustwave report",
         "author": "Bhabesh Raj",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1574.001",
             "detection.emerging-threats"
@@ -19415,6 +19645,8 @@
         "description": "Detects specific command line argument being passed to a binary as seen being used by the malware Small Sieve.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1574.001",
             "detection.emerging-threats"
@@ -19494,6 +19726,8 @@
         "description": "Detects activity observed by different researchers to be HAFNIUM group activity (or related) on Exchange servers",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1546",
             "attack.t1053",
@@ -19622,6 +19856,8 @@
         "description": "Detects exploitation attempt of privilege escalation vulnerability via SetupComplete.cmd and PartnerSetupComplete.cmd described in CVE-2019-1378",
         "author": "Florian Roth (Nextron Systems), oscd.community, Jonhnathan Ribeiro",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1068",
             "attack.execution",
@@ -19709,6 +19945,8 @@
         "description": "Detects potential exploitation of the BearLPE exploit using Task Scheduler \".job\" import arbitrary DACL write\\par",
         "author": "Olaf Hartong",
         "tags": [
+            "attack.persistence",
+            "attack.execution",
             "attack.privilege-escalation",
             "attack.t1053.005",
             "car.2013-08-001",
@@ -19923,6 +20161,8 @@
         "description": "Detects registry keys related to Ursnif malware.",
         "author": "megan201296",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.execution",
             "attack.t1112",
             "detection.emerging-threats"
@@ -19985,6 +20225,7 @@
         "description": "Detects Ryuk ransomware activity",
         "author": "Florian Roth (Nextron Systems), Vasiliy Burov, Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001",
             "detection.emerging-threats"
@@ -20109,6 +20350,7 @@
         "description": "Detects APT31 Judgement Panda activity as described in the Crowdstrike 2019 Global Threat Report",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.lateral-movement",
             "attack.credential-access",
             "attack.g0128",
@@ -20132,6 +20374,8 @@
         "description": "Detects activity mentioned in Operation Wocao report",
         "author": "Florian Roth (Nextron Systems), frack113",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.discovery",
             "attack.t1012",
             "attack.defense-evasion",
@@ -20158,6 +20402,8 @@
         "description": "Detects activity mentioned in Operation Wocao report",
         "author": "Florian Roth (Nextron Systems), frack113",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.discovery",
             "attack.t1012",
             "attack.defense-evasion",
@@ -20313,6 +20559,7 @@
         "description": "Detects potential exploitation of remote code execution vulnerability CVE-2025-33053\nby monitoring suspicious image loads from WebDAV paths. The exploit involves malicious executables from\nattacker-controlled WebDAV servers loading the Windows system DLLs like gdi32.dll, netapi32.dll, etc.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.command-and-control",
             "attack.execution",
             "attack.defense-evasion",
             "attack.t1218",
@@ -20337,6 +20584,7 @@
         "description": "Detects potential exploitation of remote code execution vulnerability CVE-2025-33053\nwhich involves unauthorized code execution via WebDAV through external control of file names or paths.\nThe exploit abuses legitimate utilities like iediagcmd.exe or CustomShellHost.exe  by manipulating\ntheir working directories to point to attacker-controlled WebDAV servers, causing them to execute\nmalicious executables (like route.exe) from the WebDAV path instead of legitimate system binaries\nthrough Process.Start() search order manipulation.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.command-and-control",
             "attack.execution",
             "attack.defense-evasion",
             "attack.t1218",
@@ -20361,6 +20609,7 @@
         "description": "Detects potential exploitation of remote code execution vulnerability CVE-2025-33053\nby looking for process access that involves legitimate Windows executables (iediagcmd.exe, CustomShellHost.exe)\naccessing suspicious executables hosted on WebDAV shares. This indicates an attacker may be exploiting\nProcess.Start() search order manipulation to execute malicious code from attacker-controlled WebDAV servers\ninstead of legitimate system binaries. The vulnerability allows unauthorized code execution through\nexternal control of file names or paths via WebDAV.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.command-and-control",
             "attack.execution",
             "attack.defense-evasion",
             "attack.t1218",
@@ -20385,6 +20634,7 @@
         "description": "Detects suspicious child processes created by CrushFTP. It could be an indication of exploitation of a RCE vulnerability such as CVE-2025-54309.",
         "author": "Nisarg Suthar",
         "tags": [
+            "attack.privilege-escalation",
             "attack.initial-access",
             "attack.execution",
             "attack.t1059.001",
@@ -20410,6 +20660,7 @@
         "description": "Detects potential exploitation of CVE-2025-49144, a local privilege escalation vulnerability in Notepad++ installers (v8.8.1 and prior) where the installer calls regsvr32.exe without specifying the full path.\nThis allows an attacker to execute arbitrary code with elevated privileges by placing a malicious regsvr32.exe alongside this Legitimate Notepad++ installer.\nThe vulnerability is triggered when the installer attempts to register the NppShell.dll file, which is a component of Notepad++.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1574.008",
@@ -20456,6 +20707,7 @@
         "description": "Detects unexpected command shell execution (cmd.exe) from w3wp.exe when tied to CentreStack's portal.config, indicating potential exploitation (e.g., CVE-2025-30406)\n",
         "author": "Jason Rathbun (Blackpoint Cyber)",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.t1059.003",
             "attack.t1505.003",
@@ -20499,6 +20751,7 @@
         "description": "Detects the execution of the \"curl.exe\" command, referencing \"SOCKS\" and \".onion\" domains, which could be indicative of Kalambur backdoor activity.",
         "author": "Arda Buyukkaya (EclecticIQ)",
         "tags": [
+            "attack.execution",
             "attack.command-and-control",
             "attack.t1090",
             "attack.t1573",
@@ -20523,6 +20776,7 @@
         "description": "Detects the creation of files with the \".funksec\" extension, which is appended to encrypted files by the FunkLocker ransomware.",
         "author": "Saiprashanth Pulisetti ( @Prashanthblogs)",
         "tags": [
+            "attack.impact",
             "attack.t1486",
             "detection.emerging-threats"
         ],
@@ -21267,6 +21521,7 @@
         "description": "Detects the execution of rundll32 that leads to the invocation of legitimate Windows binaries.\nThe malware Pikabot has been seen to use this technique for process hollowing through hard-coded Windows binaries\n",
         "author": "Andreas Braathen (mnemonic.io)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055.012",
             "detection.emerging-threats"
@@ -21349,6 +21604,7 @@
         "description": "Detects the execution of installed GuLoader malware on the host.\nGuLoader is initiating network connections via the rundll32.exe process that is spawned via a browser parent(injected) process.\n",
         "author": "@kostastsale",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055",
             "detection.emerging-threats"
@@ -22093,6 +22349,8 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.defense-evasion",
+            "attack.persistence",
+            "attack.privilege-escalation",
             "attack.t1574.001",
             "detection.emerging-threats"
         ],
@@ -22452,6 +22710,7 @@
         "tags": [
             "attack.command-and-control",
             "attack.execution",
+            "attack.defense-evasion",
             "attack.t1218",
             "detection.emerging-threats"
         ],
@@ -22513,6 +22772,7 @@
         "tags": [
             "attack.defense-evasion",
             "attack.privilege-escalation",
+            "attack.persistence",
             "attack.t1574.001",
             "attack.g0032",
             "detection.emerging-threats"
@@ -22728,6 +22988,7 @@
         "description": "Detects the presence of a registry key created during Azorult execution",
         "author": "Trent Liffick",
         "tags": [
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.execution",
             "attack.t1112"
@@ -22767,6 +23028,7 @@
         "description": "Detects abusing Windows 10 Narrator's Feedback-Hub",
         "author": "Dmitriy Lifanov, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -22786,6 +23048,7 @@
         "description": "Detects potential malicious modification of run keys by winekey or team9 backdoor",
         "author": "omkar72",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547"
         ],
@@ -22824,6 +23087,7 @@
         "description": "Detects the suspicious RUN keys created by software located in Download or temporary Outlook/Internet Explorer directories",
         "author": "Florian Roth (Nextron Systems), Swachchhanda Shrawan Poude (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -22902,6 +23166,7 @@
         "description": "Detects the addition of a SSP to the registry. Upon a reboot or API call, SSP DLLs gain access to encrypted and plaintext passwords stored in Windows.\n",
         "author": "iwillkeepwatch",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.005"
         ],
@@ -22921,6 +23186,7 @@
         "description": "Detects the shell open key manipulation (exefile and ms-settings) used for persistence and the pattern of UAC Bypass using fodhelper.exe, computerdefaults.exe, slui.exe via registry keys (e.g. UACMe 33 or 62)",
         "author": "Christian Burkard (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548.002",
@@ -22942,6 +23208,7 @@
         "description": "Detects actions caused by the RedMimicry Winnti playbook",
         "author": "Alexander Rausch",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -22961,6 +23228,7 @@
         "description": "Detects a registry key used by IceID in a campaign that distributes malicious OneNote files",
         "author": "Hieu Tran",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -22980,6 +23248,7 @@
         "description": "Detects NetNTLM downgrade attack",
         "author": "Florian Roth (Nextron Systems), wagga, Nasreddine Bencherchali (Splunk STRT)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1562.001",
             "attack.t1112"
@@ -23000,6 +23269,7 @@
         "description": "Detects the addition of a key 'MiniNt' to the registry. Upon a reboot, Windows Event Log service will stop writing events.",
         "author": "Ilyas Ochkov, oscd.community",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1562.002",
             "attack.t1112",
@@ -23080,6 +23350,7 @@
         "description": "Detects persistence registry keys for Recycle Bin",
         "author": "frack113",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547"
         ],
@@ -23099,6 +23370,7 @@
         "description": "Detects a method to load DLL via LSASS process using an undocumented Registry key",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
             "attack.t1547.008"
@@ -23159,6 +23431,7 @@
         "description": "Detects potential malicious modification of the property value of IsCredGuardEnabled from\nHKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\WDigest to disable Cred Guard on a system.\nThis is usually used with UseLogonCredential to manipulate the caching credentials.\n",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -23409,6 +23682,7 @@
         "description": "Detects the installation of a new shim database where the file is located in a non-default location",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.011"
         ],
@@ -23446,6 +23720,7 @@
         "description": "Detects changes to the PSFactory COM InProcServer32 registry. This technique was used by RomCom to create persistence storing a malicious DLL.",
         "author": "BlackBerry Threat Research and Intelligence Team - @Joseliyo_Jstnk",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.015"
         ],
@@ -23521,6 +23796,7 @@
         "description": "Detect change of the user account associated with the FAX service to avoid the escalation problem.",
         "author": "frack113",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -23540,6 +23816,7 @@
         "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112",
             "attack.t1562"
@@ -23597,6 +23874,8 @@
         "description": "Detects potential persistence behavior using the windows telemetry registry key.\nWindows telemetry makes use of the binary CompatTelRunner.exe to run a variety of commands and perform the actual telemetry collections.\nThis binary was created to be easily extensible, and to that end, it relies on the registry to instruct on which commands to run.\nThe problem is, it will run any arbitrary command without restriction of location or type.\n",
         "author": "Lednyov Alexey, oscd.community, Sreeman",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053.005"
         ],
@@ -23635,6 +23914,7 @@
         "description": "Detects the modification of Outlook setting \"LoadMacroProviderOnBoot\" which if enabled allows the automatic loading of any configured VBA project/module",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.command-and-control",
             "attack.t1137",
@@ -23657,6 +23937,8 @@
         "description": "Detects changes to \"DsrmAdminLogonBehavior\" registry value.\nDuring a Domain Controller (DC) promotion, administrators create a Directory Services Restore Mode (DSRM) local administrator account with a password that rarely changes. The DSRM account is an “Administrator” account that logs in with the DSRM mode when the server is booting up to restore AD backups or recover the server from a failure.\nAttackers could abuse DSRM account to maintain their persistence and access to the organization's Active Directory.\nIf the \"DsrmAdminLogonBehavior\" value is set to \"0\", the administrator account can only be used if the DC starts in DSRM.\nIf the \"DsrmAdminLogonBehavior\" value is set to \"1\", the administrator account can only be used if the local AD DS service is stopped.\nIf the \"DsrmAdminLogonBehavior\" value is set to \"2\", the administrator account can always be used.\n",
         "author": "Nischal Khadgi",
         "tags": [
+            "attack.defense-evasion",
+            "attack.credential-access",
             "attack.persistence",
             "attack.t1556"
         ],
@@ -23753,6 +24035,7 @@
         "description": "Detects changes to the NGenAssemblyUsageLog registry key.\n.NET Usage Log output location can be controlled by setting the NGenAssemblyUsageLog CLR configuration knob in the Registry or by configuring an environment variable (as described in the next section).\nBy simplify specifying an arbitrary value (e.g. fake output location or junk data) for the expected value, a Usage Log file for the .NET execution context will not be created.\n",
         "author": "frack113",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -23772,6 +24055,7 @@
         "description": "Detects potential COM object hijacking via modification of default system CLSID.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.015"
         ],
@@ -23950,7 +24234,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Minimal\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Network\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\(Default)' ESCAPE '\\' AND Details = 'Service') AND NOT ((Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\msiexec.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Minimal\\\\SAVService\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Network\\\\SAVService\\\\(Default)' ESCAPE '\\')) OR (Image LIKE '%\\\\MBAMInstallerService.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\MBAMService\\\\(Default)' ESCAPE '\\' AND Details = 'Service')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Minimal\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Network\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\(Default)' ESCAPE '\\' AND Details = 'Service') AND NOT ((Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\msiexec.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Minimal\\\\SAVService\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Network\\\\SAVService\\\\(Default)' ESCAPE '\\')) OR (Image LIKE '%\\\\MBAMInstallerService.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\MBAMService\\\\(Default)' ESCAPE '\\' AND Details = 'Service') OR (Image LIKE 'C:\\\\Hexnode\\\\Hexnode Agent\\\\Current\\\\HexnodeAgent.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Minimal\\\\Hexnode Updater\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Network\\\\Hexnode Updater\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Minimal\\\\Hexnode Agent\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\SafeBoot\\\\Network\\\\Hexnode Agent\\\\(Default)' ESCAPE '\\') AND Details = 'Service')))"
         ],
         "filename": "registry_set_add_load_service_in_safe_mode.yml"
     },
@@ -23961,6 +24245,7 @@
         "description": "Detects a possible persistence mechanism using RUN key for Windows Explorer and pointing to a suspicious folder",
         "author": "Florian Roth (Nextron Systems), oscd.community",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -24074,6 +24359,7 @@
         "description": "Detects changes to the \"DisableRestrictedAdmin\" registry value in order to disable or enable RestrictedAdmin mode.\nRestrictedAdmin mode prevents the transmission of reusable credentials to the remote system to which you connect using Remote Desktop.\nThis prevents your credentials from being harvested during the initial connection process if the remote server has been compromise\n",
         "author": "frack113",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24114,6 +24400,8 @@
         "description": "Monitor the creation of a new key under 'TaskCache' when a new scheduled task is registered by a process that is not svchost.exe, which is suspicious",
         "author": "Syed Hasan (@syedhasan009)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.t1053",
             "attack.t1053.005"
@@ -24134,6 +24422,7 @@
         "description": "Adversaries may abuse features of Winlogon to execute DLLs and/or executables when a user logs in.\nWinlogon.exe is a Windows component responsible for actions at logon/logoff as well as the secure attention sequence (SAS) triggered by Ctrl-Alt-Delete.\n",
         "author": "frack113",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.004"
         ],
@@ -24172,6 +24461,7 @@
         "description": "Detects potential malicious modification of the property value of UseLogonCredential from HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\WDigest to enable clear-text credentials",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24210,6 +24500,7 @@
         "description": "Detects changes to registry keys related to \"Trusted Location\" of Microsoft Office where the path is set to something uncommon. Attackers might add additional trusted locations to avoid macro security restrictions.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24229,6 +24520,7 @@
         "description": "Detects the modification of Outlook security setting to allow unprompted execution of macros.",
         "author": "@ScoubiMtl",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.command-and-control",
             "attack.t1137",
@@ -24325,6 +24617,7 @@
         "description": "Detect possible persistence using Fax DLL load when service restart",
         "author": "frack113",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24344,6 +24637,8 @@
         "description": "Detects changes to the Windows EventLog channel permission values. It focuses on changes to the Security Descriptor Definition Language (SDDL) string, as modifications to these values can restrict access to specific users or groups, potentially aiding in defense evasion by controlling who can view or modify a event log channel. Upon execution, the user shouldn't be able to access the event log channel via the event viewer or via utilities such as \"Get-EventLog\" or \"wevtutil\".\n",
         "author": "X__Junior",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1547.001",
             "attack.t1112"
@@ -24364,6 +24659,7 @@
         "description": "Detect the creation of a service with a service binary located in a suspicious directory",
         "author": "Florian Roth (Nextron Systems), frack113",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24403,6 +24699,8 @@
         "description": "Detects the installation of a DNS plugin DLL via ServerLevelPluginDll parameter in registry, which can be used to execute code in context of the DNS server (restart required)",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001",
             "attack.t1112"
@@ -24423,6 +24721,7 @@
         "description": "Detects changes to the \"NoLMHash\" registry value in order to allow Windows to store LM Hashes.\nBy setting this registry value to \"0\" (DWORD), Windows will be allowed to store a LAN manager hash of your password in Active Directory and local SAM databases.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24442,6 +24741,7 @@
         "description": "Detects changes to the default RDP port.\nRemote desktop is a common feature in operating systems. It allows a user to log into a remote system using an interactive session with a graphical user interface.\nMicrosoft refers to its implementation of the Remote Desktop Protocol (RDP) as Remote Desktop Services (RDS).\n",
         "author": "frack113",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.010"
         ],
@@ -24461,6 +24761,7 @@
         "description": "Detects the addition of the 'MiniNt' key to the registry. Upon a reboot, Windows Event Log service will stop writing events.\nWindows Event Log is a service that collects and stores event logs from the operating system and applications. It is an important component of Windows security and auditing.\nAdversary may want to disable this service to disable logging of security events which could be used to detect their activities.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1562.002",
             "attack.t1112",
@@ -24482,6 +24783,7 @@
         "description": "Detects changes to the Netsh registry key to add a new DLL value that is located on a suspicious location. This change might be an indication of a potential persistence attempt by adding a malicious Netsh helper\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.007"
         ],
@@ -24520,6 +24822,7 @@
         "description": "Detects VBScript content stored into registry keys as seen being used by UNC2452 group",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -24539,6 +24842,7 @@
         "description": "Detects registry changes to Microsoft Office \"AccessVBOM\" to a value of \"1\" which disables trust access for VBA on the victim machine and lets attackers execute malicious macros without any Microsoft Office warnings.",
         "author": "Trent Liffick (@tliffick), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24597,6 +24901,7 @@
         "description": "Detects an attacker trying to enable the outlook security setting \"EnableUnsafeClientMailRules\" which allows outlook to run applications or execute macros",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -24635,6 +24940,7 @@
         "description": "Detects potential persistence activity via outlook today page.\nAn attacker can set a custom page to execute arbitrary code and link to it via the registry values \"URL\" and \"UserDefinedUrl\".\n",
         "author": "Tobias Michalski (Nextron Systems), David Bertho (@dbertho) & Eirik Sveen (@0xSV1), Storebrand",
         "tags": [
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1112"
         ],
@@ -24654,6 +24960,8 @@
         "description": "Detects changes to 'HKCU\\Software\\Classes\\Folder\\shell\\open\\command\\DelegateExecute'",
         "author": "Omkar Gudhate",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1546",
             "attack.t1548"
@@ -24710,6 +25018,7 @@
         "description": "Detects suspicious new RUN key element pointing to an executable in a suspicious folder",
         "author": "Florian Roth (Nextron Systems), Markus Neis, Sander Wiebing, Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.001"
         ],
@@ -24729,6 +25038,7 @@
         "description": "Attempts to detect system changes made by Blue Mockingbird",
         "author": "Trent Liffick (@tliffick)",
         "tags": [
+            "attack.defense-evasion",
             "attack.execution",
             "attack.persistence",
             "attack.t1112",
@@ -24750,6 +25060,7 @@
         "description": "Detects potential persistence activity via outlook home page.\nAn attacker can set a home page to achieve code execution and persistence by editing the WebView registry keys.\n",
         "author": "Tobias Michalski (Nextron Systems), David Bertho (@dbertho) & Eirik Sveen (@0xSV1), Storebrand",
         "tags": [
+            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1112"
         ],
@@ -24867,6 +25178,7 @@
         "description": "Detects known malicious service installs that appear in cases in which a Cobalt Strike beacon elevates privileges or lateral movement.\n",
         "author": "Wojciech Lesicki",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.lateral-movement",
@@ -24909,6 +25221,8 @@
         "description": "Detects the installation of a Callout DLL via CalloutDlls and CalloutEnabled parameter in Registry, which can be used to execute code in context of the DHCP server (restart required)",
         "author": "Dimitrios Slamaris",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001",
             "attack.t1112"
@@ -25005,6 +25319,7 @@
         "description": "Detects installation of new shim databases that try to patch sections of known processes for potential process injection or persistence.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.011"
         ],
@@ -25062,6 +25377,7 @@
         "description": "Detects registry changes to Office trust records where the path is located in a potentially suspicious location",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -25081,6 +25397,7 @@
         "description": "Running Chrome VPN Extensions via the Registry install 2 vpn extension",
         "author": "frack113",
         "tags": [
+            "attack.initial-access",
             "attack.persistence",
             "attack.t1133"
         ],
@@ -25094,31 +25411,13 @@
         "filename": "registry_set_chrome_extension.yml"
     },
     {
-        "title": "Blackbyte Ransomware Registry",
-        "id": "83314318-052a-4c90-a1ad-660ece38d276",
-        "status": "test",
-        "description": "BlackByte set three different registry values to escalate privileges and begin setting the stage for lateral movement and encryption",
-        "author": "frack113",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1112"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetObject LIKE 'HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\LocalAccountTokenFilterPolicy' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\\\\EnableLinkedConnections' ESCAPE '\\' OR TargetObject LIKE 'HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\FileSystem\\\\LongPathsEnabled' ESCAPE '\\') AND Details = 'DWORD (0x00000001)')"
-        ],
-        "filename": "registry_set_blackbyte_ransomware.yml"
-    },
-    {
         "title": "Office Macros Warning Disabled",
         "id": "91239011-fe3c-4b54-9f24-15c86bb65913",
         "status": "test",
         "description": "Detects registry changes to Microsoft Office \"VBAWarning\" to a value of \"1\" which enables the execution of all macros, whether signed or unsigned.",
         "author": "Trent Liffick (@tliffick), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -25138,6 +25437,7 @@
         "description": "Bypasses User Account Control using Event Viewer and a relevant Windows Registry modification",
         "author": "frack113",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1547.010"
         ],
@@ -25177,6 +25477,7 @@
         "description": "Detects changes to the \"Default\" property for keys located in the \\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\ registry. Which might be used as a method of persistence\nThe entries found under App Paths are used primarily for the following purposes.\nFirst, to map an application's executable file name to that file's fully qualified path.\nSecond, to prepend information to the PATH environment variable on a per-application, per-process basis.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1546.012"
         ],
@@ -25196,6 +25497,8 @@
         "description": "Detects a suspicious printer driver installation with an empty Manufacturer value",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574",
             "cve.2021-1675"
@@ -25253,6 +25556,7 @@
         "description": "Detects the deletion of registry keys containing the MSTSC connection history",
         "author": "Christian Burkard (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1070",
             "attack.t1112"
@@ -25348,6 +25652,7 @@
         "description": "Detects registry keys related to NetWire RAT",
         "author": "Christopher Peacock",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -25425,6 +25730,7 @@
         "description": "Detects a potential remote threat creation with certain characteristics which are typical for Cobalt Strike beacons",
         "author": "Olaf Hartong, Florian Roth (Nextron Systems), Aleksey Potapov, oscd.community",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.t1055.001"
         ],
@@ -25483,6 +25789,7 @@
         "description": "Detects remote thread creation from CACTUSTORCH as described in references.",
         "author": "@SBousseaden (detection), Thomas Patzke (rule)",
         "tags": [
+            "attack.privilege-escalation",
             "attack.defense-evasion",
             "attack.execution",
             "attack.t1055.012",
@@ -25543,6 +25850,8 @@
         "description": "Detects potential sideloading of \"mpclient.dll\" by Windows Defender processes (\"MpCmdRun\" and \"NisSrv\") from their non-default directory.",
         "author": "Bhabesh Raj",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -25562,6 +25871,7 @@
         "description": "Detects potential DLL sideloading of \"iviewers.dll\" (OLE/COM Object Interface Viewer)",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -25582,6 +25892,7 @@
         "description": "Detects DLLs loading from a spoofed Windows directory path with an extra space (e.g \"C:\\Windows \\System32\") which can bypass Windows trusted path verification.\nThis technique tricks Windows into treating the path as trusted, allowing malicious DLLs to load with high integrity privileges bypassing UAC.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.007",
@@ -25603,6 +25914,7 @@
         "description": "Detects WMI command line event consumers",
         "author": "Thomas Patzke",
         "tags": [
+            "attack.privilege-escalation",
             "attack.t1546.003",
             "attack.persistence"
         ],
@@ -25703,6 +26015,7 @@
         "description": "Detects potential DLL sideloading of \"SmadHook.dll\", a DLL used by SmadAV antivirus",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -25906,6 +26219,7 @@
         "description": "Detects potential DLL sideloading of \"EACore.dll\"",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -25926,6 +26240,7 @@
         "description": "Detects potential DLL sideloading of \"waveedit.dll\", which is part of the Nero WaveEditor audio editing software.",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -26007,6 +26322,7 @@
         "description": "Detects potential DLL sideloading of \"RjvPlatform.dll\" by \"SystemResetPlatform.exe\" located in a non-default location.",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -26046,6 +26362,7 @@
         "description": "Detects potential DLL sideloading of \"appverifUI.dll\"",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -26066,6 +26383,8 @@
         "description": "Detects loading of a DLL by the VMware Xfer utility from the non-default directory which may be an attempt to sideload arbitrary DLL",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -26085,6 +26404,7 @@
         "description": "Detects DLL sideloading of unsigned \"mfdetours.dll\". Executing \"mftrace.exe\" can be abused to attach to an arbitrary process and force load any DLL named \"mfdetours.dll\" from the current directory of execution.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -26105,6 +26425,7 @@
         "description": "The Fax service attempts to load ualapi.dll, which is non-existent. An attacker can then (side)load their own malicious DLL using this service.",
         "author": "NVISO",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
@@ -26125,6 +26446,7 @@
         "description": "Detects potential DLL side loading of \"KeyScramblerIE.dll\" by \"KeyScrambler.exe\".\nVarious threat actors and malware have been found side loading a masqueraded \"KeyScramblerIE.dll\" through \"KeyScrambler.exe\".\n",
         "author": "Swachchhanda Shrawan Poudel",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -26145,6 +26467,7 @@
         "description": "Detects .NET CLR DLLs being loaded by scripting applications such as wscript or cscript. This could be an indication of potential suspicious execution.",
         "author": "omkar72, oscd.community",
         "tags": [
+            "attack.defense-evasion",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.t1055"
@@ -26165,6 +26488,7 @@
         "description": "Detects potential DLL sideloading activity via the Aruba Networks Virtual Intranet Access \"arubanetsvc.exe\" process using DLL Search Order Hijacking",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1574.001"
@@ -26185,6 +26509,7 @@
         "description": "Detects potential DLL sideloading of \"edputil.dll\"",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -26266,6 +26591,8 @@
         "description": "Detects loading and execution of an unsigned thor scanner binary.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -26304,6 +26631,7 @@
         "description": "Detects potential DLL sideloading of rcdll.dll",
         "author": "X__Junior (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1574.001"
@@ -26633,6 +26961,7 @@
         "description": "Detects the load of the Windiver driver, a powerful user-mode capture/sniffing/modification/blocking/re-injection package for Windows",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.credential-access",
             "attack.collection",
             "attack.defense-evasion",
             "attack.t1599.001",
@@ -26654,6 +26983,7 @@
         "description": "Detects loading of known vulnerable drivers via their hash.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543.003",
             "attack.t1068"
@@ -26674,6 +27004,7 @@
         "description": "Detects driver load of the Process Hacker tool",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "cve.2021-21551",
             "attack.t1543"
@@ -26714,6 +27045,7 @@
         "description": "Detects the load of HackSys Extreme Vulnerable Driver which is an intentionally vulnerable Windows driver developed for security enthusiasts to learn and polish their exploitation skills at Kernel level and often abused by threat actors",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543.003"
         ],
@@ -26733,6 +27065,7 @@
         "description": "Detects loading of known malicious drivers via their hash.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543.003",
             "attack.t1068"
@@ -26753,6 +27086,7 @@
         "description": "Detects the load of a signed WinRing0 driver often used by threat actors, crypto miners (XMRIG) or malware for privilege escalation",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543.003"
         ],
@@ -26816,6 +27150,7 @@
         "description": "Detects creation of default named pipes used by the Koh tool",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.credential-access",
             "attack.t1528",
@@ -27009,6 +27344,7 @@
         "description": "Detects blocked load attempts of revoked drivers",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543"
         ],
@@ -27082,6 +27418,7 @@
         "description": "Detects blocked load events that did not meet the authenticode signing level requirements or violated the code integrity policy.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543"
         ],
@@ -27140,6 +27477,8 @@
         "description": "Detects Code Integrity (CI) engine blocking Microsoft Defender's processes (MpCmdRun and NisSrv) from loading unsigned DLLs which may be an attempt to sideload arbitrary DLL",
         "author": "Bhabesh Raj",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -27159,6 +27498,8 @@
         "description": "Detects Code Integrity (CI) engine blocking processes from loading unsigned DLLs residing in suspicious locations",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -27232,6 +27573,8 @@
         "description": "Detects restricted access to applications by the Software Restriction Policies (SRP) policy",
         "author": "frack113",
         "tags": [
+            "attack.lateral-movement",
+            "attack.execution",
             "attack.defense-evasion",
             "attack.t1072"
         ],
@@ -27792,6 +28135,7 @@
         "description": "This events that are generated when using the hacktool Ruler by Sensepost",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.discovery",
             "attack.execution",
             "attack.collection",
@@ -27855,6 +28199,7 @@
         "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service installation",
         "author": "Teymur Kheirkhabarov, Ecco, Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1134.001",
             "attack.t1134.002"
@@ -27918,6 +28263,7 @@
         "description": "Backdooring domain object to grant the rights associated with DCSync to a regular user or machine account using Powerview\\Add-DomainObjectAcl DCSync Extended Right cmdlet, will allow to re-obtain the pwd hashes of any user/computer",
         "author": "Samir Bousseaden, Roberto Rodriguez @Cyb3rWard0g, oscd.community, Tim Shelton, Maxence Fossat",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1098"
         ],
@@ -27998,6 +28344,8 @@
         "description": "Detects suspicious computer name samtheadmin-{1..100}$ generated by hacktool",
         "author": "elhoim",
         "tags": [
+            "attack.initial-access",
+            "attack.defense-evasion",
             "cve.2021-42278",
             "cve.2021-42287",
             "attack.persistence",
@@ -28020,6 +28368,7 @@
         "description": "Detects potential attempts made to set the Directory Services Restore Mode administrator password.\nThe Directory Service Restore Mode (DSRM) account is a local administrator account on Domain Controllers.\nAttackers may change the password in order to obtain persistence.\n",
         "author": "Thomas Patzke",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1098"
         ],
@@ -28060,6 +28409,7 @@
         "description": "Detects modifications to DNS records in Active Directory where the Distinguished Name (DN) contains a base64-encoded blob\nmatching the pattern \"1UWhRCAAAAA...BAAAA\". This pattern corresponds to a marshaled CREDENTIAL_TARGET_INFORMATION structure,\ncommonly used in Kerberos coercion attacks. Adversaries may exploit this to coerce victim systems into authenticating to\nattacker-controlled hosts by spoofing SPNs via DNS. It is one of the strong indicators of a Kerberos coercion attack,.\nwhere adversaries manipulate DNS records to spoof Service Principal Names (SPNs) and redirect authentication requests like CVE-2025-33073.\nPlease investigate the user account that made the changes, as it is likely a low-privileged account that has been compromised.\n",
         "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.credential-access",
             "attack.t1557.003",
             "attack.persistence",
@@ -28378,6 +28728,7 @@
         "description": "Detects a service installed by a client which has PID 0 or whose parent has PID 0",
         "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543"
         ],
@@ -28435,6 +28786,7 @@
         "description": "Detects known malicious service installs that appear in cases in which a Cobalt Strike beacon elevates privileges or lateral movement",
         "author": "Florian Roth (Nextron Systems), Wojciech Lesicki",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.lateral-movement",
@@ -28458,6 +28810,8 @@
         "description": "Detect lateral movement using GPO scheduled task, usually used to deploy ransomware at scale",
         "author": "Samir Bousseaden",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.execution",
             "attack.persistence",
             "attack.lateral-movement",
             "attack.t1053.005"
@@ -28575,6 +28929,7 @@
         "description": "The 'LsaRegisterLogonProcess' function verifies that the application making the function call is a logon process by checking that it has the SeTcbPrivilege privilege set. Possible Rubeus tries to get a handle to LSA.",
         "author": "Roberto Rodriguez (source), Ilyas Ochkov (rule), oscd.community",
         "tags": [
+            "attack.credential-access",
             "attack.lateral-movement",
             "attack.privilege-escalation",
             "attack.t1558.003"
@@ -28656,6 +29011,7 @@
         "description": "Potential adversaries stopping ETW providers recording loaded .NET assemblies.",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112",
             "attack.t1562"
@@ -28676,6 +29032,7 @@
         "description": "Detects NetNTLM downgrade attack",
         "author": "Florian Roth (Nextron Systems), wagga",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1562.001",
             "attack.t1112"
@@ -28946,6 +29303,7 @@
         "description": "Detects successful logon with logon type 9 (NewCredentials) which matches the Overpass the Hash behavior of e.g Mimikatz's sekurlsa::pth module.",
         "author": "Roberto Rodriguez (source), Dominik Schaudel (rule)",
         "tags": [
+            "attack.defense-evasion",
             "attack.lateral-movement",
             "attack.s0002",
             "attack.t1550.002"
@@ -28966,6 +29324,7 @@
         "description": "Detects a suspicious local successful logon event where the Logon Package is Kerberos, the remote address is set to localhost, and the target user SID is the built-in local Administrator account.\nThis may indicate an attempt to leverage a Kerberos relay attack variant that can be used to elevate privilege locally from a domain joined limited user to local System privileges.\n",
         "author": "Elastic, @SBousseaden",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.credential-access",
             "attack.t1548"
@@ -28986,6 +29345,7 @@
         "description": "Detects logon events that have characteristics of events generated during an attack with RottenPotato and the like",
         "author": "@SBousseaden, Florian Roth",
         "tags": [
+            "attack.collection",
             "attack.privilege-escalation",
             "attack.credential-access",
             "attack.t1557.001"
@@ -29025,6 +29385,7 @@
         "description": "Detects execution of NoFilter, a tool for abusing the Windows Filtering Platform for privilege escalation via hardcoded policy name indicators\n",
         "author": "Stamatis Chatzimangou (st0pp3r)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1134",
             "attack.t1134.001"
@@ -29103,6 +29464,7 @@
         "description": "Detects scenario where if a user is assigned the SeEnableDelegationPrivilege right in Active Directory it would allow control of other AD user objects.",
         "author": "@neu5ron",
         "tags": [
+            "attack.privilege-escalation",
             "attack.persistence",
             "attack.t1098"
         ],
@@ -29142,6 +29504,7 @@
         "description": "Potential threat actor tampering with Sysmon manifest and eventually disabling it",
         "author": "Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research)",
         "tags": [
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1112"
         ],
@@ -29161,6 +29524,8 @@
         "description": "Detects possible addition of shadow credentials to an active directory object.",
         "author": "Nasreddine Bencherchali (Nextron Systems), Elastic (idea)",
         "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
             "attack.credential-access",
             "attack.t1556"
         ],
@@ -29282,6 +29647,7 @@
         "description": "Detects scenarios where one can control another users or computers account without having to use their credentials.",
         "author": "@neu5ron",
         "tags": [
+            "attack.privilege-escalation",
             "attack.t1098",
             "attack.persistence"
         ],
@@ -29322,6 +29688,8 @@
         "description": "Detects a DNS server error in which a specified plugin DLL (in registry) could not be loaded",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -29490,6 +29858,7 @@
         "description": "Detects that a vulnerable Netlogon secure channel connection was allowed, which could be an indicator of CVE-2020-1472.",
         "author": "NVISO",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],
@@ -29530,6 +29899,7 @@
         "description": "Detects known malicious service installation that appear in cases in which a Sliver implants execute the PsExec commands",
         "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.t1543.003",
@@ -29669,6 +30039,7 @@
         "description": "Detects service creation from KrbRelayUp tool used for privilege escalation in Windows domain environments where LDAP signing is not enforced (the default settings)",
         "author": "Sittikorn S, Tim Shelton",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543"
         ],
@@ -29798,6 +30169,7 @@
         "description": "Detects known malicious service installs that appear in cases in which a Cobalt Strike beacon elevates privileges or lateral movement",
         "author": "Florian Roth (Nextron Systems), Wojciech Lesicki",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.lateral-movement",
@@ -29862,6 +30234,7 @@
         "description": "Detects a ProcessHacker tool that elevated privileges to a very high level",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.persistence",
             "attack.execution",
             "attack.privilege-escalation",
             "attack.t1543.003",
@@ -29982,6 +30355,7 @@
         "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service installation",
         "author": "Teymur Kheirkhabarov, Ecco, Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1134.001",
             "attack.t1134.002"
@@ -30002,6 +30376,7 @@
         "description": "Detects a service installed by a client which has PID 0 or whose parent has PID 0",
         "author": "Tim Rauch (Nextron Systems), Elastic (idea)",
         "tags": [
+            "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1543"
         ],
@@ -30079,6 +30454,7 @@
         "description": "Detects the invocation of TabTip via CLSID as seen when JuicyPotatoNG is used on a system in brute force mode",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
+            "attack.collection",
             "attack.execution",
             "attack.credential-access",
             "attack.t1557.001"
@@ -30118,6 +30494,8 @@
         "description": "This rule detects a DHCP server error in which a specified Callout DLL (in registry) could not be loaded",
         "author": "Dimitrios Slamaris, @atc_project (fix)",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
@@ -30137,6 +30515,8 @@
         "description": "This rule detects a DHCP server in which a specified Callout DLL (in registry) was loaded",
         "author": "Dimitrios Slamaris",
         "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
             "attack.defense-evasion",
             "attack.t1574.001"
         ],
