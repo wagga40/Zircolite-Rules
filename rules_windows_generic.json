@@ -8504,6 +8504,26 @@
         "filename": "proc_creation_win_pua_adfind_enumeration.yml"
     },
     {
+        "title": "PUA - Restic Backup Tool Execution",
+        "id": "6ddff2e8-ea1a-45d0-8938-93dfc1d67ae7",
+        "status": "experimental",
+        "description": "Detects the execution of the Restic backup tool, which can be used for data exfiltration.\nThreat actors may leverage Restic to back up and exfiltrate sensitive data to remote storage locations, including cloud services.\nIf not legitimately used in the enterprise environment, its presence may indicate malicious activity.\n",
+        "author": "Nounou Mbeiri, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1048",
+            "attack.t1567.002"
+        ],
+        "falsepositives": [
+            "Legitimate use of Restic for backup purposes within the organization."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (((CommandLine LIKE '%--password-file%' ESCAPE '\\' AND CommandLine LIKE '%init%' ESCAPE '\\' AND CommandLine LIKE '% -r %' ESCAPE '\\') OR (CommandLine LIKE '%--use-fs-snapshot%' ESCAPE '\\' AND CommandLine LIKE '%backup%' ESCAPE '\\' AND CommandLine LIKE '% -r %' ESCAPE '\\')) OR ((CommandLine LIKE '%sftp:%' ESCAPE '\\' OR CommandLine LIKE '%rest:http%' ESCAPE '\\' OR CommandLine LIKE '%s3:s3.%' ESCAPE '\\' OR CommandLine LIKE '%s3.http%' ESCAPE '\\' OR CommandLine LIKE '%azure:%' ESCAPE '\\' OR CommandLine LIKE '% gs:%' ESCAPE '\\' OR CommandLine LIKE '%rclone:%' ESCAPE '\\' OR CommandLine LIKE '%swift:%' ESCAPE '\\' OR CommandLine LIKE '% b2:%' ESCAPE '\\') AND CommandLine LIKE '% init %' ESCAPE '\\' AND CommandLine LIKE '% -r %' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_pua_restic.yml"
+    },
+    {
         "title": "PUA - PingCastle Execution From Potentially Suspicious Parent",
         "id": "b37998de-a70b-4f33-b219-ec36bf433dc0",
         "status": "test",
