@@ -276,6 +276,24 @@
         "filename": "proc_creation_lnx_pua_trufflehog.yml"
     },
     {
+        "title": "Audit Rules Deleted Via Auditctl",
+        "id": "bed26dea-4525-47f4-b24a-76e30e44ffb0",
+        "description": "Detects the execution of 'auditctl' with the '-D' command line parameter, which deletes all configured audit rules and watches on Linux systems.\nThis technique is commonly used by attackers to disable audit logging and cover their tracks by removing monitoring capabilities.\nRemoval of audit rules can significantly impair detection of malicious activities on the affected system.\n",
+        "author": "Mohamed LAKRI",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.012"
+        ],
+        "falsepositives": [
+            "An administrator troubleshooting. Investigate all attempts."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/auditctl' ESCAPE '\\' AND CommandLine REGEXP '-D')"
+        ],
+        "filename": "proc_creation_lnx_auditctl_clear_rules.yml"
+    },
+    {
         "title": "Download File To Potentially Suspicious Directory Via Wget",
         "id": "cf610c15-ed71-46e1-bdf8-2bd1a99de6c4",
         "description": "Detects the use of wget to download content to a suspicious directory",
@@ -568,6 +586,24 @@
             "SELECT * FROM logs WHERE ((Image LIKE '%/who' ESCAPE '\\' OR Image LIKE '%/w' ESCAPE '\\' OR Image LIKE '%/last' ESCAPE '\\' OR Image LIKE '%/lsof' ESCAPE '\\' OR Image LIKE '%/netstat' ESCAPE '\\') AND NOT ((ParentCommandLine LIKE '%/usr/bin/landscape-sysinfo%' ESCAPE '\\' AND Image LIKE '%/who' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_system_network_connections_discovery.yml"
+    },
+    {
+        "title": "Python WebServer Execution - Linux",
+        "id": "3f0f5957-04f8-4792-ad89-192b0303bde6",
+        "description": "Detects the execution of Python web servers via command line interface (CLI).\nAfter gaining access to target systems, adversaries may use Python's built-in HTTP server modules to quickly establish a web server without requiring additional software.\nThis technique is commonly used in post-exploitation scenarios as it provides a simple method for transferring files between the compromised host and attacker-controlled systems.\n",
+        "author": "Mohamed LAKRI",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1048.003"
+        ],
+        "falsepositives": [
+            "Testing or development activity"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (((Image LIKE '%/python' ESCAPE '\\' OR Image LIKE '%/python2' ESCAPE '\\' OR Image LIKE '%/python3' ESCAPE '\\') OR (Image LIKE '%/python2.%' ESCAPE '\\' OR Image LIKE '%/python3.%' ESCAPE '\\')) AND (CommandLine LIKE '%http.server%' ESCAPE '\\' OR CommandLine LIKE '%SimpleHTTPServer%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_python_http_server_execution.yml"
     },
     {
         "title": "Local System Accounts Discovery - Linux",
@@ -864,20 +900,21 @@
         "filename": "proc_creation_lnx_esxcli_vm_discovery.yml"
     },
     {
-        "title": "Commands to Clear or Remove the Syslog",
+        "title": "Syslog Clearing or Removal Via System Utilities",
         "id": "3fcc9b35-39e4-44c0-a2ad-9e82b6902b31",
-        "description": "Detects specific commands commonly used to remove or empty the syslog. Which is often used by attacker as a method to hide their tracks",
+        "description": "Detects specific commands commonly used to remove or empty the syslog. Which is a technique often used by attacker as a method to hide their tracks\n",
         "author": "Max Altgelt (Nextron Systems), Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC",
         "tags": [
             "attack.defense-evasion",
             "attack.t1070.002"
         ],
         "falsepositives": [
-            "Log rotation."
+            "Log rotation.",
+            "Maintenance."
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (CommandLine LIKE '%rm /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -r /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -f /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%rm -rf /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink -r /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink -f /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%unlink -rf /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%mv /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% >/var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% > /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%journalctl --vacuum%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((CommandLine LIKE '%/var/log/syslog%' ESCAPE '\\' AND ((Image LIKE '%/rm' ESCAPE '\\' AND (CommandLine LIKE '% -r %' ESCAPE '\\' OR CommandLine LIKE '% -f %' ESCAPE '\\' OR CommandLine LIKE '% -rf %' ESCAPE '\\' OR CommandLine LIKE '%/var/log/syslog%' ESCAPE '\\')) OR Image LIKE '%/unlink' ESCAPE '\\' OR Image LIKE '%/mv' ESCAPE '\\' OR (Image LIKE '%/truncate' ESCAPE '\\' AND CommandLine LIKE '%0 %' ESCAPE '\\' AND CommandLine LIKE '%/var/log/syslog%' ESCAPE '\\' AND (CommandLine LIKE '%-s %' ESCAPE '\\' OR CommandLine LIKE '%-c %' ESCAPE '\\' OR CommandLine LIKE '%--size%' ESCAPE '\\')) OR (Image LIKE '%/ln' ESCAPE '\\' AND CommandLine LIKE '%/dev/null %' ESCAPE '\\' AND CommandLine LIKE '%/var/log/syslog%' ESCAPE '\\' AND (CommandLine LIKE '%-sf %' ESCAPE '\\' OR CommandLine LIKE '%-sfn %' ESCAPE '\\' OR CommandLine LIKE '%-sfT %' ESCAPE '\\')) OR (Image LIKE '%/cp' ESCAPE '\\' AND CommandLine LIKE '%/dev/null%' ESCAPE '\\') OR (Image LIKE '%/shred' ESCAPE '\\' AND CommandLine LIKE '%-u %' ESCAPE '\\'))) OR ((CommandLine LIKE '% > /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% >/var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '% >| /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%: > /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%:> /var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%:>/var/log/syslog%' ESCAPE '\\' OR CommandLine LIKE '%>|/var/log/syslog%' ESCAPE '\\') OR (CommandLine LIKE '%journalctl --vacuum%' ESCAPE '\\' OR CommandLine LIKE '%journalctl --rotate%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_lnx_clear_syslog.yml"
     },
@@ -971,6 +1008,25 @@
             "SELECT * FROM logs WHERE ((Image LIKE '%/rsync' ESCAPE '\\' OR Image LIKE '%/rsyncd' ESCAPE '\\') AND CommandLine LIKE '% -e %' ESCAPE '\\' AND (CommandLine LIKE '%/ash %' ESCAPE '\\' OR CommandLine LIKE '%/bash %' ESCAPE '\\' OR CommandLine LIKE '%/dash %' ESCAPE '\\' OR CommandLine LIKE '%/csh %' ESCAPE '\\' OR CommandLine LIKE '%/sh %' ESCAPE '\\' OR CommandLine LIKE '%/zsh %' ESCAPE '\\' OR CommandLine LIKE '%/tcsh %' ESCAPE '\\' OR CommandLine LIKE '%/ksh %' ESCAPE '\\' OR CommandLine LIKE '%''ash %' ESCAPE '\\' OR CommandLine LIKE '%''bash %' ESCAPE '\\' OR CommandLine LIKE '%''dash %' ESCAPE '\\' OR CommandLine LIKE '%''csh %' ESCAPE '\\' OR CommandLine LIKE '%''sh %' ESCAPE '\\' OR CommandLine LIKE '%''zsh %' ESCAPE '\\' OR CommandLine LIKE '%''tcsh %' ESCAPE '\\' OR CommandLine LIKE '%''ksh %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_rsync_shell_execution.yml"
+    },
+    {
+        "title": "Kaspersky Endpoint Security Stopped Via CommandLine - Linux",
+        "id": "36388120-b3f1-4ce9-b50b-280d9a7f4c04",
+        "description": "Detects execution of the Kaspersky init.d stop script on Linux systems either directly or via systemctl.\nThis activity may indicate a manual interruption of the antivirus service by an administrator, or it could be a sign of potential tampering or evasion attempts by malicious actors.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.execution",
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "System administrator manually stopping Kaspersky services"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/systemctl' ESCAPE '\\' OR Image LIKE '%/bash' ESCAPE '\\' OR Image LIKE '%/sh' ESCAPE '\\') AND CommandLine LIKE '%stop%' ESCAPE '\\' AND CommandLine LIKE '%kesl%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_av_kaspersky_av_disabled.yml"
     },
     {
         "title": "Decode Base64 Encoded Text",
@@ -2664,9 +2720,9 @@
         "filename": "lnx_auditd_network_service_scanning.yml"
     },
     {
-        "title": "Disable ASLR Via Personality Syscall - Linux",
+        "title": "ASLR Disabled Via Sysctl or Direct Syscall - Linux",
         "id": "e497a24e-9345-4a62-9803-b06d7d7cb132",
-        "description": "Detects the use of the `personality` syscall with the ADDR_NO_RANDOMIZE flag (0x0040000),\nwhich disables Address Space Layout Randomization (ASLR) in Linux. This is often used by attackers\nexploit development, or to bypass memory protection mechanisms.\nA successful use of this flag can reduce the effectiveness of ASLR and make memory corruption\nattacks more reliable.\n",
+        "description": "Detects actions that disable Address Space Layout Randomization (ASLR) in Linux, including:\n  - Use of the `personality` syscall with the ADDR_NO_RANDOMIZE flag (0x0040000)\n  - Modification of the /proc/sys/kernel/randomize_va_space file\n  - Execution of the `sysctl` command to set `kernel.randomize_va_space=0`\nDisabling ASLR is often used by attackers during exploit development or to bypass memory protection mechanisms.\nA successful use of these methods can reduce the effectiveness of ASLR and make memory corruption attacks more reliable.\n",
         "author": "Milad Cheraghi",
         "tags": [
             "attack.privilege-escalation",
@@ -2677,9 +2733,9 @@
         "falsepositives": [
             "Debugging or legitimate software testing"
         ],
-        "level": "low",
+        "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'personality' AND a0 = '40000')"
+            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND syscall = 'personality' AND a0 = '40000') OR (type = 'EXECVE' AND a0 = 'sysctl' AND a1 = '-w' AND a2 LIKE 'kernel.randomize\\_va\\_space=0' ESCAPE '\\'))"
         ],
         "filename": "lnx_auditd_disable_aslr_protection.yml"
     },
