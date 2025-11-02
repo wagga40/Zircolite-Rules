@@ -20637,6 +20637,52 @@
         "filename": "proc_creation_win_exploit_cve_2025_54309.yml"
     },
     {
+        "title": "Exploitation Activity of CVE-2025-59287 - WSUS Deserialization",
+        "id": "e5f66e87-7d6b-404f-92fe-7aa67814b5cd",
+        "status": "experimental",
+        "description": "Detects cast exceptions in Windows Server Update Services (WSUS) application logs that highly indicate exploitation attempts of CVE-2025-59287, a deserialization vulnerability in WSUS.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.initial-access",
+            "attack.t1190",
+            "attack.t1203",
+            "cve.2025-59287",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Legitimate WSUS operations that may trigger similar error messages"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Windows Server Update Services' AND EventID = '7053' AND Data LIKE '%System.InvalidCastException%' ESCAPE '\\' AND Data LIKE '%System.Windows.Data.ObjectDataProvider%' ESCAPE '\\' AND Data LIKE '%Unable to cast object of type%' ESCAPE '\\' AND Data LIKE '%System.Windows.Media.Brush%' ESCAPE '\\')"
+        ],
+        "filename": "win_wsus_exploit_cve_2025_59287.yml"
+    },
+    {
+        "title": "Exploitation Activity of CVE-2025-59287 - WSUS Suspicious Child Process",
+        "id": "43259cc4-1b80-4931-bd98-baea01afc196",
+        "status": "experimental",
+        "description": "Detects the creation of command-line interpreters (cmd.exe, powershell.exe) as child processes of Windows Server Update Services (WSUS) related process wsusservice.exe.\nThis behavior is a key indicator of exploitation for the critical remote code execution vulnerability such as CVE-2025-59287, where attackers spawn shells to conduct reconnaissance and further post-exploitation activities.\n",
+        "author": "Huntress Labs, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.initial-access",
+            "attack.t1190",
+            "attack.t1203",
+            "cve.2025-59287",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "If this activity is expected, consider filtering based on specific command lines, user context (e.g., `nt authority\\network service`), or parent process command lines to reduce noise."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\wsusservice.exe' ESCAPE '\\' OR (ParentProcessName LIKE '%\\\\w3wp.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%WsusPool%' ESCAPE '\\')) AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2025_59287.yml"
+    },
+    {
         "title": "Potential Notepad++ CVE-2025-49144 Exploitation",
         "id": "933f0bb5-0681-4fe7-8a17-4e6cccbaac44",
         "status": "experimental",
