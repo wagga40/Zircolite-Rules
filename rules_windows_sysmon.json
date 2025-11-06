@@ -12767,6 +12767,27 @@
         "filename": "proc_creation_win_uninstall_crowdstrike_falcon.yml"
     },
     {
+        "title": "Suspicious Explorer Process with Whitespace Padding - ClickFix/FileFix",
+        "id": "3ae9974a-eb09-4044-8e70-8980a50c12c8",
+        "status": "experimental",
+        "description": "Detects process creation with suspicious whitespace padding followed by a '#' character, which may indicate ClickFix or FileFix techniques used to conceal malicious commands from visual inspection.\nClickFix and FileFix are social engineering attack techniques where adversaries distribute phishing documents or malicious links that deceive users into opening the Windows Run dialog box or File Explorer search bar.\nThe victims are then instructed to paste commands from their clipboard, which contain extensive whitespace padding using various Unicode space characters to push the actual malicious command far to the right, effectively hiding it from immediate view.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.004",
+            "attack.defense-evasion",
+            "attack.t1027.010"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\explorer.exe' ESCAPE '\\' AND CommandLine LIKE '%#%' ESCAPE '\\' AND (CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_clickfix_filefix_whitespace_padding.yml"
+    },
+    {
         "title": "Service DACL Abuse To Hide Services Via Sc.EXE",
         "id": "a537cfc3-4297-4789-92b5-345bfd845ad0",
         "status": "test",
@@ -23841,6 +23862,27 @@
         "filename": "registry_set_dot_net_etw_tamper.yml"
     },
     {
+        "title": "Suspicious Space Characters in RunMRU Registry Path - ClickFix",
+        "id": "7a1b4c5e-8f3d-4b9a-7c2e-1f4a5b8c6d9e",
+        "status": "experimental",
+        "description": "Detects the occurrence of numerous space characters in RunMRU registry paths, which may indicate execution via phishing lures using clickfix techniques to hide malicious commands in the Windows Run dialog box from naked eyes.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.004",
+            "attack.defense-evasion",
+            "attack.t1027.010"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU\\\\%' ESCAPE '\\' AND Details LIKE '%#%' ESCAPE '\\' AND (Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_susp_runmru_space_character.yml"
+    },
+    {
         "title": "Uncommon Extension In Keyboard Layout IME File Registry Value",
         "id": "b888e3f2-224d-4435-b00b-9dd66e9ea1f1",
         "status": "test",
@@ -24563,6 +24605,27 @@
             "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\LsaExtensionConfig\\\\LsaSrv\\\\Extensions%' ESCAPE '\\')"
         ],
         "filename": "registry_set_persistence_lsa_extension.yml"
+    },
+    {
+        "title": "Suspicious Space Characters in TypedPaths Registry Path - FileFix",
+        "id": "8f2a5c3d-9e4b-4a7c-8d1f-2e5a6b9c3d7e",
+        "status": "experimental",
+        "description": "Detects the occurrence of numerous space characters in TypedPaths registry paths, which may indicate execution via phishing lures using file-fix techniques to hide malicious commands.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.004",
+            "attack.defense-evasion",
+            "attack.t1027.010"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\TypedPaths\\\\url1' ESCAPE '\\' AND Details LIKE '%#%' ESCAPE '\\' AND (Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\' OR Details LIKE '%            %' ESCAPE '\\'))"
+        ],
+        "filename": "registry_set_susp_typedpaths_space_characters.yml"
     },
     {
         "title": "UAC Bypass Abusing Winsat Path Parsing - Registry",
