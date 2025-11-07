@@ -7615,6 +7615,25 @@
         "filename": "proc_creation_win_wusa_susp_parent_execution.yml"
     },
     {
+        "title": "Suspicious CertReq Command to Download",
+        "id": "4480827a-9799-4232-b2c4-ccc6c4e9e12b",
+        "status": "experimental",
+        "description": "Detects a suspicious CertReq execution downloading a file.\nThis behavior is often used by attackers to download additional payloads or configuration files.\nCertreq is a built-in Windows utility used to request and retrieve certificates from a certification authority (CA). However, it can be abused by threat actors for malicious purposes.\n",
+        "author": "Christian Burkard (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\certreq.exe' ESCAPE '\\' OR OriginalFileName = 'CertReq.exe') AND (CommandLine LIKE '%-Post%' ESCAPE '\\' OR CommandLine LIKE '%/Post%' ESCAPE '\\') AND (CommandLine LIKE '%-config%' ESCAPE '\\' OR CommandLine LIKE '%/config%' ESCAPE '\\') AND CommandLine LIKE '%http%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_certreq_download.yml"
+    },
+    {
         "title": "Suspicious New Service Creation",
         "id": "17a1be64-8d88-40bf-b5ff-a4f7a50ebcc8",
         "status": "test",
@@ -9348,25 +9367,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\dctask64.exe' ESCAPE '\\' OR (Hashes LIKE '%IMPHASH=6834B1B94E49701D77CCB3C0895E1AFD%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=1BB6F93B129F398C7C4A76BB97450BBA%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=FAA2AC19875FADE461C8D89DCF2710A3%' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=F1039CED4B91572AB7847D26032E6BBF%' ESCAPE '\\')) AND (CommandLine LIKE '% executecmd64 %' ESCAPE '\\' OR CommandLine LIKE '% invokeexe %' ESCAPE '\\' OR CommandLine LIKE '% injectDll %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_dctask64_arbitrary_command_and_dll_execution.yml"
-    },
-    {
-        "title": "Suspicious Certreq Command to Download",
-        "id": "4480827a-9799-4232-b2c4-ccc6c4e9e12b",
-        "status": "test",
-        "description": "Detects a suspicious certreq execution taken from the LOLBAS examples, which can be abused to download (small) files",
-        "author": "Christian Burkard (Nextron Systems)",
-        "tags": [
-            "attack.command-and-control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\certreq.exe' ESCAPE '\\' OR OriginalFileName = 'CertReq.exe') AND (CommandLine LIKE '% -Post %' ESCAPE '\\' AND CommandLine LIKE '% -config %' ESCAPE '\\' AND CommandLine LIKE '% http%' ESCAPE '\\' AND CommandLine LIKE '% C:\\\\windows\\\\win.ini %' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_susp_certreq_download.yml"
     },
     {
         "title": "Potentially Suspicious Regsvr32 HTTP IP Pattern",
