@@ -69,27 +69,6 @@
         "filename": "proc_creation_lnx_php_reverse_shell.yml"
     },
     {
-        "title": "Sudo Privilege Escalation CVE-2019-14287",
-        "id": "f74107df-b6c6-4e80-bf00-4170b658162b",
-        "description": "Detects users trying to exploit sudo vulnerability reported in CVE-2019-14287",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.privilege-escalation",
-            "attack.t1068",
-            "attack.t1548.003",
-            "cve.2019-14287"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE CommandLine LIKE '% -u#%' ESCAPE '\\'"
-        ],
-        "filename": "proc_creation_lnx_sudo_cve_2019_14287.yml"
-    },
-    {
         "title": "Suspicious Invocation of Shell via AWK - Linux",
         "id": "8c1a5675-cb85-452f-a298-b01b22a51856",
         "description": "Detects the execution of \"awk\" or it's sibling commands, to invoke a shell using the system() function.\nThis behavior is commonly associated with attempts to execute arbitrary commands or escalate privileges, potentially leading to unauthorized access or further exploitation.\n",
@@ -2013,25 +1992,6 @@
         "filename": "proc_creation_lnx_dd_process_injection.yml"
     },
     {
-        "title": "Apache Spark Shell Command Injection - ProcessCreation",
-        "id": "c8a5f584-cdc8-42cc-8cce-0398e4265de3",
-        "description": "Detects attempts to exploit an apache spark server via CVE-2014-6287 from a commandline perspective",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.initial-access",
-            "attack.t1190",
-            "cve.2022-33891"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (ParentImage LIKE '%\\\\bash' ESCAPE '\\' AND (CommandLine LIKE '%id -Gn `%' ESCAPE '\\' OR CommandLine LIKE '%id -Gn ''%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_lnx_cve_2022_33891_spark_shell_command_injection.yml"
-    },
-    {
         "title": "Mount Execution With Hidepid Parameter",
         "id": "ec52985a-d024-41e3-8ff6-14169039a0b3",
         "description": "Detects execution of the \"mount\" command with \"hidepid\" parameter to make invisible processes to other users from the system",
@@ -2067,27 +2027,6 @@
             "SELECT * FROM logs WHERE (Image LIKE '%/chattr' ESCAPE '\\' AND CommandLine LIKE '% -i %' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_chattr_immutable_removal.yml"
-    },
-    {
-        "title": "Atlassian Confluence CVE-2022-26134",
-        "id": "7fb14105-530e-4e2e-8cfb-99f7d8700b66",
-        "description": "Detects spawning of suspicious child processes by Atlassian Confluence server which may indicate successful exploitation of CVE-2022-26134",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.initial-access",
-            "attack.execution",
-            "attack.t1190",
-            "attack.t1059",
-            "cve.2022-26134"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (ParentImage LIKE '/opt/atlassian/confluence/%' ESCAPE '\\' AND ParentImage LIKE '%/java' ESCAPE '\\' AND (CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%bash%' ESCAPE '\\' OR CommandLine LIKE '%dash%' ESCAPE '\\' OR CommandLine LIKE '%ksh%' ESCAPE '\\' OR CommandLine LIKE '%zsh%' ESCAPE '\\' OR CommandLine LIKE '%csh%' ESCAPE '\\' OR CommandLine LIKE '%fish%' ESCAPE '\\' OR CommandLine LIKE '%curl%' ESCAPE '\\' OR CommandLine LIKE '%wget%' ESCAPE '\\' OR CommandLine LIKE '%python%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_lnx_cve_2022_26134_atlassian_confluence.yml"
     },
     {
         "title": "Curl Usage on Linux",
@@ -3299,25 +3238,6 @@
         "filename": "lnx_shellshock.yml"
     },
     {
-        "title": "PwnKit Local Privilege Escalation",
-        "id": "0506a799-698b-43b4-85a1-ac4c84c720e9",
-        "description": "Detects potential PwnKit exploitation CVE-2021-4034 in auth logs",
-        "author": "Sreeman",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.privilege-escalation",
-            "attack.t1548.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ( = 'pkexec' AND  = 'The value for environment variable XAUTHORITY contains suspicious content' AND  = '[USER=root] [TTY=/dev/pts/0]')"
-        ],
-        "filename": "lnx_auth_pwnkit_local_privilege_escalation.yml"
-    },
-    {
         "title": "JexBoss Command Sequence",
         "id": "8ec2c8b4-557a-4121-b87c-5dfb3a602fae",
         "description": "Detects suspicious command sequence that JexBoss",
@@ -3428,45 +3348,6 @@
             "SELECT * FROM logs WHERE logs MATCH ('\"REPLACE\"')"
         ],
         "filename": "lnx_cron_crontab_file_modification.yml"
-    },
-    {
-        "title": "Sudo Privilege Escalation CVE-2019-14287 - Builtin",
-        "id": "7fcc54cb-f27d-4684-84b7-436af096f858",
-        "description": "Detects users trying to exploit sudo vulnerability reported in CVE-2019-14287",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.privilege-escalation",
-            "attack.t1068",
-            "attack.t1548.003",
-            "cve.2019-14287"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (USER LIKE '#-%' ESCAPE '\\' OR USER LIKE '#%4294967295' ESCAPE '\\')"
-        ],
-        "filename": "lnx_sudo_cve_2019_14287_user.yml"
-    },
-    {
-        "title": "Nimbuspwn Exploitation",
-        "id": "7ba05b43-adad-4c02-b5e9-c8c35cdf9fa8",
-        "description": "Detects exploitation of Nimbuspwn privilege escalation vulnerability (CVE-2022-29799 and CVE-2022-29800)",
-        "author": "Bhabesh Raj",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.t1068"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ( = 'networkd-dispatcher' AND  = 'Error handling notification for interface' AND  = '../../')"
-        ],
-        "filename": "lnx_nimbuspwn_privilege_escalation_exploit.yml"
     },
     {
         "title": "Persistence Via Sudoers Files",

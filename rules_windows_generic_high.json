@@ -368,28 +368,6 @@
         "filename": "file_delete_win_delete_exchange_powershell_logs.yml"
     },
     {
-        "title": "Potential PrintNightmare Exploitation Attempt",
-        "id": "5b2bbc47-dead-4ef7-8908-0cf73fcbecbf",
-        "status": "test",
-        "description": "Detect DLL deletions from Spooler Service driver folder. This might be a potential exploitation attempt of CVE-2021-1675",
-        "author": "Bhabesh Raj",
-        "tags": [
-            "attack.persistence",
-            "attack.defense-evasion",
-            "attack.privilege-escalation",
-            "attack.t1574",
-            "cve.2021-1675"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\' AND TargetFilename LIKE '%C:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\x64\\\\3\\\\%' ESCAPE '\\')"
-        ],
-        "filename": "file_delete_win_cve_2021_1675_print_nightmare.yml"
-    },
-    {
         "title": "Unusual File Deletion by Dns.exe",
         "id": "8f0b1fb1-9bd4-4e74-8cdf-a8de4d2adfd0",
         "status": "test",
@@ -11145,26 +11123,6 @@
         "filename": "proc_creation_win_stordiag_susp_child_process.yml"
     },
     {
-        "title": "Execute MSDT Via Answer File",
-        "id": "9c8c7000-3065-44a8-a555-79bcba5d9955",
-        "status": "test",
-        "description": "Detects execution of \"msdt.exe\" using an answer file which is simulating the legitimate way of calling msdt via \"pcwrun.exe\" (For example from the compatibility tab)",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1218",
-            "attack.execution"
-        ],
-        "falsepositives": [
-            "Possible undocumented parents of \"msdt\" other than \"pcwrun\""
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\WINDOWS\\\\diagnostics\\\\index\\\\PCWDiagnostic.xml%' ESCAPE '\\' AND (CommandLine LIKE '% -af %' ESCAPE '\\' OR CommandLine LIKE '% /af %' ESCAPE '\\')) AND NOT (ParentProcessName LIKE '%\\\\pcwrun.exe' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_lolbin_msdt_answer_file.yml"
-    },
-    {
         "title": "Suspicious Plink Port Forwarding",
         "id": "48a61b29-389f-4032-b317-b30de6b95314",
         "status": "test",
@@ -13595,6 +13553,25 @@
         "filename": "proc_creation_win_regsvr32_susp_extensions.yml"
     },
     {
+        "title": "Suspicious CustomShellHost Execution",
+        "id": "84b14121-9d14-416e-800b-f3b829c5a14d",
+        "status": "test",
+        "description": "Detects the execution of CustomShellHost.exe where the child isn't located in 'C:\\Windows\\explorer.exe'. CustomShellHost is a known LOLBin that can be abused by attackers for defense evasion techniques.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1216"
+        ],
+        "falsepositives": [
+            "False positives are unlikely, investigate matches carefully."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\CustomShellHost.exe' ESCAPE '\\' AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_customshellhost_susp_exec.yml"
+    },
+    {
         "title": "Suspicious Rundll32 Activity Invoking Sys File",
         "id": "731231b9-0b5d-4219-94dd-abb6959aa7ea",
         "status": "test",
@@ -14959,6 +14936,26 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%UserInitMprLogonScript%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_registry_logon_script.yml"
+    },
+    {
+        "title": "MSDT Execution Via Answer File",
+        "id": "9c8c7000-3065-44a8-a555-79bcba5d9955",
+        "status": "test",
+        "description": "Detects execution of \"msdt.exe\" using an answer file which is simulating the legitimate way of calling msdt via \"pcwrun.exe\" (For example from the compatibility tab).\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1218",
+            "attack.execution"
+        ],
+        "falsepositives": [
+            "Possible undocumented parents of \"msdt\" other than \"pcwrun\"."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\msdt.exe' ESCAPE '\\' AND CommandLine LIKE '%\\\\WINDOWS\\\\diagnostics\\\\index\\\\PCWDiagnostic.xml%' ESCAPE '\\' AND (CommandLine LIKE '% -af %' ESCAPE '\\' OR CommandLine LIKE '% /af %' ESCAPE '\\')) AND NOT ((ParentProcessName LIKE '%\\\\pcwrun.exe' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_msdt_answer_file_exec.yml"
     },
     {
         "title": "Microsoft IIS Connection Strings Decryption",
@@ -16551,6 +16548,26 @@
         "filename": "net_firewall_apt_equationgroup_c2.yml"
     },
     {
+        "title": "Pandemic Registry Key",
+        "id": "47e0852a-cf81-4494-a8e6-31864f8c86ed",
+        "status": "test",
+        "description": "Detects Pandemic Windows Implant",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1105",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security' AND TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\services\\\\null\\\\Instance%' ESCAPE '\\')"
+        ],
+        "filename": "registry_event_apt_pandemic.yml"
+    },
+    {
         "title": "Lazarus System Binary Masquerading",
         "id": "3f7f5b0b-5b16-476c-a85f-ab477f6dd24b",
         "status": "test",
@@ -17251,6 +17268,29 @@
         "filename": "proc_creation_win_malware_blue_mockingbird.yml"
     },
     {
+        "title": "Blue Mockingbird - Registry",
+        "id": "92b0b372-a939-44ed-a11b-5136cf680e27",
+        "status": "test",
+        "description": "Attempts to detect system changes made by Blue Mockingbird",
+        "author": "Trent Liffick (@tliffick)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.execution",
+            "attack.persistence",
+            "attack.t1112",
+            "attack.t1047",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\CurrentControlSet\\\\Services\\\\wercplsupport\\\\Parameters\\\\ServiceDll' ESCAPE '\\')"
+        ],
+        "filename": "registry_set_mal_blue_mockingbird.yml"
+    },
+    {
         "title": "Potential Ke3chang/TidePool Malware Activity",
         "id": "7b544661-69fc-419f-9a59-82ccc328f205",
         "status": "test",
@@ -17838,6 +17878,29 @@
         "filename": "proc_creation_win_exploit_cve_2023_21554_queuejumper.yml"
     },
     {
+        "title": "Atlassian Confluence CVE-2022-26134",
+        "id": "7fb14105-530e-4e2e-8cfb-99f7d8700b66",
+        "status": "test",
+        "description": "Detects spawning of suspicious child processes by Atlassian Confluence server which may indicate successful exploitation of CVE-2022-26134",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.execution",
+            "attack.t1190",
+            "attack.t1059",
+            "cve.2022-26134",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ParentProcessName LIKE '/opt/atlassian/confluence/%' ESCAPE '\\' AND ParentProcessName LIKE '%/java' ESCAPE '\\' AND (CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%bash%' ESCAPE '\\' OR CommandLine LIKE '%dash%' ESCAPE '\\' OR CommandLine LIKE '%ksh%' ESCAPE '\\' OR CommandLine LIKE '%zsh%' ESCAPE '\\' OR CommandLine LIKE '%csh%' ESCAPE '\\' OR CommandLine LIKE '%fish%' ESCAPE '\\' OR CommandLine LIKE '%curl%' ESCAPE '\\' OR CommandLine LIKE '%wget%' ESCAPE '\\' OR CommandLine LIKE '%python%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_exploit_cve_2022_26134_atlassian_confluence.yml"
+    },
+    {
         "title": "CVE-2022-24527 Microsoft Connected Cache LPE",
         "id": "e0a41412-c69a-446f-8e6e-0e6d7483dad7",
         "status": "test",
@@ -17923,6 +17986,27 @@
         "filename": "web_cve_2022_33891_spark_shell_command_injection.yml"
     },
     {
+        "title": "Apache Spark Shell Command Injection - ProcessCreation",
+        "id": "c8a5f584-cdc8-42cc-8cce-0398e4265de3",
+        "status": "test",
+        "description": "Detects attempts to exploit an apache spark server via CVE-2014-6287 from a commandline perspective",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.t1190",
+            "cve.2022-33891",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (ParentProcessName LIKE '%\\\\bash' ESCAPE '\\' AND (CommandLine LIKE '%id -Gn `%' ESCAPE '\\' OR CommandLine LIKE '%id -Gn ''%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_exploit_cve_2022_33891_spark_shell_command_injection.yml"
+    },
+    {
         "title": "Potential CVE-2022-26809 Exploitation Attempt",
         "id": "a7cd7306-df8b-4398-b711-6f3e4935cf16",
         "status": "test",
@@ -17945,6 +18029,48 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%-k RPCSS%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_exploit_cve_2022_26809_rpcss_child_process_anomaly.yml"
+    },
+    {
+        "title": "Potential KDC RC4-HMAC Downgrade Exploit - CVE-2022-37966",
+        "id": "e6f81941-b1cd-4766-87db-9fc156f658ee",
+        "status": "test",
+        "description": "Detects the exploitation of a security bypass and elevation of privilege vulnerability with Authentication Negotiation by using weak RC4-HMAC negotiation",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "detection.emerging-threats",
+            "cve.2022-37966"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '42' AND Provider_Name IN ('Kerberos-Key-Distribution-Center', 'Microsoft-Windows-Kerberos-Key-Distribution-Center') AND Level = '2')"
+        ],
+        "filename": "win_system_exploit_cve_2022_37966_kdcsvc_rc4_downgrade.yml"
+    },
+    {
+        "title": "Potential Nimbuspwn Exploit CVE-2022-29799 and CVE-2022-27800",
+        "id": "7ba05b43-adad-4c02-b5e9-c8c35cdf9fa8",
+        "status": "test",
+        "description": "Detects potential exploitation attempts of Nimbuspwn vulnerabilities CVE-2022-29799 and CVE-2022-27800 in Linux systems.\n",
+        "author": "Bhabesh Raj",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1068",
+            "detection.emerging-threats",
+            "cve.2022-29799",
+            "cve.2022-27800"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ( = 'networkd-dispatcher' AND  = 'Error handling notification for interface' AND  = '../../')"
+        ],
+        "filename": "lnx_exploit_cve_2022_27999_cve_2022_27800.yml"
     },
     {
         "title": "Potential Centos Web Panel Exploitation Attempt - CVE-2022-44877",
@@ -18748,6 +18874,35 @@
         "filename": "web_cve_2021_43798_grafana.yml"
     },
     {
+        "title": "OMIGOD HTTP No Authentication RCE - CVE-2021-38647",
+        "id": "ab6b1a39-a9ee-4ab4-b075-e83acf6e346b",
+        "status": "stable",
+        "description": "Detects the exploitation of OMIGOD (CVE-2021-38647) which allows remote execute (RCE) commands as root with just a single unauthenticated HTTP request.\nVerify, successful, exploitation by viewing the HTTP client (request) body to see what was passed to the server (using PCAP).\nWithin the client body is where the code execution would occur. Additionally, check the endpoint logs to see if suspicious commands or activity occurred within the timeframe of this HTTP request.\n",
+        "author": "Nate Guagenti (neu5ron)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.initial-access",
+            "attack.execution",
+            "attack.lateral-movement",
+            "attack.t1068",
+            "attack.t1190",
+            "attack.t1203",
+            "attack.t1021.006",
+            "attack.t1210",
+            "detection.emerging-threats",
+            "cve.2021-38647"
+        ],
+        "falsepositives": [
+            "Exploits that were attempted but unsuccessful.",
+            "Scanning attempts with the abnormal use of the HTTP POST method with no indication of code execution within the HTTP Client (Request) body. An example would be vulnerability scanners trying to identify unpatched versions while not actually exploiting the vulnerability. See description for investigation tips."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (((status_code = '200' AND uri = '/wsman' AND method = 'POST') AND NOT (client_header_names LIKE '%AUTHORIZATION%' ESCAPE '\\')) AND NOT (request_body_len = '0'))"
+        ],
+        "filename": "zeek_http_exploit_cve_2021_38647_omigod_no_auth_rce.yml"
+    },
+    {
         "title": "Serv-U Exploitation CVE-2021-35211 by DEV-0322",
         "id": "75578840-9526-4b2a-9462-af469a45e767",
         "status": "test",
@@ -18832,27 +18987,6 @@
         "filename": "web_cve_2021_21972_vsphere_unauth_rce_exploit.yml"
     },
     {
-        "title": "Antivirus PrinterNightmare CVE-2021-34527 Exploit Detection",
-        "id": "6fe1719e-ecdf-4caf-bffe-4f501cb0a561",
-        "status": "stable",
-        "description": "Detects the suspicious file that is created from PoC code against Windows Print Spooler Remote Code Execution Vulnerability CVE-2021-34527 (PrinterNightmare), CVE-2021-1675 .",
-        "author": "Sittikorn S, Nuttakorn T, Tim Shelton",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.privilege-escalation",
-            "attack.t1055",
-            "detection.emerging-threats"
-        ],
-        "falsepositives": [
-            "Unlikely, or pending PSP analysis"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (Filename LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\x64\\\\%' ESCAPE '\\' AND NOT (logs MATCH ('\"File submitted to Symantec\"')))"
-        ],
-        "filename": "av_printernightmare_cve_2021_34527.yml"
-    },
-    {
         "title": "CVE-2021-1675 Print Spooler Exploitation IPC Access",
         "id": "8fe1c584-ee61-444b-be21-e9054b229694",
         "status": "test",
@@ -18873,6 +19007,74 @@
             "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '5145' AND ShareName LIKE '\\\\\\\\\\*\\\\IPC$' ESCAPE '\\' AND RelativeTargetName = 'spoolss' AND AccessMask = '0x3' AND ObjectType = 'File')"
         ],
         "filename": "win_security_exploit_cve_2021_1675_printspooler_security.yml"
+    },
+    {
+        "title": "Potential PrintNightmare Exploitation Attempt",
+        "id": "5b2bbc47-dead-4ef7-8908-0cf73fcbecbf",
+        "status": "test",
+        "description": "Detect DLL deletions from Spooler Service driver folder. This might be a potential exploitation attempt of CVE-2021-1675",
+        "author": "Bhabesh Raj",
+        "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
+            "attack.privilege-escalation",
+            "attack.t1574",
+            "cve.2021-1675",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\spoolsv.exe' ESCAPE '\\' AND TargetFilename LIKE '%C:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\x64\\\\3\\\\%' ESCAPE '\\')"
+        ],
+        "filename": "file_delete_win_exploit_cve_2021_1675_print_nightmare.yml"
+    },
+    {
+        "title": "Antivirus PrinterNightmare CVE-2021-34527 Exploit Detection",
+        "id": "6fe1719e-ecdf-4caf-bffe-4f501cb0a561",
+        "status": "stable",
+        "description": "Detects the suspicious file that is created from PoC code against Windows Print Spooler Remote Code Execution Vulnerability CVE-2021-34527 (PrinterNightmare), CVE-2021-1675 .",
+        "author": "Sittikorn S, Nuttakorn T, Tim Shelton",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.privilege-escalation",
+            "attack.t1055",
+            "detection.emerging-threats",
+            "cve.2021-34527",
+            "cve.2021-1675"
+        ],
+        "falsepositives": [
+            "Unlikely, or pending PSP analysis"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Filename LIKE '%:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\x64\\\\%' ESCAPE '\\' AND NOT (logs MATCH ('\"File submitted to Symantec\"')))"
+        ],
+        "filename": "av_exploit_cve_2021_34527_print_nightmare.yml"
+    },
+    {
+        "title": "PrinterNightmare Mimikatz Driver Name",
+        "id": "ba6b9e43-1d45-4d3c-a504-1043a64c8469",
+        "status": "test",
+        "description": "Detects static QMS 810 and mimikatz driver name used by Mimikatz as exploited in CVE-2021-1675 and CVE-2021-34527",
+        "author": "Markus Neis, @markus_neis, Florian Roth",
+        "tags": [
+            "attack.execution",
+            "attack.t1204",
+            "cve.2021-1675",
+            "cve.2021-34527",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Legitimate installation of printer driver QMS 810, Texas Instruments microLaser printer (unlikely)"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND (((TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows x64\\\\Drivers\\\\Version-3\\\\QMS 810\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows x64\\\\Drivers\\\\Version-3\\\\mimikatz%' ESCAPE '\\') OR (TargetObject LIKE '%legitprinter%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows%' ESCAPE '\\')) OR ((TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments%' ESCAPE '\\' OR TargetObject LIKE '%\\\\CurrentVersion\\\\Print\\\\Printers%' ESCAPE '\\') AND (TargetObject LIKE '%Gentil Kiwi%' ESCAPE '\\' OR TargetObject LIKE '%mimikatz printer%' ESCAPE '\\' OR TargetObject LIKE '%Kiwi Legit Printer%' ESCAPE '\\'))))"
+        ],
+        "filename": "registry_event_cve_2021_1675_mimikatz_printernightmare_drivers.yml"
     },
     {
         "title": "CVE-2021-1675 Print Spooler Exploitation",
@@ -18916,7 +19118,7 @@
         "rule": [
             "SELECT * FROM logs WHERE TargetFilename LIKE '%C:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\x64\\\\3\\\\old\\\\1\\\\123%' ESCAPE '\\'"
         ],
-        "filename": "file_event_win_cve_2021_1675_printspooler.yml"
+        "filename": "file_event_win_exploit_cve_2021_1675_printspooler.yml"
     },
     {
         "title": "Sitecore Pre-Auth RCE CVE-2021-42237",
@@ -19045,6 +19247,28 @@
             "SELECT * FROM logs WHERE (Channel = 'Application' AND EventID = '1033' AND Provider_Name = 'MsiInstaller' AND Data LIKE '%test pkg%' ESCAPE '\\')"
         ],
         "filename": "win_vul_cve_2021_41379.yml"
+    },
+    {
+        "title": "PwnKit Local Privilege Escalation",
+        "id": "0506a799-698b-43b4-85a1-ac4c84c720e9",
+        "status": "test",
+        "description": "Detects potential PwnKit exploitation CVE-2021-4034 in auth logs",
+        "author": "Sreeman",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.privilege-escalation",
+            "attack.t1548.001",
+            "detection.emerging-threats",
+            "cve.2021-4034"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ( = 'pkexec' AND  = 'The value for environment variable XAUTHORITY contains suspicious content' AND  = '[USER=root] [TTY=/dev/pts/0]')"
+        ],
+        "filename": "lnx_auth_exploit_cve_2021_4034_pwnkit_lpe.yml"
     },
     {
         "title": "Potential CVE-2021-44228 Exploitation Attempt - VMware Horizon",
@@ -19314,6 +19538,27 @@
             "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND CommandLine LIKE '%vssadmin list shadows%' ESCAPE '\\' AND CommandLine LIKE '%log.txt%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_malware_conti.yml"
+    },
+    {
+        "title": "Potential NetWire RAT Activity - Registry",
+        "id": "1d218616-71b0-4c40-855b-9dbe75510f7f",
+        "status": "test",
+        "description": "Detects registry keys related to NetWire RAT",
+        "author": "Christopher Peacock",
+        "tags": [
+            "attack.persistence",
+            "attack.defense-evasion",
+            "attack.t1112",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'New registry value created' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\software\\\\NetWire%' ESCAPE '\\')"
+        ],
+        "filename": "registry_add_malware_netwire.yml"
     },
     {
         "title": "Moriya Rootkit File Created",
@@ -19963,6 +20208,28 @@
         "filename": "web_cve_2019_3398_confluence.yml"
     },
     {
+        "title": "Scanner PoC for CVE-2019-0708 RDP RCE Vuln",
+        "id": "8400629e-79a9-4737-b387-5db940ab2367",
+        "status": "test",
+        "description": "Detects the use of a scanner by zerosum0x0 that discovers targets vulnerable to  CVE-2019-0708 RDP RCE aka BlueKeep",
+        "author": "Florian Roth (Nextron Systems), Adam Bradbury (idea)",
+        "tags": [
+            "attack.lateral-movement",
+            "attack.t1210",
+            "car.2013-07-002",
+            "detection.emerging-threats",
+            "cve.2019-0708"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4625' AND TargetUserName = 'AAAAAAA')"
+        ],
+        "filename": "win_security_exploit_cve_2019_0708_scanner_poc.yml"
+    },
+    {
         "title": "Potential BearLPE Exploitation",
         "id": "931b6802-d6a6-4267-9ffa-526f57f22aaf",
         "status": "test",
@@ -19984,6 +20251,52 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR OriginalFileName = 'schtasks.exe') AND (CommandLine LIKE '%/change%' ESCAPE '\\' AND CommandLine LIKE '%/TN%' ESCAPE '\\' AND CommandLine LIKE '%/RU%' ESCAPE '\\' AND CommandLine LIKE '%/RP%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_exploit_other_bearlpe.yml"
+    },
+    {
+        "title": "Sudo Privilege Escalation CVE-2019-14287 - Builtin",
+        "id": "7fcc54cb-f27d-4684-84b7-436af096f858",
+        "status": "test",
+        "description": "Detects users trying to exploit sudo vulnerability reported in CVE-2019-14287",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.privilege-escalation",
+            "attack.t1068",
+            "attack.t1548.003",
+            "cve.2019-14287",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (USER LIKE '#-%' ESCAPE '\\' OR USER LIKE '#%4294967295' ESCAPE '\\')"
+        ],
+        "filename": "lnx_sudo_exploit_cve_2019_14287.yml"
+    },
+    {
+        "title": "Sudo Privilege Escalation CVE-2019-14287",
+        "id": "f74107df-b6c6-4e80-bf00-4170b658162b",
+        "status": "test",
+        "description": "Detects users trying to exploit sudo vulnerability reported in CVE-2019-14287",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.privilege-escalation",
+            "attack.t1068",
+            "attack.t1548.003",
+            "cve.2019-14287",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE CommandLine LIKE '% -u#%' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_lnx_exploit_cve_2019_14287.yml"
     },
     {
         "title": "Chafer Malware URL Pattern",
@@ -23152,25 +23465,6 @@
         "filename": "registry_event_susp_mic_cam_access.yml"
     },
     {
-        "title": "Pandemic Registry Key",
-        "id": "47e0852a-cf81-4494-a8e6-31864f8c86ed",
-        "status": "test",
-        "description": "Detects Pandemic Windows Implant",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.command-and-control",
-            "attack.t1105"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security' AND TargetObject LIKE '%\\\\SYSTEM\\\\CurrentControlSet\\\\services\\\\null\\\\Instance%' ESCAPE '\\')"
-        ],
-        "filename": "registry_event_apt_pandemic.yml"
-    },
-    {
         "title": "UAC Bypass Via Wsreset",
         "id": "6ea3bf32-9680-422d-9f50-e90716b12a66",
         "status": "test",
@@ -23314,27 +23608,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND ((TargetObject LIKE 'HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\MiniNt' ESCAPE '\\' AND EventType = 'CreateKey') OR NewName LIKE 'HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\MiniNt' ESCAPE '\\'))"
         ],
         "filename": "registry_event_disable_security_events_logging_adding_reg_key_minint.yml"
-    },
-    {
-        "title": "PrinterNightmare Mimikatz Driver Name",
-        "id": "ba6b9e43-1d45-4d3c-a504-1043a64c8469",
-        "status": "test",
-        "description": "Detects static QMS 810 and mimikatz driver name used by Mimikatz as exploited in CVE-2021-1675 and CVE-2021-34527",
-        "author": "Markus Neis, @markus_neis, Florian Roth",
-        "tags": [
-            "attack.execution",
-            "attack.t1204",
-            "cve.2021-1675",
-            "cve.2021-34527"
-        ],
-        "falsepositives": [
-            "Legitimate installation of printer driver QMS 810, Texas Instruments microLaser printer (unlikely)"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND OperationType IN ('New registry value created', 'Existing registry value modified') AND Channel = 'Security') AND (((TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows x64\\\\Drivers\\\\Version-3\\\\QMS 810\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows x64\\\\Drivers\\\\Version-3\\\\mimikatz%' ESCAPE '\\') OR (TargetObject LIKE '%legitprinter%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments\\\\Windows%' ESCAPE '\\')) OR ((TargetObject LIKE '%\\\\Control\\\\Print\\\\Environments%' ESCAPE '\\' OR TargetObject LIKE '%\\\\CurrentVersion\\\\Print\\\\Printers%' ESCAPE '\\') AND (TargetObject LIKE '%Gentil Kiwi%' ESCAPE '\\' OR TargetObject LIKE '%mimikatz printer%' ESCAPE '\\' OR TargetObject LIKE '%Kiwi Legit Printer%' ESCAPE '\\'))))"
-        ],
-        "filename": "registry_event_mimikatz_printernightmare.yml"
     },
     {
         "title": "Creation of a Local Hidden User Account by Registry",
@@ -24463,7 +24736,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\%' ESCAPE '\\' AND NOT (((TargetObject LIKE '%Microsoft\\\\Windows\\\\UpdateOrchestrator%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index%' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\ngen.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\{B66B135D-DA06-4FC4-95F8-7458E1D10129}%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET Framework\\\\.NET Framework NGEN%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server Manager Performance Monitor\\\\%' ESCAPE '\\') OR (NewProcessName = 'System') OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\') OR ((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\')) OR (NewProcessName LIKE '%\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\%' ESCAPE '\\' AND NOT ((NewValue = '(Empty)') OR (NewValue = '') OR ((TargetObject LIKE '%Microsoft\\\\Windows\\\\UpdateOrchestrator%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index%' ESCAPE '\\')) OR (NewProcessName LIKE '%C:\\\\Windows\\\\System32\\\\MoUsoCoreWorker.exe' ESCAPE '\\') OR (NewProcessName LIKE '%C:\\\\Windows\\\\System32\\\\services.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\ngen.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\{B66B135D-DA06-4FC4-95F8-7458E1D10129}%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET Framework\\\\.NET Framework NGEN%' ESCAPE '\\')) OR ((NewProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\')) OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server Manager Performance Monitor\\\\%' ESCAPE '\\') OR (NewProcessName = 'System') OR (NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\'))) AND NOT (((NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Program Files\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\')) OR ((NewProcessName LIKE '%C:\\\\Program Files (x86)\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR NewProcessName LIKE '%C:\\\\Program Files\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_taskcache_entry.yml"
     },
@@ -25105,28 +25378,6 @@
         "filename": "registry_set_susp_run_key_img_folder.yml"
     },
     {
-        "title": "Blue Mockingbird - Registry",
-        "id": "92b0b372-a939-44ed-a11b-5136cf680e27",
-        "status": "test",
-        "description": "Attempts to detect system changes made by Blue Mockingbird",
-        "author": "Trent Liffick (@tliffick)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.execution",
-            "attack.persistence",
-            "attack.t1112",
-            "attack.t1047"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\CurrentControlSet\\\\Services\\\\wercplsupport\\\\Parameters\\\\ServiceDll' ESCAPE '\\')"
-        ],
-        "filename": "registry_set_mal_blue_mockingbird.yml"
-    },
-    {
         "title": "Potential Persistence Via Outlook Home Page",
         "id": "ddd171b5-2cc6-4975-9e78-f0eccd08cc76",
         "status": "test",
@@ -25717,26 +25968,6 @@
             "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'New registry value created' ESCAPE '\\') AND Channel = 'Security') AND (EventType = 'CreateKey' AND (TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\AMSI\\\\Providers\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\AMSI\\\\Providers\\\\%' ESCAPE '\\')) AND NOT ((NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR NewProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')))"
         ],
         "filename": "registry_add_persistence_amsi_providers.yml"
-    },
-    {
-        "title": "Potential NetWire RAT Activity - Registry",
-        "id": "1d218616-71b0-4c40-855b-9dbe75510f7f",
-        "status": "test",
-        "description": "Detects registry keys related to NetWire RAT",
-        "author": "Christopher Peacock",
-        "tags": [
-            "attack.persistence",
-            "attack.defense-evasion",
-            "attack.t1112"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'New registry value created' ESCAPE '\\') AND Channel = 'Security' AND EventType = 'CreateKey' AND TargetObject LIKE '%\\\\software\\\\NetWire%' ESCAPE '\\')"
-        ],
-        "filename": "registry_add_malware_netwire.yml"
     },
     {
         "title": "Suspicious Execution Of Renamed Sysinternals Tools - Registry",
@@ -29350,26 +29581,6 @@
         "filename": "win_security_rdp_localhost_login.yml"
     },
     {
-        "title": "Scanner PoC for CVE-2019-0708 RDP RCE Vuln",
-        "id": "8400629e-79a9-4737-b387-5db940ab2367",
-        "status": "test",
-        "description": "Detects the use of a scanner by zerosum0x0 that discovers targets vulnerable to  CVE-2019-0708 RDP RCE aka BlueKeep",
-        "author": "Florian Roth (Nextron Systems), Adam Bradbury (idea)",
-        "tags": [
-            "attack.lateral-movement",
-            "attack.t1210",
-            "car.2013-07-002"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'Security' AND EventID = '4625' AND TargetUserName = 'AAAAAAA')"
-        ],
-        "filename": "win_security_rdp_bluekeep_poc_scanner.yml"
-    },
-    {
         "title": "Successful Overpass the Hash Attempt",
         "id": "192a0330-c20b-4356-90b6-7b7049ae0b87",
         "status": "test",
@@ -29782,8 +29993,8 @@
         "description": "Detects a program that invoked suspicious DNS queries known from Cobalt Strike beacons",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.command-and-control",
-            "attack.t1071.004"
+            "attack.t1071.004",
+            "attack.command-and-control"
         ],
         "falsepositives": [
             "Unknown"
@@ -29792,7 +30003,7 @@
         "rule": [
             "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-DNS Client Events/Operational' AND EventID = '3008' AND ((QueryName LIKE 'aaa.stage.%' ESCAPE '\\' OR QueryName LIKE 'post.1%' ESCAPE '\\') OR QueryName LIKE '%.stage.123456.%' ESCAPE '\\'))"
         ],
-        "filename": "win_dns_client__mal_cobaltstrike.yml"
+        "filename": "win_dns_client_mal_cobaltstrike.yml"
     },
     {
         "title": "Query Tor Onion Address - DNS Client",
@@ -30480,24 +30691,6 @@
             "SELECT * FROM logs WHERE (Channel = 'System' AND Provider_Name = 'Ntfs' AND EventID = '55' AND Origin = 'File System Driver' AND Description LIKE '%contains a corrupted file record%' ESCAPE '\\' AND Description LIKE '%The name of the file is \"\\\\\"%' ESCAPE '\\')"
         ],
         "filename": "win_system_ntfs_vuln_exploit.yml"
-    },
-    {
-        "title": "KDC RC4-HMAC Downgrade CVE-2022-37966",
-        "id": "e6f81941-b1cd-4766-87db-9fc156f658ee",
-        "status": "test",
-        "description": "Detects the exploitation of a security bypass and elevation of privilege vulnerability with Authentication Negotiation by using weak RC4-HMAC negotiation",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.privilege-escalation"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (Channel = 'System' AND EventID = '42' AND Provider_Name IN ('Kerberos-Key-Distribution-Center', 'Microsoft-Windows-Kerberos-Key-Distribution-Center') AND Level = '2')"
-        ],
-        "filename": "win_system_kdcsvc_rc4_downgrade.yml"
     },
     {
         "title": "Important Windows Eventlog Cleared",
