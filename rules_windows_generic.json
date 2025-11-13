@@ -20536,6 +20536,26 @@
         "filename": "proc_creation_win_malware_emotet.yml"
     },
     {
+        "title": "Potential Dtrack RAT Activity",
+        "id": "f1531fa4-5b84-4342-8f68-9cf3fdbd83d4",
+        "status": "stable",
+        "description": "Detects potential Dtrack RAT activity via specific process patterns",
+        "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1490",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (CommandLine REGEXP 'ping\\s+-n.{6,64}echo EEEE\\s?>\\s?' OR (CommandLine REGEXP 'ipconfig\\s+/all' AND CommandLine LIKE '%\\\\temp\\\\res.ip%' ESCAPE '\\') OR (CommandLine LIKE '%interface ip show config%' ESCAPE '\\' AND CommandLine LIKE '%\\\\temp\\\\netsh.res%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_malware_dtrack.yml"
+    },
+    {
         "title": "Potential Ryuk Ransomware Activity",
         "id": "c37510b8-2107-4b78-aa32-72f251e7a844",
         "status": "stable",
