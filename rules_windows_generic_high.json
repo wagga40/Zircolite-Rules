@@ -8898,6 +8898,26 @@
         "filename": "proc_creation_win_renamed_paexec.yml"
     },
     {
+        "title": "Suspicious ClickFix/FileFix Execution Pattern",
+        "id": "d487ed4a-fd24-436d-a0b2-f4e95f7b2635",
+        "status": "experimental",
+        "description": "Detects suspicious execution patterns where users are tricked into running malicious commands via clipboard manipulation, either through the Windows Run dialog (ClickFix) or File Explorer address bar (FileFix).\nAttackers leverage social engineering campaigns—such as fake CAPTCHA challenges or urgent alerts—encouraging victims to paste clipboard contents, often executing mshta.exe, powershell.exe, or similar commands to infect systems.\n",
+        "author": "montysecurity, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.001",
+            "attack.t1204.004"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' AND CommandLine LIKE '%#%' ESCAPE '\\' AND (CommandLine LIKE '%account%' ESCAPE '\\' OR CommandLine LIKE '%anti-bot%' ESCAPE '\\' OR CommandLine LIKE '%botcheck%' ESCAPE '\\' OR CommandLine LIKE '%captcha%' ESCAPE '\\' OR CommandLine LIKE '%challenge%' ESCAPE '\\' OR CommandLine LIKE '%confirmation%' ESCAPE '\\' OR CommandLine LIKE '%fraud%' ESCAPE '\\' OR CommandLine LIKE '%human%' ESCAPE '\\' OR CommandLine LIKE '%identification%' ESCAPE '\\' OR CommandLine LIKE '%identificator%' ESCAPE '\\' OR CommandLine LIKE '%identity%' ESCAPE '\\' OR CommandLine LIKE '%robot%' ESCAPE '\\' OR CommandLine LIKE '%validation%' ESCAPE '\\' OR CommandLine LIKE '%verification%' ESCAPE '\\' OR CommandLine LIKE '%verify%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_susp_clickfix_filefix_execution.yml"
+    },
+    {
         "title": "HackTool - SharpDPAPI Execution",
         "id": "c7d33b50-f690-4b51-8cfb-0fb912a31e57",
         "status": "test",
@@ -12451,6 +12471,28 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ParentProcessName LIKE '%\\\\provlaunch.exe' ESCAPE '\\' AND ((NewProcessName LIKE '%\\\\calc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\notepad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (NewProcessName LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AppData\\\\Temp\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\System32\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Tasks\\\\%' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_provlaunch_susp_child_process.yml"
+    },
+    {
+        "title": "Uncommon Svchost Command Line Parameter",
+        "id": "f17211f1-1f24-4d0c-829f-31e28dc93cdd",
+        "status": "experimental",
+        "description": "Detects instances of svchost.exe running with an unusual or uncommon command line parameter by excluding known legitimate or common patterns.\nThis could point at a file masquerading as svchost, a process injection, or hollowing of a legitimate svchost instance.\n",
+        "author": "Liran Ravich",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.privilege-escalation",
+            "attack.t1036.005",
+            "attack.t1055",
+            "attack.t1055.012"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' AND NOT ((CommandLine REGEXP '-k\\s\\w{1,64}(\\s?(-p|-s))?') OR (CommandLine = '') OR (CommandLine = ''))) AND NOT ((ParentProcessName LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' AND CommandLine LIKE '%svchost.exe%' ESCAPE '\\') OR (ParentProcessName LIKE '%\\\\MRT.exe' ESCAPE '\\' AND CommandLine = 'svchost.exe')))"
+        ],
+        "filename": "proc_creation_win_svchost_uncommon_command_line_flags.yml"
     },
     {
         "title": "Uncommon FileSystem Load Attempt By Format.com",
@@ -21082,6 +21124,28 @@
             "SELECT * FROM logs WHERE ((cs-uri-stem LIKE '%/mifs/rs/api/v2/featureusage%' ESCAPE '\\' AND cs-uri-query LIKE '%format=%' ESCAPE '\\') AND ((cs-uri-query LIKE '%java.lang.Runtime%' ESCAPE '\\' AND cs-uri-query LIKE '%.getMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%getRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%.exec(%' ESCAPE '\\') OR (cs-uri-query LIKE '%java\\%2elang\\%2eRuntime%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2egetMethod%' ESCAPE '\\' AND cs-uri-query LIKE '%\\%2eexec\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%\\%6a\\%61\\%76\\%61\\%2e\\%6c\\%61\\%6e\\%67\\%2e\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65\\%65\\%28\\%29%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%67\\%65\\%74\\%52\\%75\\%6e\\%74\\%69\\%6d\\%65%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%2e\\%65\\%78\\%65\\%63\\%28%' ESCAPE '\\') OR (cs-uri-query LIKE '%{7%7}%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7B7%7\\%7D%' ESCAPE '\\' OR cs-uri-query LIKE '%\\%7b7\\%2a7\\%7d%' ESCAPE '\\')))"
         ],
         "filename": "web_invanti_epmm_cve_2025_4427_and_cve_2025_4428.yml"
+    },
+    {
+        "title": "Cisco ASA Exploitation Activity - Proxy",
+        "id": "15697955-6a29-47ca-92e9-0e05efae3260",
+        "status": "experimental",
+        "description": "Detects suspicious requests to Cisco ASA WebVpn via proxy logs associated with CVE-2025-20333 and CVE-2025-20362 exploitation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.t1190",
+            "cve.2025-20333",
+            "cve.2025-20362",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-method = 'GET' AND cs-uri-stem IN ('/+CSCOU+/MacTunnelStart.jar', '/+CSCOL+/csvrloader64.cab', '/+CSCOL+/csvrloader.jar'))"
+        ],
+        "filename": "proxy_exploit_cve_2025_20333.yml"
     },
     {
         "title": "Suspicious Process Spawned by CentreStack Portal AppPool",
