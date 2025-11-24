@@ -2971,10 +2971,10 @@
         "filename": "posh_ps_shellintel_malicious_commandlets.yml"
     },
     {
-        "title": "Request A Single Ticket via PowerShell",
+        "title": "Suspicious Kerberos Ticket Request via PowerShell Script - ScriptBlock",
         "id": "a861d835-af37-4930-bcd6-5b178bfb54df",
         "status": "test",
-        "description": "utilize native PowerShell Identity modules to query the domain to extract the Service Principal Names for a single computer.\nThis behavior is typically used during a kerberos or silver ticket attack.\nA successful execution will output the SPNs for the endpoint in question.\n",
+        "description": "Detects PowerShell scripts that utilize native PowerShell Identity modules to request Kerberos tickets.\nThis behavior is typically seen during a Kerberos or silver ticket attack. A successful execution will output the SPNs for the endpoint in question.\n",
         "author": "frack113",
         "tags": [
             "attack.credential-access",
@@ -2985,7 +2985,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%System.IdentityModel.Tokens.KerberosRequestorSecurityToken%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational') AND ScriptBlockText LIKE '%System.IdentityModel.Tokens.KerberosRequestorSecurityToken%' ESCAPE '\\' AND ScriptBlockText LIKE '%.GetRequest()%' ESCAPE '\\')"
         ],
         "filename": "posh_ps_request_kerberos_ticket.yml"
     },
@@ -6336,6 +6336,27 @@
         "filename": "proc_creation_win_regedit_export_critical_keys.yml"
     },
     {
+        "title": "PPL Tampering Via WerFaultSecure",
+        "id": "1f0b4cac-9c81-41f4-95d0-8475ff46b3e2",
+        "status": "experimental",
+        "description": "Detects potential abuse of WerFaultSecure.exe to dump Protected Process Light (PPL) processes like LSASS or to freeze security solutions (EDR/antivirus).\nThis technique is used by tools such as EDR-Freeze and WSASS to bypass PPL protections and access sensitive information or disable security software.\nDistinct command line patterns help identify the specific tool:\n- WSASS usage typically shows: \"WSASS.exe WerFaultSecure.exe [PID]\" in ParentCommandLine\n- EDR-Freeze usage typically shows: \"EDR-Freeze_[version].exe [PID] [timeout]\" in ParentCommandLine\nLegitimate debugging operations using WerFaultSecure are rare in production environments and should be investigated.\n",
+        "author": "Jason (https://github.com/0xbcf)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001",
+            "attack.credential-access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Legitimate usage of WerFaultSecure for debugging purposes"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\WerFaultSecure.exe' ESCAPE '\\' OR OriginalFileName = 'WerFaultSecure.exe') AND (CommandLine LIKE '% /h %' ESCAPE '\\' AND CommandLine LIKE '% /pid %' ESCAPE '\\' AND CommandLine LIKE '% /tid %' ESCAPE '\\' AND CommandLine LIKE '% /encfile %' ESCAPE '\\' AND CommandLine LIKE '% /cancel %' ESCAPE '\\' AND CommandLine LIKE '% /type %' ESCAPE '\\' AND CommandLine LIKE '% 268310%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_werfaultsecure_abuse.yml"
+    },
+    {
         "title": "Suspicious File Execution From Internet Hosted WebDav Share",
         "id": "f0507c0f-a3a2-40f5-acc6-7f543c334993",
         "status": "test",
@@ -9240,7 +9261,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\atbroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\audiodg.exe' ESCAPE '\\' OR Image LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\certreq.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR Image LIKE '%\\\\conhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\consent.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\csrss.exe' ESCAPE '\\' OR Image LIKE '%\\\\dashost.exe' ESCAPE '\\' OR Image LIKE '%\\\\defrag.exe' ESCAPE '\\' OR Image LIKE '%\\\\dfrgui.exe' ESCAPE '\\' OR Image LIKE '%\\\\dism.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhst3g.exe' ESCAPE '\\' OR Image LIKE '%\\\\dwm.exe' ESCAPE '\\' OR Image LIKE '%\\\\eventvwr.exe' ESCAPE '\\' OR Image LIKE '%\\\\logonui.exe' ESCAPE '\\' OR Image LIKE '%\\\\LsaIso.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsass.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsm.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\ntoskrnl.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\runonce.exe' ESCAPE '\\' OR Image LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\services.exe' ESCAPE '\\' OR Image LIKE '%\\\\sihost.exe' ESCAPE '\\' OR Image LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR Image LIKE '%\\\\smss.exe' ESCAPE '\\' OR Image LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\Taskmgr.exe' ESCAPE '\\' OR Image LIKE '%\\\\userinit.exe' ESCAPE '\\' OR Image LIKE '%\\\\wininit.exe' ESCAPE '\\' OR Image LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR Image LIKE '%\\\\winver.exe' ESCAPE '\\' OR Image LIKE '%\\\\wlanext.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wsl.exe' ESCAPE '\\' OR Image LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\') AND NOT (((Image LIKE 'C:\\\\$WINDOWS.~BT\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\$WinREAgent\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SystemTemp\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\uus\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((Image LIKE '%C:\\\\Program Files\\\\PowerShell\\\\7\\\\%' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\%' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShellPreview%' ESCAPE '\\' OR Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\Microsoft.PowerShellPreview%' ESCAPE '\\') AND Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\WSL\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\wsl.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Users\\\\''%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\wsl.exe' ESCAPE '\\'))) AND NOT ((Image LIKE '%\\\\SystemRoot\\\\System32\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\atbroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\audiodg.exe' ESCAPE '\\' OR Image LIKE '%\\\\bcdedit.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\certreq.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR Image LIKE '%\\\\conhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\consent.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\csrss.exe' ESCAPE '\\' OR Image LIKE '%\\\\dashost.exe' ESCAPE '\\' OR Image LIKE '%\\\\defrag.exe' ESCAPE '\\' OR Image LIKE '%\\\\dfrgui.exe' ESCAPE '\\' OR Image LIKE '%\\\\dism.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\dllhst3g.exe' ESCAPE '\\' OR Image LIKE '%\\\\dwm.exe' ESCAPE '\\' OR Image LIKE '%\\\\eventvwr.exe' ESCAPE '\\' OR Image LIKE '%\\\\logonui.exe' ESCAPE '\\' OR Image LIKE '%\\\\LsaIso.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsass.exe' ESCAPE '\\' OR Image LIKE '%\\\\lsm.exe' ESCAPE '\\' OR Image LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%\\\\ntoskrnl.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR Image LIKE '%\\\\runonce.exe' ESCAPE '\\' OR Image LIKE '%\\\\RuntimeBroker.exe' ESCAPE '\\' OR Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR Image LIKE '%\\\\services.exe' ESCAPE '\\' OR Image LIKE '%\\\\sihost.exe' ESCAPE '\\' OR Image LIKE '%\\\\smartscreen.exe' ESCAPE '\\' OR Image LIKE '%\\\\smss.exe' ESCAPE '\\' OR Image LIKE '%\\\\spoolsv.exe' ESCAPE '\\' OR Image LIKE '%\\\\svchost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhost.exe' ESCAPE '\\' OR Image LIKE '%\\\\taskhostw.exe' ESCAPE '\\' OR Image LIKE '%\\\\Taskmgr.exe' ESCAPE '\\' OR Image LIKE '%\\\\userinit.exe' ESCAPE '\\' OR Image LIKE '%\\\\werfault.exe' ESCAPE '\\' OR Image LIKE '%\\\\werfaultsecure.exe' ESCAPE '\\' OR Image LIKE '%\\\\wininit.exe' ESCAPE '\\' OR Image LIKE '%\\\\winlogon.exe' ESCAPE '\\' OR Image LIKE '%\\\\winver.exe' ESCAPE '\\' OR Image LIKE '%\\\\wlanext.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wsl.exe' ESCAPE '\\' OR Image LIKE '%\\\\wsmprovhost.exe' ESCAPE '\\') AND NOT (((Image LIKE 'C:\\\\$WINDOWS.~BT\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\$WinREAgent\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SoftwareDistribution\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SystemTemp\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\uus\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((Image LIKE '%C:\\\\Program Files\\\\PowerShell\\\\7\\\\%' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\PowerShell\\\\7-preview\\\\%' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShellPreview%' ESCAPE '\\' OR Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\Microsoft.PowerShellPreview%' ESCAPE '\\') AND Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\Program Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\WSL\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\wsl.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Users\\\\''%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\wsl.exe' ESCAPE '\\'))) AND NOT ((Image LIKE '%\\\\SystemRoot\\\\System32\\\\%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_system_exe_anomaly.yml"
     },
@@ -10051,6 +10072,25 @@
         "filename": "proc_creation_win_reg_volsnap_disable.yml"
     },
     {
+        "title": "Suspicious Kerberos Ticket Request via CLI",
+        "id": "caa9a802-8bd8-4b9e-a5cd-4d6221670219",
+        "status": "experimental",
+        "description": "Detects suspicious Kerberos ticket requests via command line using System.IdentityModel.Tokens.KerberosRequestorSecurityToken class.\nThreat actors may use command line interfaces to request Kerberos tickets for service accounts in order to\nperform offline password cracking attacks commonly known as Kerberoasting or other Kerberos ticket abuse\ntechniques like silver ticket attacks.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1558.003"
+        ],
+        "falsepositives": [
+            "Legitimate command line usage by administrators or security tools."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('powershell.exe', 'pwsh.dll')) AND (CommandLine LIKE '%System.IdentityModel.Tokens.KerberosRequestorSecurityToken%' ESCAPE '\\' AND CommandLine LIKE '%.GetRequest()%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_powershell_kerberos_kerberos_ticket_request_via_cli.yml"
+    },
+    {
         "title": "HackTool - DInjector PowerShell Cradle Execution",
         "id": "d78b5d61-187d-44b6-bf02-93486a80de5a",
         "status": "test",
@@ -10594,25 +10634,6 @@
         "filename": "proc_creation_win_driverquery_recon.yml"
     },
     {
-        "title": "Suspicious Process Suspension via WERFaultSecure through EDR-Freeze",
-        "id": "1f0b4cac-9c81-41f4-95d0-8475ff46b3e2",
-        "status": "experimental",
-        "description": "Detects attempts to freeze a process likely an EDR or an antimalware service process through EDR-Freeze that abuses the WerFaultSecure.exe process to suspend security software.\n",
-        "author": "Jason (https://github.com/0xbcf)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.001"
-        ],
-        "falsepositives": [
-            "Legitimate usage of WerFaultSecure for debugging purposes"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\WerFaultSecure.exe' ESCAPE '\\' OR OriginalFileName = 'WerFaultSecure.exe') AND (CommandLine LIKE '% /h %' ESCAPE '\\' AND CommandLine LIKE '% /pid %' ESCAPE '\\' AND CommandLine LIKE '% /tid %' ESCAPE '\\' AND CommandLine LIKE '% /encfile %' ESCAPE '\\' AND CommandLine LIKE '% /cancel %' ESCAPE '\\' AND CommandLine LIKE '% /type %' ESCAPE '\\' AND CommandLine LIKE '% 268310%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_werfaultsecure_process_freeze.yml"
-    },
-    {
         "title": "DSInternals Suspicious PowerShell Cmdlets",
         "id": "43d91656-a9b2-4541-b7e2-6a9bd3a13f4e",
         "status": "test",
@@ -10787,7 +10808,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '% add %' ESCAPE '\\' AND CommandLine LIKE '%\\\\CurrentControlSet\\\\Control\\\\Terminal Server%' ESCAPE '\\' AND CommandLine LIKE '%REG\\_DWORD%' ESCAPE '\\' AND CommandLine LIKE '% /f%' ESCAPE '\\')) AND ((CommandLine LIKE '%Licensing Core%' ESCAPE '\\' AND CommandLine LIKE '%EnableConcurrentSessions%' ESCAPE '\\') OR (CommandLine LIKE '%WinStations\\\\RDP-Tcp%' ESCAPE '\\' OR CommandLine LIKE '%MaxInstanceCount%' ESCAPE '\\' OR CommandLine LIKE '%fEnableWinStation%' ESCAPE '\\' OR CommandLine LIKE '%TSUserEnabled%' ESCAPE '\\' OR CommandLine LIKE '%TSEnabled%' ESCAPE '\\' OR CommandLine LIKE '%TSAppCompat%' ESCAPE '\\' OR CommandLine LIKE '%IdleWinStationPoolCount%' ESCAPE '\\' OR CommandLine LIKE '%TSAdvertise%' ESCAPE '\\' OR CommandLine LIKE '%AllowTSConnections%' ESCAPE '\\' OR CommandLine LIKE '%fSingleSessionPerUser%' ESCAPE '\\' OR CommandLine LIKE '%fDenyTSConnections%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '% add %' ESCAPE '\\' AND CommandLine LIKE '%\\\\CurrentControlSet\\\\Control\\\\Terminal Server%' ESCAPE '\\' AND CommandLine LIKE '%REG\\_DWORD%' ESCAPE '\\' AND CommandLine LIKE '% /f%' ESCAPE '\\')) AND ((CommandLine LIKE '%Licensing Core%' ESCAPE '\\' AND CommandLine LIKE '%EnableConcurrentSessions%' ESCAPE '\\') OR (CommandLine LIKE '%AllowTSConnections%' ESCAPE '\\' OR CommandLine LIKE '%fDenyTSConnections%' ESCAPE '\\' OR CommandLine LIKE '%fEnableWinStation%' ESCAPE '\\' OR CommandLine LIKE '%fSingleSessionPerUser%' ESCAPE '\\' OR CommandLine LIKE '%IdleWinStationPoolCount%' ESCAPE '\\' OR CommandLine LIKE '%MaxInstanceCount%' ESCAPE '\\' OR CommandLine LIKE '%SecurityLayer%' ESCAPE '\\' OR CommandLine LIKE '%TSAdvertise%' ESCAPE '\\' OR CommandLine LIKE '%TSAppCompat%' ESCAPE '\\' OR CommandLine LIKE '%TSEnabled%' ESCAPE '\\' OR CommandLine LIKE '%TSUserEnabled%' ESCAPE '\\' OR CommandLine LIKE '%WinStations\\\\RDP-Tcp%' ESCAPE '\\'))) AND NOT ((CommandLine LIKE '%SecurityLayer%' ESCAPE '\\' AND CommandLine LIKE '%02%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_reg_rdp_keys_tamper.yml"
     },
@@ -14784,6 +14805,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll') OR (Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\')) AND (CommandLine LIKE '% Net.Sockets.TCPClient%' ESCAPE '\\' AND CommandLine LIKE '%.GetStream(%' ESCAPE '\\' AND CommandLine LIKE '%.Write(%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_powershell_reverse_shell_connection.yml"
+    },
+    {
+        "title": "HackTool - WSASS Execution",
+        "id": "589ac73f-8e12-409c-964e-31a2f5775ae2",
+        "status": "experimental",
+        "description": "Detects execution of WSASS, a tool used to dump LSASS memory on Windows systems by leveraging WER's\n(Windows Error Reporting) WerFaultSecure.EXE to bypass PPL (Protected Process Light) protections.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1003.001"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\wsass.exe' ESCAPE '\\' OR Hashes LIKE '%IMPHASH=32F5095C9BBDCACF28FD4060EB4DFC42%' ESCAPE '\\' OR (CommandLine REGEXP '(?i)\\.exe[\\\"\\']?\\s+.{12,64}[\\\"\\']?\\s+\\d{2,10}' AND CommandLine LIKE '%werfaultsecure%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_hktl_wsass.yml"
     },
     {
         "title": "Potential Arbitrary Code Execution Via Node.EXE",
@@ -21217,6 +21257,49 @@
         "filename": "proc_creation_win_malware_kalambur_curl_socks_tor.yml"
     },
     {
+        "title": "Atomic MacOS Stealer - Persistence Indicators",
+        "id": "e710a880-1f18-4417-b6a0-b5afdf7e3023",
+        "status": "experimental",
+        "description": "Detects creation of persistence artifacts placed by Atomic MacOS Stealer in macOS systems. Recent Atomic MacOS Stealer variants have been observed dropping these to maintain persistent access after compromise.\n",
+        "author": "Jason Phang Vern - Onn, Robbin Ooi Zhen Heng (Gen Digital)",
+        "tags": [
+            "attack.persistence",
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
+            "attack.t1564.001",
+            "attack.t1543.004",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((Image LIKE '%/curl' ESCAPE '\\' AND TargetFilename LIKE '/Users/%' ESCAPE '\\' AND TargetFilename LIKE '%.helper' ESCAPE '\\') OR TargetFilename = '/Library/LaunchDaemons/com.finder.helper.plist')"
+        ],
+        "filename": "file_event_macos_malware_amos_persistence.yml"
+    },
+    {
+        "title": "Atomic MacOS Stealer - FileGrabber Activity",
+        "id": "e710a880-1f18-4417-b6a0-b5afdf7e33da",
+        "status": "experimental",
+        "description": "Detects suspicious activity associated with Atomic MacOS Stealer (Amos) campaigns, including execution of FileGrabber and curl-based POST requests used for data exfiltration. The rule identifies either the execution of FileGrabber targeting /tmp or the use of curl to POST sensitive user data (including files such as /tmp/out.zip) to remote servers, which are key indicators of Amos infostealer activity.\n",
+        "author": "Jason Phang Vern - Onn, Robbin Ooi Zhen Heng (Gen Digital)",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.002",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((CommandLine LIKE '%curl%' ESCAPE '\\' AND CommandLine LIKE '%POST%' ESCAPE '\\' AND CommandLine LIKE '%user:%' ESCAPE '\\' AND CommandLine LIKE '%-H %' ESCAPE '\\' AND CommandLine LIKE '%BuildID%' ESCAPE '\\' AND CommandLine LIKE '%file=@/tmp/out.zip%' ESCAPE '\\' AND CommandLine LIKE '%cl: 0%' ESCAPE '\\') OR (CommandLine LIKE '%FileGrabber%' ESCAPE '\\' AND CommandLine LIKE '%/tmp%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_macos_malware_amos_curl_post.yml"
+    },
+    {
         "title": "FunkLocker Ransomware File Creation",
         "id": "2c76a22b-702d-48fd-8fa9-e41e2fe203b3",
         "status": "experimental",
@@ -21380,26 +21463,6 @@
             "SELECT * FROM logs WHERE (EventID = '1' AND Image LIKE '%/curl' ESCAPE '\\' AND CommandLine LIKE '%curl%' ESCAPE '\\' AND CommandLine LIKE '%-d%' ESCAPE '\\' AND CommandLine LIKE '%webhook.site/bb8ca5f6-4175-45d2-b042-fc9ebb8170b7%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_mal_shai_hululd_exfiltration.yml"
-    },
-    {
-        "title": "MacOS FileGrabber Infostealer",
-        "id": "e710a880-1f18-4417-b6a0-b5afdf7e305a",
-        "status": "experimental",
-        "description": "Detects execution of FileGrabber on macOS, which is associated with Amos infostealer campaigns targeting sensitive user files.",
-        "author": "Jason Phang Vern - Onn (Gen Digital)",
-        "tags": [
-            "attack.execution",
-            "attack.t1059.002",
-            "detection.emerging-threats"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (CommandLine LIKE '%FileGrabber%' ESCAPE '\\' AND CommandLine LIKE '%/tmp%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_macos_malware_amos_filegrabber.yml"
     },
     {
         "title": "Exploit for CVE-2015-1641",
@@ -24421,7 +24484,7 @@
         "title": "RDP Sensitive Settings Changed",
         "id": "3f6b7b62-61aa-45db-96bd-9c31b36b653c",
         "status": "test",
-        "description": "Detects tampering of RDP Terminal Service/Server sensitive settings.\nSuch as allowing unauthorized users access to a system via the 'fAllowUnsolicited' or enabling RDP via 'fDenyTSConnections'...etc\n",
+        "description": "Detects tampering of RDP Terminal Service/Server sensitive settings.\nSuch as allowing unauthorized users access to a system via the 'fAllowUnsolicited' or enabling RDP via 'fDenyTSConnections', etc.\n\nBelow is a list of registry keys/values that are monitored by this rule:\n\n- Shadow: Used to enable Remote Desktop shadowing, which allows an administrator to view or control a user's session.\n- DisableRemoteDesktopAntiAlias: Disables anti-aliasing for remote desktop sessions.\n- DisableSecuritySettings: Disables certain security settings for Remote Desktop connections.\n- fAllowUnsolicited: Allows unsolicited remote assistance offers.\n- fAllowUnsolicitedFullControl: Allows unsolicited remote assistance offers with full control.\n- InitialProgram: Specifies a program to run automatically when a user logs on to a remote computer.\n- ServiceDll: Used in RDP hijacking techniques to specify a custom DLL to be loaded by the Terminal Services service.\n- SecurityLayer: Specifies the security layer used for RDP connections.\n",
         "author": "Samir Bousseaden, David ANDRE, Roberto Rodriguez @Cyb3rWard0g, Nasreddine Bencherchali",
         "tags": [
             "attack.defense-evasion",
@@ -24433,7 +24496,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\Shadow' ESCAPE '\\' AND Details IN ('DWORD (0x00000001)', 'DWORD (0x00000002)', 'DWORD (0x00000003)', 'DWORD (0x00000004)')) OR ((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\DisableRemoteDesktopAntiAlias' ESCAPE '\\' OR TargetObject LIKE '%\\\\DisableSecuritySettings' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicited' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicitedFullControl' ESCAPE '\\') AND Details = 'DWORD (0x00000001)') OR (TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\Shadow' ESCAPE '\\' AND Details IN ('DWORD (0x00000001)', 'DWORD (0x00000002)', 'DWORD (0x00000003)', 'DWORD (0x00000004)')) OR ((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\DisableRemoteDesktopAntiAlias' ESCAPE '\\' OR TargetObject LIKE '%\\\\DisableSecuritySettings' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicited' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicitedFullControl' ESCAPE '\\') AND Details = 'DWORD (0x00000001)') OR (TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\SecurityLayer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\')) AND NOT ((TargetObject LIKE '%\\\\SecurityLayer' ESCAPE '\\' AND Details = 'DWORD (0x00000002)')))"
         ],
         "filename": "registry_set_terminal_server_tampering.yml"
     },
