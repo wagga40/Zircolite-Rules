@@ -3251,7 +3251,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (logs MATCH ('\"bash -c /bin/bash\" AND \"&/dev/tcp/\"'))"
+            "SELECT * FROM logs WHERE ( = 'bash -c /bin/bash' AND  = '&/dev/tcp/')"
         ],
         "filename": "lnx_susp_jexboss.yml"
     },
@@ -3386,6 +3386,26 @@
             "SELECT * FROM logs WHERE (TargetFilename LIKE '%/etc/profile.d/%' ESCAPE '\\' AND (TargetFilename LIKE '%.csh' ESCAPE '\\' OR TargetFilename LIKE '%.sh' ESCAPE '\\'))"
         ],
         "filename": "file_event_lnx_susp_shell_script_under_profile_directory.yml"
+    },
+    {
+        "title": "Suspicious Filename with Embedded Base64 Commands",
+        "id": "179b3686-6271-4d87-807d-17d843a8af73",
+        "description": "Detects files with specially crafted filenames that embed Base64-encoded bash payloads designed to execute when processed by shell scripts.\nThese filenames exploit shell interpretation quirks to trigger hidden commands, a technique observed in VShell malware campaigns.\n",
+        "author": "@kostastsale",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.004",
+            "attack.defense-evasion",
+            "attack.t1027"
+        ],
+        "falsepositives": [
+            "Legitimate files with similar naming patterns (very unlikely)."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (TargetFilename LIKE '%{echo%' ESCAPE '\\' OR TargetFilename LIKE '%{base64,-d}%' ESCAPE '\\')"
+        ],
+        "filename": "file_event_lnx_susp_filename_with_embedded_base64_command.yml"
     },
     {
         "title": "Wget Creating Files in Tmp Directory",
