@@ -2154,7 +2154,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/ls' ESCAPE '\\' AND CommandLine LIKE '% -%i%' ESCAPE '\\' AND CommandLine LIKE '% -%d%' ESCAPE '\\' AND CommandLine LIKE '% /' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE (Image LIKE '%/ls' ESCAPE '\\' AND (CommandLine LIKE '% /' ESCAPE '\\' OR CommandLine LIKE '% / %' ESCAPE '\\') AND CommandLine REGEXP '(?:\\s-[^-\\s]{0,20}i|\\s--inode\\s)' AND CommandLine REGEXP '(?:\\s-[^-\\s]{0,20}d|\\s--directory\\s)')"
         ],
         "filename": "proc_creation_lnx_susp_inod_listing.yml"
     },
@@ -2869,10 +2869,10 @@
         "description": "Detects attempts to discover the files with setuid/setgid capability on them. That would allow adversary to escalate their privileges.",
         "author": "Pawel Mazur",
         "tags": [
+            "attack.discovery",
             "attack.defense-evasion",
-            "attack.collection",
             "attack.privilege-escalation",
-            "attack.t1123",
+            "attack.t1083",
             "attack.t1548"
         ],
         "falsepositives": [
