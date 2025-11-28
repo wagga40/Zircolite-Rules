@@ -4824,25 +4824,6 @@
         "filename": "proc_creation_win_splwow64_cli_anomaly.yml"
     },
     {
-        "title": "FileFix - Suspicious Child Process from Browser File Upload Abuse",
-        "id": "4be03877-d5b6-4520-85c9-a5911c0a656c",
-        "status": "experimental",
-        "description": "Detects potentially suspicious subprocesses such as LOLBINs spawned by web browsers. This activity could be associated with the \"FileFix\" social engineering technique,\nwhere users are tricked into launching the file explorer via a browser-based phishing page and pasting malicious commands into the address bar.\nThe technique abuses clipboard manipulation and disguises command execution as benign file path access, resulting in covert execution of system utilities.\n",
-        "author": "0xFustang",
-        "tags": [
-            "attack.execution",
-            "attack.t1204.004"
-        ],
-        "falsepositives": [
-            "Legitimate use of PowerShell or other utilities launched from browser extensions or automation tools"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (ParentProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\') AND (NewProcessName LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\') AND CommandLine LIKE '%#%' ESCAPE '\\')"
-        ],
-        "filename": "proc_creation_win_filefix_browsers.yml"
-    },
-    {
         "title": "Potentially Suspicious File Download From File Sharing Domain Via PowerShell.EXE",
         "id": "b6e04788-29e1-4557-bb14-77f761848ab8",
         "status": "test",
@@ -8349,6 +8330,25 @@
         "filename": "proc_creation_win_hktl_sharpevtmute.yml"
     },
     {
+        "title": "Suspicious FileFix Execution Pattern",
+        "id": "b5b29e4e-31fa-4fdf-b058-296e7a1aa0c2",
+        "status": "experimental",
+        "description": "Detects suspicious FileFix execution patterns where users are tricked into running malicious commands through browser file upload dialog manipulation.\nThis attack typically begins when users visit malicious websites impersonating legitimate services or news platforms,\nwhich may display fake CAPTCHA challenges or direct instructions to open file explorer and paste clipboard content.\nThe clipboard content usually contains commands that download and execute malware, such as information stealing tools.\n",
+        "author": "0xFustang, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.t1204.004"
+        ],
+        "falsepositives": [
+            "Legitimate use of PowerShell or other utilities launched from browser extensions or automation tools"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((ParentProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\') AND CommandLine LIKE '%#%' ESCAPE '\\') AND ((CommandLine LIKE '%\\%comspec\\%%' ESCAPE '\\' OR CommandLine LIKE '%bitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%certutil%' ESCAPE '\\' OR CommandLine LIKE '%cmd%' ESCAPE '\\' OR CommandLine LIKE '%cscript%' ESCAPE '\\' OR CommandLine LIKE '%curl%' ESCAPE '\\' OR CommandLine LIKE '%finger%' ESCAPE '\\' OR CommandLine LIKE '%mshta%' ESCAPE '\\' OR CommandLine LIKE '%powershell%' ESCAPE '\\' OR CommandLine LIKE '%pwsh%' ESCAPE '\\' OR CommandLine LIKE '%regsvr32%' ESCAPE '\\' OR CommandLine LIKE '%rundll32%' ESCAPE '\\' OR CommandLine LIKE '%schtasks%' ESCAPE '\\' OR CommandLine LIKE '%wget%' ESCAPE '\\' OR CommandLine LIKE '%wscript%' ESCAPE '\\') OR (CommandLine LIKE '%account%' ESCAPE '\\' OR CommandLine LIKE '%anti-bot%' ESCAPE '\\' OR CommandLine LIKE '%botcheck%' ESCAPE '\\' OR CommandLine LIKE '%captcha%' ESCAPE '\\' OR CommandLine LIKE '%challenge%' ESCAPE '\\' OR CommandLine LIKE '%confirmation%' ESCAPE '\\' OR CommandLine LIKE '%fraud%' ESCAPE '\\' OR CommandLine LIKE '%human%' ESCAPE '\\' OR CommandLine LIKE '%identification%' ESCAPE '\\' OR CommandLine LIKE '%identificator%' ESCAPE '\\' OR CommandLine LIKE '%identity%' ESCAPE '\\' OR CommandLine LIKE '%robot%' ESCAPE '\\' OR CommandLine LIKE '%validation%' ESCAPE '\\' OR CommandLine LIKE '%verification%' ESCAPE '\\' OR CommandLine LIKE '%verify%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_susp_filefix_execution_pattern.yml"
+    },
+    {
         "title": "Potentially Suspicious GoogleUpdate Child Process",
         "id": "84b1ecf9-6eff-4004-bafb-bae5c0e251b2",
         "status": "test",
@@ -8854,7 +8854,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') OR ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '% copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\xcopy.exe' ESCAPE '\\') OR OriginalFileName IN ('robocopy.exe', 'XCOPY.EXE'))) AND ((CommandLine LIKE '%\\\\System32%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SysWOW64%' ESCAPE '\\' OR CommandLine LIKE '%\\\\WinSxS%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\bitsadmin.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\calc.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\certutil.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmdl32.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cscript.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\mshta.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\rundll32.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\wscript.exe%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine LIKE '%copy %' ESCAPE '\\') OR ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '%copy-item%' ESCAPE '\\' OR CommandLine LIKE '% copy %' ESCAPE '\\' OR CommandLine LIKE '%cpi %' ESCAPE '\\' OR CommandLine LIKE '% cp %' ESCAPE '\\')) OR ((NewProcessName LIKE '%\\\\robocopy.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\xcopy.exe' ESCAPE '\\') OR OriginalFileName IN ('robocopy.exe', 'XCOPY.EXE'))) AND ((CommandLine LIKE '%\\\\System32%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SysWOW64%' ESCAPE '\\' OR CommandLine LIKE '%\\\\WinSxS%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\bitsadmin.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\calc.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\certutil.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmdl32.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cscript.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\mshta.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\rundll32.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\wscript.exe%' ESCAPE '\\' OR CommandLine LIKE '%\\\\ie4uinit.exe%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_copy_system_dir_lolbin.yml"
     },
@@ -12804,7 +12804,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND NewProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' AND CommandLine LIKE '%#%' ESCAPE '\\' AND (CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND ParentProcessName LIKE '%\\\\explorer.exe' ESCAPE '\\' AND CommandLine LIKE '%#%' ESCAPE '\\' AND (CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\' OR CommandLine LIKE '%            %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_susp_clickfix_filefix_whitespace_padding.yml"
     },
@@ -15624,6 +15624,27 @@
         "filename": "net_connection_win_rdp_outbound_over_non_standard_tools.yml"
     },
     {
+        "title": "Network Connection Initiated via Finger.EXE",
+        "id": "2fdaf50b-9fd5-449f-ba69-f17248119af6",
+        "status": "experimental",
+        "description": "Detects network connections via finger.exe, which can be abused by threat actors to retrieve remote commands for execution on Windows devices.\nIn one ClickFix malware campaign, adversaries leveraged the finger protocol to fetch commands from a remote server.\nSince the finger utility is not commonly used in modern Windows environments, its presence already raises suspicion.\nInvestigating such network connections can also help identify potential malicious infrastructure used by threat actors\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1071.004",
+            "attack.execution",
+            "attack.t1059.003"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Initiated = 'true' AND NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\')"
+        ],
+        "filename": "net_connection_win_finger.yml"
+    },
+    {
         "title": "Network Connection Initiated By Eqnedt32.EXE",
         "id": "a66bc059-c370-472c-a0d7-f8fd1bf9d583",
         "status": "test",
@@ -15720,6 +15741,27 @@
             "SELECT * FROM logs WHERE (QueryName LIKE '%servicebus.windows.net%' ESCAPE '\\' AND NewProcessName LIKE '%HybridConnectionManager%' ESCAPE '\\')"
         ],
         "filename": "dns_query_win_hybridconnectionmgr_servicebus.yml"
+    },
+    {
+        "title": "DNS Query by Finger Utility",
+        "id": "c082c2b0-525b-4dbc-9a26-a57dc4692074",
+        "status": "experimental",
+        "description": "Detects DNS queries made by the finger utility, which can be abused by threat actors to retrieve remote commands for execution on Windows devices.\nIn one ClickFix malware campaign, adversaries leveraged the finger protocol to fetch commands from a remote server.\nSince the finger utility is not commonly used in modern Windows environments, its presence already raises suspicion.\nInvestigating such DNS queries can also help identify potential malicious infrastructure used by threat actors for command and control (C2) communication.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1071.004",
+            "attack.execution",
+            "attack.t1059.003"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\'"
+        ],
+        "filename": "dns_query_win_finger.yml"
     },
     {
         "title": "DNS Query Tor .Onion Address - Sysmon",
@@ -21465,6 +21507,28 @@
         "filename": "proc_creation_lnx_mal_shai_hululd_exfiltration.yml"
     },
     {
+        "title": "Grixba Malware Reconnaissance Activity",
+        "id": "af688c76-4ce4-4309-bfdd-e896f01acf27",
+        "status": "experimental",
+        "description": "Detects execution of the Grixba reconnaissance tool based on suspicious command-line parameter combinations.\nThis tool is used by the Play ransomware group for network enumeration, data gathering, and event log clearing.\n",
+        "author": "yxinmiracle, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.reconnaissance",
+            "attack.t1595.001",
+            "attack.discovery",
+            "attack.t1046",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Legitimate tools that use similar command-line argument structures (e.g., a tool with '--mode scan' and '--input file.txt') could trigger this rule. However, the specific combinations are indicative of reconnaissance or defense evasion."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4688' AND Channel = 'Security' AND (CommandLine LIKE '%-m %' ESCAPE '\\' OR CommandLine LIKE '%-mode %' ESCAPE '\\' OR CommandLine LIKE '%-m:%' ESCAPE '\\' OR CommandLine LIKE '%-mode:%' ESCAPE '\\') AND (CommandLine LIKE '%-i %' ESCAPE '\\' OR CommandLine LIKE '%-input %' ESCAPE '\\' OR CommandLine LIKE '%-i:%' ESCAPE '\\' OR CommandLine LIKE '%-input:%' ESCAPE '\\') AND (CommandLine LIKE '%scan %' ESCAPE '\\' OR CommandLine LIKE '%scanall %' ESCAPE '\\') AND (CommandLine LIKE '%:f %' ESCAPE '\\' OR CommandLine LIKE '%:r %' ESCAPE '\\' OR CommandLine LIKE '%:s %' ESCAPE '\\' OR CommandLine LIKE '% f %' ESCAPE '\\' OR CommandLine LIKE '% r %' ESCAPE '\\' OR CommandLine LIKE '% s %' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_malware_grixba_recon.yml"
+    },
+    {
         "title": "Exploit for CVE-2015-1641",
         "id": "7993792c-5ce2-4475-a3db-a3a5539827ef",
         "status": "stable",
@@ -24083,7 +24147,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU\\\\%' ESCAPE '\\' AND (NewValue LIKE '%http://%' ESCAPE '\\' OR NewValue LIKE '%https://%' ESCAPE '\\') AND ((NewValue LIKE '%account%' ESCAPE '\\' OR NewValue LIKE '%anti-bot%' ESCAPE '\\' OR NewValue LIKE '%botcheck%' ESCAPE '\\' OR NewValue LIKE '%captcha%' ESCAPE '\\' OR NewValue LIKE '%challenge%' ESCAPE '\\' OR NewValue LIKE '%confirmation%' ESCAPE '\\' OR NewValue LIKE '%fraud%' ESCAPE '\\' OR NewValue LIKE '%human%' ESCAPE '\\' OR NewValue LIKE '%identificator%' ESCAPE '\\' OR NewValue LIKE '%identity%' ESCAPE '\\' OR NewValue LIKE '%robot%' ESCAPE '\\' OR NewValue LIKE '%validation%' ESCAPE '\\' OR NewValue LIKE '%verification%' ESCAPE '\\' OR NewValue LIKE '%verify%' ESCAPE '\\') OR (NewValue LIKE '%\\%comspec\\%%' ESCAPE '\\' OR NewValue LIKE '%bitsadmin%' ESCAPE '\\' OR NewValue LIKE '%certutil%' ESCAPE '\\' OR NewValue LIKE '%cmd%' ESCAPE '\\' OR NewValue LIKE '%cscript%' ESCAPE '\\' OR NewValue LIKE '%curl%' ESCAPE '\\' OR NewValue LIKE '%mshta%' ESCAPE '\\' OR NewValue LIKE '%powershell%' ESCAPE '\\' OR NewValue LIKE '%pwsh%' ESCAPE '\\' OR NewValue LIKE '%regsvr32%' ESCAPE '\\' OR NewValue LIKE '%rundll32%' ESCAPE '\\' OR NewValue LIKE '%schtasks%' ESCAPE '\\' OR NewValue LIKE '%wget%' ESCAPE '\\' OR NewValue LIKE '%wscript%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU\\\\%' ESCAPE '\\' AND (NewValue LIKE '%http://%' ESCAPE '\\' OR NewValue LIKE '%https://%' ESCAPE '\\') AND ((NewValue LIKE '%account%' ESCAPE '\\' OR NewValue LIKE '%anti-bot%' ESCAPE '\\' OR NewValue LIKE '%botcheck%' ESCAPE '\\' OR NewValue LIKE '%captcha%' ESCAPE '\\' OR NewValue LIKE '%challenge%' ESCAPE '\\' OR NewValue LIKE '%confirmation%' ESCAPE '\\' OR NewValue LIKE '%fraud%' ESCAPE '\\' OR NewValue LIKE '%human%' ESCAPE '\\' OR NewValue LIKE '%identification%' ESCAPE '\\' OR NewValue LIKE '%identificator%' ESCAPE '\\' OR NewValue LIKE '%identity%' ESCAPE '\\' OR NewValue LIKE '%robot%' ESCAPE '\\' OR NewValue LIKE '%validation%' ESCAPE '\\' OR NewValue LIKE '%verification%' ESCAPE '\\' OR NewValue LIKE '%verify%' ESCAPE '\\') OR (NewValue LIKE '%\\%comspec\\%%' ESCAPE '\\' OR NewValue LIKE '%bitsadmin%' ESCAPE '\\' OR NewValue LIKE '%certutil%' ESCAPE '\\' OR NewValue LIKE '%cmd%' ESCAPE '\\' OR NewValue LIKE '%cscript%' ESCAPE '\\' OR NewValue LIKE '%curl%' ESCAPE '\\' OR NewValue LIKE '%finger%' ESCAPE '\\' OR NewValue LIKE '%mshta%' ESCAPE '\\' OR NewValue LIKE '%powershell%' ESCAPE '\\' OR NewValue LIKE '%pwsh%' ESCAPE '\\' OR NewValue LIKE '%regsvr32%' ESCAPE '\\' OR NewValue LIKE '%rundll32%' ESCAPE '\\' OR NewValue LIKE '%schtasks%' ESCAPE '\\' OR NewValue LIKE '%wget%' ESCAPE '\\' OR NewValue LIKE '%wscript%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_potential_clickfix_execution.yml"
     },
@@ -24424,11 +24488,11 @@
         "filename": "registry_set_dsrm_tampering.yml"
     },
     {
-        "title": "FileFix - Command Evidence in TypedPaths from Browser File Upload Abuse",
+        "title": "FileFix - Command Evidence in TypedPaths",
         "id": "4fee3d51-8069-4a4c-a0f7-924fcaff2c70",
         "status": "experimental",
-        "description": "Detects commonly-used chained commands and strings in the most recent 'url' value of the 'TypedPaths' key, which could be indicative of a user being targeted by the FileFix technique.",
-        "author": "Alfie Champion (delivr.to)",
+        "description": "Detects commonly-used chained commands and strings in the most recent 'url' value of the 'TypedPaths' key, which could be indicative of a user being targeted by the FileFix technique.\n",
+        "author": "Alfie Champion (delivr.to), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.t1204.004"
@@ -24438,7 +24502,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\TypedPaths\\\\url1' ESCAPE '\\' AND NewValue LIKE '%#%' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\brave.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\chrome.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\firefox.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msedge.exe' ESCAPE '\\') AND (NewValue LIKE '%cmd%' ESCAPE '\\' OR NewValue LIKE '%curl%' ESCAPE '\\' OR NewValue LIKE '%powershell%' ESCAPE '\\' OR NewValue LIKE '%bitsadmin%' ESCAPE '\\' OR NewValue LIKE '%certutil%' ESCAPE '\\' OR NewValue LIKE '%mshta%' ESCAPE '\\' OR NewValue LIKE '%regsvr32%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\TypedPaths\\\\url1' ESCAPE '\\' AND NewValue LIKE '%#%' ESCAPE '\\' AND NewValue LIKE '%http%' ESCAPE '\\') AND ((NewValue LIKE '%account%' ESCAPE '\\' OR NewValue LIKE '%anti-bot%' ESCAPE '\\' OR NewValue LIKE '%botcheck%' ESCAPE '\\' OR NewValue LIKE '%captcha%' ESCAPE '\\' OR NewValue LIKE '%challenge%' ESCAPE '\\' OR NewValue LIKE '%confirmation%' ESCAPE '\\' OR NewValue LIKE '%fraud%' ESCAPE '\\' OR NewValue LIKE '%human%' ESCAPE '\\' OR NewValue LIKE '%identification%' ESCAPE '\\' OR NewValue LIKE '%identificator%' ESCAPE '\\' OR NewValue LIKE '%identity%' ESCAPE '\\' OR NewValue LIKE '%robot%' ESCAPE '\\' OR NewValue LIKE '%validation%' ESCAPE '\\' OR NewValue LIKE '%verification%' ESCAPE '\\' OR NewValue LIKE '%verify%' ESCAPE '\\') OR (NewValue LIKE '%\\%comspec\\%%' ESCAPE '\\' OR NewValue LIKE '%bitsadmin%' ESCAPE '\\' OR NewValue LIKE '%certutil%' ESCAPE '\\' OR NewValue LIKE '%cmd%' ESCAPE '\\' OR NewValue LIKE '%cscript%' ESCAPE '\\' OR NewValue LIKE '%curl%' ESCAPE '\\' OR NewValue LIKE '%finger%' ESCAPE '\\' OR NewValue LIKE '%mshta%' ESCAPE '\\' OR NewValue LIKE '%powershell%' ESCAPE '\\' OR NewValue LIKE '%pwsh%' ESCAPE '\\' OR NewValue LIKE '%regsvr32%' ESCAPE '\\' OR NewValue LIKE '%rundll32%' ESCAPE '\\' OR NewValue LIKE '%schtasks%' ESCAPE '\\' OR NewValue LIKE '%wget%' ESCAPE '\\' OR NewValue LIKE '%wscript%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_filefix_typedpath_commands.yml"
     },
