@@ -2239,6 +2239,308 @@
         "filename": "net_connection_lnx_crypto_mining_indicators.yml"
     },
     {
+        "title": "Audio Capture",
+        "id": "a7af2487-9c2f-42e4-9bb9-ff961f0561d5",
+        "description": "Detects attempts to record audio using the arecord and ecasound utilities.",
+        "author": "Pawel Mazur, Milad Cheraghi",
+        "tags": [
+            "attack.collection",
+            "attack.t1123"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'EXECVE' AND a0 = 'arecord' AND a1 = '-vv' AND a2 = '-fdat') OR (type = 'SYSCALL' AND exe LIKE '%/ecasound' ESCAPE '\\' AND SYSCALL LIKE 'memfd\\_create' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_audio_capture.yml"
+    },
+    {
+        "title": "Disable System Firewall",
+        "id": "53059bc0-1472-438b-956a-7508a94a91f0",
+        "description": "Detects disabling of system firewalls which could be used by adversaries to bypass controls that limit usage of the network.",
+        "author": "Pawel Mazur",
+        "tags": [
+            "attack.t1562.004",
+            "attack.defense-evasion"
+        ],
+        "falsepositives": [
+            "Admin activity"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (type LIKE 'SERVICE\\_STOP' ESCAPE '\\' AND unit IN ('firewalld', 'iptables', 'ufw'))"
+        ],
+        "filename": "lnx_auditd_disable_system_firewall.yml"
+    },
+    {
+        "title": "System Information Discovery - Auditd",
+        "id": "f34047d9-20d3-4e8b-8672-0a35cc50dc71",
+        "description": "Detects System Information Discovery commands",
+        "author": "Pawel Mazur",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
+        "falsepositives": [
+            "Likely"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/lsb-release', '/etc/redhat-release', '/etc/issue')) OR (type = 'EXECVE' AND a0 IN ('uname', 'uptime', 'lsmod', 'hostname', 'env')) OR (type = 'EXECVE' AND a0 = 'grep' AND (a1 LIKE '%vbox%' ESCAPE '\\' OR a1 LIKE '%vm%' ESCAPE '\\' OR a1 LIKE '%xen%' ESCAPE '\\' OR a1 LIKE '%virtio%' ESCAPE '\\' OR a1 LIKE '%hv%' ESCAPE '\\')) OR (type = 'EXECVE' AND a0 = 'kmod' AND a1 = 'list'))"
+        ],
+        "filename": "lnx_auditd_system_info_discovery.yml"
+    },
+    {
+        "title": "ASLR Disabled Via Sysctl or Direct Syscall - Linux",
+        "id": "e497a24e-9345-4a62-9803-b06d7d7cb132",
+        "description": "Detects actions that disable Address Space Layout Randomization (ASLR) in Linux, including:\n  - Use of the `personality` syscall with the ADDR_NO_RANDOMIZE flag (0x0040000)\n  - Modification of the /proc/sys/kernel/randomize_va_space file\n  - Execution of the `sysctl` command to set `kernel.randomize_va_space=0`\nDisabling ASLR is often used by attackers during exploit development or to bypass memory protection mechanisms.\nA successful use of these methods can reduce the effectiveness of ASLR and make memory corruption attacks more reliable.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
+            "attack.t1562.001",
+            "attack.t1055.009"
+        ],
+        "falsepositives": [
+            "Debugging or legitimate software testing"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND SYSCALL = 'personality' AND a0 = '40000') OR (type = 'EXECVE' AND a0 = 'sysctl' AND a1 = '-w' AND a2 LIKE 'kernel.randomize\\_va\\_space=0' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_disable_aslr_protection.yml"
+    },
+    {
+        "title": "Suspicious C2 Activities",
+        "id": "f7158a64-6204-4d6d-868a-6e6378b467e0",
+        "description": "Detects suspicious activities as declared by Florian Roth in its 'Best Practice Auditd Configuration'.\nThis includes the detection of the following commands; wget, curl, base64, nc, netcat, ncat, ssh, socat, wireshark, rawshark, rdesktop, nmap.\nThese commands match a few techniques from the tactics \"Command and Control\", including not exhaustively the following; Application Layer Protocol (T1071), Non-Application Layer Protocol (T1095), Data Encoding (T1132)\n",
+        "author": "Marie Euler",
+        "tags": [
+            "attack.command-and-control"
+        ],
+        "falsepositives": [
+            "Admin or User activity"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE key LIKE 'susp\\_activity' ESCAPE '\\'"
+        ],
+        "filename": "lnx_auditd_susp_c2_commands.yml"
+    },
+    {
+        "title": "Password Policy Discovery - Linux",
+        "id": "ca94a6db-8106-4737-9ed2-3e3bb826af0a",
+        "description": "Detects password policy discovery commands",
+        "author": "Ömer Günal, oscd.community, Pawel Mazur",
+        "tags": [
+            "attack.discovery",
+            "attack.t1201"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/login.defs', '/etc/pam.d/auth', '/etc/pam.d/common-account', '/etc/pam.d/common-auth', '/etc/pam.d/common-password', '/etc/pam.d/system-auth', '/etc/security/pwquality.conf')) OR (type = 'EXECVE' AND a0 = 'chage' AND a1 IN ('--list', '-l')) OR (type = 'EXECVE' AND a0 = 'passwd' AND a1 IN ('-S', '--status')))"
+        ],
+        "filename": "lnx_auditd_password_policy_discovery.yml"
+    },
+    {
+        "title": "Linux Keylogging with Pam.d",
+        "id": "49aae26c-450e-448b-911d-b3c13d178dfc",
+        "description": "Detect attempt to enable auditing of TTY input",
+        "author": "Pawel Mazur",
+        "tags": [
+            "attack.collection",
+            "attack.credential-access",
+            "attack.t1003",
+            "attack.t1056.001"
+        ],
+        "falsepositives": [
+            "Administrative work"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/pam.d/system-auth', '/etc/pam.d/password-auth')) OR (type LIKE 'TTY' ESCAPE '\\' OR type LIKE 'USER\\_TTY' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_keylogging_with_pam_d.yml"
+    },
+    {
+        "title": "System and Hardware Information Discovery",
+        "id": "1f358e2e-cb63-43c3-b575-dfb072a6814f",
+        "description": "Detects system information discovery commands",
+        "author": "Ömer Günal, oscd.community",
+        "tags": [
+            "attack.discovery",
+            "attack.t1082"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "informational",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/sys/class/dmi/id/bios\\_version' ESCAPE '\\' OR name LIKE '/sys/class/dmi/id/product\\_name' ESCAPE '\\' OR name LIKE '/sys/class/dmi/id/chassis\\_vendor' ESCAPE '\\' OR name LIKE '/proc/scsi/scsi' ESCAPE '\\' OR name LIKE '/proc/ide/hd0/model' ESCAPE '\\' OR name LIKE '/proc/version' ESCAPE '\\' OR name LIKE '/etc/%version' ESCAPE '\\' OR name LIKE '/etc/%release' ESCAPE '\\' OR name LIKE '/etc/issue' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_system_info_discovery2.yml"
+    },
+    {
+        "title": "Unix Shell Configuration Modification",
+        "id": "a94cdd87-6c54-4678-a6cc-2814ffe5a13d",
+        "description": "Detect unix shell configuration modification. Adversaries may establish persistence through executing malicious commands triggered when a new shell is opened.",
+        "author": "Peter Matkovski, IAI",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
+            "attack.t1546.004"
+        ],
+        "falsepositives": [
+            "Admin or User activity are expected to generate some false positives"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/etc/shells' ESCAPE '\\' OR name LIKE '/etc/profile' ESCAPE '\\' OR name LIKE '/etc/profile.d/%' ESCAPE '\\' OR name LIKE '/etc/bash.bashrc' ESCAPE '\\' OR name LIKE '/etc/bashrc' ESCAPE '\\' OR name LIKE '/etc/zsh/zprofile' ESCAPE '\\' OR name LIKE '/etc/zsh/zshrc' ESCAPE '\\' OR name LIKE '/etc/zsh/zlogin' ESCAPE '\\' OR name LIKE '/etc/zsh/zlogout' ESCAPE '\\' OR name LIKE '/etc/csh.cshrc' ESCAPE '\\' OR name LIKE '/etc/csh.login' ESCAPE '\\' OR name LIKE '/root/.bashrc' ESCAPE '\\' OR name LIKE '/root/.bash\\_profile' ESCAPE '\\' OR name LIKE '/root/.profile' ESCAPE '\\' OR name LIKE '/root/.zshrc' ESCAPE '\\' OR name LIKE '/root/.zprofile' ESCAPE '\\' OR name LIKE '/home/%/.bashrc' ESCAPE '\\' OR name LIKE '/home/%/.zshrc' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_profile' ESCAPE '\\' OR name LIKE '/home/%/.zprofile' ESCAPE '\\' OR name LIKE '/home/%/.profile' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_login' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_logout' ESCAPE '\\' OR name LIKE '/home/%/.zlogin' ESCAPE '\\' OR name LIKE '/home/%/.zlogout' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_unix_shell_configuration_modification.yml"
+    },
+    {
+        "title": "Auditing Configuration Changes on Linux Host",
+        "id": "977ef627-4539-4875-adf4-ed8f780c4922",
+        "description": "Detect changes in auditd configuration files",
+        "author": "Mikhail Larin, oscd.community",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.006"
+        ],
+        "falsepositives": [
+            "Legitimate administrative activity"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/etc/audit/%' ESCAPE '\\' OR name LIKE '/etc/libaudit.conf' ESCAPE '\\' OR name LIKE '/etc/audisp/%' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_auditing_config_change.yml"
+    },
+    {
+        "title": "Use Of Hidden Paths Or Files",
+        "id": "9e1bef8d-0fff-46f6-8465-9aa54e128c1e",
+        "description": "Detects calls to hidden files or files located in hidden directories in NIX systems.",
+        "author": "David Burkett, @signalblur",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
+            "attack.defense-evasion",
+            "attack.t1574.001"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND name LIKE '%/.%' ESCAPE '\\') AND NOT ((name LIKE '%/.cache/%' ESCAPE '\\' OR name LIKE '%/.config/%' ESCAPE '\\' OR name LIKE '%/.pyenv/%' ESCAPE '\\' OR name LIKE '%/.rustup/toolchains%' ESCAPE '\\')))"
+        ],
+        "filename": "lnx_auditd_hidden_binary_execution.yml"
+    },
+    {
+        "title": "Logging Configuration Changes on Linux Host",
+        "id": "c830f15d-6f6e-430f-8074-6f73d6807841",
+        "description": "Detect changes of syslog daemons configuration files",
+        "author": "Mikhail Larin, oscd.community",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.006"
+        ],
+        "falsepositives": [
+            "Legitimate administrative activity"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND name IN ('/etc/syslog.conf', '/etc/rsyslog.conf', '/etc/syslog-ng/syslog-ng.conf'))"
+        ],
+        "filename": "lnx_auditd_logging_config_change.yml"
+    },
+    {
+        "title": "Systemd Service Creation",
+        "id": "1bac86ba-41aa-4f62-9d6b-405eac99b485",
+        "description": "Detects a creation of systemd services which could be used by adversaries to execute malicious code.",
+        "author": "Pawel Mazur",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
+            "attack.t1543.002"
+        ],
+        "falsepositives": [
+            "Admin work like legit service installs."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'PATH' AND nametype = 'CREATE') AND ((name LIKE '/usr/lib/systemd/system/%' ESCAPE '\\' OR name LIKE '/etc/systemd/system/%' ESCAPE '\\') OR name LIKE '%/.config/systemd/user/%' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_systemd_service_creation.yml"
+    },
+    {
+        "title": "Modification of ld.so.preload",
+        "id": "4b3cb710-5e83-4715-8c45-8b2b5b3e5751",
+        "description": "Identifies modification of ld.so.preload for shared object injection. This technique is used by attackers to load arbitrary code into processes.",
+        "author": "E.M. Anhaus (originally from Atomic Blue Detections, Tony Lambert), oscd.community",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.persistence",
+            "attack.defense-evasion",
+            "attack.t1574.006"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND name = '/etc/ld.so.preload')"
+        ],
+        "filename": "lnx_auditd_ld_so_preload_mod.yml"
+    },
+    {
+        "title": "BPFDoor Abnormal Process ID or Lock File Accessed",
+        "id": "808146b2-9332-4d78-9416-d7e47012d83d",
+        "description": "detects BPFDoor .lock and .pid files access in temporary file storage facility",
+        "author": "Rafal Piasecki",
+        "tags": [
+            "attack.execution",
+            "attack.t1106",
+            "attack.t1059"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND name IN ('/var/run/haldrund.pid', '/var/run/xinetd.lock', '/var/run/kdevrund.pid'))"
+        ],
+        "filename": "lnx_auditd_bpfdoor_file_accessed.yml"
+    },
+    {
+        "title": "Potential Abuse of Linux Magic System Request Key",
+        "id": "ea61bb82-a5e0-42e6-8537-91d29500f1b9",
+        "description": "Detects the potential abuse of the Linux Magic SysRq (System Request) key by adversaries with root or sufficient privileges\nto silently manipulate or destabilize a system. By writing to /proc/sysrq-trigger, they can crash the system, kill processes,\nor disrupt forensic analysis—all while bypassing standard logging. Though intended for recovery and debugging, SysRq can be\nmisused as a stealthy post-exploitation tool. It is controlled via /proc/sys/kernel/sysrq or permanently through /etc/sysctl.conf.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.004",
+            "attack.impact",
+            "attack.t1529",
+            "attack.t1489",
+            "attack.t1499"
+        ],
+        "falsepositives": [
+            "Legitimate administrative activity"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '%/sysrq' ESCAPE '\\' OR name LIKE '%/sysctl.conf' ESCAPE '\\' OR name LIKE '%/sysrq-trigger' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_magic_system_request_key.yml"
+    },
+    {
         "title": "Screen Capture with Import Tool",
         "id": "dbe4b9c5-c254-4258-9688-d6af0b7967fd",
         "description": "Detects adversary creating screen capture of a desktop with Import Tool.\nHighly recommended using rule on servers, due to high usage of screenshot utilities on user workstations.\nImageMagick must be installed.\n",
@@ -2275,43 +2577,6 @@
         "filename": "lnx_auditd_hidden_zip_files_steganography.yml"
     },
     {
-        "title": "System Info Discovery via Sysinfo Syscall",
-        "id": "b207d563-a1d9-4275-b349-77d1eb55aa6d",
-        "description": "Detects use of the sysinfo system call in Linux, which provides a snapshot of key system statistics such as uptime, load averages, memory usage, and the number of running processes.\nMalware or reconnaissance tools might leverage sysinfo to fingerprint the system - gathering data to determine if it's a viable target.\n",
-        "author": "Milad Cheraghi",
-        "tags": [
-            "attack.discovery",
-            "attack.t1057",
-            "attack.t1082"
-        ],
-        "falsepositives": [
-            "Legitimate administrative activity"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND syscall = 'sysinfo') AND NOT ((exe LIKE '%/bin/splunkd' ESCAPE '\\')))"
-        ],
-        "filename": "lnx_auditd_susp_discovery_sysinfo_syscall.yml"
-    },
-    {
-        "title": "System and Hardware Information Discovery",
-        "id": "1f358e2e-cb63-43c3-b575-dfb072a6814f",
-        "description": "Detects system information discovery commands",
-        "author": "Ömer Günal, oscd.community",
-        "tags": [
-            "attack.discovery",
-            "attack.t1082"
-        ],
-        "falsepositives": [
-            "Legitimate administration activities"
-        ],
-        "level": "informational",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/sys/class/dmi/id/bios\\_version' ESCAPE '\\' OR name LIKE '/sys/class/dmi/id/product\\_name' ESCAPE '\\' OR name LIKE '/sys/class/dmi/id/chassis\\_vendor' ESCAPE '\\' OR name LIKE '/proc/scsi/scsi' ESCAPE '\\' OR name LIKE '/proc/ide/hd0/model' ESCAPE '\\' OR name LIKE '/proc/version' ESCAPE '\\' OR name LIKE '/etc/%version' ESCAPE '\\' OR name LIKE '/etc/%release' ESCAPE '\\' OR name LIKE '/etc/issue' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_system_info_discovery2.yml"
-    },
-    {
         "title": "Binary Padding - Linux",
         "id": "c52a914f-3d8b-4b2a-bb75-b3991e75f8ba",
         "description": "Adversaries may use binary padding to add junk data and change the on-disk representation of malware.\nThis rule detect using dd and truncate to add a junk data to file.\n",
@@ -2328,25 +2593,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND (( = 'truncate' AND  = '-s') OR (( = 'dd' AND  = 'if=') AND NOT (logs MATCH ('\"of=\"')))))"
         ],
         "filename": "lnx_auditd_binary_padding.yml"
-    },
-    {
-        "title": "Unix Shell Configuration Modification",
-        "id": "a94cdd87-6c54-4678-a6cc-2814ffe5a13d",
-        "description": "Detect unix shell configuration modification. Adversaries may establish persistence through executing malicious commands triggered when a new shell is opened.",
-        "author": "Peter Matkovski, IAI",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.persistence",
-            "attack.t1546.004"
-        ],
-        "falsepositives": [
-            "Admin or User activity are expected to generate some false positives"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/etc/shells' ESCAPE '\\' OR name LIKE '/etc/profile' ESCAPE '\\' OR name LIKE '/etc/profile.d/%' ESCAPE '\\' OR name LIKE '/etc/bash.bashrc' ESCAPE '\\' OR name LIKE '/etc/bashrc' ESCAPE '\\' OR name LIKE '/etc/zsh/zprofile' ESCAPE '\\' OR name LIKE '/etc/zsh/zshrc' ESCAPE '\\' OR name LIKE '/etc/zsh/zlogin' ESCAPE '\\' OR name LIKE '/etc/zsh/zlogout' ESCAPE '\\' OR name LIKE '/etc/csh.cshrc' ESCAPE '\\' OR name LIKE '/etc/csh.login' ESCAPE '\\' OR name LIKE '/root/.bashrc' ESCAPE '\\' OR name LIKE '/root/.bash\\_profile' ESCAPE '\\' OR name LIKE '/root/.profile' ESCAPE '\\' OR name LIKE '/root/.zshrc' ESCAPE '\\' OR name LIKE '/root/.zprofile' ESCAPE '\\' OR name LIKE '/home/%/.bashrc' ESCAPE '\\' OR name LIKE '/home/%/.zshrc' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_profile' ESCAPE '\\' OR name LIKE '/home/%/.zprofile' ESCAPE '\\' OR name LIKE '/home/%/.profile' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_login' ESCAPE '\\' OR name LIKE '/home/%/.bash\\_logout' ESCAPE '\\' OR name LIKE '/home/%/.zlogin' ESCAPE '\\' OR name LIKE '/home/%/.zlogout' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_unix_shell_configuration_modification.yml"
     },
     {
         "title": "Suspicious Commands Linux",
@@ -2367,24 +2613,6 @@
         "filename": "lnx_auditd_susp_cmds.yml"
     },
     {
-        "title": "Auditing Configuration Changes on Linux Host",
-        "id": "977ef627-4539-4875-adf4-ed8f780c4922",
-        "description": "Detect changes in auditd configuration files",
-        "author": "Mikhail Larin, oscd.community",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.006"
-        ],
-        "falsepositives": [
-            "Legitimate administrative activity"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '/etc/audit/%' ESCAPE '\\' OR name LIKE '/etc/libaudit.conf' ESCAPE '\\' OR name LIKE '/etc/audisp/%' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_auditing_config_change.yml"
-    },
-    {
         "title": "Overwriting the File with Dev Zero or Null",
         "id": "37222991-11e9-4b6d-8bdf-60fbe48f753e",
         "description": "Detects overwriting (effectively wiping/deleting) of a file.",
@@ -2402,42 +2630,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 LIKE '%dd%' ESCAPE '\\' AND (a1 LIKE '%if=/dev/null%' ESCAPE '\\' OR a1 LIKE '%if=/dev/zero%' ESCAPE '\\'))"
         ],
         "filename": "lnx_auditd_dd_delete_file.yml"
-    },
-    {
-        "title": "Audio Capture",
-        "id": "a7af2487-9c2f-42e4-9bb9-ff961f0561d5",
-        "description": "Detects attempts to record audio using the arecord and ecasound utilities.",
-        "author": "Pawel Mazur, Milad Cheraghi",
-        "tags": [
-            "attack.collection",
-            "attack.t1123"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'EXECVE' AND a0 = 'arecord' AND a1 = '-vv' AND a2 = '-fdat') OR (type = 'SYSCALL' AND exe LIKE '%/ecasound' ESCAPE '\\' AND syscall LIKE 'memfd\\_create' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_audio_capture.yml"
-    },
-    {
-        "title": "Creation Of An User Account",
-        "id": "759d0d51-bc99-4b5e-9add-8f5b2c8e7512",
-        "description": "Detects the creation of a new user account. Such accounts may be used for persistence that do not require persistent remote access tools to be deployed on the system.",
-        "author": "Marie Euler, Pawel Mazur",
-        "tags": [
-            "attack.t1136.001",
-            "attack.persistence"
-        ],
-        "falsepositives": [
-            "Admin activity"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND exe LIKE '%/useradd' ESCAPE '\\') OR type LIKE 'ADD\\_USER' ESCAPE '\\')"
-        ],
-        "filename": "lnx_auditd_create_account.yml"
     },
     {
         "title": "Steganography Unzip Hidden Information From Picture File",
@@ -2492,24 +2684,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 LIKE '%chattr%' ESCAPE '\\' AND a1 LIKE '%-i%' ESCAPE '\\')"
         ],
         "filename": "lnx_auditd_chattr_immutable_removal.yml"
-    },
-    {
-        "title": "System Information Discovery - Auditd",
-        "id": "f34047d9-20d3-4e8b-8672-0a35cc50dc71",
-        "description": "Detects System Information Discovery commands",
-        "author": "Pawel Mazur",
-        "tags": [
-            "attack.discovery",
-            "attack.t1082"
-        ],
-        "falsepositives": [
-            "Likely"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/lsb-release', '/etc/redhat-release', '/etc/issue')) OR (type = 'EXECVE' AND a0 IN ('uname', 'uptime', 'lsmod', 'hostname', 'env')) OR (type = 'EXECVE' AND a0 = 'grep' AND (a1 LIKE '%vbox%' ESCAPE '\\' OR a1 LIKE '%vm%' ESCAPE '\\' OR a1 LIKE '%xen%' ESCAPE '\\' OR a1 LIKE '%virtio%' ESCAPE '\\' OR a1 LIKE '%hv%' ESCAPE '\\')) OR (type = 'EXECVE' AND a0 = 'kmod' AND a1 = 'list'))"
-        ],
-        "filename": "lnx_auditd_system_info_discovery.yml"
     },
     {
         "title": "Data Compressed",
@@ -2570,26 +2744,6 @@
         "filename": "lnx_auditd_susp_service_reload_or_restart.yml"
     },
     {
-        "title": "Use Of Hidden Paths Or Files",
-        "id": "9e1bef8d-0fff-46f6-8465-9aa54e128c1e",
-        "description": "Detects calls to hidden files or files located in hidden directories in NIX systems.",
-        "author": "David Burkett, @signalblur",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.persistence",
-            "attack.defense-evasion",
-            "attack.t1574.001"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'PATH' AND name LIKE '%/.%' ESCAPE '\\') AND NOT ((name LIKE '%/.cache/%' ESCAPE '\\' OR name LIKE '%/.config/%' ESCAPE '\\' OR name LIKE '%/.pyenv/%' ESCAPE '\\' OR name LIKE '%/.rustup/toolchains%' ESCAPE '\\')))"
-        ],
-        "filename": "lnx_auditd_hidden_binary_execution.yml"
-    },
-    {
         "title": "Steganography Extract Files with Steghide",
         "id": "a5a827d9-1bbe-4952-9293-c59d897eb41b",
         "description": "Detects extraction of files with usage of steghide binary, the adversaries may use this technique to prevent the detection of hidden information.",
@@ -2623,62 +2777,6 @@
         "filename": "lnx_auditd_masquerading_crond.yml"
     },
     {
-        "title": "Disable System Firewall",
-        "id": "53059bc0-1472-438b-956a-7508a94a91f0",
-        "description": "Detects disabling of system firewalls which could be used by adversaries to bypass controls that limit usage of the network.",
-        "author": "Pawel Mazur",
-        "tags": [
-            "attack.t1562.004",
-            "attack.defense-evasion"
-        ],
-        "falsepositives": [
-            "Admin activity"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (type LIKE 'SERVICE\\_STOP' ESCAPE '\\' AND unit IN ('firewalld', 'iptables', 'ufw'))"
-        ],
-        "filename": "lnx_auditd_disable_system_firewall.yml"
-    },
-    {
-        "title": "Linux Network Service Scanning - Auditd",
-        "id": "3761e026-f259-44e6-8826-719ed8079408",
-        "description": "Detects enumeration of local or remote network services.",
-        "author": "Alejandro Ortuno, oscd.community",
-        "tags": [
-            "attack.discovery",
-            "attack.t1046"
-        ],
-        "falsepositives": [
-            "Legitimate administration activities"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND (exe LIKE '%/telnet' ESCAPE '\\' OR exe LIKE '%/nmap' ESCAPE '\\' OR exe LIKE '%/netcat' ESCAPE '\\' OR exe LIKE '%/nc' ESCAPE '\\' OR exe LIKE '%/ncat' ESCAPE '\\' OR exe LIKE '%/nc.openbsd' ESCAPE '\\') AND key LIKE 'network\\_connect\\_4' ESCAPE '\\')"
-        ],
-        "filename": "lnx_auditd_network_service_scanning.yml"
-    },
-    {
-        "title": "ASLR Disabled Via Sysctl or Direct Syscall - Linux",
-        "id": "e497a24e-9345-4a62-9803-b06d7d7cb132",
-        "description": "Detects actions that disable Address Space Layout Randomization (ASLR) in Linux, including:\n  - Use of the `personality` syscall with the ADDR_NO_RANDOMIZE flag (0x0040000)\n  - Modification of the /proc/sys/kernel/randomize_va_space file\n  - Execution of the `sysctl` command to set `kernel.randomize_va_space=0`\nDisabling ASLR is often used by attackers during exploit development or to bypass memory protection mechanisms.\nA successful use of these methods can reduce the effectiveness of ASLR and make memory corruption attacks more reliable.\n",
-        "author": "Milad Cheraghi",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.defense-evasion",
-            "attack.t1562.001",
-            "attack.t1055.009"
-        ],
-        "falsepositives": [
-            "Debugging or legitimate software testing"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND syscall = 'personality' AND a0 = '40000') OR (type = 'EXECVE' AND a0 = 'sysctl' AND a1 = '-w' AND a2 LIKE 'kernel.randomize\\_va\\_space=0' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_disable_aslr_protection.yml"
-    },
-    {
         "title": "File or Folder Permissions Change",
         "id": "74c01ace-0152-4094-8ae2-6fd776dd43e5",
         "description": "Detects file and folder permission changes.",
@@ -2695,81 +2793,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND (a0 LIKE '%chmod%' ESCAPE '\\' OR a0 LIKE '%chown%' ESCAPE '\\'))"
         ],
         "filename": "lnx_auditd_file_or_folder_permissions.yml"
-    },
-    {
-        "title": "Split A File Into Pieces - Linux",
-        "id": "2dad0cba-c62a-4a4f-949f-5f6ecd619769",
-        "description": "Detection use of the command \"split\" to split files into parts and possible transfer.",
-        "author": "Igor Fits, oscd.community",
-        "tags": [
-            "attack.exfiltration",
-            "attack.t1030"
-        ],
-        "falsepositives": [
-            "Legitimate administrative activity"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND comm = 'split')"
-        ],
-        "filename": "lnx_auditd_split_file_into_pieces.yml"
-    },
-    {
-        "title": "Program Executions in Suspicious Folders",
-        "id": "a39d7fa7-3fbd-4dc2-97e1-d87f546b1bbc",
-        "description": "Detects program executions in suspicious non-program folders related to malware or hacking activity",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.t1587",
-            "attack.t1584",
-            "attack.resource-development"
-        ],
-        "falsepositives": [
-            "Admin activity (especially in /tmp folders)",
-            "Crazy web applications"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND (exe LIKE '/tmp/%' ESCAPE '\\' OR exe LIKE '/var/www/%' ESCAPE '\\' OR exe LIKE '/home/%/public\\_html/%' ESCAPE '\\' OR exe LIKE '/usr/local/apache2/%' ESCAPE '\\' OR exe LIKE '/usr/local/httpd/%' ESCAPE '\\' OR exe LIKE '/var/apache/%' ESCAPE '\\' OR exe LIKE '/srv/www/%' ESCAPE '\\' OR exe LIKE '/home/httpd/html/%' ESCAPE '\\' OR exe LIKE '/srv/http/%' ESCAPE '\\' OR exe LIKE '/usr/share/nginx/html/%' ESCAPE '\\' OR exe LIKE '/var/lib/pgsql/data/%' ESCAPE '\\' OR exe LIKE '/usr/local/mysql/data/%' ESCAPE '\\' OR exe LIKE '/var/lib/mysql/%' ESCAPE '\\' OR exe LIKE '/var/vsftpd/%' ESCAPE '\\' OR exe LIKE '/etc/bind/%' ESCAPE '\\' OR exe LIKE '/var/named/%' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_susp_exe_folders.yml"
-    },
-    {
-        "title": "Logging Configuration Changes on Linux Host",
-        "id": "c830f15d-6f6e-430f-8074-6f73d6807841",
-        "description": "Detect changes of syslog daemons configuration files",
-        "author": "Mikhail Larin, oscd.community",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.006"
-        ],
-        "falsepositives": [
-            "Legitimate administrative activity"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND name IN ('/etc/syslog.conf', '/etc/rsyslog.conf', '/etc/syslog-ng/syslog-ng.conf'))"
-        ],
-        "filename": "lnx_auditd_logging_config_change.yml"
-    },
-    {
-        "title": "Systemd Service Creation",
-        "id": "1bac86ba-41aa-4f62-9d6b-405eac99b485",
-        "description": "Detects a creation of systemd services which could be used by adversaries to execute malicious code.",
-        "author": "Pawel Mazur",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.persistence",
-            "attack.t1543.002"
-        ],
-        "falsepositives": [
-            "Admin work like legit service installs."
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'PATH' AND nametype = 'CREATE') AND ((name LIKE '/usr/lib/systemd/system/%' ESCAPE '\\' OR name LIKE '/etc/systemd/system/%' ESCAPE '\\') OR name LIKE '%/.config/systemd/user/%' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_systemd_service_creation.yml"
     },
     {
         "title": "Screen Capture with Xwd",
@@ -2790,42 +2813,6 @@
         "filename": "lnx_auditd_screencaputre_xwd.yml"
     },
     {
-        "title": "Loading of Kernel Module via Insmod",
-        "id": "106d7cbd-80ff-4985-b682-a7043e5acb72",
-        "description": "Detects loading of kernel modules with insmod command.\nLoadable Kernel Modules (LKMs) are pieces of code that can be loaded and unloaded into the kernel upon demand.\nAdversaries may use LKMs to obtain persistence within the system or elevate the privileges.\n",
-        "author": "Pawel Mazur",
-        "tags": [
-            "attack.persistence",
-            "attack.privilege-escalation",
-            "attack.t1547.006"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND comm = 'insmod' AND exe = '/usr/bin/kmod')"
-        ],
-        "filename": "lnx_auditd_load_module_insmod.yml"
-    },
-    {
-        "title": "Suspicious C2 Activities",
-        "id": "f7158a64-6204-4d6d-868a-6e6378b467e0",
-        "description": "Detects suspicious activities as declared by Florian Roth in its 'Best Practice Auditd Configuration'.\nThis includes the detection of the following commands; wget, curl, base64, nc, netcat, ncat, ssh, socat, wireshark, rawshark, rdesktop, nmap.\nThese commands match a few techniques from the tactics \"Command and Control\", including not exhaustively the following; Application Layer Protocol (T1071), Non-Application Layer Protocol (T1095), Data Encoding (T1132)\n",
-        "author": "Marie Euler",
-        "tags": [
-            "attack.command-and-control"
-        ],
-        "falsepositives": [
-            "Admin or User activity"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE key LIKE 'susp\\_activity' ESCAPE '\\'"
-        ],
-        "filename": "lnx_auditd_susp_c2_commands.yml"
-    },
-    {
         "title": "Clipboard Collection with Xclip Tool - Auditd",
         "id": "214e7e6c-f21b-47ff-bb6f-551b2d143fcf",
         "description": "Detects attempts to collect data stored in the clipboard from users with the usage of xclip tool.\nXclip has to be installed.\nHighly recommended using rule on servers, due to high usage of clipboard utilities on user workstations.\n",
@@ -2842,26 +2829,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 = 'xclip' AND a1 IN ('-selection', '-sel') AND a2 IN ('clipboard', 'clip') AND a3 = '-o')"
         ],
         "filename": "lnx_auditd_clipboard_collection.yml"
-    },
-    {
-        "title": "Modification of ld.so.preload",
-        "id": "4b3cb710-5e83-4715-8c45-8b2b5b3e5751",
-        "description": "Identifies modification of ld.so.preload for shared object injection. This technique is used by attackers to load arbitrary code into processes.",
-        "author": "E.M. Anhaus (originally from Atomic Blue Detections, Tony Lambert), oscd.community",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.persistence",
-            "attack.defense-evasion",
-            "attack.t1574.006"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND name = '/etc/ld.so.preload')"
-        ],
-        "filename": "lnx_auditd_ld_so_preload_mod.yml"
     },
     {
         "title": "Linux Capabilities Discovery",
@@ -2883,24 +2850,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND a0 = 'getcap' AND a1 = '-r' AND a2 = '/')"
         ],
         "filename": "lnx_auditd_capabilities_discovery.yml"
-    },
-    {
-        "title": "Password Policy Discovery - Linux",
-        "id": "ca94a6db-8106-4737-9ed2-3e3bb826af0a",
-        "description": "Detects password policy discovery commands",
-        "author": "Ömer Günal, oscd.community, Pawel Mazur",
-        "tags": [
-            "attack.discovery",
-            "attack.t1201"
-        ],
-        "falsepositives": [
-            "Legitimate administration activities"
-        ],
-        "level": "low",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/login.defs', '/etc/pam.d/auth', '/etc/pam.d/common-account', '/etc/pam.d/common-auth', '/etc/pam.d/common-password', '/etc/pam.d/system-auth', '/etc/security/pwquality.conf')) OR (type = 'EXECVE' AND a0 = 'chage' AND a1 IN ('--list', '-l')) OR (type = 'EXECVE' AND a0 = 'passwd' AND a1 IN ('-S', '--status')))"
-        ],
-        "filename": "lnx_auditd_password_policy_discovery.yml"
     },
     {
         "title": "Network Sniffing - Linux",
@@ -2940,25 +2889,6 @@
         "filename": "lnx_auditd_user_discovery.yml"
     },
     {
-        "title": "Clear or Disable Kernel Ring Buffer Logs via Syslog Syscall",
-        "id": "eca5e022-d368-4043-98e5-9736fb01f72f",
-        "description": "Detects the use of the `syslog` syscall with action code 5 (SYSLOG_ACTION_CLEAR),\n(4 is SYSLOG_ACTION_READ_CLEAR and 6 is SYSLOG_ACTION_CONSOLE_OFF) which clears the kernel\nring buffer (dmesg logs). This can be used by attackers to hide traces after exploitation\nor privilege escalation. A common technique is running `dmesg -c`, which triggers this syscall internally.\n",
-        "author": "Milad Cheraghi",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1070.002"
-        ],
-        "falsepositives": [
-            "System administrators or scripts that intentionally clear logs",
-            "Debugging scripts"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'syslog' AND a0 IN ('4', '5', '6'))"
-        ],
-        "filename": "lnx_auditd_clean_disable_dmesg_logs_via_syslog.yml"
-    },
-    {
         "title": "Possible Coin Miner CPU Priority Param",
         "id": "071d5e5a-9cef-47ec-bc4e-a42e34d8d0ed",
         "description": "Detects command line parameter very often used with coin miners",
@@ -2977,45 +2907,6 @@
         "filename": "lnx_auditd_coinminer.yml"
     },
     {
-        "title": "Linux Keylogging with Pam.d",
-        "id": "49aae26c-450e-448b-911d-b3c13d178dfc",
-        "description": "Detect attempt to enable auditing of TTY input",
-        "author": "Pawel Mazur",
-        "tags": [
-            "attack.collection",
-            "attack.credential-access",
-            "attack.t1003",
-            "attack.t1056.001"
-        ],
-        "falsepositives": [
-            "Administrative work"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((type = 'PATH' AND name IN ('/etc/pam.d/system-auth', '/etc/pam.d/password-auth')) OR (type LIKE 'TTY' ESCAPE '\\' OR type LIKE 'USER\\_TTY' ESCAPE '\\'))"
-        ],
-        "filename": "lnx_auditd_keylogging_with_pam_d.yml"
-    },
-    {
-        "title": "Webshell Remote Command Execution",
-        "id": "c0d3734d-330f-4a03-aae2-65dacc6a8222",
-        "description": "Detects possible command execution by web application/web shell",
-        "author": "Ilyas Ochkov, Beyu Denis, oscd.community",
-        "tags": [
-            "attack.persistence",
-            "attack.t1505.003"
-        ],
-        "falsepositives": [
-            "Admin activity",
-            "Crazy web applications"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall IN ('execve', 'execveat') AND euid = '33')"
-        ],
-        "filename": "lnx_auditd_web_rce.yml"
-    },
-    {
         "title": "Credentials In Files - Linux",
         "id": "df3fcaea-2715-4214-99c5-0056ea59eb35",
         "description": "Detecting attempts to extract passwords with grep",
@@ -3032,25 +2923,6 @@
             "SELECT * FROM logs WHERE (type = 'EXECVE' AND  = 'grep' AND  = 'password')"
         ],
         "filename": "lnx_auditd_find_cred_in_files.yml"
-    },
-    {
-        "title": "BPFDoor Abnormal Process ID or Lock File Accessed",
-        "id": "808146b2-9332-4d78-9416-d7e47012d83d",
-        "description": "detects BPFDoor .lock and .pid files access in temporary file storage facility",
-        "author": "Rafal Piasecki",
-        "tags": [
-            "attack.execution",
-            "attack.t1106",
-            "attack.t1059"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND name IN ('/var/run/haldrund.pid', '/var/run/xinetd.lock', '/var/run/kdevrund.pid'))"
-        ],
-        "filename": "lnx_auditd_bpfdoor_file_accessed.yml"
     },
     {
         "title": "Clipboard Collection of Image Data with Xclip Tool",
@@ -3125,26 +2997,154 @@
         "filename": "lnx_auditd_steghide_embed_steganography.yml"
     },
     {
-        "title": "Potential Abuse of Linux Magic System Request Key",
-        "id": "ea61bb82-a5e0-42e6-8537-91d29500f1b9",
-        "description": "Detects the potential abuse of the Linux Magic SysRq (System Request) key by adversaries with root or sufficient privileges\nto silently manipulate or destabilize a system. By writing to /proc/sysrq-trigger, they can crash the system, kill processes,\nor disrupt forensic analysis—all while bypassing standard logging. Though intended for recovery and debugging, SysRq can be\nmisused as a stealthy post-exploitation tool. It is controlled via /proc/sys/kernel/sysrq or permanently through /etc/sysctl.conf.\n",
+        "title": "System Info Discovery via Sysinfo Syscall",
+        "id": "b207d563-a1d9-4275-b349-77d1eb55aa6d",
+        "description": "Detects use of the sysinfo system call in Linux, which provides a snapshot of key system statistics such as uptime, load averages, memory usage, and the number of running processes.\nMalware or reconnaissance tools might leverage sysinfo to fingerprint the system - gathering data to determine if it's a viable target.\n",
         "author": "Milad Cheraghi",
         "tags": [
-            "attack.execution",
-            "attack.t1059.004",
-            "attack.impact",
-            "attack.t1529",
-            "attack.t1489",
-            "attack.t1499"
+            "attack.discovery",
+            "attack.t1057",
+            "attack.t1082"
         ],
         "falsepositives": [
             "Legitimate administrative activity"
         ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND SYSCALL = 'sysinfo') AND NOT ((exe LIKE '%/bin/splunkd' ESCAPE '\\')))"
+        ],
+        "filename": "lnx_auditd_susp_discovery_sysinfo_syscall.yml"
+    },
+    {
+        "title": "Creation Of An User Account",
+        "id": "759d0d51-bc99-4b5e-9add-8f5b2c8e7512",
+        "description": "Detects the creation of a new user account. Such accounts may be used for persistence that do not require persistent remote access tools to be deployed on the system.",
+        "author": "Marie Euler, Pawel Mazur",
+        "tags": [
+            "attack.t1136.001",
+            "attack.persistence"
+        ],
+        "falsepositives": [
+            "Admin activity"
+        ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'PATH' AND (name LIKE '%/sysrq' ESCAPE '\\' OR name LIKE '%/sysctl.conf' ESCAPE '\\' OR name LIKE '%/sysrq-trigger' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND exe LIKE '%/useradd' ESCAPE '\\') OR type LIKE 'ADD\\_USER' ESCAPE '\\')"
         ],
-        "filename": "lnx_auditd_magic_system_request_key.yml"
+        "filename": "lnx_auditd_create_account.yml"
+    },
+    {
+        "title": "Linux Network Service Scanning - Auditd",
+        "id": "3761e026-f259-44e6-8826-719ed8079408",
+        "description": "Detects enumeration of local or remote network services.",
+        "author": "Alejandro Ortuno, oscd.community",
+        "tags": [
+            "attack.discovery",
+            "attack.t1046"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND (exe LIKE '%/telnet' ESCAPE '\\' OR exe LIKE '%/nmap' ESCAPE '\\' OR exe LIKE '%/netcat' ESCAPE '\\' OR exe LIKE '%/nc' ESCAPE '\\' OR exe LIKE '%/ncat' ESCAPE '\\' OR exe LIKE '%/nc.openbsd' ESCAPE '\\') AND key LIKE 'network\\_connect\\_4' ESCAPE '\\')"
+        ],
+        "filename": "lnx_auditd_network_service_scanning.yml"
+    },
+    {
+        "title": "Split A File Into Pieces - Linux",
+        "id": "2dad0cba-c62a-4a4f-949f-5f6ecd619769",
+        "description": "Detection use of the command \"split\" to split files into parts and possible transfer.",
+        "author": "Igor Fits, oscd.community",
+        "tags": [
+            "attack.exfiltration",
+            "attack.t1030"
+        ],
+        "falsepositives": [
+            "Legitimate administrative activity"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND comm = 'split')"
+        ],
+        "filename": "lnx_auditd_split_file_into_pieces.yml"
+    },
+    {
+        "title": "Program Executions in Suspicious Folders",
+        "id": "a39d7fa7-3fbd-4dc2-97e1-d87f546b1bbc",
+        "description": "Detects program executions in suspicious non-program folders related to malware or hacking activity",
+        "author": "Florian Roth (Nextron Systems)",
+        "tags": [
+            "attack.t1587",
+            "attack.t1584",
+            "attack.resource-development"
+        ],
+        "falsepositives": [
+            "Admin activity (especially in /tmp folders)",
+            "Crazy web applications"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND (exe LIKE '/tmp/%' ESCAPE '\\' OR exe LIKE '/var/www/%' ESCAPE '\\' OR exe LIKE '/home/%/public\\_html/%' ESCAPE '\\' OR exe LIKE '/usr/local/apache2/%' ESCAPE '\\' OR exe LIKE '/usr/local/httpd/%' ESCAPE '\\' OR exe LIKE '/var/apache/%' ESCAPE '\\' OR exe LIKE '/srv/www/%' ESCAPE '\\' OR exe LIKE '/home/httpd/html/%' ESCAPE '\\' OR exe LIKE '/srv/http/%' ESCAPE '\\' OR exe LIKE '/usr/share/nginx/html/%' ESCAPE '\\' OR exe LIKE '/var/lib/pgsql/data/%' ESCAPE '\\' OR exe LIKE '/usr/local/mysql/data/%' ESCAPE '\\' OR exe LIKE '/var/lib/mysql/%' ESCAPE '\\' OR exe LIKE '/var/vsftpd/%' ESCAPE '\\' OR exe LIKE '/etc/bind/%' ESCAPE '\\' OR exe LIKE '/var/named/%' ESCAPE '\\'))"
+        ],
+        "filename": "lnx_auditd_susp_exe_folders.yml"
+    },
+    {
+        "title": "Loading of Kernel Module via Insmod",
+        "id": "106d7cbd-80ff-4985-b682-a7043e5acb72",
+        "description": "Detects loading of kernel modules with insmod command.\nLoadable Kernel Modules (LKMs) are pieces of code that can be loaded and unloaded into the kernel upon demand.\nAdversaries may use LKMs to obtain persistence within the system or elevate the privileges.\n",
+        "author": "Pawel Mazur",
+        "tags": [
+            "attack.persistence",
+            "attack.privilege-escalation",
+            "attack.t1547.006"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND comm = 'insmod' AND exe = '/usr/bin/kmod')"
+        ],
+        "filename": "lnx_auditd_load_module_insmod.yml"
+    },
+    {
+        "title": "Clear or Disable Kernel Ring Buffer Logs via Syslog Syscall",
+        "id": "eca5e022-d368-4043-98e5-9736fb01f72f",
+        "description": "Detects the use of the `syslog` syscall with action code 5 (SYSLOG_ACTION_CLEAR),\n(4 is SYSLOG_ACTION_READ_CLEAR and 6 is SYSLOG_ACTION_CONSOLE_OFF) which clears the kernel\nring buffer (dmesg logs). This can be used by attackers to hide traces after exploitation\nor privilege escalation. A common technique is running `dmesg -c`, which triggers this syscall internally.\n",
+        "author": "Milad Cheraghi",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1070.002"
+        ],
+        "falsepositives": [
+            "System administrators or scripts that intentionally clear logs",
+            "Debugging scripts"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND SYSCALL = 'syslog' AND a0 IN ('4', '5', '6'))"
+        ],
+        "filename": "lnx_auditd_clean_disable_dmesg_logs_via_syslog.yml"
+    },
+    {
+        "title": "Webshell Remote Command Execution",
+        "id": "c0d3734d-330f-4a03-aae2-65dacc6a8222",
+        "description": "Detects possible command execution by web application/web shell",
+        "author": "Ilyas Ochkov, Beyu Denis, oscd.community",
+        "tags": [
+            "attack.persistence",
+            "attack.t1505.003"
+        ],
+        "falsepositives": [
+            "Admin activity",
+            "Crazy web applications"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND SYSCALL IN ('execve', 'execveat') AND euid = '33')"
+        ],
+        "filename": "lnx_auditd_web_rce.yml"
     },
     {
         "title": "Special File Creation via Mknod Syscall",
@@ -3162,7 +3162,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND syscall = 'mknod')"
+            "SELECT * FROM logs WHERE (type = 'SYSCALL' AND SYSCALL = 'mknod')"
         ],
         "filename": "lnx_auditd_susp_special_file_creation_via_mknod_syscall.yml"
     },
