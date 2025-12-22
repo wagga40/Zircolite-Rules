@@ -2009,6 +2009,30 @@
         "filename": "file_event_win_ripzip_attack.yml"
     },
     {
+        "title": "Suspicious File Created by ArcSOC.exe",
+        "id": "e890acee-d488-420e-8f20-d9b19b3c3d43",
+        "status": "experimental",
+        "description": "Detects instances where the ArcGIS Server process ArcSOC.exe, which hosts REST services running on an ArcGIS\nserver, creates a file with suspicious file type, indicating that it may be an executable, script file,\nor otherwise unusual.\n",
+        "author": "Micah Babinski",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.command-and-control",
+            "attack.persistence",
+            "attack.initial-access",
+            "attack.t1127",
+            "attack.t1105",
+            "attack.t1133"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (NewProcessName LIKE '%\\\\ArcSOC.exe' ESCAPE '\\' AND (TargetFilename LIKE '%.ahk' ESCAPE '\\' OR TargetFilename LIKE '%.aspx' ESCAPE '\\' OR TargetFilename LIKE '%.au3' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.cmd' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.py' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.wsf' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_arcsoc_susp_file_created.yml"
+    },
+    {
         "title": "Potential SAM Database Dump",
         "id": "4e87b8e2-2ee9-4b2a-a715-4727d297ece0",
         "status": "test",
@@ -9017,6 +9041,26 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\ditsnap.exe' ESCAPE '\\' OR CommandLine LIKE '%ditsnap.exe%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_pua_ditsnap.yml"
+    },
+    {
+        "title": "Suspicious ArcSOC.exe Child Process",
+        "id": "8e95e73e-ba02-4a87-b4d7-0929b8053038",
+        "status": "experimental",
+        "description": "Detects script interpreters, command-line tools, and similar suspicious child processes of ArcSOC.exe.\nArcSOC.exe is the process name which hosts ArcGIS Server REST services. If an attacker compromises an ArcGIS\nServer system and uploads a malicious Server Object Extension (SOE), they can send crafted requests to the corresponding\nservice endpoint and remotely execute code from the ArcSOC.exe process.\n",
+        "author": "Micah Babinski",
+        "tags": [
+            "attack.execution",
+            "attack.t1059",
+            "attack.t1203"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\ArcSOC.exe' ESCAPE '\\' AND (NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\cmd.exe' ESCAPE '\\' AND CommandLine = 'cmd.exe /c \"ver\"')))"
+        ],
+        "filename": "proc_creation_win_arcsoc_susp_child_process.yml"
     },
     {
         "title": "Potentially Suspicious Execution From Parent Process In Public Folder",
