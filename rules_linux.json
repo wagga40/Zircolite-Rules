@@ -495,6 +495,24 @@
         "filename": "proc_creation_lnx_susp_container_residence_discovery.yml"
     },
     {
+        "title": "Suspicious Package Installed - Linux",
+        "id": "700fb7e8-2981-401c-8430-be58e189e741",
+        "description": "Detects installation of suspicious packages using system installation utilities",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1553.004"
+        ],
+        "falsepositives": [
+            "Legitimate administration activities"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE ((((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND CommandLine LIKE '%install%' ESCAPE '\\') OR (Image LIKE '%/yum' ESCAPE '\\' AND (CommandLine LIKE '%localinstall%' ESCAPE '\\' OR CommandLine LIKE '%install%' ESCAPE '\\')) OR (Image LIKE '%/rpm' ESCAPE '\\' AND CommandLine LIKE '%-i%' ESCAPE '\\') OR (Image LIKE '%/dpkg' ESCAPE '\\' AND (CommandLine LIKE '%--install%' ESCAPE '\\' OR CommandLine LIKE '%-i%' ESCAPE '\\'))) AND (CommandLine LIKE '%nmap%' ESCAPE '\\' OR CommandLine LIKE '% nc%' ESCAPE '\\' OR CommandLine LIKE '%netcat%' ESCAPE '\\' OR CommandLine LIKE '%wireshark%' ESCAPE '\\' OR CommandLine LIKE '%tshark%' ESCAPE '\\' OR CommandLine LIKE '%openconnect%' ESCAPE '\\' OR CommandLine LIKE '%proxychains%' ESCAPE '\\' OR CommandLine LIKE '%socat%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_install_suspicious_packages.yml"
+    },
+    {
         "title": "DD File Overwrite",
         "id": "2953194b-e33c-4859-b9e8-05948c167447",
         "description": "Detects potential overwriting and deletion of a file using DD.",
@@ -587,7 +605,7 @@
     {
         "title": "Local System Accounts Discovery - Linux",
         "id": "b45e3d6f-42c6-47d8-a478-df6bd6cf534c",
-        "description": "Detects enumeration of local systeam accounts. This information can help adversaries determine which local accounts exist on a system to aid in follow-on behavior.",
+        "description": "Detects enumeration of local system accounts. This information can help adversaries determine which local accounts exist on a system to aid in follow-on behavior.",
         "author": "Alejandro Ortuno, oscd.community, CheraghiMilad",
         "tags": [
             "attack.discovery",
@@ -1024,24 +1042,6 @@
             "SELECT * FROM logs WHERE (Image LIKE '%/base64' ESCAPE '\\' AND CommandLine LIKE '%-d%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_base64_decode.yml"
-    },
-    {
-        "title": "Suspicious Package Installed - Linux",
-        "id": "700fb7e8-2981-401c-8430-be58e189e741",
-        "description": "Detects installation of suspicious packages using system installation utilities",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1553.004"
-        ],
-        "falsepositives": [
-            "Legitimate administration activities"
-        ],
-        "level": "medium",
-        "rule": [
-            "SELECT * FROM logs WHERE ((((Image LIKE '%/apt' ESCAPE '\\' OR Image LIKE '%/apt-get' ESCAPE '\\') AND CommandLine LIKE '%install%' ESCAPE '\\') OR (Image LIKE '%/yum' ESCAPE '\\' AND (CommandLine LIKE '%localinstall%' ESCAPE '\\' OR CommandLine LIKE '%install%' ESCAPE '\\')) OR (Image LIKE '%/rpm' ESCAPE '\\' AND CommandLine LIKE '%-i%' ESCAPE '\\') OR (Image LIKE '%/dpkg' ESCAPE '\\' AND (CommandLine LIKE '%--install%' ESCAPE '\\' OR CommandLine LIKE '%-i%' ESCAPE '\\'))) AND (CommandLine LIKE '%nmap%' ESCAPE '\\' OR CommandLine LIKE '% nc%' ESCAPE '\\' OR CommandLine LIKE '%netcat%' ESCAPE '\\' OR CommandLine LIKE '%wireshark%' ESCAPE '\\' OR CommandLine LIKE '%tshark%' ESCAPE '\\' OR CommandLine LIKE '%openconnect%' ESCAPE '\\' OR CommandLine LIKE '%proxychains%' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_lnx_install_suspicioua_packages.yml"
     },
     {
         "title": "Potential Ruby Reverse Shell",
