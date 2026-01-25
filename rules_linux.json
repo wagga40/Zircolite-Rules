@@ -381,6 +381,27 @@
         "filename": "proc_creation_lnx_susp_execution_tmp_folder.yml"
     },
     {
+        "title": "Linux Setuid Capability Set on a Binary via Setcap Utility",
+        "id": "ed447910-bc30-4575-a598-3a2e49516a7a",
+        "description": "Detects the use of the 'setcap' utility to set the 'setuid' capability (cap_setuid) on a binary file.\nThis capability allows a non privileged process to make arbitrary manipulations of user IDs (UIDs), including setting its current UID to a value that would otherwise be restricted (i.e. UID 0, the root user).\nThis behavior can be used by adversaries to backdoor a binary in order to escalate privileges again in the future if needed.\n",
+        "author": "Luc Génaux",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
+            "attack.persistence",
+            "attack.t1548",
+            "attack.t1554"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/setcap' ESCAPE '\\' AND CommandLine LIKE '%cap\\_setuid%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_cap_setuid.yml"
+    },
+    {
         "title": "Setuid and Setgid",
         "id": "c21c4eaa-ba2e-419a-92b2-8371703cbe21",
         "description": "Detects suspicious change of file privileges with chown and chmod commands",
@@ -1334,6 +1355,27 @@
         "filename": "proc_creation_lnx_cp_passwd_or_shadow_tmp.yml"
     },
     {
+        "title": "Linux Setgid Capability Set on a Binary via Setcap Utility",
+        "id": "3a716279-c18c-4488-83be-f9ececbfb9fc",
+        "description": "Detects the use of the 'setcap' utility to set the 'setgid' capability (cap_setgid) on a binary file.\nThis capability allows a non privileged process to make arbitrary manipulations of group IDs (GIDs), including setting its current GID to a value that would otherwise be restricted (i.e. GID 0, the root group).\nThis behavior can be used by adversaries to backdoor a binary in order to escalate privileges again in the future if needed.\n",
+        "author": "Luc Génaux",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.defense-evasion",
+            "attack.persistence",
+            "attack.t1548",
+            "attack.t1554"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "low",
+        "rule": [
+            "SELECT * FROM logs WHERE (Image LIKE '%/setcap' ESCAPE '\\' AND CommandLine LIKE '%cap\\_setgid%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_lnx_cap_setgid.yml"
+    },
+    {
         "title": "Shell Execution GCC  - Linux",
         "id": "9b5de532-a757-4d70-946c-1f3e44f48b4d",
         "description": "Detects the use of the \"gcc\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
@@ -1680,7 +1722,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (Image LIKE '%/getcap' ESCAPE '\\' AND (CommandLine LIKE '% -r %' ESCAPE '\\' OR CommandLine LIKE '% /r %' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (Image LIKE '%/getcap' ESCAPE '\\' AND CommandLine LIKE '% -r %' ESCAPE '\\')"
         ],
         "filename": "proc_creation_lnx_capa_discovery.yml"
     },
