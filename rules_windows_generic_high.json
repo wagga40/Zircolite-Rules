@@ -10554,6 +10554,25 @@
         "filename": "proc_creation_win_rar_compression_with_password.yml"
     },
     {
+        "title": "Hypervisor-protected Code Integrity (HVCI) Related Registry Tampering Via CommandLine",
+        "id": "6225c53a-a96e-4235-b28f-8d7997cd96eb",
+        "status": "experimental",
+        "description": "Detects the tampering of Hypervisor-protected Code Integrity (HVCI) related registry values via command line tool reg.exe.\nHVCI uses virtualization-based security to protect code integrity by ensuring that only trusted code can run in kernel mode.\nAdversaries may tamper with HVCI to load malicious or unsigned drivers, which can be used to escalate privileges, maintain persistence, or evade security mechanisms.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Legitimate system administration tasks that require disabling HVCI for troubleshooting purposes when certain drivers or applications are incompatible with it."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'reg.exe')) AND (CommandLine LIKE '%add %' ESCAPE '\\' OR CommandLine LIKE '%New-ItemProperty %' ESCAPE '\\' OR CommandLine LIKE '%Set-ItemProperty %' ESCAPE '\\' OR CommandLine LIKE '%si %' ESCAPE '\\') AND CommandLine LIKE '%\\\\DeviceGuard%' ESCAPE '\\' AND (CommandLine LIKE '%EnableVirtualizationBasedSecurity%' ESCAPE '\\' OR CommandLine LIKE '%HypervisorEnforcedCodeIntegrity%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_hvci_registry_tampering.yml"
+    },
+    {
         "title": "Persistence Via Sticky Key Backdoor",
         "id": "1070db9a-3e5d-412e-8e7b-7183b616e1b3",
         "status": "test",
@@ -14538,6 +14557,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'MpCmdRun.exe' OR NewProcessName LIKE '%\\\\MpCmdRun.exe' ESCAPE '\\' OR CommandLine LIKE '%MpCmdRun.exe%' ESCAPE '\\' OR Description = 'Microsoft Malware Protection Command Line Utility') AND (CommandLine LIKE '%DownloadFile%' ESCAPE '\\' AND CommandLine LIKE '%url%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_mpcmdrun_download_arbitrary_file.yml"
+    },
+    {
+        "title": "Vulnerable Driver Blocklist Registry Tampering Via CommandLine",
+        "id": "22154f0e-5132-4a54-aa78-cc62f6def531",
+        "status": "experimental",
+        "description": "Detects tampering of the Vulnerable Driver Blocklist registry via command line tools such as PowerShell or REG.EXE.\nThe Vulnerable Driver Blocklist is a security feature that helps prevent the loading of known vulnerable drivers.\nDisabling this feature may indicate an attempt to bypass security controls, often targeted by threat actors\nto facilitate the installation of malicious or vulnerable drivers, particularly in scenarios involving Endpoint Detection and Response\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "It is very unlikely for legitimate activities to disable the Vulnerable Driver Blocklist via command line tools; thus it is recommended to investigate promptly."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'reg.exe')) AND (CommandLine LIKE '%add %' ESCAPE '\\' OR CommandLine LIKE '%New-ItemProperty %' ESCAPE '\\' OR CommandLine LIKE '%Set-ItemProperty %' ESCAPE '\\' OR CommandLine LIKE '%si %' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Control\\\\CI\\\\Config%' ESCAPE '\\' AND CommandLine LIKE '%VulnerableDriverBlocklistEnable%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_vulnerable_driver_blocklist_registry_tampering.yml"
     },
     {
         "title": "Suspicious Eventlog Clearing or Configuration Change Activity",
@@ -24315,7 +24353,7 @@
         "filename": "registry_set_persistence_mpnotify.yml"
     },
     {
-        "title": "Hypervisor Enforced Code Integrity Disabled",
+        "title": "Windows Hypervisor Enforced Code Integrity Disabled",
         "id": "8b7273a4-ba5d-4d8a-b04f-11f2900d043a",
         "status": "test",
         "description": "Detects changes to the HypervisorEnforcedCodeIntegrity registry key and the \"Enabled\" value being set to 0 in order to disable the Hypervisor Enforced Code Integrity feature. This allows an attacker to load unsigned and untrusted code to be run in the kernel\n",
@@ -24325,7 +24363,7 @@
             "attack.t1562.001"
         ],
         "falsepositives": [
-            "Unknown"
+            "Legitimate system administration tasks that require disabling HVCI for troubleshooting purposes when certain drivers or applications are incompatible with it."
         ],
         "level": "high",
         "rule": [
@@ -26268,6 +26306,25 @@
             "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\App Paths%' ESCAPE '\\' AND (TargetObject LIKE '%(Default)' ESCAPE '\\' OR TargetObject LIKE '%Path' ESCAPE '\\') AND (NewValue LIKE '%\\\\Users\\\\Public%' ESCAPE '\\' OR NewValue LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\\\Downloads\\\\%' ESCAPE '\\' OR NewValue LIKE '%\\%temp\\%%' ESCAPE '\\' OR NewValue LIKE '%\\%tmp\\%%' ESCAPE '\\' OR NewValue LIKE '%iex%' ESCAPE '\\' OR NewValue LIKE '%Invoke-%' ESCAPE '\\' OR NewValue LIKE '%rundll32%' ESCAPE '\\' OR NewValue LIKE '%regsvr32%' ESCAPE '\\' OR NewValue LIKE '%mshta%' ESCAPE '\\' OR NewValue LIKE '%cscript%' ESCAPE '\\' OR NewValue LIKE '%wscript%' ESCAPE '\\' OR NewValue LIKE '%.bat%' ESCAPE '\\' OR NewValue LIKE '%.hta%' ESCAPE '\\' OR NewValue LIKE '%.dll%' ESCAPE '\\' OR NewValue LIKE '%.ps1%' ESCAPE '\\'))"
         ],
         "filename": "registry_set_persistence_app_paths.yml"
+    },
+    {
+        "title": "Windows Vulnerable Driver Blocklist Disabled",
+        "id": "d526c60a-e236-4011-b165-831ffa52ab70",
+        "status": "experimental",
+        "description": "Detects when the Windows Vulnerable Driver Blocklist is set to disabled. This setting is crucial for preventing the loading of known vulnerable drivers,\nand its modification may indicate an attempt to bypass security controls. It is often targeted by threat actors to facilitate the installation of malicious or vulnerable drivers,\nparticularly in scenarios involving Endpoint Detection and Response (EDR) bypass techniques.\nThis rule applies to systems that support the Vulnerable Driver Blocklist feature, including Windows 10 version 1903 and later, and Windows Server 2022 and later.\nNote that this change will require a reboot to take effect, and this rule only detects the registry modification action.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unlikely and should be investigated immediately."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security' AND TargetObject LIKE '%\\\\Control\\\\CI\\\\Config\\\\VulnerableDriverBlocklistEnable' ESCAPE '\\' AND NewValue = 'DWORD (0x00000000)')"
+        ],
+        "filename": "registry_set_vulnerable_driver_blocklist_disable.yml"
     },
     {
         "title": "Suspicious Printer Driver Empty Manufacturer",
