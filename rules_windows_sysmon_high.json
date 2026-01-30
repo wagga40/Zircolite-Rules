@@ -428,25 +428,6 @@
         "filename": "file_delete_win_unusual_deletion_by_dns_exe.yml"
     },
     {
-        "title": "File Creation Date Changed to Another Year",
-        "id": "558eebe5-f2ba-4104-b339-36f7902bcc1a",
-        "status": "test",
-        "description": "Attackers may change the file creation time of a backdoor to make it look like it was installed with the operating system.\nNote that many processes legitimately change the creation time of a file; it does not necessarily indicate malicious activity.\n",
-        "author": "frack113, Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.t1070.006",
-            "attack.defense-evasion"
-        ],
-        "falsepositives": [
-            "Changes made to or by the local NTP service"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '2' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((PreviousCreationUtcTime LIKE '2022%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '2022%' ESCAPE '\\')) OR (PreviousCreationUtcTime LIKE '202%' ESCAPE '\\' AND NOT (CreationUtcTime LIKE '202%' ESCAPE '\\'))) AND NOT (((Image LIKE 'C:\\\\Windows\\\\system32\\\\ProvTool.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\usocoreworker.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR TargetFilename LIKE 'C:\\\\ProgramData\\\\USOPrivate\\\\UpdateStore\\\\%' ESCAPE '\\' OR (TargetFilename LIKE '%.tmp' ESCAPE '\\' OR TargetFilename LIKE '%.temp' ESCAPE '\\')) OR (Image LIKE 'C:\\\\WINDOWS\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\' AND TargetFilename LIKE '%.cab' ESCAPE '\\')))"
-        ],
-        "filename": "file_change_win_2022_timestomping.yml"
-    },
-    {
         "title": "Unusual File Modification by dns.exe",
         "id": "9f383dc0-fdeb-4d56-acbc-9f9f4f8f20f3",
         "status": "test",
@@ -1297,6 +1278,27 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE 'C:\\\\program.exe' ESCAPE '\\')"
         ],
         "filename": "file_event_win_creation_unquoted_service_path.yml"
+    },
+    {
+        "title": "Legitimate Application Writing Files In Uncommon Location",
+        "id": "1cf465a1-2609-4c15-9b66-c32dbe4bfd67",
+        "status": "experimental",
+        "description": "Detects legitimate applications writing any type of file to uncommon or suspicious locations that are not typical for application data storage or execution.\nAdversaries may leverage legitimate applications (Living off the Land Binaries - LOLBins) to drop or download malicious files to uncommon locations on the system to evade detection by security solutions.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1218",
+            "attack.command-and-control",
+            "attack.t1105"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordview.exe' ESCAPE '\\' OR Image LIKE '%\\\\cmdl32.exe' ESCAPE '\\' OR Image LIKE '%\\\\certutil.exe' ESCAPE '\\' OR Image LIKE '%\\\\certoc.exe' ESCAPE '\\' OR Image LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR Image LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR Image LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR Image LIKE '%\\\\expand.exe' ESCAPE '\\' OR Image LIKE '%\\\\extrac32.exe' ESCAPE '\\' OR Image LIKE '%\\\\replace.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\ftp.exe' ESCAPE '\\' OR Image LIKE '%\\\\Ldifde.exe' ESCAPE '\\' OR Image LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR Image LIKE '%\\\\hh.exe' ESCAPE '\\' OR Image LIKE '%\\\\finger.exe' ESCAPE '\\' OR Image LIKE '%\\\\findstr.exe' ESCAPE '\\') AND (TargetFilename LIKE '%:\\\\Perflogs%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\$Recycle.Bin\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Contacts\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Favorites\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Favourites\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\inetpub\\\\wwwroot\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Music\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Pictures\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Users\\\\Default\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Videos\\\\%' ESCAPE '\\'))"
+        ],
+        "filename": "file_event_win_susp_legitimate_app_dropping_in_uncommon_location.yml"
     },
     {
         "title": "UAC Bypass Using .NET Code Profiler on MMC",
@@ -5669,14 +5671,16 @@
             "attack.persistence",
             "attack.t1197",
             "attack.s0190",
-            "attack.t1036.003"
+            "attack.t1036.003",
+            "attack.command-and-control",
+            "attack.t1105"
         ],
         "falsepositives": [
             "Some legitimate apps use this, but limited."
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%glitch.me%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%onrender.com%' ESCAPE '\\' OR CommandLine LIKE '%pages.dev%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%supabase.co%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%trycloudflare.com%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\' OR CommandLine LIKE '%w3spaces.com%' ESCAPE '\\' OR CommandLine LIKE '%workers.dev%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%.githubusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%anonfiles.com%' ESCAPE '\\' OR CommandLine LIKE '%cdn.discordapp.com%' ESCAPE '\\' OR CommandLine LIKE '%ddns.net%' ESCAPE '\\' OR CommandLine LIKE '%dl.dropboxusercontent.com%' ESCAPE '\\' OR CommandLine LIKE '%ghostbin.co%' ESCAPE '\\' OR CommandLine LIKE '%github.com%' ESCAPE '\\' OR CommandLine LIKE '%glitch.me%' ESCAPE '\\' OR CommandLine LIKE '%gofile.io%' ESCAPE '\\' OR CommandLine LIKE '%hastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%mediafire.com%' ESCAPE '\\' OR CommandLine LIKE '%mega.nz%' ESCAPE '\\' OR CommandLine LIKE '%onrender.com%' ESCAPE '\\' OR CommandLine LIKE '%pages.dev%' ESCAPE '\\' OR CommandLine LIKE '%paste.ee%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.com%' ESCAPE '\\' OR CommandLine LIKE '%pastebin.pl%' ESCAPE '\\' OR CommandLine LIKE '%pastetext.net%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.com%' ESCAPE '\\' OR CommandLine LIKE '%privatlab.net%' ESCAPE '\\' OR CommandLine LIKE '%send.exploit.in%' ESCAPE '\\' OR CommandLine LIKE '%sendspace.com%' ESCAPE '\\' OR CommandLine LIKE '%storage.googleapis.com%' ESCAPE '\\' OR CommandLine LIKE '%storjshare.io%' ESCAPE '\\' OR CommandLine LIKE '%supabase.co%' ESCAPE '\\' OR CommandLine LIKE '%temp.sh%' ESCAPE '\\' OR CommandLine LIKE '%transfer.sh%' ESCAPE '\\' OR CommandLine LIKE '%trycloudflare.com%' ESCAPE '\\' OR CommandLine LIKE '%ufile.io%' ESCAPE '\\' OR CommandLine LIKE '%w3spaces.com%' ESCAPE '\\' OR CommandLine LIKE '%workers.dev%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_file_sharing_domains.yml"
     },
@@ -6262,6 +6266,25 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\SharpSuccessor.exe' ESCAPE '\\' OR OriginalFileName = 'SharpSuccessor.exe' OR CommandLine LIKE '%SharpSuccessor%' ESCAPE '\\' OR (CommandLine LIKE '% add %' ESCAPE '\\' AND CommandLine LIKE '% /impersonate%' ESCAPE '\\' AND CommandLine LIKE '% /path%' ESCAPE '\\' AND CommandLine LIKE '% /account%' ESCAPE '\\' AND CommandLine LIKE '% /name%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_hktl_sharpsuccessor_execution.yml"
+    },
+    {
+        "title": "Windows Credential Guard Registry Tampering Via CommandLine",
+        "id": "c17d47b7-dcd6-4109-87eb-d1817bd4cbc9",
+        "status": "experimental",
+        "description": "Detects attempts to add, modify, or delete Windows Credential Guard related registry keys or values via command line tools such as Reg.exe or PowerShell.\nCredential Guard uses virtualization-based security to isolate secrets so that only privileged system software can access them.\nAdversaries may disable Credential Guard to gain access to sensitive credentials stored in the system, such as NTLM hashes and Kerberos tickets, which can be used for lateral movement and privilege escalation.\nThe rule matches suspicious command lines that target DeviceGuard or LSA registry paths and manipulate keys like EnableVirtualizationBasedSecurity, RequirePlatformSecurityFeatures, or LsaCfgFlags.\nSuch activity may indicate an attempt to disable or tamper with Credential Guard, potentially exposing sensitive credentials for misuse.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll', 'reg.exe')) AND (CommandLine LIKE '%add %' ESCAPE '\\' OR CommandLine LIKE '%New-ItemProperty %' ESCAPE '\\' OR CommandLine LIKE '%Set-ItemProperty %' ESCAPE '\\' OR CommandLine LIKE '%si %' ESCAPE '\\' OR CommandLine LIKE '%delete %' ESCAPE '\\' OR CommandLine LIKE '%del %' ESCAPE '\\' OR CommandLine LIKE '%Remove-ItemProperty %' ESCAPE '\\' OR CommandLine LIKE '%rp %' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Control\\\\DeviceGuard%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Control\\\\LSA%' ESCAPE '\\' OR CommandLine LIKE '%Software\\\\Policies\\\\Microsoft\\\\Windows\\\\DeviceGuard%' ESCAPE '\\') AND (CommandLine LIKE '%EnableVirtualizationBasedSecurity%' ESCAPE '\\' OR CommandLine LIKE '%RequirePlatformSecurityFeatures%' ESCAPE '\\' OR CommandLine LIKE '%LsaCfgFlags%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_credential_guard_registry_tampering.yml"
     },
     {
         "title": "HackTool - SharpView Execution",
@@ -7122,6 +7145,26 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '%\\\\AppDataLow\\\\Software\\\\Microsoft\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Policies\\\\Microsoft\\\\Windows\\\\OOBE%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Policies\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Winlogon%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\Currentversion\\\\Winlogon%' ESCAPE '\\' OR CommandLine LIKE '%\\\\CurrentControlSet\\\\Control\\\\SecurityProviders\\\\WDigest%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_reg_susp_paths.yml"
+    },
+    {
+        "title": "Windows AMSI Related Registry Tampering Via CommandLine",
+        "id": "7dbbcac2-57a0-45ac-b306-ff30a8bd2981",
+        "status": "experimental",
+        "description": "Detects tampering of AMSI (Anti-Malware Scan Interface) related registry values via command line tools such as reg.exe or PowerShell.\nAMSI provides a generic interface for applications and services to integrate with antimalware products.\nAdversaries may disable AMSI to evade detection of malicious scripts and code execution.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001",
+            "attack.t1562.006"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (CommandLine LIKE '%\\\\Software\\\\Microsoft\\\\Windows Script\\\\Settings%' ESCAPE '\\' AND CommandLine LIKE '%AmsiEnable%' ESCAPE '\\') AND ((((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%Set-ItemProperty%' ESCAPE '\\' OR CommandLine LIKE '%New-ItemProperty%' ESCAPE '\\' OR CommandLine LIKE '%sp %' ESCAPE '\\')) OR ((Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND CommandLine LIKE '%add%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_amsi_registry_tampering.yml"
     },
     {
         "title": "HackTool - Default PowerSploit/Empire Scheduled Task Creation",
@@ -9882,7 +9925,9 @@
             "attack.persistence",
             "attack.t1197",
             "attack.s0190",
-            "attack.t1036.003"
+            "attack.t1036.003",
+            "attack.command-and-control",
+            "attack.t1105"
         ],
         "falsepositives": [
             "Unknown"
@@ -14359,6 +14404,28 @@
         "filename": "proc_creation_win_wsl_kali_linux_installation.yml"
     },
     {
+        "title": "User Shell Folders Registry Modification via CommandLine",
+        "id": "8f3ab69a-aa22-4943-aa58-e0a52fdf6818",
+        "status": "experimental",
+        "description": "Detects modifications to User Shell Folders registry values via reg.exe or PowerShell, which could indicate persistence attempts.\nAttackers may modify User Shell Folders registry values to point to malicious executables or scripts that will be executed during startup.\nThis technique is often used to maintain persistence on a compromised system by ensuring that malicious payloads are executed automatically.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.privilege-escalation",
+            "attack.t1547.001",
+            "attack.defense-evasion",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Usage of reg.exe or PowerShell to modify User Shell Folders for legitimate purposes; but rare."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\') OR OriginalFileName IN ('powershell.exe', 'pwsh.dll', 'reg.exe')) AND (CommandLine LIKE '% add %' ESCAPE '\\' OR CommandLine LIKE '%New-ItemProperty%' ESCAPE '\\' OR CommandLine LIKE '%Set-ItemProperty%' ESCAPE '\\' OR CommandLine LIKE '%si %' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Shell Folders%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\User Shell Folders%' ESCAPE '\\') AND CommandLine LIKE '%Startup%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_user_shell_folders_registry_modification.yml"
+    },
+    {
         "title": "Suspicious Child Process Of Wermgr.EXE",
         "id": "396f6630-f3ac-44e3-bfc8-1b161bc00c4e",
         "status": "test",
@@ -15344,14 +15411,16 @@
             "attack.persistence",
             "attack.t1197",
             "attack.s0190",
-            "attack.t1036.003"
+            "attack.t1036.003",
+            "attack.command-and-control",
+            "attack.t1105"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Perflogs%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%ProgramData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%public\\%%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\bitsadmin.exe' ESCAPE '\\' OR OriginalFileName = 'bitsadmin.exe') AND (CommandLine LIKE '% /transfer %' ESCAPE '\\' OR CommandLine LIKE '% /create %' ESCAPE '\\' OR CommandLine LIKE '% /addfile %' ESCAPE '\\') AND (CommandLine LIKE '%:\\\\Perflogs%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Windows\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\$Recycle.Bin\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\inetpub\\\\wwwroot\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Music\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Pictures\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Users\\\\Default\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Videos\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%ProgramData\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%temp\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%tmp\\%%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_bitsadmin_download_susp_targetfolder.yml"
     },
@@ -24765,6 +24834,25 @@
         "filename": "registry_set_disable_system_restore.yml"
     },
     {
+        "title": "Windows Credential Guard Disabled - Registry",
+        "id": "73921b9c-cafd-4446-b0c6-fdb0ace42bc0",
+        "status": "experimental",
+        "description": "Detects attempts to disable Windows Credential Guard by setting registry values to 0. Credential Guard uses virtualization-based security to isolate secrets so that only privileged system software can access them.\nAdversaries may disable Credential Guard to gain access to sensitive credentials stored in the system, such as NTLM hashes and Kerberos tickets, which can be used for lateral movement and privilege escalation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetObject LIKE '%\\\\DeviceGuard\\\\EnableVirtualizationBasedSecurity' ESCAPE '\\' OR TargetObject LIKE '%\\\\DeviceGuard\\\\LsaCfgFlags' ESCAPE '\\' OR TargetObject LIKE '%\\\\Lsa\\\\LsaCfgFlags' ESCAPE '\\') AND Details = 'DWORD (0x00000000)')"
+        ],
+        "filename": "registry_set_credential_guard_disabled.yml"
+    },
+    {
         "title": "Change Winevt Channel Access Permission Via Registry",
         "id": "7d9263bd-dc47-4a58-bc92-5474abab390c",
         "status": "test",
@@ -25169,6 +25257,26 @@
             "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%Software\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\isolatedCommand' ESCAPE '\\' OR (TargetObject LIKE '%Software\\\\Classes\\\\Folder\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND Details REGEXP '-1[0-9]{3}\\\\Software\\\\Classes\\\\')))"
         ],
         "filename": "registry_set_uac_bypass_sdclt.yml"
+    },
+    {
+        "title": "AMSI Disabled via Registry Modification",
+        "id": "aa37cbb0-da36-42cb-a90f-fdf216fc7467",
+        "status": "experimental",
+        "description": "Detects attempts to disable AMSI (Anti-Malware Scan Interface) by modifying the AmsiEnable registry value.\nAnti-Malware Scan Interface (AMSI) is a security feature in Windows that allows applications and services to integrate with anti-malware products for enhanced protection against malicious content.\nAdversaries may attempt to disable AMSI to evade detection by security software, allowing them to execute malicious scripts or code without being scanned.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001",
+            "attack.t1562.006"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%\\\\Software\\\\Microsoft\\\\Windows Script\\\\Settings\\\\AmsiEnable' ESCAPE '\\' AND Details = 'DWORD (0x00000000)')"
+        ],
+        "filename": "registry_set_amsi_disable.yml"
     },
     {
         "title": "Scheduled TaskCache Change by Uncommon Program",
@@ -25695,8 +25803,8 @@
         "title": "Modify User Shell Folders Startup Value",
         "id": "9c226817-8dc9-46c2-a58d-66655aafd7dc",
         "status": "test",
-        "description": "Detect modification of the startup key to a path where a payload could be stored to be launched during startup",
-        "author": "frack113",
+        "description": "Detect modification of the User Shell Folders registry values for Startup or Common Startup which could indicate persistence attempts.\nAttackers may modify User Shell Folders registry keys to point to malicious executables or scripts that will be executed during startup.\nThis technique is often used to maintain persistence on a compromised system by ensuring that the malicious payload is executed automatically.\n",
+        "author": "frack113, Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.persistence",
             "attack.privilege-escalation",
@@ -25707,7 +25815,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\User Shell Folders%' ESCAPE '\\' AND TargetObject LIKE '%Startup' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\User Shell Folders%' ESCAPE '\\' OR TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Shell Folders%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\Common Startup' ESCAPE '\\' OR TargetObject LIKE '%\\\\Startup' ESCAPE '\\')) AND NOT ((Details = '') OR ((Details LIKE '%C:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup%' ESCAPE '\\' OR Details LIKE '%\\%ProgramData\\%\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup%' ESCAPE '\\')) OR ((Details LIKE '%\\%USERPROFILE\\%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup%' ESCAPE '\\' OR Details LIKE '%\\%\\%USERPROFILE\\%\\%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup%' ESCAPE '\\')) OR (Details LIKE '%C:\\\\Users\\\\%' ESCAPE '\\' AND Details LIKE '%\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\Start Menu\\\\Programs\\\\Startup%' ESCAPE '\\')))"
         ],
         "filename": "registry_set_susp_user_shell_folders.yml"
     },
@@ -26424,6 +26532,25 @@
             "SELECT * FROM logs WHERE ((EventID = '12' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%{2781761E-28E0-4109-99FE-B9D127C57AFE}' ESCAPE '\\' OR TargetObject LIKE '%{A7C452EF-8E9F-42EB-9F2B-245613CA0DC9}' ESCAPE '\\') AND NOT (((Image LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Windows Defender\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\')))"
         ],
         "filename": "registry_delete_removal_amsi_registry_key.yml"
+    },
+    {
+        "title": "Windows Credential Guard Related Registry Value Deleted - Registry",
+        "id": "d645ef86-2396-48a1-a2b6-b629ca3f57ff",
+        "status": "experimental",
+        "description": "Detects attempts to disable Windows Credential Guard by deleting registry values. Credential Guard uses virtualization-based security to isolate secrets so that only privileged system software can access them.\nAdversaries may disable Credential Guard to gain access to sensitive credentials stored in the system, such as NTLM hashes and Kerberos tickets, which can be used for lateral movement and privilege escalation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.001"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '12' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetObject LIKE '%\\\\DeviceGuard\\\\EnableVirtualizationBasedSecurity' ESCAPE '\\' OR TargetObject LIKE '%\\\\DeviceGuard\\\\LsaCfgFlags' ESCAPE '\\' OR TargetObject LIKE '%\\\\DeviceGuard\\\\RequirePlatformSecurityFeatures' ESCAPE '\\' OR TargetObject LIKE '%\\\\Lsa\\\\LsaCfgFlags' ESCAPE '\\'))"
+        ],
+        "filename": "registry_delete_disable_credential_guard.yml"
     },
     {
         "title": "Folder Removed From Exploit Guard ProtectedFolders List - Registry",
