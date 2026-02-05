@@ -1657,6 +1657,29 @@
         "filename": "file_event_win_lsass_werfault_dump.yml"
     },
     {
+        "title": "Uncommon File Created by Notepad++ Updater Gup.EXE",
+        "id": "3b8f4c92-6a51-4d7e-9c3a-8e2d1f5a7b09",
+        "status": "experimental",
+        "description": "Detects when the Notepad++ updater (gup.exe) creates files in suspicious or uncommon locations.\nThis could indicate potential exploitation of the updater component to deliver unwanted malware or unwarranted files.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.collection",
+            "attack.credential-access",
+            "attack.t1195.002",
+            "attack.initial-access",
+            "attack.t1557"
+        ],
+        "falsepositives": [
+            "Custom or portable Notepad++ installations in non-standard directories.",
+            "Legitimate update processes creating temporary files in unexpected locations."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND Image LIKE '%\\\\gup.exe' ESCAPE '\\' AND NOT (((TargetFilename LIKE 'C:\\\\Program Files\\\\Notepad++\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Program Files (x86)\\\\Notepad++\\\\%' ESCAPE '\\')) OR (TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%npp.%' ESCAPE '\\' AND TargetFilename LIKE '%.Installer.%' ESCAPE '\\' AND TargetFilename LIKE '%.exe%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.zip%' ESCAPE '\\') OR (TargetFilename LIKE 'C:\\\\$Recycle.Bin\\\\S-1-5-21%' ESCAPE '\\')))"
+        ],
+        "filename": "file_event_win_gup_uncommon_file_creation.yml"
+    },
+    {
         "title": "HackTool - Impacket File Indicators",
         "id": "03f4ca17-de95-428d-a75a-4ee78b047256",
         "status": "experimental",
@@ -13147,6 +13170,28 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR OriginalFileName = 'RUNDLL32.EXE' OR CommandLine LIKE '%rundll32%' ESCAPE '\\') AND (CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '%#-%' ESCAPE '\\' OR CommandLine LIKE '%#+%' ESCAPE '\\' OR CommandLine LIKE '%#24%' ESCAPE '\\' OR CommandLine LIKE '%24 %' ESCAPE '\\' OR CommandLine LIKE '%MiniDump%' ESCAPE '\\' OR CommandLine LIKE '%#65560%' ESCAPE '\\'))) OR (CommandLine LIKE '%24%' ESCAPE '\\' AND CommandLine LIKE '%comsvcs%' ESCAPE '\\' AND CommandLine LIKE '%full%' ESCAPE '\\' AND (CommandLine LIKE '% #%' ESCAPE '\\' OR CommandLine LIKE '%,#%' ESCAPE '\\' OR CommandLine LIKE '%, #%' ESCAPE '\\' OR CommandLine LIKE '%\"#%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_rundll32_process_dump_via_comsvcs.yml"
+    },
+    {
+        "title": "Suspicious Child Process of Notepad++ Updater - GUP.Exe",
+        "id": "bb0e87ce-c89f-4857-84fa-095e4483e9cb",
+        "status": "experimental",
+        "description": "Detects suspicious child process creation by the Notepad++ updater process (gup.exe).\nThis could indicate potential exploitation of the updater component to deliver unwanted malware.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.collection",
+            "attack.credential-access",
+            "attack.t1195.002",
+            "attack.initial-access",
+            "attack.t1557"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ParentImage LIKE '%\\\\gup.exe' ESCAPE '\\' AND ((Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\') OR (CommandLine LIKE '%bitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%certutil%' ESCAPE '\\' OR CommandLine LIKE '%curl%' ESCAPE '\\' OR CommandLine LIKE '%finger%' ESCAPE '\\' OR CommandLine LIKE '%forfiles%' ESCAPE '\\' OR CommandLine LIKE '%regsvr32%' ESCAPE '\\' OR CommandLine LIKE '%rundll32%' ESCAPE '\\' OR CommandLine LIKE '%wget%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_gup_susp_child_process.yml"
     },
     {
         "title": "Suspicious Calculator Usage",
