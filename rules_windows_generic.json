@@ -1553,25 +1553,6 @@
         "filename": "proc_creation_win_hktl_soaphound_execution.yml"
     },
     {
-        "title": "LSA PPL Protection Disabled Via Reg.EXE",
-        "id": "8c0eca51-0f88-4db2-9183-fdfb10c703f9",
-        "status": "test",
-        "description": "Detects the usage of the \"reg.exe\" utility to disable PPL protection on the LSA process",
-        "author": "Florian Roth (Nextron Systems)",
-        "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.010"
-        ],
-        "falsepositives": [
-            "Unlikely"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR OriginalFileName = 'reg.exe') AND (CommandLine LIKE '%SYSTEM\\\\CurrentControlSet\\\\Control\\\\Lsa%' ESCAPE '\\' AND CommandLine LIKE '% add %' ESCAPE '\\' AND CommandLine LIKE '% /d 0%' ESCAPE '\\' AND CommandLine LIKE '% /v RunAsPPL %' ESCAPE '\\'))"
-        ],
-        "filename": "proc_creation_win_reg_lsa_ppl_protection_disabled.yml"
-    },
-    {
         "title": "Audit Policy Tampering Via Auditpol",
         "id": "0a13e132-651d-11eb-ae93-0242ac130002",
         "status": "test",
