@@ -98,25 +98,6 @@
         "filename": "proc_creation_win_logman_disable_eventlog.yml"
     },
     {
-        "title": "Suspicious Script Execution From Temp Folder",
-        "id": "a6a39bdb-935c-4f0a-ab77-35f4bbf44d33",
-        "status": "test",
-        "description": "Detects a suspicious script executions from temporary folder",
-        "author": "Florian Roth (Nextron Systems), Max Altgelt (Nextron Systems), Tim Shelton",
-        "tags": [
-            "attack.execution",
-            "attack.t1059"
-        ],
-        "falsepositives": [
-            "Administrative scripts"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Windows\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\%TEMP\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%TMP\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%LocalAppData\\%\\\\Temp%' ESCAPE '\\')) AND NOT ((CommandLine LIKE '% >%' ESCAPE '\\' OR CommandLine LIKE '%Out-File%' ESCAPE '\\' OR CommandLine LIKE '%ConvertTo-Json%' ESCAPE '\\' OR CommandLine LIKE '%-WindowStyle hidden -Verb runAs%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\system32\\\\config\\\\systemprofile\\\\AppData\\\\Local\\\\Temp\\\\Amazon\\\\EC2-Windows\\\\%' ESCAPE '\\')))"
-        ],
-        "filename": "proc_creation_win_susp_script_exec_from_temp.yml"
-    },
-    {
         "title": "MMC Executing Files with Reversed Extensions Using RTLO Abuse",
         "id": "9cfe4b27-1e56-48b4-b7a8-d46851c91a44",
         "status": "experimental",
@@ -571,18 +552,18 @@
         "title": "Script Interpreter Execution From Suspicious Folder",
         "id": "1228c958-e64e-4e71-92ad-7d429f4138ba",
         "status": "test",
-        "description": "Detects a suspicious script execution in temporary folders or folders accessible by environment variables",
+        "description": "Detects suspicious script execution from suspicious directories or folders accessible by environment variables that may indicate malware activity.\nScript interpreters (cscript, wscript, mshta, powershell) executing from folders like Temp, Public, or user profile directories may suggest attempts to evade detection or execute malicious scripts.\n",
         "author": "Florian Roth (Nextron Systems), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
             "attack.t1059"
         ],
         "falsepositives": [
-            "Unknown"
+            "Various legitimate software have been observed to use similar techniques for installation or update purposes;thus, it is recommended to review and tune filters for your environment to reduce false positives before deploying to production."
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (CommandLine LIKE '% -ep bypass %' ESCAPE '\\' OR CommandLine LIKE '% -ExecutionPolicy bypass %' ESCAPE '\\' OR CommandLine LIKE '% -w hidden %' ESCAPE '\\' OR CommandLine LIKE '%/e:javascript %' ESCAPE '\\' OR CommandLine LIKE '%/e:Jscript %' ESCAPE '\\' OR CommandLine LIKE '%/e:vbscript %' ESCAPE '\\') OR OriginalFileName IN ('cscript.exe', 'mshta.exe', 'wscript.exe')) AND ((CommandLine LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (((Image LIKE '%\\\\cscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\mshta.exe' ESCAPE '\\' OR Image LIKE '%\\\\wscript.exe' ESCAPE '\\') OR (CommandLine LIKE '% -ep bypass %' ESCAPE '\\' OR CommandLine LIKE '% -ExecutionPolicy bypass %' ESCAPE '\\' OR CommandLine LIKE '% -w hidden %' ESCAPE '\\' OR CommandLine LIKE '%/e:javascript %' ESCAPE '\\' OR CommandLine LIKE '%/e:Jscript %' ESCAPE '\\' OR CommandLine LIKE '%/e:vbscript %' ESCAPE '\\') OR OriginalFileName IN ('cscript.exe', 'mshta.exe', 'wscript.exe')) AND ((CommandLine LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR CommandLine LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\\\%Public\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\AppData\\\\Roaming\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Temporary Internet%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Temp%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\%TEMP\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%TMP\\%%' ESCAPE '\\' OR CommandLine LIKE '%\\%LocalAppData\\%\\\\Temp%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favorites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Favourites\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Contacts\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Documents\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Music\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Pictures\\\\%' ESCAPE '\\') OR (CommandLine LIKE '%:\\\\Users\\\\%' ESCAPE '\\' AND CommandLine LIKE '%\\\\Videos\\\\%' ESCAPE '\\'))) AND NOT (((ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\Msiexec.exe' ESCAPE '\\' OR ParentImage LIKE 'C:\\\\Windows\\\\SysWOW64\\\\Msiexec.exe' ESCAPE '\\') AND Image LIKE '%\\\\powershell.exe' ESCAPE '\\' AND CommandLine LIKE '%-NoProfile -ExecutionPolicy Bypass -Command%' ESCAPE '\\' AND CommandLine LIKE '%AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' AND CommandLine LIKE '%Install-Chocolatey.ps1%' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_script_exec_from_env_folder.yml"
     },
@@ -1357,6 +1338,25 @@
         "filename": "proc_creation_win_curl_download_direct_ip_susp_extensions.yml"
     },
     {
+        "title": "System Restore Registry Modification via CommandLine",
+        "id": "7c06ab9b-b1d2-4ba9-b06e-09491ded20d9",
+        "status": "experimental",
+        "description": "Detects system restore registry modification via command line, which can be used by adversaries to disable system restore on the computer.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1490"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\reg.exe' ESCAPE '\\') OR OriginalFileName IN ('powershell.exe', 'pwsh.dll', 'reg.exe')) AND (CommandLine LIKE '% add %' ESCAPE '\\' OR CommandLine LIKE '%Set-ItemProperty%' ESCAPE '\\' OR CommandLine LIKE '%New-ItemProperty%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows NT\\\\SystemRestore%' ESCAPE '\\' OR CommandLine LIKE '%\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\SystemRestore%' ESCAPE '\\') AND (CommandLine LIKE '%DisableConfig%' ESCAPE '\\' OR CommandLine LIKE '%DisableSR%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_reg_system_restore_modification.yml"
+    },
+    {
         "title": "Suspicious GUP Usage",
         "id": "0a4f6091-223b-41f6-8743-f322ec84930b",
         "status": "test",
@@ -1975,7 +1975,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/delete%' ESCAPE '\\' AND CommandLine LIKE '%/tn%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR OriginalFileName = 'schtasks.exe') AND (CommandLine LIKE '%-delete%' ESCAPE '\\' OR CommandLine LIKE '%/delete%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_schtasks_delete.yml"
     },
@@ -3769,7 +3769,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' AND CommandLine LIKE '%/Change%' ESCAPE '\\' AND CommandLine LIKE '%/TN%' ESCAPE '\\' AND CommandLine LIKE '%/disable%' ESCAPE '\\' AND (CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard\\\\ExploitGuard MDM policy Refresh%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\schtasks.exe' ESCAPE '\\' OR OriginalFileName = 'schtasks.exe') AND (CommandLine LIKE '%-disable%' ESCAPE '\\' OR CommandLine LIKE '%/disable%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\ExploitGuard\\\\ExploitGuard MDM policy Refresh%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR CommandLine LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_schtasks_disable.yml"
     },
@@ -8669,6 +8669,25 @@
         "filename": "proc_creation_win_cmd_ntdllpipe_redirect.yml"
     },
     {
+        "title": "Windows EventLog Autologger Session Registry Modification Via CommandLine",
+        "id": "d7b81144-b866-48a4-9bcc-275dc69d870e",
+        "status": "experimental",
+        "description": "Detects attempts to disable Windows EventLog autologger sessions via registry modification.\nThe AutoLogger event tracing session records events that occur early in the operating system boot process.\nApplications and device drivers can use the AutoLogger session to capture traces before the user logs in.\nAdversaries may disable these sessions to evade detection and prevent security monitoring of early boot activities and system events.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1562.002"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((Image LIKE '%\\\\reg.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR OriginalFileName IN ('reg.exe', 'PowerShell.EXE', 'pwsh.dll')) AND (CommandLine LIKE '%add %' ESCAPE '\\' OR CommandLine LIKE '%Set-ItemProperty%' ESCAPE '\\' OR CommandLine LIKE '%New-ItemProperty%' ESCAPE '\\' OR CommandLine LIKE '%si %' ESCAPE '\\') AND CommandLine LIKE '%\\\\Control\\\\WMI\\\\Autologger\\\\%' ESCAPE '\\' AND (CommandLine LIKE '%Start%' ESCAPE '\\' OR CommandLine LIKE '%Enabled%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_autologger_session_registry_modification.yml"
+    },
+    {
         "title": "Suspicious CustomShellHost Execution",
         "id": "84b14121-9d14-416e-800b-f3b829c5a14d",
         "status": "test",
@@ -10667,6 +10686,28 @@
         "filename": "proc_creation_win_regedit_trustedinstaller.yml"
     },
     {
+        "title": "PUA - Memory Dump Mount Via MemProcFS",
+        "id": "8a1b2c3d-4e5f-6789-abcd-ef1234567890",
+        "status": "experimental",
+        "description": "Detects execution of MemProcFS a memory forensics tool with the '-device' parameter.\nMemProcFS mounts physical memory as a virtual file system, allowing direct access to process memory and system structures.\nThreat actors were seen abusing this utility to mount memory dumps and then extract sensitive information from processes like LSASS or extract registry hives to obtain credentials, LSA secrets, SAM data, and cached domain credentials.\nMemProcFS usage that is not part of authorized forensic analysis should be treated as suspicious and warrants further investigation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1003",
+            "attack.t1003.001",
+            "attack.t1003.004",
+            "attack.t1003.002"
+        ],
+        "falsepositives": [
+            "Legitimate use during memory forensics; if not part of authorized analysis, warrants urgent investigation"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\MemProcFS.exe' ESCAPE '\\' OR OriginalFileName = 'MemProcFS.exe' OR Description = 'MemProcFS') AND CommandLine LIKE '%-device%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_pua_memprocfs.yml"
+    },
+    {
         "title": "User Added To Highly Privileged Group",
         "id": "10fb649c-3600-4d37-b1e6-56ea90bb7e09",
         "status": "test",
@@ -11419,6 +11460,28 @@
             "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((((Image LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName = 'wevtutil.exe') AND (CommandLine LIKE '%clear-log %' ESCAPE '\\' OR CommandLine LIKE '% cl %' ESCAPE '\\' OR CommandLine LIKE '%set-log %' ESCAPE '\\' OR CommandLine LIKE '% sl %' ESCAPE '\\' OR CommandLine LIKE '%lfn:%' ESCAPE '\\')) OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND ((CommandLine LIKE '%Clear-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Remove-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Limit-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Clear-WinEvent %' ESCAPE '\\') OR (CommandLine LIKE '%Eventing.Reader.EventLogSession%' ESCAPE '\\' AND CommandLine LIKE '%ClearLog%' ESCAPE '\\') OR (CommandLine LIKE '%Diagnostics.EventLog%' ESCAPE '\\' AND CommandLine LIKE '%Clear%' ESCAPE '\\')))) OR (((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\') AND CommandLine LIKE '%ClearEventLog%' ESCAPE '\\') AND NOT (((ParentImage LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') AND CommandLine LIKE '% sl %' ESCAPE '\\')))))"
         ],
         "filename": "proc_creation_win_susp_eventlog_clear.yml"
+    },
+    {
+        "title": "Sensitive File Dump Via Print.EXE",
+        "id": "2fcda7e2-8c57-4904-86ac-37fc3157e09d",
+        "status": "test",
+        "description": "Detects the abuse of the Print.exe utility for credential harvesting which involves using Print.Exe to copy sensitive files such as ntds.dit, SAM, SECURITY, or SYSTEM from the Windows directory in order to extract credentials, locally or remotely.\n",
+        "author": "Ayush Anand (Securityinbits)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1003.003",
+            "attack.t1003.002",
+            "attack.defense-evasion",
+            "attack.t1218"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\print.exe' ESCAPE '\\' OR OriginalFileName = 'Print.EXE') AND ((CommandLine LIKE '%-D%' ESCAPE '\\' OR CommandLine LIKE '%/D%' ESCAPE '\\') AND (CommandLine LIKE '%\\\\config\\\\SAM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\SECURITY%' ESCAPE '\\' OR CommandLine LIKE '%\\\\config\\\\SYSTEM%' ESCAPE '\\' OR CommandLine LIKE '%\\\\windows\\\\ntds\\\\ntds.dit%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_print_dump_sensitive_files.yml"
     },
     {
         "title": "Potential CobaltStrike Process Patterns",
@@ -13270,17 +13333,18 @@
         "title": "Potential AutoLogger Sessions Tampering",
         "id": "f37b4bce-49d0-4087-9f5b-58bffda77316",
         "status": "test",
-        "description": "Detects tampering with autologger trace sessions which is a technique used by attackers to disable logging",
+        "description": "Detects tampering with autologger trace sessions which is a technique used by attackers to disable logging.\nThe AutoLogger event tracing session records events up that occur early in the operating system boot process.\nApplications and device drivers can use the AutoLogger session to capture traces before the user logs in, and also used by security solutions as telemetry source.\nAdversaries may disable these sessions to evade detection and prevent security monitoring of early boot activities and system events.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion"
+            "attack.defense-evasion",
+            "attack.t1562.002"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\System\\\\CurrentControlSet\\\\Control\\\\WMI\\\\Autologger\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\EventLog-%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Defender%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\Enable' ESCAPE '\\' OR TargetObject LIKE '%\\\\Start' ESCAPE '\\') AND Details = 'DWORD (0x00000000)') AND NOT ((Image LIKE 'C:\\\\Windows\\\\system32\\\\wevtutil.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Windows Defender\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\DefenderApiLogger\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\DefenderAuditLogger\\\\%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((EventID = '13' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (TargetObject LIKE '%\\\\Control\\\\WMI\\\\Autologger\\\\%' ESCAPE '\\' AND (TargetObject LIKE '%\\\\EventLog-%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Defender%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\Enabled' ESCAPE '\\' OR TargetObject LIKE '%\\\\Start' ESCAPE '\\') AND Details = 'DWORD (0x00000000)') AND NOT ((Image LIKE 'C:\\\\Windows\\\\system32\\\\wevtutil.exe' ESCAPE '\\') OR ((Image LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Windows Defender\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\DefenderApiLogger\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\DefenderAuditLogger\\\\%' ESCAPE '\\'))))"
         ],
         "filename": "registry_set_disable_autologger_sessions.yml"
     },
@@ -19881,6 +19945,114 @@
         "filename": "proc_creation_lnx_atp_unc4841_seaspy_execution.yml"
     },
     {
+        "title": "RedSun - TieringEngineService.exe Staged in RS-Prefixed Temp Dir",
+        "id": "f2e4b7d9-5c3a-4f8b-9e1d-7a6c2b3f4e5d",
+        "status": "experimental",
+        "description": "Detects the creation of a file named TieringEngineService.exe inside a directory whose path contains the RS- prefix characteristic\nof RedSun's staging directory (e.g. %TEMP%\\RS-{GUID}\\TieringEngineService.exe).\nRedSun registers a Cloud Files sync root under this RS-prefixed path and drops a masqueraded placeholder there as part of its oplock-based AV bypass and privilege escalation chain.\n\nThe RS-{GUID} directory name is generated by RedSun itself and has no legitimate system usage,\nmaking the combination of this path prefix and the TieringEngineService.exe filename a highly\nspecific indicator of RedSun activity.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems), @unresolvedhost",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1036.005",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND TargetFilename LIKE '%\\\\Temp%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\RS-{%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\TieringEngineService.exe' ESCAPE '\\')"
+        ],
+        "filename": "file_event_win_exploit_redsun_indicators.yml"
+    },
+    {
+        "title": "RedSun - Named Pipe Created",
+        "id": "9b4e7c2a-3f6d-4a8b-b5e9-1c7d3f2e6a4b",
+        "status": "experimental",
+        "description": "Detects the creation of a named pipe with the hardcoded name \"REDSUN\".\nThe RedSun exploit tool uses a pipe with this name for synchronisation and command communication between its components during the Cloud Files API + oplock-based AV bypass and privilege escalation chain.\nRedSun creates the pipe as \\\\??\\pipe\\REDSUN.\nThe pipe server listens for the token-duplicated elevated process to connect and respond, completing the privilege escalation from user to SYSTEM.\nPresence of this pipe name indicates active or recent RedSun execution.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems), @unresolvedhost",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1055",
+            "attack.t1562.001",
+            "attack.defense-evasion",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID IN ('17', '18') AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND PipeName LIKE '\\\\REDSUN' ESCAPE '\\')"
+        ],
+        "filename": "pipe_created_win_exploit_redsun_named_pipe.yml"
+    },
+    {
+        "title": "RedSun - TieringEngineService.exe Detected as EICAR Test File",
+        "id": "a7c3e5f2-8b1d-4e9a-b6c2-3d7f5e8a9b4c",
+        "status": "experimental",
+        "description": "Detects Windows Defender (EventID 1119 - Remediation Action Failed) flagging TieringEngineService.exe\ndropped in a characteristic RS-{GUID} temporary directory, or the RedSun.exe process itself being present.\nThis covers the staging pattern used by RedSun, a Cloud Files API and opportunistic lock (oplock) based\nAV bypass/privilege escalation tool.\n\nRedSun works as follows:\n  1. Registers a Cloud Files sync root and creates a Cloud Files placeholder for TieringEngineService.exe under %TEMP%\\RS-{GUID}\\\n  2. The placeholder file carries EICAR test file content (Virus:DOS/EICAR_Test_File) to reliably trigger\n     a Defender scan and remediation attempt\n  3. Requests a batch oplock (FSCTL_REQUEST_BATCH_OPLOCK) on the placeholder file\n  4. When Defender attempts to scan/quarantine the file, the oplock triggers - holding the file open\n  5. During the oplock break window, RedSun swaps the mount point (junction) to redirect\n     \\\\?\\C:\\Windows\\System32 to the attacker-controlled temp path\n  6. This races the AV/OS into executing the malicious TieringEngineService.exe with elevated privileges\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-evasion",
+            "attack.t1036.005",
+            "attack.t1562.001",
+            "attack.privilege-escalation",
+            "attack.t1055",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Microsoft-Windows-Windows Defender/Operational' AND (EventID = '1119' AND SourceName = 'Real-Time Protection') AND ((Path LIKE '%\\\\TieringEngineService.exe' ESCAPE '\\' AND ThreatName LIKE '%EICAR\\_Test\\_File' ESCAPE '\\') OR ProcessName LIKE '%\\\\RedSun.exe' ESCAPE '\\'))"
+        ],
+        "filename": "win_defender_exploit_redsun_tiering_engine_detected_as_eicar.yml"
+    },
+    {
+        "title": "RedSun - Conhost.exe Spawned by TieringEngineService.exe",
+        "id": "2ad78473-6978-40f5-b8f1-89c7e1c27a1a",
+        "status": "experimental",
+        "description": "Detects two stages of the RedSun post-exploitation process chain that deliver a SYSTEM-level shell to the attacker's interactive session.\nObserved process chain\n  services.exe\n    → TieringEngineService.exe\n      → conhost.exe             (SYSTEM, CommandLine: bare path, no arguments)\n        → cmd.exe / shell       (SYSTEM, TerminalSessionId = attacker's session)\n\nStage 1 — TieringEngineService.exe spawns argument-less conhost.exe:\n  After winning the oplock + Cloud Files mount point race, the malicious TieringEngineService.exe (RedSun.exe copied to System32, started via CoCreateInstance\n  / services.exe) detects it is NT AUTHORITY\\SYSTEM and calls LaunchConsoleInSessionId().\n  This opens \\\\.\\pipe\\REDSUN, reads the attacker's session ID, duplicates the SYSTEM token, re-stamps it with that session ID via SetTokenInformation(TokenSessionId), then\n  calls CreateProcessAsUser to spawn conhost.exe with no arguments.\n\nStage 2 — Shell spawned from rogue conhost.exe (EDR sources with GrandParentImage):\n  The rogue SYSTEM conhost.exe spawns a shell (cmd.exe, PowerShell, etc.) as SYSTEM in the attacker's interactive session.\n  On EDR sources that expose GrandParentImage, the full three-level chain (TieringEngineService.exe → conhost.exe → shell) can be matched directly.\n  The legitimate TieringEngineService.exe is a headless COM server that is unlikely to spawn conhost.exe under normal conditions.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems), @unresolvedhost",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1134.002",
+            "attack.defense-evasion",
+            "attack.t1036.005",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((ParentImage LIKE '%\\\\TieringEngineService.exe' ESCAPE '\\' AND Image LIKE '%\\\\conhost.exe' ESCAPE '\\' AND CommandLine LIKE '%conhost.exe\"' ESCAPE '\\' AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\' OR User LIKE '%$%' ESCAPE '\\')) OR (GrandParentImage LIKE '%\\\\TieringEngineService.exe' ESCAPE '\\' AND ParentImage LIKE '%\\\\conhost.exe' ESCAPE '\\' AND (Image LIKE '%\\\\cmd.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\' OR User LIKE '%$%' ESCAPE '\\'))))"
+        ],
+        "filename": "proc_creation_win_redsun_conhost_via_tiering_engine.yml"
+    },
+    {
+        "title": "Potential CVE-2026-33829 Exploitation - Windows Snipping Tool Remote File Path URI",
+        "id": "7c3a5b1d-9e2f-4a8c-b5d7-1e0f3c6a9b2d",
+        "status": "test",
+        "description": "Detects potential exploitation of CVE-2026-33829, a vulnerability in the Windows Snipping Tool URI handler (ms-screensketch:).\nAn attacker can abuse the 'filePath' parameter to supply a UNC path or HTTP URL, causing SnippingTool.exe to initiate a connection to a remote resource.\nWhen a UNC path is used (e.g. \\\\attacker.com\\share), this triggers an outbound NTLM authentication attempt, allowing the attacker to capture or relay the victim's Net-NTLMv2 hash.\nHTTP-based paths may result in remote file loading or server-side request forgery (SSRF)-style access.\nThe URI can be delivered via a malicious hyperlink, phishing email, or web page.\n",
+        "author": "Samir Bousseaden, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1187",
+            "detection.emerging-threats",
+            "cve.2026-33829"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\SnippingTool.exe' ESCAPE '\\' AND (CommandLine LIKE '%ms-screensketch:edit_&filePath=\\\\\\\\\\*' ESCAPE '\\' OR CommandLine LIKE '%ms-screensketch:edit_&filePath=\\%\\%5C%' ESCAPE '\\' OR CommandLine LIKE '%ms-screensketch:edit_&filePath=\\%5C%' ESCAPE '\\' OR CommandLine LIKE '%ms-screensketch:edit_&filePath=http%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_win_exploit_cve_2026_33829.yml"
+    },
+    {
         "title": "Axios NPM Compromise File Creation Indicators - Linux",
         "id": "b7cb840c-11f6-47f7-b3ef-5524739c9077",
         "status": "experimental",
@@ -25862,10 +26034,10 @@
         "filename": "win_iis_logging_http_disabled.yml"
     },
     {
-        "title": "Important Scheduled Task Deleted",
+        "title": "Important Scheduled Task Deleted or Disabled",
         "id": "9e3cb244-bdb8-4632-8c90-6079c8f4f16d",
         "status": "test",
-        "description": "Detects when adversaries try to stop system services or processes by deleting their respective scheduled tasks in order to conduct data destructive activities\n",
+        "description": "Detects when adversaries try to stop system services or processes by deleting or disabling their respective scheduled tasks in order to conduct data destructive activities\n",
         "author": "frack113",
         "tags": [
             "attack.impact",
@@ -25876,9 +26048,9 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '141' AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT ((UserName LIKE '%AUTHORI%' ESCAPE '\\' OR UserName LIKE '%AUTORI%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID IN ('141', '142') AND (TaskName LIKE '%\\\\Windows\\\\SystemRestore\\\\SR%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\Windows Defender\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\BitLocker%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsBackup\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\WindowsUpdate\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\UpdateOrchestrator\\\\%' ESCAPE '\\' OR TaskName LIKE '%\\\\Windows\\\\ExploitGuard%' ESCAPE '\\')) AND NOT (((UserName LIKE '%AUTHORI%' ESCAPE '\\' OR UserName LIKE '%AUTORI%' ESCAPE '\\'))))"
         ],
-        "filename": "win_taskscheduler_susp_schtasks_delete.yml"
+        "filename": "win_taskscheduler_susp_schtasks_delete_or_disable.yml"
     },
     {
         "title": "Unsigned Binary Loaded From Suspicious Location",
@@ -28993,7 +29165,7 @@
         "title": "WScript or CScript Dropper - File",
         "id": "002bdb95-0cf1-46a6-9e08-d38c128a6127",
         "status": "test",
-        "description": "Detects a file ending in jse, vbe, js, vba, vbs written by cscript.exe or wscript.exe",
+        "description": "Detects a file ending in jse, vbe, js, vba, vbs, wsf, wsh written by cscript.exe or wscript.exe",
         "author": "Tim Shelton",
         "tags": [
             "attack.execution",
@@ -29005,7 +29177,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (TargetFilename LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\ProgramData%' ESCAPE '\\') AND (TargetFilename LIKE '%.jse' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.vba' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (Image LIKE '%\\\\wscript.exe' ESCAPE '\\' OR Image LIKE '%\\\\cscript.exe' ESCAPE '\\') AND (TargetFilename LIKE '%:\\\\Perflogs\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\ProgramData\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Temp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Tmp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Users\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Roaming\\\\Temp%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Start Menu\\\\Programs\\\\Startup\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Temporary Internet%' ESCAPE '\\') AND (TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.jse' ESCAPE '\\' OR TargetFilename LIKE '%.vba' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.wsf' ESCAPE '\\' OR TargetFilename LIKE '%.wsh' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_cscript_wscript_dropper.yml"
     },
@@ -30182,25 +30354,6 @@
             "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND (TargetFilename LIKE '%\\\\Inveigh-Log.txt' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh-Cleartext.txt' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh-NTLMv1Users.txt' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh-NTLMv2Users.txt' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh-NTLMv1.txt' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh-NTLMv2.txt' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh-FormInput.txt' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh.dll' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Inveigh-Relay.ps1' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_hktl_inveigh_artefacts.yml"
-    },
-    {
-        "title": "Suspicious Creation TXT File in User Desktop",
-        "id": "caf02a0a-1e1c-4552-9b48-5e070bd88d11",
-        "status": "test",
-        "description": "Ransomware create txt file in the user Desktop",
-        "author": "frack113",
-        "tags": [
-            "attack.impact",
-            "attack.t1486"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID = '11' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\cmd.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Users\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.txt' ESCAPE '\\')"
-        ],
-        "filename": "file_event_win_susp_desktop_txt.yml"
     },
     {
         "title": "Suspicious Desktopimgdownldr Target File",
