@@ -5,7 +5,7 @@
         "description": "Detects usage of the \"touch\" process in service file.",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1070.006"
         ],
         "falsepositives": [
@@ -44,8 +44,8 @@
         "description": "Detects the execution of 'auditctl' with the '-D' command line parameter, which deletes all configured audit rules and watches on Linux systems.\nThis technique is commonly used by attackers to disable audit logging and cover their tracks by removing monitoring capabilities.\nRemoval of audit rules can significantly impair detection of malicious activities on the affected system.\n",
         "author": "Mohamed LAKRI",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.012"
+            "attack.defense-impairment",
+            "attack.t1685.004"
         ],
         "falsepositives": [
             "An administrator troubleshooting. Investigate all attempts."
@@ -117,8 +117,8 @@
         "description": "Detects disabling security tools",
         "author": "Ömer Günal, Alejandro Ortuno, oscd.community",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.004"
+            "attack.defense-impairment",
+            "attack.t1686"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -209,7 +209,7 @@
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.execution",
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1059.004",
             "attack.t1036"
         ],
@@ -263,7 +263,7 @@
         "description": "Detects usage of the 'chattr' utility to remove immutable file attribute.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
+            "attack.defense-impairment",
             "attack.t1222.002"
         ],
         "falsepositives": [
@@ -320,8 +320,8 @@
         "author": "Milad Cheraghi",
         "tags": [
             "attack.execution",
-            "attack.defense-evasion",
-            "attack.t1562.001"
+            "attack.defense-impairment",
+            "attack.t1685"
         ],
         "falsepositives": [
             "System administrator manually stopping Kaspersky services"
@@ -394,7 +394,6 @@
         "description": "Detects the doas tool execution in linux host platform. This utility tool allow standard users to perform tasks as root, the same way sudo does.",
         "author": "Sittikorn S, Teoderick Contreras",
         "tags": [
-            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],
@@ -413,7 +412,7 @@
         "description": "Detects usage of the 'crontab' utility to remove the current crontab.\nThis is a common occurrence where cryptocurrency miners compete against each other by removing traces of other miners to hijack the maximum amount of resources possible\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion"
+            "attack.stealth"
         ],
         "falsepositives": [
             "Unknown"
@@ -544,8 +543,8 @@
         "description": "Detects execution of a the file \"execve_hijack\" which is used by the Triple Cross rootkit as a way to elevate privileges",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
-            "attack.privilege-escalation"
+            "attack.privilege-escalation",
+            "attack.stealth"
         ],
         "falsepositives": [
             "Unlikely"
@@ -729,8 +728,8 @@
         "description": "Detects specific commands commonly used to remove or empty the syslog. Which is a technique often used by attacker as a method to hide their tracks\n",
         "author": "Max Altgelt (Nextron Systems), Roberto Rodriguez (Cyb3rWard0g), OTR (Open Threat Research), MSTIC",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1070.002"
+            "attack.defense-impairment",
+            "attack.t1685.006"
         ],
         "falsepositives": [
             "Log rotation.",
@@ -787,7 +786,7 @@
         "description": "Detects installation of suspicious packages using system installation utilities",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
+            "attack.defense-impairment",
             "attack.t1553.004"
         ],
         "falsepositives": [
@@ -824,8 +823,8 @@
         "author": "Hugh Ryan (HueCodes), Swachchhanda Shrawan Poudel (Nextron Systems)",
         "tags": [
             "attack.execution",
+            "attack.stealth",
             "attack.t1059.006",
-            "attack.defense-evasion",
             "attack.t1027.010"
         ],
         "falsepositives": [
@@ -1041,7 +1040,7 @@
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
             "attack.credential-access",
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1564"
         ],
         "falsepositives": [
@@ -1078,7 +1077,7 @@
         "author": "Joseph Kamau",
         "tags": [
             "attack.privilege-escalation",
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1055.009"
         ],
         "falsepositives": [
@@ -1247,7 +1246,7 @@
         "description": "Detects a potentially suspicious execution of a process located in the '/tmp/' folder",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1036"
         ],
         "falsepositives": [
@@ -1337,7 +1336,7 @@
         "description": "Detects chmod targeting files in sensitive directory paths on Linux systems.\nAttackers may use chmod to change permissions of files in these directories to maintain persistence, escalate privileges, or disrupt system operations.\n",
         "author": "Christopher Peacock @SecurePeacock, SCYTHE @scythe_io",
         "tags": [
-            "attack.defense-evasion",
+            "attack.defense-impairment",
             "attack.t1222.002"
         ],
         "falsepositives": [
@@ -1356,7 +1355,6 @@
         "author": "Luc Génaux",
         "tags": [
             "attack.privilege-escalation",
-            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1548",
             "attack.t1554"
@@ -1376,7 +1374,7 @@
         "description": "Detects the presence of a base64 version of the shebang in the commandline, which could indicate a malicious payload about to be decoded",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1140"
         ],
         "falsepositives": [
@@ -1394,7 +1392,6 @@
         "description": "Detects setting proxy configuration",
         "author": "Ömer Günal",
         "tags": [
-            "attack.defense-evasion",
             "attack.command-and-control",
             "attack.t1090"
         ],
@@ -1506,8 +1503,8 @@
         "description": "Detects attempts to force stop the ufw using ufw-init",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.004"
+            "attack.defense-impairment",
+            "attack.t1686"
         ],
         "falsepositives": [
             "Network administrators"
@@ -1617,7 +1614,7 @@
         "description": "Detects installation of new certificate on the system which attackers may use to avoid warnings when connecting to controlled web servers or C2s",
         "author": "Ömer Günal, oscd.community",
         "tags": [
-            "attack.defense-evasion",
+            "attack.defense-impairment",
             "attack.t1553.004"
         ],
         "falsepositives": [
@@ -1635,8 +1632,8 @@
         "description": "Detect use of iptables to flush all firewall rules, tables and chains and allow all network traffic",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.004"
+            "attack.defense-impairment",
+            "attack.t1686"
         ],
         "falsepositives": [
             "Network administrators"
@@ -1728,8 +1725,8 @@
         "description": "Detects logs clearing attempts on Linux systems via utilities such as 'rm', 'rmdir', 'shred', and 'unlink' targeting log files and directories.\nAdversaries often try to clear logs to cover their tracks after performing malicious activities.\n",
         "author": "Ömer Günal, oscd.community",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1070.002"
+            "attack.defense-impairment",
+            "attack.t1685.006"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -1764,7 +1761,7 @@
         "description": "Detects linux package removal using builtin tools such as \"yum\", \"apt\", \"apt-get\" or \"dpkg\".",
         "author": "Tuan Le (NCSGroup), Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1070"
         ],
         "falsepositives": [
@@ -1783,7 +1780,7 @@
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
             "attack.execution",
-            "attack.defense-evasion"
+            "attack.stealth"
         ],
         "falsepositives": [
             "Unknown"
@@ -1800,8 +1797,8 @@
         "description": "Detects the usage of utilities such as 'systemctl', 'service'...etc to stop or disable tools and services on Linux systems.\nAttackers may stop or disable security tools and services to evade detection, maintain persistence, or disrupt system operations.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562",
+            "attack.defense-impairment",
+            "attack.t1685",
             "attack.impact",
             "attack.t1489"
         ],
@@ -1821,10 +1818,10 @@
         "description": "Detects changes to the ESXi syslog configuration via \"esxcli\"",
         "author": "Cedric Maurugeon",
         "tags": [
-            "attack.defense-evasion",
             "attack.execution",
-            "attack.t1562.001",
-            "attack.t1562.003",
+            "attack.defense-impairment",
+            "attack.t1685",
+            "attack.t1690",
             "attack.t1059.012"
         ],
         "falsepositives": [
@@ -1958,7 +1955,6 @@
         "author": "Luc Génaux",
         "tags": [
             "attack.privilege-escalation",
-            "attack.defense-evasion",
             "attack.persistence",
             "attack.t1548",
             "attack.t1554"
@@ -2016,7 +2012,7 @@
         "description": "Detects suspicious process command line that starts with a shell that executes something and finally gets piped into another shell",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1140"
         ],
         "falsepositives": [
@@ -2088,7 +2084,6 @@
         "description": "Detects suspicious change of file privileges with chown and chmod commands",
         "author": "Ömer Günal",
         "tags": [
-            "attack.defense-evasion",
             "attack.persistence",
             "attack.privilege-escalation",
             "attack.t1548.001"
@@ -2108,7 +2103,7 @@
         "description": "Detects file deletion using \"rm\", \"shred\" or \"unlink\" commands which are used often by adversaries to delete files left behind by the actions of their intrusion activity",
         "author": "Ömer Günal, oscd.community",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1070.004"
         ],
         "falsepositives": [
@@ -2179,7 +2174,7 @@
         "description": "Detects default install commands of the Triple Cross eBPF rootkit based on the \"deployer.sh\" script",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1014"
         ],
         "falsepositives": [
@@ -2216,7 +2211,7 @@
         "description": "Detects usage of base64 utility to decode arbitrary base64-encoded text",
         "author": "Daniil Yugoslavskiy, oscd.community",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1027"
         ],
         "falsepositives": [
@@ -2234,7 +2229,7 @@
         "description": "Detects suspicious process command line that uses base64 encoded input for execution with a shell",
         "author": "pH-T (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1140"
         ],
         "falsepositives": [
@@ -2305,8 +2300,8 @@
         "description": "Detects disabling security tools",
         "author": "Ömer Günal, Alejandro Ortuno, oscd.community",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.004"
+            "attack.defense-impairment",
+            "attack.t1686"
         ],
         "falsepositives": [
             "Legitimate administration activities"
@@ -2359,9 +2354,10 @@
         "description": "Detects the ld.so preload persistence file. See `man ld.so` for more information.",
         "author": "Christian Burkard (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion",
             "attack.persistence",
             "attack.privilege-escalation",
+            "attack.execution",
+            "attack.stealth",
             "attack.t1574.006"
         ],
         "falsepositives": [
@@ -2436,8 +2432,8 @@
         "author": "@kostastsale",
         "tags": [
             "attack.execution",
+            "attack.stealth",
             "attack.t1059.004",
-            "attack.defense-evasion",
             "attack.t1027"
         ],
         "falsepositives": [
@@ -2455,7 +2451,6 @@
         "description": "Detects the creation of doas.conf file in linux host platform.",
         "author": "Sittikorn S, Teoderick Contreras",
         "tags": [
-            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1548"
         ],
@@ -2477,7 +2472,6 @@
             "attack.privilege-escalation",
             "attack.execution",
             "attack.persistence",
-            "attack.defense-evasion",
             "attack.t1053.003"
         ],
         "falsepositives": [
@@ -2533,7 +2527,7 @@
         "description": "Detects the creation of the file \"rootlog\" which is used by the TripleCross rootkit as a way to check if the backdoor is already running.",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.defense-evasion"
+            "attack.stealth"
         ],
         "falsepositives": [
             "Unlikely"
@@ -2570,7 +2564,6 @@
         "tags": [
             "attack.privilege-escalation",
             "attack.persistence",
-            "attack.defense-evasion",
             "attack.t1548.003"
         ],
         "falsepositives": [
@@ -2588,8 +2581,8 @@
         "description": "Detects disabling of system firewalls which could be used by adversaries to bypass controls that limit usage of the network.",
         "author": "Pawel Mazur",
         "tags": [
-            "attack.t1562.004",
-            "attack.defense-evasion"
+            "attack.defense-impairment",
+            "attack.t1686"
         ],
         "falsepositives": [
             "Admin activity"
@@ -2642,8 +2635,8 @@
         "description": "Detects the use of the `syslog` syscall with action code 5 (SYSLOG_ACTION_CLEAR),\n(4 is SYSLOG_ACTION_READ_CLEAR and 6 is SYSLOG_ACTION_CONSOLE_OFF) which clears the kernel\nring buffer (dmesg logs). This can be used by attackers to hide traces after exploitation\nor privilege escalation. A common technique is running `dmesg -c`, which triggers this syscall internally.\n",
         "author": "Milad Cheraghi",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1070.002"
+            "attack.defense-impairment",
+            "attack.t1685.006"
         ],
         "falsepositives": [
             "System administrators or scripts that intentionally clear logs",
@@ -2832,8 +2825,8 @@
         "description": "Detect changes in auditd configuration files",
         "author": "Mikhail Larin, oscd.community",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.006"
+            "attack.defense-impairment",
+            "attack.t1685"
         ],
         "falsepositives": [
             "Legitimate administrative activity"
@@ -2870,7 +2863,8 @@
         "tags": [
             "attack.privilege-escalation",
             "attack.persistence",
-            "attack.defense-evasion",
+            "attack.execution",
+            "attack.stealth",
             "attack.t1574.006"
         ],
         "falsepositives": [
@@ -2931,7 +2925,8 @@
         "tags": [
             "attack.privilege-escalation",
             "attack.persistence",
-            "attack.defense-evasion",
+            "attack.execution",
+            "attack.stealth",
             "attack.t1574.001"
         ],
         "falsepositives": [
@@ -2949,8 +2944,8 @@
         "description": "Detect changes of syslog daemons configuration files",
         "author": "Mikhail Larin, oscd.community",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.006"
+            "attack.defense-impairment",
+            "attack.t1685"
         ],
         "falsepositives": [
             "Legitimate administrative activity"
@@ -3003,8 +2998,9 @@
         "author": "Milad Cheraghi",
         "tags": [
             "attack.privilege-escalation",
-            "attack.defense-evasion",
-            "attack.t1562.001",
+            "attack.stealth",
+            "attack.defense-impairment",
+            "attack.t1685",
             "attack.t1055.009"
         ],
         "falsepositives": [
@@ -3023,7 +3019,6 @@
         "author": "Pawel Mazur",
         "tags": [
             "attack.discovery",
-            "attack.defense-evasion",
             "attack.privilege-escalation",
             "attack.t1083",
             "attack.t1548"
@@ -3061,7 +3056,7 @@
         "description": "Detects extraction of files with usage of steghide binary, the adversaries may use this technique to prevent the detection of hidden information.",
         "author": "Pawel Mazur",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1027.003"
         ],
         "falsepositives": [
@@ -3079,7 +3074,7 @@
         "description": "Detects file and folder permission changes.",
         "author": "Jakob Weinzettl, oscd.community",
         "tags": [
-            "attack.defense-evasion",
+            "attack.defense-impairment",
             "attack.t1222.002"
         ],
         "falsepositives": [
@@ -3173,7 +3168,7 @@
         "description": "Detects embedding of files with usage of steghide binary, the adversaries may use this technique to prevent the detection of hidden information.",
         "author": "Pawel Mazur",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1027.003"
         ],
         "falsepositives": [
@@ -3191,7 +3186,7 @@
         "description": "Adversaries may use binary padding to add junk data and change the on-disk representation of malware.\nThis rule detect using dd and truncate to add a junk data to file.\n",
         "author": "Igor Fits, oscd.community",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1027.001"
         ],
         "falsepositives": [
@@ -3245,7 +3240,7 @@
         "description": "Detects appending of zip file to image",
         "author": "Pawel Mazur",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1027.003"
         ],
         "falsepositives": [
@@ -3263,7 +3258,7 @@
         "description": "Detects extracting of zip file from image file",
         "author": "Pawel Mazur",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1027.003"
         ],
         "falsepositives": [
@@ -3299,8 +3294,8 @@
         "description": "Detects the removal of system firewall rules. Adversaries may only delete or modify a specific system firewall rule to bypass controls limiting network usage or access.\nDetection rules that match only on the disabling of firewalls will miss this.\n",
         "author": "IAI",
         "tags": [
-            "attack.t1562.004",
-            "attack.defense-evasion"
+            "attack.defense-impairment",
+            "attack.t1686"
         ],
         "falsepositives": [
             "Legitimate admin activity"
@@ -3317,7 +3312,7 @@
         "description": "Masquerading occurs when the name or location of an executable, legitimate or malicious, is manipulated or abused for the sake of evading defenses and observation.\nSeveral different variations of this technique have been observed.\n",
         "author": "Timur Zinniatullin, oscd.community",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1036.003"
         ],
         "level": "medium",
@@ -3368,8 +3363,8 @@
         "description": "All TCP traffic on particular port from attacker is routed to different port. ex. '/sbin/iptables -t nat -D PREROUTING -p tcp -s 192.168.1.1 --dport 22 -j REDIRECT --to-ports 42392'\nThe traffic looks like encrypted SSH communications going to TCP port 22, but in reality is being directed to the shell port once it hits the iptables rule for the attacker host only.\n",
         "author": "Rafal Piasecki",
         "tags": [
-            "attack.defense-evasion",
-            "attack.t1562.004"
+            "attack.defense-impairment",
+            "attack.t1686"
         ],
         "falsepositives": [
             "Legitimate ports redirect"
@@ -3386,7 +3381,7 @@
         "description": "Detects adversary creating hidden file or directory, by detecting directories or files with . as the first character",
         "author": "Pawel Mazur",
         "tags": [
-            "attack.defense-evasion",
+            "attack.stealth",
             "attack.t1564.001"
         ],
         "falsepositives": [
@@ -3442,7 +3437,7 @@
         "description": "Detects removing immutable file attribute.",
         "author": "Jakob Weinzettl, oscd.community",
         "tags": [
-            "attack.defense-evasion",
+            "attack.defense-impairment",
             "attack.t1222.002"
         ],
         "falsepositives": [
