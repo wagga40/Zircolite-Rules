@@ -1678,9 +1678,11 @@
         "title": "Vim GTFOBin Abuse - Linux",
         "id": "7ab8f73a-fcff-428b-84aa-6a5ff7877dea",
         "description": "Detects the use of \"vim\" and it's siblings commands to execute a shell or proxy commands.\nSuch behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "author": "Nasreddine Bencherchali (Nextron Systems), Luc Génaux",
         "tags": [
+            "attack.execution",
             "attack.discovery",
+            "attack.t1059",
             "attack.t1083"
         ],
         "falsepositives": [
@@ -1688,7 +1690,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((Image LIKE '%/rvim' ESCAPE '\\' OR Image LIKE '%/vim' ESCAPE '\\' OR Image LIKE '%/vimdiff' ESCAPE '\\') AND (CommandLine LIKE '% --cmd%' ESCAPE '\\' OR CommandLine LIKE '% -c %' ESCAPE '\\') AND (CommandLine LIKE '%:!/%' ESCAPE '\\' OR CommandLine LIKE '%:lua %' ESCAPE '\\' OR CommandLine LIKE '%:py %' ESCAPE '\\' OR CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/rvim' ESCAPE '\\' OR Image LIKE '%/vi' ESCAPE '\\' OR Image LIKE '%/vim' ESCAPE '\\' OR Image LIKE '%/vimdiff' ESCAPE '\\') AND (CommandLine LIKE '% --cmd %' ESCAPE '\\' OR CommandLine LIKE '% -c%' ESCAPE '\\') AND (CommandLine LIKE '%:!/%' ESCAPE '\\' OR CommandLine LIKE '%:!$%' ESCAPE '\\' OR CommandLine LIKE '%:!..%' ESCAPE '\\' OR CommandLine LIKE '%:lua %' ESCAPE '\\' OR CommandLine LIKE '%:py %' ESCAPE '\\' OR CommandLine LIKE '%:shell%' ESCAPE '\\' OR CommandLine LIKE '%/bin/bash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/dash%' ESCAPE '\\' OR CommandLine LIKE '%/bin/fish%' ESCAPE '\\' OR CommandLine LIKE '%/bin/sh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/csh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/ksh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/zsh%' ESCAPE '\\' OR CommandLine LIKE '%/bin/tmux%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_vim_shell_execution.yml"
     },
@@ -2031,20 +2033,20 @@
         "filename": "proc_creation_lnx_local_account.yml"
     },
     {
-        "title": "Ufw Force Stop Using Ufw-Init",
+        "title": "UFW Disable Attempt",
         "id": "84c9e83c-599a-458a-a0cb-0ecce44e807a",
-        "description": "Detects attempts to force stop the ufw using ufw-init",
+        "description": "Detects attempts to disable the Uncomplicated Firewall (UFW) on Linux systems.\nUFW is a popular firewall management tool that provides an easy-to-use interface for configuring firewall rules.\nDisabling UFW can leave a system vulnerable to attacks, as it may allow unauthorized access to network services and resources.\n",
         "author": "Joseliyo Sanchez, @Joseliyo_Jstnk",
         "tags": [
             "attack.defense-impairment",
             "attack.t1686"
         ],
         "falsepositives": [
-            "Network administrators"
+            "Legitimate actions by system administrators to disable UFW."
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE ((CommandLine LIKE '%-ufw-init%' ESCAPE '\\' AND CommandLine LIKE '%force-stop%' ESCAPE '\\') OR (CommandLine LIKE '%ufw%' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((Image LIKE '%/ufw-init' ESCAPE '\\' AND (CommandLine LIKE '% force-stop%' ESCAPE '\\' OR CommandLine LIKE '% stop%' ESCAPE '\\' OR CommandLine LIKE '% flush%' ESCAPE '\\')) OR (CommandLine LIKE '%ufw %' ESCAPE '\\' AND CommandLine LIKE '%disable%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_lnx_disable_ufw.yml"
     },

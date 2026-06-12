@@ -7348,6 +7348,27 @@
         "filename": "proc_creation_win_exploit_cve_2026_33829.yml"
     },
     {
+        "title": "LSASS Crash Via Netlogon Stack Buffer Overflow - CVE-2026-41089",
+        "id": "f8a66a02-4a16-46e5-b7fd-a42c8a93d137",
+        "status": "experimental",
+        "description": "Detects a crash of the LSASS process where netlogon.dll is the faulting module and the exception code is STATUS_STACK_BUFFER_OVERRUN (0xc0000409).\nThis crash, especially on Domain Controllers, might indicate the exploitation of CVE-2026-41089, a denial of service (DoS) vulnerability,\nwhich exists in the Netlogon component of Windows and can be triggered by sending specially crafted requests to the Netlogon service,\nleading to a stack-based buffer overflow and subsequent crash of the LSASS process.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.impact",
+            "attack.t1499",
+            "cve.2026-41089",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (Channel = 'Application' AND Provider_Name = 'Application Error' AND EventID = '1000' AND AppName = 'lsass.exe' AND ModuleName = 'netlogon.dll' AND ExceptionCode = 'c0000409')"
+        ],
+        "filename": "win_application_error_exploit_cve_2026_41089_lsass_netlogon_crash.yml"
+    },
+    {
         "title": "Axios NPM Compromise Malicious C2 Domain DNS Query",
         "id": "73e5d24f-493f-4092-bd2f-c72cabda40ee",
         "status": "experimental",
@@ -8986,7 +9007,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%\\\\vssapi.dll' ESCAPE '\\' AND NOT (((Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\Temp\\\\{%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (Image = ''))) AND NOT ((Image LIKE 'C:\\\\ProgramData\\\\Package Cache\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\temp\\\\is-%' ESCAPE '\\' AND Image LIKE '%\\\\avira\\_system\\_speedup.tmp%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '7' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (ImageLoaded LIKE '%\\\\vssapi.dll' ESCAPE '\\' AND NOT (((Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe' ESCAPE '\\') OR (Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\Temp\\\\{%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\$WinREAgent\\\\Scratch\\\\%' ESCAPE '\\')) OR ((Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (Image = ''))) AND NOT ((Image LIKE 'C:\\\\ProgramData\\\\Package Cache\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\temp\\\\is-%' ESCAPE '\\' AND Image LIKE '%\\\\avira\\_system\\_speedup.tmp%' ESCAPE '\\')))"
         ],
         "filename": "image_load_dll_vssapi_susp_load.yml"
     },
@@ -14290,6 +14311,25 @@
         "filename": "proc_creation_win_hktl_cobaltstrike_bloopers_modules.yml"
     },
     {
+        "title": "NTLM Hash Leak Via Curl NTLM Authentication",
+        "id": "916eb839-895e-47f8-99ee-3008bf377a3e",
+        "status": "test",
+        "description": "Detects the use of curl with NTLM authentication and empty credentials (-u :), which can be abused to leak the currently logged-in user's NTLMv2 challenge-response to an\nattacker-controlled server, enabling offline cracking or relay attacks.\nWhen no credentials are provided, the Microsoft-shipped curl passes a NULL identity to Windows SSPI, which automatically falls back to the current user's logon session credentials\nstored in LSASS — without requiring a plaintext password.\nThis behavior is exclusive to the curl binary shipped by Microsoft (available since Windows 10 / Windows Server 2019), which is built with SSPI support.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1187"
+        ],
+        "falsepositives": [
+            "Should be very rare as it's not widely known or used, but could occur in legitimate use cases where curl is used with NTLM authentication and empty credentials, such as in certain scripts or automation tasks."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (Image LIKE '%\\\\curl.exe' ESCAPE '\\' OR OriginalFileName = 'curl.exe') AND CommandLine LIKE '%--ntlm%' ESCAPE '\\' AND CommandLine REGEXP '(?i)\\s(-u|--user)\\s*:')"
+        ],
+        "filename": "proc_creation_win_curl_ntlm_hash_leak_attempt.yml"
+    },
+    {
         "title": "Suspicious Encoded And Obfuscated Reflection Assembly Load Function Call",
         "id": "9c0295ce-d60d-40bd-bd74-84673b7592b1",
         "status": "test",
@@ -15504,7 +15544,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((((Image LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName = 'wevtutil.exe') AND (CommandLine LIKE '%clear-log %' ESCAPE '\\' OR CommandLine LIKE '% cl %' ESCAPE '\\' OR CommandLine LIKE '%set-log %' ESCAPE '\\' OR CommandLine LIKE '% sl %' ESCAPE '\\' OR CommandLine LIKE '%lfn:%' ESCAPE '\\')) OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND ((CommandLine LIKE '%Clear-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Remove-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Limit-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Clear-WinEvent %' ESCAPE '\\') OR (CommandLine LIKE '%Eventing.Reader.EventLogSession%' ESCAPE '\\' AND CommandLine LIKE '%ClearLog%' ESCAPE '\\') OR (CommandLine LIKE '%Diagnostics.EventLog%' ESCAPE '\\' AND CommandLine LIKE '%Clear%' ESCAPE '\\')))) OR (((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\') AND CommandLine LIKE '%ClearEventLog%' ESCAPE '\\') AND NOT (((ParentImage LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') AND CommandLine LIKE '% sl %' ESCAPE '\\')))))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((((Image LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName = 'wevtutil.exe') AND (CommandLine LIKE '%clear-log %' ESCAPE '\\' OR CommandLine LIKE '% cl %' ESCAPE '\\' OR CommandLine LIKE '%set-log %' ESCAPE '\\' OR CommandLine LIKE '% sl %' ESCAPE '\\' OR CommandLine LIKE '%lfn:%' ESCAPE '\\')) OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND ((CommandLine LIKE '%Clear-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Remove-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Limit-EventLog %' ESCAPE '\\' OR CommandLine LIKE '%Clear-WinEvent %' ESCAPE '\\') OR (CommandLine LIKE '%Eventing.Reader.EventLogSession%' ESCAPE '\\' AND CommandLine LIKE '%ClearLog%' ESCAPE '\\') OR (CommandLine LIKE '%Diagnostics.EventLog%' ESCAPE '\\' AND CommandLine LIKE '%Clear%' ESCAPE '\\')))) OR ((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR Image LIKE '%\\\\wmic.exe' ESCAPE '\\') AND CommandLine LIKE '%ClearEventLog%' ESCAPE '\\')) AND NOT (((ParentImage LIKE 'C:\\\\Windows\\\\SysWOW64\\\\msiexec.exe' ESCAPE '\\' OR ParentImage LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\') AND CommandLine LIKE '% sl %' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_susp_eventlog_clear.yml"
     },
@@ -23866,11 +23906,11 @@
             "attack.t1059.001"
         ],
         "falsepositives": [
-            "Unknown"
+            "Legitimate use of cmd.exe with no arguments e.g. via system(\"\") in C to enable ANSI escape codes"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%cmd.exe/c%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/k%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/k%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/k%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/r%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/r%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/r%' ESCAPE '\\') OR (CommandLine LIKE '%/cwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/cpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/cschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/cbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/ccertutil%' ESCAPE '\\' OR CommandLine LIKE '%/kwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/kpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/kschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/kbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/kcertutil%' ESCAPE '\\') OR (CommandLine LIKE '%cmd.exe /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r%' ESCAPE '\\' OR CommandLine LIKE '%cmd /r%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%cmd.exe /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r %' ESCAPE '\\' OR CommandLine LIKE '%cmd /r %' ESCAPE '\\')) OR (CommandLine LIKE '%AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\resources\\\\app\\\\node\\_modules%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/c .' ESCAPE '\\' OR CommandLine = 'cmd.exe /c')))"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND ((CommandLine LIKE '%cmd.exe/c%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/k%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/k%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/k%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/r%' ESCAPE '\\' OR CommandLine LIKE '%\\\\cmd/r%' ESCAPE '\\' OR CommandLine LIKE '%\"cmd/r%' ESCAPE '\\') OR (CommandLine LIKE '%/cwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/cpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/cschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/cbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/ccertutil%' ESCAPE '\\' OR CommandLine LIKE '%/kwhoami%' ESCAPE '\\' OR CommandLine LIKE '%/kpowershell%' ESCAPE '\\' OR CommandLine LIKE '%/kschtasks%' ESCAPE '\\' OR CommandLine LIKE '%/kbitsadmin%' ESCAPE '\\' OR CommandLine LIKE '%/kcertutil%' ESCAPE '\\') OR (CommandLine LIKE '%cmd.exe /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd /c%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd /k%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r%' ESCAPE '\\' OR CommandLine LIKE '%cmd /r%' ESCAPE '\\')) AND NOT (((CommandLine LIKE '%cmd.exe /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd /c %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd /k %' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe /r %' ESCAPE '\\' OR CommandLine LIKE '%cmd /r %' ESCAPE '\\')) OR (CommandLine LIKE '%AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\resources\\\\app\\\\node\\_modules%' ESCAPE '\\' OR CommandLine LIKE '%cmd.exe/c .' ESCAPE '\\' OR CommandLine = 'cmd.exe /c' OR CommandLine = 'cmd /c')))"
         ],
         "filename": "proc_creation_win_cmd_no_space_execution.yml"
     },
