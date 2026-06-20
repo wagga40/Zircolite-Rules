@@ -24176,10 +24176,10 @@
         "filename": "proc_creation_win_susp_lsass_dmp_cli_keywords.yml"
     },
     {
-        "title": "New ActiveScriptEventConsumer Created Via Wmic.EXE",
+        "title": "NewActiveScriptEventConsumer Creation Attempt via Wmic.EXE",
         "id": "ebef4391-1a81-4761-a40a-1db446c0e625",
         "status": "test",
-        "description": "Detects WMIC executions in which an event consumer gets created. This could be used to establish persistence",
+        "description": "Detects the attempt to create an ActiveScriptEventConsumer via WMIC.EXE.\nAn ActiveScriptEventConsumer is a built-in Windows Management Instrumentation (WMI) class that\nautomatically executes a predefined script (in VBScript or JScript) whenever a specific system event occurs.\nAdversaries often abuse ActiveScriptEventConsumer to maintain persistence on a compromised host by executing a malicious script whenever a specific event occurs.\n",
         "author": "Florian Roth (Nextron Systems)",
         "tags": [
             "attack.privilege-escalation",
@@ -24191,7 +24191,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND CommandLine LIKE '%ActiveScriptEventConsumer%' ESCAPE '\\' AND CommandLine LIKE '% CREATE %' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (OriginalFileName = 'wmic.exe' OR Image LIKE '%\\\\WMIC.exe' ESCAPE '\\') AND (CommandLine LIKE '%ActiveScriptEventConsumer%' ESCAPE '\\' AND CommandLine LIKE '% CREATE %' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_wmic_eventconsumer_creation.yml"
     },
@@ -29993,7 +29993,8 @@
         ],
         "falsepositives": [
             "Chrome instances using the exact same pipe name \"mojo.xxx\"",
-            "Websense Endpoint using the pipe name \"DserNamePipe(R|W)\\d{1,5}\""
+            "Websense Endpoint using the pipe name \"DserNamePipe(R|W)\\d{1,5}\"",
+            "Some applications may just coincidentally use the pipe names which contain the same prefix as the ones used by CobaltStrike, e.g. \"f4c3\""
         ],
         "level": "high",
         "rule": [
@@ -30039,7 +30040,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID IN ('17', '18') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (PipeName REGEXP '\\\\mojo\\.5688\\.8052\\.(?:183894939787088877|35780273329370473)[0-9a-f]{2}' OR PipeName REGEXP '\\\\wkssvc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\ntsvcs[0-9a-f]{2}' OR PipeName REGEXP '\\\\DserNamePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\SearchTextHarvester[0-9a-f]{2}' OR PipeName REGEXP '\\\\mypipe-(?:f|h)[0-9a-f]{2}' OR PipeName REGEXP '\\\\windows\\.update\\.manager[0-9a-f]{2,3}' OR PipeName REGEXP '\\\\ntsvcs_[0-9a-f]{2}' OR PipeName REGEXP '\\\\scerpc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\PGMessagePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\MsFteWds[0-9a-f]{2}' OR PipeName REGEXP '\\\\f4c3[0-9a-f]{2}' OR PipeName REGEXP '\\\\fullduplex_[0-9a-f]{2}' OR PipeName REGEXP '\\\\msrpc_[0-9a-f]{4}' OR PipeName REGEXP '\\\\win\\\\msrpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\f53f[0-9a-f]{2}' OR PipeName REGEXP '\\\\rpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\spoolss_[0-9a-f]{2}' OR PipeName REGEXP '\\\\Winsock2\\\\CatalogChangeListener-[0-9a-f]{3}-0,'))"
+            "SELECT * FROM logs WHERE ((EventID IN ('17', '18') AND Channel = 'Microsoft-Windows-Sysmon/Operational') AND (PipeName REGEXP '\\\\mojo\\.5688\\.8052\\.(?:183894939787088877|35780273329370473)[0-9a-f]{2}' OR PipeName REGEXP '\\\\wkssvc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\ntsvcs[0-9a-f]{2}' OR PipeName REGEXP '\\\\DserNamePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\SearchTextHarvester[0-9a-f]{2}' OR PipeName REGEXP '\\\\mypipe-(?:f|h)[0-9a-f]{2}' OR PipeName REGEXP '\\\\windows\\.update\\.manager[0-9a-f]{2,3}' OR PipeName REGEXP '\\\\ntsvcs_[0-9a-f]{2}' OR PipeName REGEXP '\\\\scerpc_?[0-9a-f]{2}' OR PipeName REGEXP '\\\\PGMessagePipe[0-9a-f]{2}' OR PipeName REGEXP '\\\\MsFteWds[0-9a-f]{2}' OR PipeName REGEXP '\\\\f4c3[0-9a-f]{2}' OR PipeName REGEXP '\\\\fullduplex_[0-9a-f]{2}' OR PipeName REGEXP '\\\\msrpc_[0-9a-f]{4}' OR PipeName REGEXP '\\\\win\\\\msrpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\f53f[0-9a-f]{2}$' OR PipeName REGEXP '\\\\rpc_[0-9a-f]{2}' OR PipeName REGEXP '\\\\spoolss_[0-9a-f]{2}' OR PipeName REGEXP '\\\\Winsock2\\\\CatalogChangeListener-[0-9a-f]{3}-0,'))"
         ],
         "filename": "pipe_created_hktl_cobaltstrike_re.yml"
     },
