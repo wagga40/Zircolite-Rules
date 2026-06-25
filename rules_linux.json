@@ -283,6 +283,25 @@
         "filename": "proc_creation_lnx_susp_history_recon.yml"
     },
     {
+        "title": "Process Execution From Shared Memory Directory",
+        "id": "5cd16c8f-44a6-4654-81e7-a84d6db507d4",
+        "description": "Detects the execution of a binary from the Linux shared memory directory /dev/shm.\nThis directory is a tmpfs mount backed entirely by RAM and is abused by attackers for fileless malware staging because files written there never touch physical disk and may evade disk-based detection.\n",
+        "author": "Stan Beukers",
+        "tags": [
+            "attack.stealth",
+            "attack.execution",
+            "attack.t1027.011"
+        ],
+        "falsepositives": [
+            "Unlikely in production environments; some container runtimes or IPC frameworks may use /dev/shm for inter-process communication but should not spawn executables."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Image LIKE '/dev/shm/%' ESCAPE '\\'"
+        ],
+        "filename": "proc_creation_lnx_susp_exec_from_dev_shm.yml"
+    },
+    {
         "title": "Potential Perl Reverse Shell Execution",
         "id": "259df6bc-003f-4306-9f54-4ff1a08fa38e",
         "description": "Detects execution of the perl binary with the \"-e\" flag and common strings related to potential reverse shell activity",
