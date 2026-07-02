@@ -9770,7 +9770,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((((TargetImage LIKE '%:\\\\Windows\\\\Sysmon.exe%' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\Sysmon64.exe%' ESCAPE '\\') AND GrantedAccess = '0x1400') AND NOT (((SourceImage LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR (SourceImage LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\'))) OR CallTrace = 'Ente')"
+            "SELECT * FROM logs WHERE ((((TargetImage LIKE '%:\\\\Windows\\\\Sysmon.exe%' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\Sysmon64.exe%' ESCAPE '\\' OR TargetImage LIKE '%:\\\\Windows\\\\Sysmon64a.exe%' ESCAPE '\\') AND GrantedAccess = '0x1400') AND NOT (((SourceImage LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR SourceImage LIKE '%:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\')) OR (SourceImage LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND SourceImage LIKE '%\\\\MsMpEng.exe' ESCAPE '\\'))) OR CallTrace = 'Ente')"
         ],
         "filename": "proc_access_win_hktl_sysmonente.yml"
     },
@@ -11363,7 +11363,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (((TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\')))) AND NOT ((NewProcessName = '')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND (((TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64a.exe' ESCAPE '\\')))) AND NOT ((NewProcessName = '')))"
         ],
         "filename": "registry_set_renamed_sysinternals_eula_accepted.yml"
     },
@@ -12097,7 +12097,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoggedon%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPing%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsService%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SDelete%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsLoggedon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsLoggedon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsPing.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsPing64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sdelete.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4657' AND (OperationType LIKE 'Existing registry value modified' ESCAPE '\\') AND Channel = 'Security') AND ((TargetObject LIKE '%\\\\Active Directory Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Handle%' ESCAPE '\\' OR TargetObject LIKE '%\\\\LiveKd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\ProcDump%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Process Explorer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsExec%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoggedon%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsLoglist%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPasswd%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsPing%' ESCAPE '\\' OR TargetObject LIKE '%\\\\PsService%' ESCAPE '\\' OR TargetObject LIKE '%\\\\SDelete%' ESCAPE '\\') AND TargetObject LIKE '%\\\\EulaAccepted' ESCAPE '\\') AND NOT ((NewProcessName LIKE '%\\\\ADExplorer.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ADExplorer64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\handle64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\livekd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procdump64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsExec64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsLoggedon.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsLoggedon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psloglist64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pspasswd64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsPing.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsPing64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsPing64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PsService64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sdelete.exe' ESCAPE '\\')))"
         ],
         "filename": "registry_set_pua_sysinternals_renamed_execution_via_eula.yml"
     },
@@ -15252,6 +15252,25 @@
             "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (ParentProcessName LIKE '%\\\\svchost.exe' ESCAPE '\\' AND ParentCommandLine LIKE '%-s WebClient%' ESCAPE '\\' AND NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' AND CommandLine LIKE '%C:\\\\windows\\\\system32\\\\davclnt.dll,DavSetCookie%' ESCAPE '\\' AND CommandLine REGEXP '://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}') AND NOT (((CommandLine LIKE '%://10.%' ESCAPE '\\' OR CommandLine LIKE '%://192.168.%' ESCAPE '\\' OR CommandLine LIKE '%://172.16.%' ESCAPE '\\' OR CommandLine LIKE '%://172.17.%' ESCAPE '\\' OR CommandLine LIKE '%://172.18.%' ESCAPE '\\' OR CommandLine LIKE '%://172.19.%' ESCAPE '\\' OR CommandLine LIKE '%://172.20.%' ESCAPE '\\' OR CommandLine LIKE '%://172.21.%' ESCAPE '\\' OR CommandLine LIKE '%://172.22.%' ESCAPE '\\' OR CommandLine LIKE '%://172.23.%' ESCAPE '\\' OR CommandLine LIKE '%://172.24.%' ESCAPE '\\' OR CommandLine LIKE '%://172.25.%' ESCAPE '\\' OR CommandLine LIKE '%://172.26.%' ESCAPE '\\' OR CommandLine LIKE '%://172.27.%' ESCAPE '\\' OR CommandLine LIKE '%://172.28.%' ESCAPE '\\' OR CommandLine LIKE '%://172.29.%' ESCAPE '\\' OR CommandLine LIKE '%://172.30.%' ESCAPE '\\' OR CommandLine LIKE '%://172.31.%' ESCAPE '\\' OR CommandLine LIKE '%://127.%' ESCAPE '\\' OR CommandLine LIKE '%://169.254.%' ESCAPE '\\'))))"
         ],
         "filename": "proc_creation_win_rundll32_webdav_client_susp_execution.yml"
+    },
+    {
+        "title": "Windows Defender Disabled Via SystemSettingsAdminFlows.EXE",
+        "id": "da92713f-ca2d-4fab-8320-098013d3f43a",
+        "status": "experimental",
+        "description": "Detects the usage of SystemSettingsAdminFlows.exe to disable Windows Defender.\nSystemSettingsAdminFlows.exe is a legitimate Windows component used for administrative configuration tasks.\nHowever, attackers may abuse it to disable Windows Defender as part of their attack chain, especially in the context of ransomware or other malware campaigns.\n",
+        "tags": [
+            "attack.defense-impairment",
+            "attack.t1685"
+        ],
+        "author": "Chirag Damani (KPMG India), Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "falsepositives": [
+            "Legitimate turn off of Windows Defender by the technical users or administrators for troubleshooting or other purposes."
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\SystemSettingsAdminFlows.exe' ESCAPE '\\' OR OriginalFileName = 'SystemSettingsAdminFlows.EXE') AND CommandLine LIKE '%defender%' ESCAPE '\\') AND (((CommandLine LIKE '%RTP %' ESCAPE '\\' OR CommandLine LIKE '%RealTimeProtection %' ESCAPE '\\' OR CommandLine LIKE '%DisableEnhancedNotifications %' ESCAPE '\\') AND CommandLine LIKE '%1%' ESCAPE '\\') OR ((CommandLine LIKE '%SubmitSamplesConsent %' ESCAPE '\\' OR CommandLine LIKE '%SpyNetReporting %' ESCAPE '\\' OR CommandLine LIKE '%DisableCDPUserAuthPolicy %' ESCAPE '\\') AND CommandLine LIKE '%0%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_win_systemsettingsadminflows_defender_disable.yml"
     },
     {
         "title": "Potential File Overwrite Via Sysinternals SDelete",
@@ -18499,7 +18518,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND OriginalFileName = 'sdelete.exe' AND NOT ((NewProcessName LIKE '%\\\\sdelete.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sdelete64.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND OriginalFileName = 'sdelete.exe' AND NOT ((NewProcessName LIKE '%\\\\sdelete.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sdelete64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\sdelete64a.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_renamed_sysinternals_sdelete.yml"
     },
@@ -21489,7 +21508,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'pssuspend.exe' OR (NewProcessName LIKE '%\\\\pssuspend.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pssuspend64.exe' ESCAPE '\\')) AND CommandLine LIKE '%msmpeng.exe%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (OriginalFileName = 'pssuspend.exe' OR (NewProcessName LIKE '%\\\\pssuspend.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pssuspend64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pssuspend64a.exe' ESCAPE '\\')) AND CommandLine LIKE '%msmpeng.exe%' ESCAPE '\\')"
         ],
         "filename": "proc_creation_win_sysinternals_pssuspend_susp_execution.yml"
     },
@@ -23211,7 +23230,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Sysmon.exe' ESCAPE '\\') OR Description = 'System activity monitor') AND (CommandLine LIKE '%-u%' ESCAPE '\\' OR CommandLine LIKE '%/u%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND ((NewProcessName LIKE '%\\\\Sysmon64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Sysmon64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Sysmon.exe' ESCAPE '\\') OR Description = 'System activity monitor') AND (CommandLine LIKE '%-u%' ESCAPE '\\' OR CommandLine LIKE '%/u%' ESCAPE '\\'))"
         ],
         "filename": "proc_creation_win_sysinternals_sysmon_uninstall.yml"
     },
@@ -23340,7 +23359,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Description = 'Execute processes remotely' OR Product = 'Sysinternals PsExec' OR (Description LIKE 'Windows PowerShell%' ESCAPE '\\' OR Description LIKE 'pwsh%' ESCAPE '\\') OR (OriginalFileName LIKE 'certutil.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cmstp.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'IE4UINIT.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'finger.exe' ESCAPE '\\' OR OriginalFileName LIKE 'mshta.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msxsl.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.c' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexesvc.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'reg.exe' ESCAPE '\\' OR OriginalFileName LIKE 'regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'rundll32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'WerMgr' ESCAPE '\\' OR OriginalFileName LIKE 'wmic.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wscript.exe' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ie4uinit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PSEXESVC.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4688' AND Channel = 'Security') AND (Description = 'Execute processes remotely' OR Product = 'Sysinternals PsExec' OR (Description LIKE 'Windows PowerShell%' ESCAPE '\\' OR Description LIKE 'pwsh%' ESCAPE '\\') OR (OriginalFileName LIKE 'certutil.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cmstp.exe' ESCAPE '\\' OR OriginalFileName LIKE 'cscript.exe' ESCAPE '\\' OR OriginalFileName LIKE 'IE4UINIT.EXE' ESCAPE '\\' OR OriginalFileName LIKE 'finger.exe' ESCAPE '\\' OR OriginalFileName LIKE 'mshta.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msiexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'msxsl.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell\\_ise.exe' ESCAPE '\\' OR OriginalFileName LIKE 'powershell.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.c' ESCAPE '\\' OR OriginalFileName LIKE 'psexec.exe' ESCAPE '\\' OR OriginalFileName LIKE 'psexesvc.exe' ESCAPE '\\' OR OriginalFileName LIKE 'pwsh.dll' ESCAPE '\\' OR OriginalFileName LIKE 'reg.exe' ESCAPE '\\' OR OriginalFileName LIKE 'regsvr32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'rundll32.exe' ESCAPE '\\' OR OriginalFileName LIKE 'WerMgr' ESCAPE '\\' OR OriginalFileName LIKE 'wmic.exe' ESCAPE '\\' OR OriginalFileName LIKE 'wscript.exe' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cmstp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\cscript.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\ie4uinit.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msiexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\msxsl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell\\_ise.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\psexec64a.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\PSEXESVC.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\reg.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\rundll32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wermgr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wmic.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wscript.exe' ESCAPE '\\')))"
         ],
         "filename": "proc_creation_win_renamed_binary_highly_relevant.yml"
     },
@@ -28802,19 +28821,21 @@
         "title": "Potential WinAPI Calls Via PowerShell Scripts",
         "id": "03d83090-8cba-44a0-b02f-0b756a050306",
         "status": "test",
-        "description": "Detects use of WinAPI functions in PowerShell scripts",
+        "description": "Detects usage of WinAPI functions in PowerShell scripts.\nIt may indicate attempts to perform actions such as process injection, token stealing, or other malicious activities that leverage Windows API calls.\nThese techniques are commonly used to evade traditional file-based detections by loading and executing code directly in memory.\n",
         "author": "Nasreddine Bencherchali (Nextron Systems), Nikita Nazarov, oscd.community",
         "tags": [
             "attack.execution",
             "attack.t1059.001",
-            "attack.t1106"
+            "attack.t1106",
+            "attack.stealth",
+            "attack.t1620"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND ((ScriptBlockText LIKE '%VirtualAlloc%' ESCAPE '\\' AND ScriptBlockText LIKE '%OpenProcess%' ESCAPE '\\' AND ScriptBlockText LIKE '%WriteProcessMemory%' ESCAPE '\\' AND ScriptBlockText LIKE '%CreateRemoteThread%' ESCAPE '\\') OR (ScriptBlockText LIKE '%OpenProcessToken%' ESCAPE '\\' AND ScriptBlockText LIKE '%LookupPrivilegeValue%' ESCAPE '\\' AND ScriptBlockText LIKE '%AdjustTokenPrivileges%' ESCAPE '\\') OR (ScriptBlockText LIKE '%OpenProcessToken%' ESCAPE '\\' AND ScriptBlockText LIKE '%DuplicateTokenEx%' ESCAPE '\\' AND ScriptBlockText LIKE '%CloseHandle%' ESCAPE '\\') OR (ScriptBlockText LIKE '%WriteProcessMemory%' ESCAPE '\\' AND ScriptBlockText LIKE '%VirtualAlloc%' ESCAPE '\\' AND ScriptBlockText LIKE '%ReadProcessMemory%' ESCAPE '\\' AND ScriptBlockText LIKE '%VirtualFree%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE ((EventID = '4104' AND Channel IN ('Microsoft-Windows-PowerShell/Operational', 'PowerShellCore/Operational')) AND ((ScriptBlockText LIKE '%VirtualAlloc%' ESCAPE '\\' AND ScriptBlockText LIKE '%OpenProcess%' ESCAPE '\\' AND ScriptBlockText LIKE '%WriteProcessMemory%' ESCAPE '\\' AND ScriptBlockText LIKE '%CreateRemoteThread%' ESCAPE '\\') OR (ScriptBlockText LIKE '%OpenProcessToken%' ESCAPE '\\' AND ScriptBlockText LIKE '%LookupPrivilegeValue%' ESCAPE '\\' AND ScriptBlockText LIKE '%AdjustTokenPrivileges%' ESCAPE '\\') OR (ScriptBlockText LIKE '%OpenProcessToken%' ESCAPE '\\' AND ScriptBlockText LIKE '%DuplicateTokenEx%' ESCAPE '\\' AND ScriptBlockText LIKE '%CloseHandle%' ESCAPE '\\') OR (ScriptBlockText LIKE '%WriteProcessMemory%' ESCAPE '\\' AND ScriptBlockText LIKE '%VirtualAlloc%' ESCAPE '\\' AND ScriptBlockText LIKE '%ReadProcessMemory%' ESCAPE '\\' AND ScriptBlockText LIKE '%VirtualFree%' ESCAPE '\\') OR (ScriptBlockText LIKE '%VirtualAlloc%' ESCAPE '\\' AND ScriptBlockText LIKE '%GetDelegateForFunctionPointer%' ESCAPE '\\' AND ScriptBlockText LIKE '%Marshal.Copy%' ESCAPE '\\')))"
         ],
         "filename": "posh_ps_win_api_susp_access.yml"
     },
@@ -30459,7 +30480,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\PROCEXP%' ESCAPE '\\' AND TargetFilename LIKE '%.sys' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE ((TargetFilename LIKE '%\\\\PROCEXP%' ESCAPE '\\' AND TargetFilename LIKE '%.sys' ESCAPE '\\') AND NOT (((NewProcessName LIKE '%\\\\procexp.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\procexp64a.exe' ESCAPE '\\'))))"
         ],
         "filename": "file_event_win_sysinternals_procexp_driver_susp_creation.yml"
     },
@@ -30812,7 +30833,7 @@
         "title": "Legitimate Application Dropped Script",
         "id": "7d604714-e071-49ff-8726-edeb95a70679",
         "status": "test",
-        "description": "Detects programs on a Windows system that should not write scripts to disk",
+        "description": "Detects LOLBINs and applications that should not legitimately drop script files to disk.\nThis may indicate malware staging or abuse of a trusted binary for script-based code execution.\n",
         "author": "frack113, Florian Roth (Nextron Systems)",
         "tags": [
             "attack.stealth",
@@ -30823,7 +30844,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordview.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certoc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AcroRd32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.scf' ESCAPE '\\' OR TargetFilename LIKE '%.wsf' ESCAPE '\\' OR TargetFilename LIKE '%.wsh' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE (((NewProcessName LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordview.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certoc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AcroRd32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.bat' ESCAPE '\\' OR TargetFilename LIKE '%.chm' ESCAPE '\\' OR TargetFilename LIKE '%.csproj' ESCAPE '\\' OR TargetFilename LIKE '%.hta' ESCAPE '\\' OR TargetFilename LIKE '%.js' ESCAPE '\\' OR TargetFilename LIKE '%.jse' ESCAPE '\\' OR TargetFilename LIKE '%.proj' ESCAPE '\\' OR TargetFilename LIKE '%.ps1' ESCAPE '\\' OR TargetFilename LIKE '%.py' ESCAPE '\\' OR TargetFilename LIKE '%.scf' ESCAPE '\\' OR TargetFilename LIKE '%.vbe' ESCAPE '\\' OR TargetFilename LIKE '%.vbs' ESCAPE '\\' OR TargetFilename LIKE '%.wsf' ESCAPE '\\' OR TargetFilename LIKE '%.wsh' ESCAPE '\\')) AND NOT ((NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' AND TargetFilename LIKE '%.hta' ESCAPE '\\')))"
         ],
         "filename": "file_event_win_susp_legitimate_app_dropping_script.yml"
     },
@@ -31369,7 +31390,7 @@
         "title": "Legitimate Application Dropped Executable",
         "id": "f0540f7e-2db3-4432-b9e0-3965486744bc",
         "status": "test",
-        "description": "Detects programs on a Windows system that should not write executables to disk",
+        "description": "Detects LOLBINs and applications that should not legitimately drop executable or executable-equivalent files to disk.\nThis may indicate malware staging, process injection, or abuse of a trusted binary for payload delivery.\n",
         "author": "frack113, Florian Roth (Nextron Systems)",
         "tags": [
             "attack.stealth",
@@ -31380,7 +31401,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordview.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certoc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AcroRd32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.ocx' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE ((NewProcessName LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\wordview.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certutil.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\certoc.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\CertReq.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\Desktopimgdownldr.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\esentutl.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\mshta.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\AcroRd32.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\RdrCEF.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\hh.exe' ESCAPE '\\' OR NewProcessName LIKE '%\\\\finger.exe' ESCAPE '\\') AND (TargetFilename LIKE '%.com' ESCAPE '\\' OR TargetFilename LIKE '%.dll' ESCAPE '\\' OR TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.jar' ESCAPE '\\' OR TargetFilename LIKE '%.ocx' ESCAPE '\\' OR TargetFilename LIKE '%.pyc' ESCAPE '\\'))"
         ],
         "filename": "file_event_win_susp_legitimate_app_dropping_exe.yml"
     },
