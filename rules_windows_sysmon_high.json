@@ -7348,6 +7348,52 @@
         "filename": "proc_creation_win_exploit_cve_2026_33829.yml"
     },
     {
+        "title": "Authencesn Crypto Module Load via Modprobe - Copy-Fail Indicator",
+        "id": "474b415a-d917-4f3b-8c62-9e1a0d5f7b48",
+        "status": "experimental",
+        "description": "Detects kernel auto-loading of the authencesn crypto module via modprobe\nThis occurs when user-space code creates an AF_ALG socket and binds the authencesn AEAD cipher\n(e.g., authencesn(hmac(sha256),cbc(aes))). The kernel invokes modprobe to load the\ncrypto module. This is a key indicator of CVE-2026-31431 (Copy Fail) exploitation,\nwhere the authencesn cipher is used to trigger a buffer overflow in the AF_ALG AEAD splice path,\ncorrupting the page cache of SUID binaries for local privilege escalation.\n\nOn Linux systems, modprobe is typically a symlink to kmod, so the process image will be /usr/bin/kmod (or /bin/kmod)\nwith 'modprobe' appearing in the command line.\n",
+        "author": "Gene Kazimiarovich",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1068",
+            "attack.persistence",
+            "attack.t1547.006",
+            "detection.emerging-threats",
+            "cve.2026-31431"
+        ],
+        "falsepositives": [
+            "Legitimate manual loading of the authencesn module by administrators for kernel crypto benchmarking or IPsec configuration (near-zero in production)"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND ((Image LIKE '%/kmod' ESCAPE '\\' AND CommandLine LIKE '%modprobe%' ESCAPE '\\' AND CommandLine LIKE '%crypto-authencesn(%' ESCAPE '\\') OR (Image LIKE '%/modprobe' ESCAPE '\\' AND CommandLine LIKE '%crypto-authencesn(%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_lnx_exploit_cve_2026_31431_copyfail.yml"
+    },
+    {
+        "title": "Linux AF_ALG Socket Creation - Kernel Crypto API Exploit Indicator",
+        "id": "474b415a-8b3d-4e6a-9f12-0d5c8a7b6e94",
+        "status": "experimental",
+        "description": "Detects creation of AF_ALG (Address Family 38) sockets via the socket() syscall.\nAF_ALG is the Linux kernel crypto API interface. It is exploited in CVE-2026-31431\nto achieve local privilege escalation via a buffer overflow in the AF_ALG AEAD\nsplice path that corrupts the page cache of SUID binaries.\nLegitimate AF_ALG usage is rare and confined to specific crypto utilities and VPN\ndaemons using non-default kernel offload configurations.\n",
+        "author": "Gene Kazimiarovich",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1068",
+            "detection.emerging-threats",
+            "cve.2026-31431"
+        ],
+        "falsepositives": [
+            "Disk encryption utilities using kernel crypto offload (cryptsetup with --use-kernel-crypto)",
+            "Libkcapi userspace tools for kernel crypto API benchmarking",
+            "StrongSwan IKE daemon with kernel-libipsec plugin"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE ((type = 'SYSCALL' AND SYSCALL = 'socket' AND a0 = '26') AND NOT (((exe LIKE '%/cryptsetup' ESCAPE '\\' OR exe LIKE '%/kcapi-speed' ESCAPE '\\' OR exe LIKE '%/kcapi-enc' ESCAPE '\\' OR exe LIKE '%/kcapi-dgst' ESCAPE '\\' OR exe LIKE '%/charon' ESCAPE '\\' OR exe LIKE '%/charon-systemd' ESCAPE '\\'))))"
+        ],
+        "filename": "lnx_auditd_exploit_cve_2026_31431_af_alg_socket_creation.yml"
+    },
+    {
         "title": "LSASS Crash Via Netlogon Stack Buffer Overflow - CVE-2026-41089",
         "id": "f8a66a02-4a16-46e5-b7fd-a42c8a93d137",
         "status": "experimental",
