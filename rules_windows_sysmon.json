@@ -7575,6 +7575,49 @@
         "filename": "proc_creation_win_axios_npm_compromise_indicators.yml"
     },
     {
+        "title": "TanStack Supply-Chain Attack Execution Indicators - Linux",
+        "id": "3c6f5e4a-8d0b-6abc-d9e2-4f7a6b8c9d0e",
+        "status": "experimental",
+        "description": "Detects process execution indicators associated with the Mini Shai-Hulud supply-chain campaign targeting TanStack npm packages and others such as mistralai and uipath reported on early May 2026.\nThe preinstall hook runs setup.mjs, which downloads a platform-specific Bun runtime.\n",
+        "author": "Leonardo Gasparini",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.007",
+            "attack.t1059.006",
+            "attack.t1204.002",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND ((Image LIKE '%/bun' ESCAPE '\\' AND CommandLine LIKE '%bun%' ESCAPE '\\' AND CommandLine LIKE '%run%' ESCAPE '\\' AND CommandLine LIKE '%tanstack\\_runner.js%' ESCAPE '\\') OR (Image LIKE '%/python3%' ESCAPE '\\' AND CommandLine LIKE '%/tmp/transformers.pyz%' ESCAPE '\\')))"
+        ],
+        "filename": "proc_creation_lnx_malware_tanstack_supply_chain.yml"
+    },
+    {
+        "title": "TanStack Supply-Chain Attack Execution Indicators - Windows",
+        "id": "9b4f3d2e-6e8c-5fab-c7d9-2a3b4e5f6a7b",
+        "status": "experimental",
+        "description": "Detects process execution indicators associated with the Mini Shai-Hulud supply-chain campaign targeting TanStack npm packages and others such as mistralai, uipath reported on early May 2026.",
+        "author": "Leonardo Gasparini",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.007",
+            "attack.t1204.002",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID = '1' AND Channel = 'Microsoft-Windows-Sysmon/Operational' AND Image LIKE '%\\\\bun.exe' ESCAPE '\\' AND CommandLine LIKE '%run%' ESCAPE '\\' AND CommandLine LIKE '%tanstack\\_runner.js%' ESCAPE '\\')"
+        ],
+        "filename": "proc_creation_win_malware_tanstack_supply_chain.yml"
+    },
+    {
         "title": "Equation Group DLL_U Export Function Load",
         "id": "d465d1d8-27a2-4cca-9621-a800f37cf72e",
         "status": "stable",
