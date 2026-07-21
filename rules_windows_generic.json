@@ -26454,6 +26454,51 @@
         "filename": "proc_creation_lnx_exploit_cve_2026_31431_copyfail.yml"
     },
     {
+        "title": "WordPress Wp2shell Webshell Plugin Access",
+        "id": "c9e6f412-3d50-4f7e-bf94-5b6c7d8e9f0a",
+        "status": "experimental",
+        "description": "Detects post-exploitation access to the wp2shell webshell plugin dropped after successful\nexploitation of CVE-2026-63030 and CVE-2026-60137. After the pre-auth SQLi-to-admin bridge is established,\nthe attacker can upload a malicious plugin (wp2shell) to the target WordPress instance.\nAt this phase, the attacker accesses the webshell for command execution and persistence.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.execution",
+            "attack.persistence",
+            "attack.t1505.003",
+            "cve.2026-63030",
+            "cve.2026-60137",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "critical",
+        "rule": [
+            "SELECT * FROM logs WHERE (cs-uri-stem LIKE '%/wp-content/plugins/wp2shell\\_%' ESCAPE '\\' AND NOT ((cs-uri-query = '')))"
+        ],
+        "filename": "web_exploit_cve_2026_63030_webshell_plugin_access.yml"
+    },
+    {
+        "title": "WordPress Wp2shell Exploitation Tool User-Agent",
+        "id": "a7c4e2f9-1b38-4d5c-9e72-3f4a5b6c7d8e",
+        "status": "experimental",
+        "description": "Detects the hardcoded \"wp2shell\" User-Agent string used by the wp2shell\nPoC tool during all phases of CVE-2026-63030 and CVE-2026-60137 exploitation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.initial-access",
+            "attack.t1190",
+            "cve.2026-63030",
+            "cve.2026-60137",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE cs-user-agent = 'wp2shell'"
+        ],
+        "filename": "web_exploit_cve_2026_63030_wp2shell_tool_useragent.yml"
+    },
+    {
         "title": "RedSun - TieringEngineService.exe Staged in RS-Prefixed Temp Dir",
         "id": "f2e4b7d9-5c3a-4f8b-9e1d-7a6c2b3f4e5d",
         "status": "experimental",
