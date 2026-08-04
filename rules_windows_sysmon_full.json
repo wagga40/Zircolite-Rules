@@ -18040,6 +18040,32 @@
         ]
     },
     {
+        "title": "Registry Hive File Staged Outside Standard User Profile Path",
+        "id": "a7f3c891-2e4d-4b6a-9f8c-d5e2a1b04c73",
+        "status": "experimental",
+        "description": "Detects the creation of a registry hive file (UsrClass.dat or NTUSER.DAT) outside of the standard user profile path.\nThese files generally contain various user-specific registry settings and are typically located in the user's profile directory.\nStaging these files outside of the standard path can be indicative of an attacker attempting to manipulate user registry settings\nfor persistence, privilege escalation, or dump user registry hives for credential harvesting.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.t1548",
+            "attack.credential-access",
+            "attack.t1003"
+        ],
+        "falsepositives": [
+            "Backup or profile migration software",
+            "Forensic acquisition tools"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE EventID=11 AND ((TargetFilename LIKE '%\\\\UsrClass.dat' ESCAPE '\\' OR TargetFilename LIKE '%\\\\NTUSER.DAT' ESCAPE '\\') AND (NOT (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Windows\\\\UsrClass.dat' ESCAPE '\\' OR TargetFilename REGEXP '(?i)^C:\\\\Users\\\\[^\\\\]+\\\\NTUSER\\.DAT$' OR (TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\config\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\SYSVOL\\\\%' ESCAPE '\\' OR TargetFilename LIKE 'C:\\\\Windows\\\\ServiceProfiles\\\\%' ESCAPE '\\'))))"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [
+            11
+        ]
+    },
+    {
         "title": "ISO File Created Within Temp Folders",
         "id": "2f9356ae-bf43-41b8-b858-4496d83b2acb",
         "status": "test",
@@ -48332,6 +48358,34 @@
         ]
     },
     {
+        "title": "Potentially Suspicious Explicit Credential Local Logon",
+        "id": "e3c6d245-7b8f-4e2a-c17f-a9d0e5b38f62",
+        "status": "experimental",
+        "description": "Detects potentially suspicious explicit credential logon events where the user\nis trying to logon with explicit credentials (username and password) that are\ndifferent from the current user context. It might indicate an attacker attempting\nto escalate privileges after obtaining credentials for a different user account.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.stealth",
+            "attack.t1134",
+            "attack.t1134.003"
+        ],
+        "falsepositives": [
+            "RunAs usage from user-installed applications outside Program Files",
+            "Administrative scripts using explicit credentials from non-standard paths"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4648 AND (TargetServerName='localhost' OR TargetInfo='localhost' OR (IpAddress='127.0.0.1' OR IpAddress='::1'))) AND (NOT (SubjectUserName LIKE '%$' ESCAPE '\\' OR (ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') OR (ProcessName LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR SubjectUserName=TargetUserName)))"
+        ],
+        "filename": "",
+        "channel": [
+            "Security"
+        ],
+        "eventid": [
+            4648
+        ]
+    },
+    {
         "title": "Group Policy Abuse for Privilege Addition",
         "id": "1c480e10-7ee1-46d4-8ed2-85f9789e3ce4",
         "status": "test",
@@ -58139,6 +58193,31 @@
         ]
     },
     {
+        "title": "Potentially Suspicious Image Load of Offreg.dll",
+        "id": "c9e5f013-4a6f-4d8c-9b0e-f7a4c3d26e95",
+        "status": "experimental",
+        "description": "Detects potentially suspicious loading of the Offline Registry Library (offreg.dll).\nOffreg.dll enables direct read/write access to offline registry hives without invoking the Windows Registry API,\nbypassing its associated audit logging and telemetry. Attackers may abuse this to stealthily modify registry hives\nwhile evading detection mechanisms that rely on standard registry event logs.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.defense-impairment",
+            "attack.persistence",
+            "attack.t1112"
+        ],
+        "falsepositives": [
+            "Third-party backup or forensic software that performs offline registry parsing",
+            "Windows deployment tools (DISM, ADK) run from non-standard paths"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE EventID=7 AND (ImageLoaded LIKE '%\\\\offreg.dll' ESCAPE '\\' AND (NOT ((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Users\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Programs\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\Platform\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\MsMpEng.exe' ESCAPE '\\'))))"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [
+            7
+        ]
+    },
+    {
         "title": "Potential DLL Sideloading Via JsSchHlp",
         "id": "68654bf0-4412-43d5-bfe8-5eaa393cd939",
         "status": "test",
@@ -62040,6 +62119,31 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE EventID=1 AND ((Image LIKE '%\\\\odbcconf.exe' ESCAPE '\\' OR OriginalFileName='odbcconf.exe') AND (CommandLine LIKE '%REGSVR %' ESCAPE '\\' AND CommandLine LIKE '%.dll%' ESCAPE '\\'))"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [
+            1
+        ]
+    },
+    {
+        "title": "Suspicious Cross-User Process Spawn",
+        "id": "d2b7a134-9c3e-4f8a-b56d-e0c1f8a29b47",
+        "status": "experimental",
+        "description": "Detects suspicious spawning of a process under a different user context than the parent process.\nProcesses such as notepad.exe, calculator etc. are generally spawned under the same user context and\nalso they are often targeted as sacrificial process or decoy process to check successful privilege escalation.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.stealth",
+            "attack.t1055",
+            "attack.t1134"
+        ],
+        "falsepositives": [
+            "RunAs usage spawning one of the listed binaries under a different account"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE EventID=1 AND ((Image LIKE '%\\\\notepad.exe' ESCAPE '\\' OR Image LIKE '%\\\\calc.exe' ESCAPE '\\' OR Image LIKE '%\\\\mspaint.exe' ESCAPE '\\' OR Image LIKE '%\\\\wordpad.exe' ESCAPE '\\' OR Image LIKE '%\\\\write.exe' ESCAPE '\\') AND (NOT User=ParentUser) AND (NOT (User IS NULL OR ParentUser IS NULL OR ((ParentUser='' OR ParentUser='-') OR (User='' OR User='-')))))"
         ],
         "filename": "",
         "channel": [],
