@@ -2753,31 +2753,6 @@
         ]
     },
     {
-        "title": "Active Directory Replication from Non Machine Account",
-        "id": "17d619c1-e020-4347-957e-1d1207455c93",
-        "status": "test",
-        "description": "Detects potential abuse of Active Directory Replication Service (ADRS) from a non machine account to request credentials.",
-        "author": "Roberto Rodriguez @Cyb3rWard0g",
-        "tags": [
-            "attack.credential-access",
-            "attack.t1003.006"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "critical",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4662 AND AccessMask='0x100' AND (Properties LIKE '%1131f6aa-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%1131f6ad-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%89e95b76-444d-4c62-991a-0facbeda640c%' ESCAPE '\\')) AND (NOT (SubjectUserName LIKE '%$' ESCAPE '\\' OR SubjectUserName LIKE 'MSOL\\_%' ESCAPE '\\')))"
-        ],
-        "filename": "",
-        "channel": [
-            "Security"
-        ],
-        "eventid": [
-            4662
-        ]
-    },
-    {
         "title": "Win Susp Computer Name Containing Samtheadmin",
         "id": "39698b3f-da92-4bc6-bfb5-645a98386e45",
         "status": "test",
@@ -5686,6 +5661,36 @@
         "filename": "",
         "channel": [],
         "eventid": []
+    },
+    {
+        "title": "ADCS - Certighost Ghost Machine Account Creation",
+        "id": "fa0bac5f-d170-4a91-9780-1ad71dc1f49e",
+        "status": "experimental",
+        "description": "Detects the creation of a machine account whose name starts with 'GHOST', which is the\nnaming convention used by the CVE-2026-54121 (Certighost) exploit tooling.\n\nThe public proof-of-concept for Certighost creates a temporary machine account with a\nname of the form GHOST<random>$ before enrolling for a DC certificate via the cdc chase\npath. The attacker-controlled machine account is used as the requester identity in the\ncertificate request; the cdc attribute then redirects the CA to a rogue host that returns\na forged Domain Controller identity. The resulting certificate carries the DC's SID and\nDNS name, enabling full PKINIT authentication as the targeted DC followed by DCSync.\n\nA machine account creation event (4741) where TargetUserName starts with 'GHOST' and\nends with '$' is a high-fidelity indicator of this attack tool's execution. Legitimate\nenvironments very rarely provision machine accounts with this prefix.\n",
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.privilege-escalation",
+            "attack.credential-access",
+            "attack.persistence",
+            "attack.t1136.002",
+            "attack.t1649",
+            "cve.2026-54121",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND (EventID=4741 AND TargetUserName LIKE 'GHOST%' ESCAPE '\\' AND TargetUserName LIKE '%$' ESCAPE '\\')"
+        ],
+        "filename": "",
+        "channel": [
+            "Security"
+        ],
+        "eventid": [
+            4741
+        ]
     },
     {
         "title": "LiteLLM / TeamPCP Supply Chain Attack Indicators",
@@ -14417,33 +14422,6 @@
         "eventid": [
             4656,
             4663
-        ]
-    },
-    {
-        "title": "Mimikatz DC Sync",
-        "id": "611eab06-a145-4dfa-a295-3ccc5c20f59a",
-        "status": "test",
-        "description": "Detects Mimikatz DC sync security events",
-        "author": "Benjamin Delpy, Florian Roth (Nextron Systems), Scott Dermott, Sorina Ionescu",
-        "tags": [
-            "attack.credential-access",
-            "attack.s0002",
-            "attack.t1003.006"
-        ],
-        "falsepositives": [
-            "Valid DC Sync that is not covered by the filters; please report",
-            "Local Domain Admin account used for Azure AD Connect"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4662 AND (Properties LIKE '%Replicating Directory Changes All%' ESCAPE '\\' OR Properties LIKE '%1131f6ad-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%1131f6aa-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%9923a32a-3607-11d2-b9be-0000f87a36b2%' ESCAPE '\\' OR Properties LIKE '%89e95b76-444d-4c62-991a-0facbeda640c%' ESCAPE '\\') AND AccessMask='0x100') AND (NOT (SubjectDomainName='Window Manager' OR (SubjectUserName LIKE 'NT AUT%' ESCAPE '\\' OR SubjectUserName LIKE 'MSOL\\_%' ESCAPE '\\') OR SubjectUserName LIKE '%$' ESCAPE '\\')))"
-        ],
-        "filename": "",
-        "channel": [
-            "Security"
-        ],
-        "eventid": [
-            4662
         ]
     },
     {
@@ -48253,6 +48231,33 @@
         ]
     },
     {
+        "title": "Suspicious Machine Account Replication - DcSync Indicator",
+        "id": "611eab06-a145-4dfa-a295-3ccc5c20f59a",
+        "status": "test",
+        "description": "Detects suspicious Active Directory Replication Service (ADRS) requests originating from\na machine account (SubjectUserName ending in '$') rather than a legitimate Domain Controller.\n\nUnder normal operation, only Domain Controllers initiate replication requests carrying the\nDS-Replication-Get-Changes-All right. If a threat actor obtains valid machine account\ncredentials \u2014 for example by abusing certificate-based authentication (PKINIT) to\nimpersonate a DC after exploiting a CA vulnerability such as CVE-2026-54121 (Certighost),\nwhere a temporary machine account is created to request a DC certificate and then used to\nperform DCSync \u2014 they can dump all domain credential material including the krbtgt hash.\n",
+        "author": "Benjamin Delpy, Florian Roth (Nextron Systems), Scott Dermett, Sorina Ionescu",
+        "tags": [
+            "attack.credential-access",
+            "attack.s0002",
+            "attack.t1003.006",
+            "cve.2026-54121"
+        ],
+        "falsepositives": [
+            "Valid DC Sync that is not covered by the filters; please report"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4662 AND (Properties LIKE '%1131f6ad-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%1131f6aa-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%9923a32a-3607-11d2-b9be-0000f87a36b2%' ESCAPE '\\' OR Properties LIKE '%89e95b76-444d-4c62-991a-0facbeda640c%' ESCAPE '\\') AND SubjectUserName LIKE '%$' ESCAPE '\\') AND (NOT SubjectUserSid LIKE 'S-1-5-18%' ESCAPE '\\'))"
+        ],
+        "filename": "",
+        "channel": [
+            "Security"
+        ],
+        "eventid": [
+            4662
+        ]
+    },
+    {
         "title": "Transferring Files with Credential Data via Network Shares",
         "id": "910ab938-668b-401b-b08c-b596e80fdca5",
         "status": "test",
@@ -49115,6 +49120,31 @@
         ],
         "eventid": [
             4697
+        ]
+    },
+    {
+        "title": "Active Directory Replication from Non Machine Account - DcSync Indicator",
+        "id": "17d619c1-e020-4347-957e-1d1207455c93",
+        "status": "test",
+        "description": "Detects potential abuse of Active Directory Replication Service (ADRS) from a non machine account to request credentials.",
+        "author": "Roberto Rodriguez @Cyb3rWard0g",
+        "tags": [
+            "attack.credential-access",
+            "attack.t1003.006"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Security' AND ((EventID=4662 AND (Properties LIKE '%1131f6ad-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%1131f6aa-9c07-11d1-f79f-00c04fc2dcd2%' ESCAPE '\\' OR Properties LIKE '%9923a32a-3607-11d2-b9be-0000f87a36b2%' ESCAPE '\\' OR Properties LIKE '%89e95b76-444d-4c62-991a-0facbeda640c%' ESCAPE '\\')) AND (NOT SubjectUserName LIKE '%$' ESCAPE '\\') AND (NOT (SubjectDomainName='Window Manager' OR (SubjectUserName LIKE 'NT AUT%' ESCAPE '\\' OR SubjectUserName LIKE 'MSOL\\_%' ESCAPE '\\'))))"
+        ],
+        "filename": "",
+        "channel": [
+            "Security"
+        ],
+        "eventid": [
+            4662
         ]
     },
     {
