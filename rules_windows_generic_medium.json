@@ -33190,7 +33190,7 @@
         "title": "Shell Open Registry Keys Manipulation",
         "id": "152f3630-77c1-4284-bcc0-4cc68ab2f6e7",
         "status": "test",
-        "description": "Detects the shell open key manipulation (exefile and ms-settings) used for persistence and the pattern of UAC Bypass using fodhelper.exe, computerdefaults.exe, slui.exe via registry keys (e.g. UACMe 33 or 62)",
+        "description": "Detects manipulation of shell open command registry keys such as \"ms-settings\" and \"exefile\",\nwhich are commonly abused to achieve UAC bypass (e.g. via fodhelper.exe) or establish persistence\nthrough file association hijacking.\n",
         "author": "Christian Burkard (Nextron Systems)",
         "tags": [
             "attack.persistence",
@@ -33203,7 +33203,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND (OperationType='New registry value created' OR OperationType='Existing registry value modified')) AND ((EventType='SetValue' AND TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND NewValue LIKE '%\\\\Software\\\\Classes\\\\{%' ESCAPE '\\') OR TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\DelegateExecute' ESCAPE '\\' OR ((EventType='SetValue' AND (TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%Classes\\\\exefile\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\')) AND (NOT NewValue='(Empty)')))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND (OperationType='New registry value created' OR OperationType='Existing registry value modified')) AND (((EventType='SetValue' AND TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND NewValue LIKE '%\\\\Software\\\\Classes\\\\{%' ESCAPE '\\') OR TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\DelegateExecute' ESCAPE '\\' OR (EventType='SetValue' AND (TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%Classes\\\\exefile\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\'))) AND (NOT (NewValue='(Empty)' OR (NewValue='{4813071a-41ad-44a2-9835-886d2f63ca30}' OR NewValue='{A56A841F-E974-45C1-8001-7E3F8A085917}' OR NewValue='{4ED3A719-CEA8-4BD9-910D-E252F997AFC2}' OR NewValue='{BFEC0C93-0B7D-4F2C-B09C-AFFFC4BDAE78}'))))"
         ],
         "filename": "",
         "channel": [],
@@ -33549,10 +33549,10 @@
         ]
     },
     {
-        "title": "CMSTP Execution Registry Event",
+        "title": "CMSTP App Paths Registry Key Modification",
         "id": "b6d235fc-1d38-4b12-adbe-325f06728f37",
         "status": "stable",
-        "description": "Detects various indicators of Microsoft Connection Manager Profile Installer execution",
+        "description": "Detects modifications to the CMSTP App Paths registry key. This may indicate abuse of\nMicrosoft Connection Manager Profile Installer (CMSTP) for arbitrary code execution or UAC bypass.\n",
         "author": "Nik Seetharaman",
         "tags": [
             "attack.execution",
@@ -33566,7 +33566,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND (OperationType='New registry value created' OR OperationType='Existing registry value modified')) AND TargetObject LIKE '%\\\\cmmgr32.exe%' ESCAPE '\\'"
+            "SELECT * FROM logs WHERE (EventID=4657 AND (OperationType='New registry value created' OR OperationType='Existing registry value modified')) AND (TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\App Paths\\\\cmmgr32.exe\\\\%' ESCAPE '\\' AND (NOT ((TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\App Paths\\\\cmmgr32.exe\\\\CmstpExtensionDll' ESCAPE '\\' AND (NewValue LIKE 'C:\\\\Windows\\\\System32\\\\cmcfg32.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\SysWOW64\\\\cmcfg32.dll' ESCAPE '\\')) OR NewValue='(Empty)')))"
         ],
         "filename": "",
         "channel": [],
@@ -67019,7 +67019,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (((TargetObject LIKE '%\\\\System\\\\%' ESCAPE '\\' AND TargetObject LIKE '%ControlSet%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Services\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\Parameters\\\\ServiceDll' ESCAPE '\\') AND (NOT (NewValue LIKE 'C:\\\\Windows\\\\system32\\\\spool\\\\drivers\\\\x64\\\\3\\\\PrintConfig.dll' ESCAPE '\\' OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\lsass.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Services\\\\NTDS\\\\Parameters\\\\ServiceDll' ESCAPE '\\' AND NewValue LIKE '\\%\\%systemroot\\%\\%\\\\system32\\\\ntdsa.dll' ESCAPE '\\') OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\poqexec.exe' ESCAPE '\\')) AND (NOT (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Windows\\\\System32\\\\STAgent.dll' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (((TargetObject LIKE '%\\\\System\\\\%' ESCAPE '\\' AND TargetObject LIKE '%ControlSet%' ESCAPE '\\' AND TargetObject LIKE '%\\\\Services\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\Parameters\\\\ServiceDll' ESCAPE '\\') AND (NOT (NewValue LIKE 'C:\\\\Windows\\\\system32\\\\spool\\\\drivers\\\\x64\\\\3\\\\PrintConfig.dll' ESCAPE '\\' OR (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Services\\\\PrintNotify\\\\Parameters\\\\ServiceDll' ESCAPE '\\' AND NewValue LIKE 'C:\\\\WINDOWS\\\\System32\\\\DriverStore\\\\FileRepository\\\\%' ESCAPE '\\' AND NewValue LIKE '%\\\\arm64\\\\PrintConfig.dll' ESCAPE '\\') OR (NewProcessName LIKE 'C:\\\\Windows\\\\system32\\\\lsass.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Services\\\\NTDS\\\\Parameters\\\\ServiceDll' ESCAPE '\\' AND NewValue LIKE '\\%\\%systemroot\\%\\%\\\\system32\\\\ntdsa.dll' ESCAPE '\\') OR NewProcessName LIKE 'C:\\\\Windows\\\\System32\\\\poqexec.exe' ESCAPE '\\')) AND (NOT (NewProcessName LIKE '%\\\\regsvr32.exe' ESCAPE '\\' AND NewValue LIKE 'C:\\\\Windows\\\\System32\\\\STAgent.dll' ESCAPE '\\')))"
         ],
         "filename": "",
         "channel": [],
