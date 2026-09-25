@@ -698,7 +698,7 @@
         ],
         "level": "critical",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=4688 AND (Hashes LIKE '%MD5=09D278F9DE118EF09163C6140255C690%' ESCAPE '\\' OR CommandLine LIKE '%Dumpert.dll%' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE EventID=4688 AND (Hashes LIKE '%IMPHASH=09D278F9DE118EF09163C6140255C690%' ESCAPE '\\' OR (CommandLine LIKE '%Dumpert.dll%' ESCAPE '\\' OR CommandLine LIKE '%Dumpert.exe%' ESCAPE '\\'))"
         ],
         "filename": "",
         "channel": [],
@@ -14975,7 +14975,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=4688 AND (((NewProcessName LIKE '%\\\\EXCEL.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\POWERPNT.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINWORD.exe' ESCAPE '\\') OR (OriginalFileName='Excel.exe' OR OriginalFileName='POWERPNT.EXE' OR OriginalFileName='WinWord.exe')) AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE EventID=4688 AND (((NewProcessName LIKE '%\\\\EXCEL.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\MSOXMLED.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\POWERPNT.EXE' ESCAPE '\\' OR NewProcessName LIKE '%\\\\WINWORD.exe' ESCAPE '\\') OR (OriginalFileName='Excel.exe' OR OriginalFileName='msoxmled.exe' OR OriginalFileName='POWERPNT.EXE' OR OriginalFileName='WinWord.exe')) AND (CommandLine LIKE '%http://%' ESCAPE '\\' OR CommandLine LIKE '%https://%' ESCAPE '\\'))"
         ],
         "filename": "",
         "channel": [],
@@ -42664,7 +42664,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND ((ScriptBlockText LIKE '%Set-Alias %' ESCAPE '\\' OR ScriptBlockText LIKE '%New-Alias %' ESCAPE '\\') AND (NOT (ScriptBlockText='Set-Alias -Name ncms -Value New-CimSession -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcls -Value Get-CimClass -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name ncso -Value New-CimSessionOption -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcms -Value Get-CimSession -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name rcms -Value Remove-cimSession -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name rcie -Value Register-CimIndicationEvent -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcai -Value Get-CimAssociatedInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcim -Value Get-CimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name scim -Value Set-CimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name ncim -Value New-CimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name rcim -Value Remove-cimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name icim -Value Invoke-CimMethod -Option ReadOnly, AllScope -ErrorAction SilentlyContinue'))))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND ((ScriptBlockText LIKE '%Set-Alias %' ESCAPE '\\' OR ScriptBlockText LIKE '%New-Alias %' ESCAPE '\\') AND (NOT (ScriptBlockText='Set-Alias -Name ncms -Value New-CimSession -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcls -Value Get-CimClass -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name ncso -Value New-CimSessionOption -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcms -Value Get-CimSession -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name rcms -Value Remove-cimSession -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name rcie -Value Register-CimIndicationEvent -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcai -Value Get-CimAssociatedInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name gcim -Value Get-CimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name scim -Value Set-CimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name ncim -Value New-CimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name ncim -Value New-CimInstance  -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name rcim -Value Remove-cimInstance -Option ReadOnly, AllScope -ErrorAction SilentlyContinue' OR ScriptBlockText='Set-Alias -Name icim -Value Invoke-CimMethod -Option ReadOnly, AllScope -ErrorAction SilentlyContinue'))))"
         ],
         "filename": "",
         "channel": [
