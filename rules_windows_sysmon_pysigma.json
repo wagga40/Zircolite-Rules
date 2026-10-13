@@ -20200,7 +20200,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=11 AND ((((TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.svg' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\') AND (TargetFilename LIKE '%.doc.%' ESCAPE '\\' OR TargetFilename LIKE '%.docx.%' ESCAPE '\\' OR TargetFilename LIKE '%.gif.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpeg.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpg.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp3.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp4.%' ESCAPE '\\' OR TargetFilename LIKE '%.pdf.%' ESCAPE '\\' OR TargetFilename LIKE '%.png.%' ESCAPE '\\' OR TargetFilename LIKE '%.ppt.%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx.%' ESCAPE '\\' OR TargetFilename LIKE '%.rtf.%' ESCAPE '\\' OR TargetFilename LIKE '%.svg.%' ESCAPE '\\' OR TargetFilename LIKE '%.txt.%' ESCAPE '\\' OR TargetFilename LIKE '%.xls.%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx.%' ESCAPE '\\')) OR (TargetFilename LIKE '%.rar.exe' ESCAPE '\\' OR TargetFilename LIKE '%.zip.exe' ESCAPE '\\')) AND (NOT COALESCE((TargetFilename LIKE '/usr/share/icons/%' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE EventID=11 AND ((((TargetFilename LIKE '%.exe' ESCAPE '\\' OR TargetFilename LIKE '%.iso' ESCAPE '\\' OR TargetFilename LIKE '%.rar' ESCAPE '\\' OR TargetFilename LIKE '%.svg' ESCAPE '\\' OR TargetFilename LIKE '%.zip' ESCAPE '\\') AND (TargetFilename LIKE '%.doc.%' ESCAPE '\\' OR TargetFilename LIKE '%.docx.%' ESCAPE '\\' OR TargetFilename LIKE '%.gif.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpeg.%' ESCAPE '\\' OR TargetFilename LIKE '%.jpg.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp3.%' ESCAPE '\\' OR TargetFilename LIKE '%.mp4.%' ESCAPE '\\' OR TargetFilename LIKE '%.pdf.%' ESCAPE '\\' OR TargetFilename LIKE '%.png.%' ESCAPE '\\' OR TargetFilename LIKE '%.ppt.%' ESCAPE '\\' OR TargetFilename LIKE '%.pptx.%' ESCAPE '\\' OR TargetFilename LIKE '%.rtf.%' ESCAPE '\\' OR TargetFilename LIKE '%.svg.%' ESCAPE '\\' OR TargetFilename LIKE '%.txt.%' ESCAPE '\\' OR TargetFilename LIKE '%.xls.%' ESCAPE '\\' OR TargetFilename LIKE '%.xlsx.%' ESCAPE '\\')) OR (TargetFilename LIKE '%.rar.exe' ESCAPE '\\' OR TargetFilename LIKE '%.zip.exe' ESCAPE '\\')) AND (NOT COALESCE((TargetFilename LIKE '%.svg.svg' ESCAPE '\\'), 0)) AND (NOT COALESCE((TargetFilename LIKE '/usr/share/icons/%' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -40438,7 +40438,7 @@
         "title": "ETW Trace Evasion Activity",
         "id": "a238b5d0-ce2d-4414-a676-7a531b3d13d6",
         "status": "test",
-        "description": "Detects command line activity that tries to clear or disable any ETW trace log which could be a sign of logging evasion.\n",
+        "description": "Detects command line activity that attempts to tamper with Event Tracing for Windows (ETW) by clearing or disabling\ntrace logs or providers. Adversaries may target ETW to blind security tooling and evade detection by removing\nvisibility into process activity, network connections, and other telemetry sources.\nTechniques include clearing logs via wevtutil, disabling trace sessions via logman, and removing or modifying\nETW providers using PowerShell cmdlets such as Remove-EtwTraceProvider and Set-EtwTraceProvider.\n",
         "author": "@neu5ron, Florian Roth (Nextron Systems), Jonhnathan Ribeiro, oscd.community",
         "tags": [
             "attack.stealth",
@@ -40452,7 +40452,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=1 AND ((CommandLine LIKE '%cl%' ESCAPE '\\' AND CommandLine LIKE '%/Trace%' ESCAPE '\\') OR (CommandLine LIKE '%clear-log%' ESCAPE '\\' AND CommandLine LIKE '%/Trace%' ESCAPE '\\') OR (CommandLine LIKE '%sl%' ESCAPE '\\' AND CommandLine LIKE '%/e:false%' ESCAPE '\\') OR (CommandLine LIKE '%set-log%' ESCAPE '\\' AND CommandLine LIKE '%/e:false%' ESCAPE '\\') OR (CommandLine LIKE '%logman%' ESCAPE '\\' AND CommandLine LIKE '%update%' ESCAPE '\\' AND CommandLine LIKE '%trace%' ESCAPE '\\' AND CommandLine LIKE '%--p%' ESCAPE '\\' AND CommandLine LIKE '%-ets%' ESCAPE '\\') OR CommandLine LIKE '%Remove-EtwTraceProvider%' ESCAPE '\\' OR (CommandLine LIKE '%Set-EtwTraceProvider%' ESCAPE '\\' AND CommandLine LIKE '%0x11%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE EventID=1 AND (((Image LIKE '%\\\\wevtutil.exe' ESCAPE '\\' OR OriginalFileName='wevtutil.exe') AND (((CommandLine LIKE '% cl %' ESCAPE '\\' OR CommandLine LIKE '%clear-log%' ESCAPE '\\') AND (CommandLine LIKE '%-Trace%' ESCAPE '\\' OR CommandLine LIKE '%/Trace%' ESCAPE '\\' OR CommandLine LIKE '%\u2013Trace%' ESCAPE '\\' OR CommandLine LIKE '%\u2014Trace%' ESCAPE '\\' OR CommandLine LIKE '%\u2015Trace%' ESCAPE '\\')) OR ((CommandLine LIKE '% sl %' ESCAPE '\\' OR CommandLine LIKE '%set-log%' ESCAPE '\\') AND (CommandLine LIKE '%-e:false%' ESCAPE '\\' OR CommandLine LIKE '%/e:false%' ESCAPE '\\' OR CommandLine LIKE '%\u2013e:false%' ESCAPE '\\' OR CommandLine LIKE '%\u2014e:false%' ESCAPE '\\' OR CommandLine LIKE '%\u2015e:false%' ESCAPE '\\')))) OR ((Image LIKE '%\\\\logman.exe' ESCAPE '\\' OR OriginalFileName='Logman.exe') AND (CommandLine LIKE '%update%' ESCAPE '\\' AND CommandLine LIKE '%trace%' ESCAPE '\\' AND CommandLine LIKE '%--p%' ESCAPE '\\' AND CommandLine LIKE '%-ets%' ESCAPE '\\')) OR (((Image LIKE '%\\\\powershell.exe' ESCAPE '\\' OR Image LIKE '%\\\\pwsh.exe' ESCAPE '\\') OR (OriginalFileName='powershell.exe' OR OriginalFileName='pwsh.dll')) AND (CommandLine LIKE '%Remove-EtwTraceProvider%' ESCAPE '\\' OR (CommandLine LIKE '%Set-EtwTraceProvider%' ESCAPE '\\' AND CommandLine LIKE '%0x11%' ESCAPE '\\') OR (CommandLine LIKE '%Set-EtwTraceProvider%' ESCAPE '\\' AND CommandLine LIKE '% 17%' ESCAPE '\\') OR (CommandLine LIKE '%Set-EtwTraceProvider%' ESCAPE '\\' AND CommandLine LIKE '%''17''%' ESCAPE '\\') OR (CommandLine LIKE '%Set-EtwTraceProvider%' ESCAPE '\\' AND CommandLine LIKE '%\"17\"%' ESCAPE '\\'))))"
         ],
         "filename": "",
         "channel": [],
@@ -40461,7 +40461,9 @@
         ],
         "required_fields": [
             "CommandLine",
-            "EventID"
+            "EventID",
+            "Image",
+            "OriginalFileName"
         ],
         "result_type": "event",
         "source_table": "logs",
@@ -48048,7 +48050,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%Remove-EtwTraceProvider %' ESCAPE '\\' OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%0x11%' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%Remove-EtwTraceProvider %' ESCAPE '\\' OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%0x11%' ESCAPE '\\') OR ((ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '% 17%' ESCAPE '\\') OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%\u201c''17''\u201d%' ESCAPE '\\') OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%\u201d17\u201d%' ESCAPE '\\'))))"
         ],
         "filename": "",
         "channel": [
