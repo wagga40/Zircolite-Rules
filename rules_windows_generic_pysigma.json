@@ -69906,6 +69906,43 @@
         "schema_version": 2
     },
     {
+        "title": "Allow Exceptions in Microsoft Defender Firewall via Registry",
+        "id": "c69fc6a2-607d-4530-b7d1-75823af1bde4",
+        "status": "experimental",
+        "description": "Detects the degradation of the system firewall security by the DoNotAllowExceptions policy value being\nset to 0 (DWORD 0x00000000), which re-enables application and port exceptions in the Microsoft\nDefender Firewall and can restore network paths that a hardened profile would block.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense-impairment",
+            "attack.t1686.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND ((ObjectName LIKE '%\\\\Services\\\\SharedAccess\\\\Parameters\\\\FirewallPolicy\\\\%' ESCAPE '\\' AND ObjectName LIKE '%\\\\DoNotAllowExceptions' ESCAPE '\\' AND NewValue='DWORD (0x00000000)') AND (NOT COALESCE((ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\svchost.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\svchost.exe' ESCAPE '\\'), 0)))"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [
+            4657
+        ],
+        "required_fields": [
+            "EventID",
+            "NewValue",
+            "ObjectName",
+            "OperationType",
+            "ProcessName"
+        ],
+        "result_type": "event",
+        "source_table": "logs",
+        "logsource": {
+            "product": "windows",
+            "service": "security"
+        },
+        "schema_version": 2
+    },
+    {
         "title": "Potential Persistence Via AppCompat RegisterAppRestart Layer",
         "id": "b86852fb-4c77-48f9-8519-eb1b2c308b59",
         "status": "test",
@@ -70329,6 +70366,42 @@
         "level": "medium",
         "rule": [
             "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\Microsoft\\\\.NETFramework\\\\DbgManagedDebugger' ESCAPE '\\' AND (NOT COALESCE((NewValue LIKE '\"C:\\\\Windows\\\\system32\\\\vsjitdebugger.exe\" PID \\%d APPDOM \\%d EXTEXT \"\\%s\" EVTHDL \\%d' ESCAPE '\\'), 0)))"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [
+            4657
+        ],
+        "required_fields": [
+            "EventID",
+            "NewValue",
+            "ObjectName",
+            "OperationType"
+        ],
+        "result_type": "event",
+        "source_table": "logs",
+        "logsource": {
+            "product": "windows",
+            "service": "security"
+        },
+        "schema_version": 2
+    },
+    {
+        "title": "Add Authorized Applications to Microsoft Defender Firewall via Registry",
+        "id": "6648f900-4a7d-47e3-bad6-952b313a1c0e",
+        "status": "experimental",
+        "description": "Detects the degradation of the system firewall security by the creation or re-enabling of per-application\nexceptions via registry writes to the AuthorizedApplications\\List keys under FirewallPolicy, which grants\nthe targeted executable network access and can be abused by malware to bypass network restrictions.\n",
+        "author": "frack113",
+        "tags": [
+            "attack.defense-impairment",
+            "attack.t1686.003"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND ((ObjectName LIKE '%\\\\Services\\\\SharedAccess\\\\Parameters\\\\FirewallPolicy\\\\%' ESCAPE '\\' AND ObjectName LIKE '%\\\\AuthorizedApplications\\\\List%' ESCAPE '\\') AND NewValue LIKE '%:Enabled:%' ESCAPE '\\')"
         ],
         "filename": "",
         "channel": [],
