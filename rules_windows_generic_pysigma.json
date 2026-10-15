@@ -20838,7 +20838,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE TargetFilename LIKE '\\\\Logging\\\\CmdletInfra\\\\LocalPowerShell\\\\Cmdlet\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\_Cmdlet\\_%' ESCAPE '\\'"
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%\\\\Logging\\\\CmdletInfra\\\\LocalPowerShell\\\\Cmdlet\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\_Cmdlet\\_%' ESCAPE '\\'"
         ],
         "filename": "",
         "channel": [],
@@ -76819,7 +76819,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE TargetFilename LIKE '%.evtx' ESCAPE '\\' AND (NOT COALESCE((TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\%' ESCAPE '\\' OR (TargetFilename LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\Containers\\\\BaseImages\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\' ESCAPE '\\')), 0))"
+            "SELECT * FROM logs WHERE TargetFilename LIKE '%.evtx' ESCAPE '\\' AND (NOT COALESCE((TargetFilename LIKE 'C:\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\%' ESCAPE '\\' OR (TargetFilename LIKE 'C:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\Containers\\\\BaseImages\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\%' ESCAPE '\\')), 0))"
         ],
         "filename": "",
         "channel": [],
@@ -92239,17 +92239,18 @@
         "title": "Nslookup PowerShell Download Cradle - ProcessCreation",
         "id": "1b3b01c7-84e9-4072-86e5-fc285a41ff23",
         "status": "test",
-        "description": "Detects suspicious powershell download cradle using nslookup. This cradle uses nslookup to extract payloads from DNS records",
+        "description": "Detects suspicious powershell download cradle using nslookup.\nThis cradle uses nslookup to extract payloads from DNS records\n",
         "author": "Nasreddine Bencherchali (Nextron Systems)",
         "tags": [
-            "attack.stealth"
+            "attack.command-and-control",
+            "attack.t1071.004"
         ],
         "falsepositives": [
             "Unknown"
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=4688 AND ((NewProcessName LIKE '%\\\\nslookup.exe%' ESCAPE '\\' OR OriginalFileName LIKE '\\\\nslookup.exe' ESCAPE '\\') AND ((ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '% -q=txt %' ESCAPE '\\' OR CommandLine LIKE '% -querytype=txt %' ESCAPE '\\')))"
+            "SELECT * FROM logs WHERE EventID=4688 AND ((NewProcessName LIKE '%\\\\nslookup.exe' ESCAPE '\\' OR OriginalFileName='nslookup.exe') AND ((ParentProcessName LIKE '%\\\\powershell.exe' ESCAPE '\\' OR ParentProcessName LIKE '%\\\\pwsh.exe' ESCAPE '\\') AND (CommandLine LIKE '% -q=txt %' ESCAPE '\\' OR CommandLine LIKE '% -querytype=txt %' ESCAPE '\\' OR CommandLine LIKE '% -type=txt%' ESCAPE '\\')))"
         ],
         "filename": "",
         "channel": [],
