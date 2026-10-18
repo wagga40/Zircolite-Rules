@@ -1781,6 +1781,25 @@
         "filename": "proc_creation_lnx_git_shell_execution.yml"
     },
     {
+        "title": "Shell Spawned by Celery Worker Process",
+        "id": "904f6442-3b57-4b3f-987c-1559f58ce8d8",
+        "description": "Detects a system shell interpreter being spawned directly by a Celery worker process.\nThis behavior indicates a Python background task execution framework is evaluating raw string input through a shell execution context,\nwhich is highly indicative of successful command or prompt injection exploitation against an LLM agent task.\n",
+        "author": "Jennifer Batina",
+        "tags": [
+            "attack.execution",
+            "attack.t1059.004"
+        ],
+        "falsepositives": [
+            "Legacy or custom administrative tasks deliberately hardcoded with shell=True or os.system execution inside Celery task functions.",
+            "Media processing, deployment, or reporting pipelines that intentionally shell out to external tools (e.g. ffmpeg, git) from within a task."
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (((Image LIKE '%/ash' ESCAPE '\\' OR Image LIKE '%/bash' ESCAPE '\\' OR Image LIKE '%/busybox' ESCAPE '\\' OR Image LIKE '%/csh' ESCAPE '\\' OR Image LIKE '%/dash' ESCAPE '\\' OR Image LIKE '%/fish' ESCAPE '\\' OR Image LIKE '%/ksh' ESCAPE '\\' OR Image LIKE '%/sh' ESCAPE '\\' OR Image LIKE '%/tcsh' ESCAPE '\\' OR Image LIKE '%/zsh' ESCAPE '\\') AND ParentCommandLine LIKE '%celery%' ESCAPE '\\') AND ((ParentImage LIKE '%/python' ESCAPE '\\' OR ParentImage LIKE '%/python3' ESCAPE '\\') OR ParentImage LIKE '%/python3.%' ESCAPE '\\'))"
+        ],
+        "filename": "proc_creation_lnx_celery_worker_shell_spawn.yml"
+    },
+    {
         "title": "Chmod Targeting Sensitive Directories",
         "id": "6419afd1-3742-47a5-a7e6-b50386cd15f8",
         "description": "Detects chmod targeting files in sensitive directory paths on Linux systems.\nAttackers may use chmod to change permissions of files in these directories to maintain persistence, escalate privileges, or disrupt system operations.\n",
