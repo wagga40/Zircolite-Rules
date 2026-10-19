@@ -50601,6 +50601,42 @@
         "schema_version": 2
     },
     {
+        "title": "Lynx Ransomware Execution Pattern",
+        "id": "a30c7711-1b6d-49eb-9925-a4b2c0e9f039",
+        "status": "experimental",
+        "description": "Detects the execution of Lynx ransomware based on specific command line flags such as '--noprint' and '--mode fast'.\n",
+        "author": "Swarup-Ingale",
+        "tags": [
+            "attack.impact",
+            "attack.t1486",
+            "detection.emerging-threats"
+        ],
+        "falsepositives": [
+            "Unlikely"
+        ],
+        "level": "high",
+        "rule": [
+            "SELECT * FROM logs WHERE EventID=1 AND (CommandLine LIKE '% --mode %' ESCAPE '\\' AND CommandLine LIKE '% fast%' ESCAPE '\\' AND CommandLine LIKE '% --noprint%' ESCAPE '\\')"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [
+            1
+        ],
+        "required_fields": [
+            "CommandLine",
+            "EventID"
+        ],
+        "result_type": "event",
+        "source_table": "logs",
+        "logsource": {
+            "product": "windows",
+            "category": "process_creation",
+            "service": "sysmon"
+        },
+        "schema_version": 2
+    },
+    {
         "title": "TanStack Supply-Chain Attack Execution Indicators - Linux",
         "id": "3c6f5e4a-8d0b-6abc-d9e2-4f7a6b8c9d0e",
         "status": "experimental",
