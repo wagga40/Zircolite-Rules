@@ -14951,20 +14951,21 @@
         "title": "CVE-2024-49113 Exploitation Attempt - LDAP Nightmare",
         "id": "3f2c93c7-7b2a-4d58-bb8d-6f39422d8148",
         "status": "experimental",
-        "description": "Detects exploitation attempt of CVE-2024-49113 known as LDAP Nightmare, based on \"Application Error\" log where the faulting application is \"lsass.exe\" and the faulting module is \"WLDAP32.dll\".\n",
+        "description": "Detects an Application Error (EventID 1000) where LSASS crashes in the Windows LDAP client module WLDAP32.dll.\nThis is the crash telemetry produced by the public LDAP Nightmare proof-of-concept for CVE-2024-49113 (denial of service).\nCVE-2024-49112 is the related LDAP remote code execution issue on the same LDAP client path. The published exploit chain covers the denial of service only: code execution would run inside LSASS and leave no Windows log of its own.\nThe cve.2024-49112 tag marks that shared path, not a coverage claim: this rule detects the CVE-2024-49113 denial of service only.\n",
         "author": "Samuel Monsempes",
         "tags": [
             "attack.impact",
             "attack.t1499",
+            "cve.2024-49112",
             "cve.2024-49113",
             "detection.emerging-threats"
         ],
         "falsepositives": [
-            "Unknown"
+            "Rare legitimate LSASS memory corruption or driver faults that happen to crash inside WLDAP32.dll. This combination is uncommon on patched, stable domain controllers and should be triaged immediately."
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE Channel='Application' AND (Provider_Name='Application Error' AND EventID=1000 AND (Data LIKE '%lsass.exe%' ESCAPE '\\' AND Data LIKE '%WLDAP32.dll%' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE Channel='Application' AND ((Provider_Name='Application Error' AND EventID=1000 AND AppName='lsass.exe' AND ModuleName='WLDAP32.dll') OR (Provider_Name='Application Error' AND EventID=1000 AND (Data LIKE '%lsass.exe%' ESCAPE '\\' AND Data LIKE '%WLDAP32.dll%' ESCAPE '\\')))"
         ],
         "filename": "",
         "channel": [
@@ -14974,9 +14975,11 @@
             1000
         ],
         "required_fields": [
+            "AppName",
             "Channel",
             "Data",
             "EventID",
+            "ModuleName",
             "Provider_Name"
         ],
         "result_type": "event",
@@ -15896,7 +15899,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=11 AND (TargetFilename LIKE '%\\_64refl.ps1' ESCAPE '\\' OR TargetFilename LIKE 'host\\_ip.ps1' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE EventID=11 AND (TargetFilename LIKE '%\\_64refl.ps1' ESCAPE '\\' OR TargetFilename LIKE '%\\\\host\\_ip.ps1' ESCAPE '\\')"
         ],
         "filename": "",
         "channel": [],
@@ -16680,7 +16683,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=7 AND ((Image LIKE 'C:\\\\ProgramShared\\\\PresentationHost.exe' ESCAPE '\\' AND ImageLoaded LIKE ':\\\\ProgramShared\\\\mscoree.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\ProgramData\\\\Adobe\\\\colorcpl.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\ProgramData\\\\Adobe\\\\colorui.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\ProgramData\\\\Oracle\\\\Java\\\\fixmapi.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\ProgramData\\\\Oracle\\\\Java\\\\mapistub.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\ProgramData\\\\Adobe\\\\ARM\\\\tabcal.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\ProgramData\\\\Adobe\\\\ARM\\\\HID.dll' ESCAPE '\\'))"
+            "SELECT * FROM logs WHERE EventID=7 AND ((Image LIKE 'C:\\\\ProgramShared\\\\PresentationHost.exe' ESCAPE '\\' AND ImageLoaded LIKE '%:\\\\ProgramShared\\\\mscoree.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\ProgramData\\\\Adobe\\\\colorcpl.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\ProgramData\\\\Adobe\\\\colorui.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\ProgramData\\\\Oracle\\\\Java\\\\fixmapi.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\ProgramData\\\\Oracle\\\\Java\\\\mapistub.dll' ESCAPE '\\') OR (Image LIKE 'C:\\\\ProgramData\\\\Adobe\\\\ARM\\\\tabcal.exe' ESCAPE '\\' AND ImageLoaded LIKE 'C:\\\\ProgramData\\\\Adobe\\\\ARM\\\\HID.dll' ESCAPE '\\'))"
         ],
         "filename": "",
         "channel": [],
@@ -66507,7 +66510,7 @@
         ],
         "level": "low",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=11 AND ((Image LIKE '%.exe' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND (NOT COALESCE(((Image LIKE '%:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\system32\\\\cleanmgr.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%:\\\\WINDOWS\\\\system32\\\\dxgiadaptercache.exe' ESCAPE '\\' OR Image LIKE '%:\\\\WINDOWS\\\\system32\\\\Dism.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\wuauclt.exe' ESCAPE '\\') OR (Image LIKE '%:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Windows\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND (TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\WindowsUpdateBox.exe%' ESCAPE '\\')) OR (Image LIKE '%:\\\\WINDOWS\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\WindowsUpdateBox.Exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\Sources\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR ((Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (Image LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\') OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\' OR (Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Squirrel.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\SquirrelTemp\\\\tempb\\\\' ESCAPE '\\')) OR ((Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\FrameworkArm\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\FrameworkArm64\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Windows\\\\assembly\\\\NativeImages\\_%' ESCAPE '\\') OR (Image LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\.vscode\\\\extensions\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\AppData\\\\Local\\\\GitHubDesktop\\\\Update.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\SquirrelTemp\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\WINDOWS\\\\TEMP\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WINDOWS\\\\TEMP\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND Image LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Windows\\\\assembly%' ESCAPE '\\')), 0)) AND (NOT COALESCE(((Image LIKE '%\\\\Python27\\\\python.exe%' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\Python27\\\\Lib\\\\site-packages\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Python27\\\\Scripts\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')) OR (Image LIKE '%\\\\AppData\\\\Local\\\\SquirrelTemp\\\\Update.exe%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local%' ESCAPE '\\') OR (Image LIKE '%\\\\ChromeSetup.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Google%' ESCAPE '\\')), 0)))"
+            "SELECT * FROM logs WHERE EventID=11 AND ((Image LIKE '%.exe' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND (NOT COALESCE(((Image LIKE '%:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\system32\\\\cleanmgr.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\explorer.exe' ESCAPE '\\' OR Image LIKE '%:\\\\WINDOWS\\\\system32\\\\dxgiadaptercache.exe' ESCAPE '\\' OR Image LIKE '%:\\\\WINDOWS\\\\system32\\\\Dism.exe' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\System32\\\\wuauclt.exe' ESCAPE '\\') OR (Image LIKE '%:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Windows\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Windows\\\\system32\\\\svchost.exe' ESCAPE '\\' AND (TargetFilename LIKE '%:\\\\WUDownloadCache\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\WindowsUpdateBox.exe%' ESCAPE '\\')) OR (Image LIKE '%:\\\\WINDOWS\\\\SoftwareDistribution\\\\Download\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\WindowsUpdateBox.Exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\$WINDOWS.~BT\\\\Sources\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR ((Image LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\') OR (TargetFilename LIKE '%:\\\\Program Files\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\Program Files (x86)\\\\%' ESCAPE '\\')) OR (Image LIKE '%:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Program Files\\\\Windows Defender\\\\%' ESCAPE '\\') OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\%' ESCAPE '\\' OR (Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\stage\\\\Squirrel.exe' ESCAPE '\\')) OR (Image LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\Update.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Microsoft\\\\SquirrelTemp\\\\tempb\\\\%' ESCAPE '\\') OR ((Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\FrameworkArm\\\\%' ESCAPE '\\' OR Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\FrameworkArm64\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Windows\\\\assembly\\\\NativeImages\\_%' ESCAPE '\\') OR (Image LIKE '%\\\\AppData\\\\Local\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\Microsoft VS Code\\\\Code.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\.vscode\\\\extensions\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\AppData\\\\Local\\\\GitHubDesktop\\\\Update.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local\\\\SquirrelTemp\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\WINDOWS\\\\TEMP\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%:\\\\WINDOWS\\\\TEMP\\\\%' ESCAPE '\\') OR (Image LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\') OR (Image LIKE '%:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND Image LIKE '%\\\\mscorsvw.exe' ESCAPE '\\' AND TargetFilename LIKE '%:\\\\Windows\\\\assembly%' ESCAPE '\\')), 0)) AND (NOT COALESCE(((Image LIKE '%\\\\Python27\\\\python.exe%' ESCAPE '\\' AND (TargetFilename LIKE '%\\\\Python27\\\\Lib\\\\site-packages\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\Python27\\\\Scripts\\\\%' ESCAPE '\\' OR TargetFilename LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\')) OR (Image LIKE '%\\\\AppData\\\\Local\\\\SquirrelTemp\\\\Update.exe%' ESCAPE '\\' AND TargetFilename LIKE '%\\\\AppData\\\\Local%' ESCAPE '\\') OR (Image LIKE '%\\\\ChromeSetup.exe' ESCAPE '\\' AND TargetFilename LIKE '%\\\\Google%' ESCAPE '\\')), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -99850,7 +99853,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=1 AND (ParentImage LIKE '%\\\\dfsvc.exe' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Apps\\\\2.0\\\\' ESCAPE '\\')"
+            "SELECT * FROM logs WHERE EventID=1 AND (ParentImage LIKE '%\\\\dfsvc.exe' ESCAPE '\\' AND Image LIKE '%\\\\AppData\\\\Local\\\\Apps\\\\2.0\\\\%' ESCAPE '\\')"
         ],
         "filename": "",
         "channel": [],
@@ -108541,7 +108544,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\shell\\\\SentinelOneScan\\\\command\\\\%' ESCAPE '\\' AND (NOT COALESCE((((Details LIKE 'C:\\\\Program Files\\\\SentinelOne\\\\Sentinel Agent%' ESCAPE '\\' OR Details LIKE 'C:\\\\Program Files (x86)\\\\SentinelOne\\\\Sentinel Agent%' ESCAPE '\\') AND Details LIKE '%\\\\SentinelScanFromContextMenu.exe%' ESCAPE '\\') OR (Image LIKE '%C:\\\\Program Files\\\\SentinelOne\\\\' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files (x86)\\\\SentinelOne\\\\' ESCAPE '\\')), 0)))"
+            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\shell\\\\SentinelOneScan\\\\command\\\\%' ESCAPE '\\' AND (NOT COALESCE((((Details LIKE 'C:\\\\Program Files\\\\SentinelOne\\\\Sentinel Agent%' ESCAPE '\\' OR Details LIKE 'C:\\\\Program Files (x86)\\\\SentinelOne\\\\Sentinel Agent%' ESCAPE '\\') AND Details LIKE '%\\\\SentinelScanFromContextMenu.exe%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files\\\\SentinelOne\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\SentinelOne\\\\%' ESCAPE '\\')), 0)))"
         ],
         "filename": "",
         "channel": [],
