@@ -67419,6 +67419,38 @@
         "schema_version": 2
     },
     {
+        "title": "DNS Query to Wildcard DNS Services - Windows",
+        "id": "4f8a1c2e-7d3b-4e5f-9a6c-0b1d2e3f4a5b",
+        "status": "experimental",
+        "description": "Detects DNS queries to public wildcard DNS services that dynamically resolve subdomains to IP addresses embedded in the subdomain.\nAdversaries abuse these services to establish C2 channels or stage phishing infrastructure without registering a custom domain, potentially to evade detection and attribution.\n",
+        "author": "MahirAli Khan, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.command-and-control",
+            "attack.t1071.004",
+            "attack.t1568"
+        ],
+        "falsepositives": [
+            "Developers on Windows workstations testing local services or web applications without editing the hosts file"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE QueryName LIKE '%.1u.ms' ESCAPE '\\' OR QueryName LIKE '%.backname.io' ESCAPE '\\' OR QueryName LIKE '%.nip.io' ESCAPE '\\' OR QueryName LIKE '%.sslip.io' ESCAPE '\\' OR QueryName LIKE '%.traefik.me' ESCAPE '\\' OR QueryName LIKE '%.xip.io' ESCAPE '\\'"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [],
+        "required_fields": [
+            "QueryName"
+        ],
+        "result_type": "event",
+        "source_table": "logs",
+        "logsource": {
+            "product": "windows",
+            "category": "dns_query"
+        },
+        "schema_version": 2
+    },
+    {
         "title": "DNS Query To Devtunnels Domain",
         "id": "1cb0c6ce-3d00-44fc-ab9c-6d6d577bf20b",
         "status": "test",
@@ -68113,6 +68145,42 @@
             "ImageLoaded",
             "SignatureStatus",
             "Signed"
+        ],
+        "result_type": "event",
+        "source_table": "logs",
+        "logsource": {
+            "product": "windows",
+            "category": "image_load"
+        },
+        "schema_version": 2
+    },
+    {
+        "title": "Microsoft Office Application Loading Task Scheduler DLL",
+        "id": "8d1e674c-5c03-4be1-949c-4b85a472dc16",
+        "status": "experimental",
+        "description": "Detects a Microsoft Office application loading taskschd.dll, which exposes COM interfaces for managing Windows Scheduled Tasks.\nThis load is an early precursor to scheduled task creation or modification and has been frequently observed in macro-enabled\nmalicious documents attempting to establish persistence.\n",
+        "author": "Saksham Bhattarai, Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "tags": [
+            "attack.persistence",
+            "attack.privilege-escalation",
+            "attack.t1053.005",
+            "attack.execution",
+            "attack.t1204.002"
+        ],
+        "falsepositives": [
+            "Legitimate add-ins or automation scripts that use Office applications to manage scheduled tasks (rare in most environments)"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE (ImageLoaded LIKE '%\\\\taskschd.dll' ESCAPE '\\' OR OriginalFileName='taskschd.dll') AND (Image LIKE '%\\\\eqnedt32.exe' ESCAPE '\\' OR Image LIKE '%\\\\excel.exe' ESCAPE '\\' OR Image LIKE '%\\\\fltldr.exe' ESCAPE '\\' OR Image LIKE '%\\\\graph.exe' ESCAPE '\\' OR Image LIKE '%\\\\msaccess.exe' ESCAPE '\\' OR Image LIKE '%\\\\mspub.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenote.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenoteim.exe' ESCAPE '\\' OR Image LIKE '%\\\\onenotem.exe' ESCAPE '\\' OR Image LIKE '%\\\\outlook.exe' ESCAPE '\\' OR Image LIKE '%\\\\powerpnt.exe' ESCAPE '\\' OR Image LIKE '%\\\\visio.exe' ESCAPE '\\' OR Image LIKE '%\\\\winproj.exe' ESCAPE '\\' OR Image LIKE '%\\\\winword.exe' ESCAPE '\\')"
+        ],
+        "filename": "",
+        "channel": [],
+        "eventid": [],
+        "required_fields": [
+            "Image",
+            "ImageLoaded",
+            "OriginalFileName"
         ],
         "result_type": "event",
         "source_table": "logs",
@@ -106147,7 +106215,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows Defender Security Center\\\\App and Browser protection\\\\DisallowExploitProtectionOverride%' ESCAPE '\\' AND NewValue='DWORD (00000001)')"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows Defender Security Center\\\\App and Browser protection\\\\DisallowExploitProtectionOverride%' ESCAPE '\\' AND NewValue='DWORD (0x00000001)')"
         ],
         "filename": "",
         "channel": [],
