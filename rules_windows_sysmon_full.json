@@ -6872,7 +6872,7 @@
         "title": "PetitPotam Suspicious Kerberos TGT Request",
         "id": "6a53d871-682d-40b6-83e0-b7c1a6c4e3a5",
         "status": "test",
-        "description": "Detect suspicious Kerberos TGT requests.\nOnce an attacer obtains a computer certificate by abusing Active Directory Certificate Services in combination with PetitPotam, the next step would be to leverage the certificate for malicious purposes.\nOne way of doing this is to request a Kerberos Ticket Granting Ticket using a tool like Rubeus.\nThis request will generate a 4768 event with some unusual fields depending on the environment.\nThis analytic will require tuning, we recommend filtering Account_Name to the Domain Controller computer accounts.\n",
+        "description": "Detect suspicious Kerberos TGT requests.\nOnce an attacker obtains a computer certificate by abusing Active Directory Certificate Services in combination with PetitPotam, the next step would be to leverage the certificate for malicious purposes.\nOne way of doing this is to request a Kerberos Ticket Granting Ticket using a tool like Rubeus.\nThis request will generate a 4768 event with some unusual fields depending on the environment.\nThis analytic will require tuning, we recommend filtering Account_Name to the Domain Controller computer accounts.\n",
         "author": "Mauricio Velazco, Michael Haag",
         "tags": [
             "attack.credential-access",
@@ -44978,7 +44978,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=12 OR EventID=13 OR EventID=14) AND (((EventType='SetValue' AND TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND Details LIKE '%\\\\Software\\\\Classes\\\\{%' ESCAPE '\\') OR TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\DelegateExecute' ESCAPE '\\' OR (EventType='SetValue' AND (TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%Classes\\\\exefile\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\'))) AND (NOT COALESCE((Details='(Empty)' OR (Details='{4813071a-41ad-44a2-9835-886d2f63ca30}' OR Details='{A56A841F-E974-45C1-8001-7E3F8A085917}' OR Details='{4ED3A719-CEA8-4BD9-910D-E252F997AFC2}' OR Details='{BFEC0C93-0B7D-4F2C-B09C-AFFFC4BDAE78}')), 0)))"
+            "SELECT * FROM logs WHERE (EventID=12 OR EventID=13 OR EventID=14) AND (((EventType='SetValue' AND TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND Details LIKE '%\\\\Software\\\\Classes\\\\{%' ESCAPE '\\') OR TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\DelegateExecute' ESCAPE '\\' OR (EventType='SetValue' AND (TargetObject LIKE '%Classes\\\\ms-settings\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\' OR TargetObject LIKE '%Classes\\\\exefile\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\'))) AND (NOT COALESCE((Details='(Empty)' OR (Details='{4813071a-41ad-44a2-9835-886d2f63ca30}' OR Details='{A56A841F-E974-45C1-8001-7E3F8A085917}' OR Details='{4ED3A719-CEA8-4BD9-910D-E252F997AFC2}' OR Details='{BFEC0C93-0B7D-4F2C-B09C-AFFFC4BDAE78}') OR (EventType='SetValue' AND TargetObject LIKE '%\\\\exefile\\\\shell\\\\open\\\\command\\\\(Default)' ESCAPE '\\' AND (Details LIKE '\"\\%\\%1\" \\%\\%*' ESCAPE '\\' OR Details LIKE '\"\\%1\" \\%*' ESCAPE '\\'))), 0)) AND (NOT COALESCE(((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\containerworker.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Windows\\\\Containers\\\\Layers\\\\%' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -44991,6 +44991,7 @@
             "Details",
             "EventID",
             "EventType",
+            "Image",
             "TargetObject"
         ],
         "result_type": "event",
@@ -45353,7 +45354,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\%' ESCAPE '\\' AND (NOT COALESCE((Details='(Empty)' OR Details IS NULL OR (TargetObject LIKE '%Microsoft\\\\Windows\\\\UpdateOrchestrator%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index%' ESCAPE '\\') OR Image LIKE '%C:\\\\Windows\\\\System32\\\\MoUsoCoreWorker.exe' ESCAPE '\\' OR Image LIKE '%C:\\\\Windows\\\\System32\\\\services.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND Image LIKE '%\\\\ngen.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\{B66B135D-DA06-4FC4-95F8-7458E1D10129}%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET Framework\\\\.NET Framework NGEN%' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server Manager Performance Monitor\\\\%' ESCAPE '\\') OR Image='System' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\'), 0)) AND (NOT COALESCE(((Image LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\') OR (Image LIKE '%C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\') OR (Image LIKE '%C:\\\\Program Files (x86)\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\')), 0)))"
+            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\%' ESCAPE '\\' AND (NOT COALESCE((Details='(Empty)' OR Details IS NULL OR (TargetObject LIKE '%Microsoft\\\\Windows\\\\UpdateOrchestrator%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index%' ESCAPE '\\' OR TargetObject LIKE '%Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index%' ESCAPE '\\') OR Image LIKE '%C:\\\\Windows\\\\System32\\\\MoUsoCoreWorker.exe' ESCAPE '\\' OR ((User LIKE '%AUTHORI%' ESCAPE '\\' OR User LIKE '%AUTORI%' ESCAPE '\\') AND TargetObject LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\SD' ESCAPE '\\' AND Details='Binary Data') OR Image LIKE '%C:\\\\Windows\\\\System32\\\\services.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND Image LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND Image LIKE '%\\\\ngen.exe' ESCAPE '\\' AND (TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\{B66B135D-DA06-4FC4-95F8-7458E1D10129}%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET Framework\\\\.NET Framework NGEN%' ESCAPE '\\')) OR (Image LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files (x86)\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\') OR Image LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR (Image LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server Manager Performance Monitor\\\\%' ESCAPE '\\') OR Image='System' OR Image LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\'), 0)) AND (NOT COALESCE((((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\containerworker.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Windows\\\\Containers\\\\Layers\\\\%' ESCAPE '\\') OR (Image LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\' OR Image LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\') OR (Image LIKE '%C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\') OR (Image LIKE '%C:\\\\Program Files (x86)\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR Image LIKE '%C:\\\\Program Files\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\')), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -45364,7 +45365,8 @@
             "Details",
             "EventID",
             "Image",
-            "TargetObject"
+            "TargetObject",
+            "User"
         ],
         "result_type": "event",
         "source_table": "logs",
@@ -46230,7 +46232,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%Software\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\isolatedCommand' ESCAPE '\\' OR (TargetObject LIKE '%Software\\\\Classes\\\\Folder\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND Details REGEXP '-1[0-9]{3}\\\\Software\\\\Classes\\\\'))"
+            "SELECT * FROM logs WHERE EventID=13 AND ((TargetObject LIKE '%Software\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\isolatedCommand' ESCAPE '\\' OR (TargetObject LIKE '%Software\\\\Classes\\\\Folder\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND Details REGEXP '-1[0-9]{3}\\\\Software\\\\Classes\\\\')) AND (NOT COALESCE((TargetObject LIKE '%SOFTWARE\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\IsolatedCommand' ESCAPE '\\' AND (Details LIKE '\"\\%\\%1\" \\%\\%*' ESCAPE '\\' OR Details LIKE '\"\\%1\" \\%*' ESCAPE '\\')), 0)) AND (NOT COALESCE(((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\containerworker.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Windows\\\\Containers\\\\Layers\\\\%' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -46240,6 +46242,7 @@
         "required_fields": [
             "Details",
             "EventID",
+            "Image",
             "TargetObject"
         ],
         "result_type": "event",
@@ -46267,7 +46270,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\PortNumber' ESCAPE '\\' AND (NOT COALESCE((Details='DWORD (0x00000d3d)'), 0)))"
+            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\PortNumber' ESCAPE '\\' AND (NOT COALESCE((Details='DWORD (0x00000d3d)' OR Details=3389), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -46742,7 +46745,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\CLSID\\\\{fdb00e52-a214-4aa1-8fba-4357bb0072ec}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((Details LIKE '\\%windir\\%\\\\system32\\\\amsi.dll' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\CLSID\\\\{fdb00e52-a214-4aa1-8fba-4357bb0072ec}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((Details LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR Details LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\System32\\\\amsi.dll' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -47182,7 +47185,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\CLSID\\\\{c90250f3-4d7d-4991-9b69-a5c5bc1c2ae6}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((Details LIKE '\\%windir\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\CLSID\\\\{c90250f3-4d7d-4991-9b69-a5c5bc1c2ae6}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((Details LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -48355,7 +48358,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND ((((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\Shadow' ESCAPE '\\' AND (Details='DWORD (0x00000001)' OR Details='DWORD (0x00000002)' OR Details='DWORD (0x00000003)' OR Details='DWORD (0x00000004)')) OR ((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\DisableRemoteDesktopAntiAlias' ESCAPE '\\' OR TargetObject LIKE '%\\\\DisableSecuritySettings' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicited' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicitedFullControl' ESCAPE '\\') AND Details='DWORD (0x00000001)') OR (TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\SecurityLayer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\')) AND (NOT COALESCE((TargetObject LIKE '%\\\\SecurityLayer' ESCAPE '\\' AND Details='DWORD (0x00000002)'), 0)))"
+            "SELECT * FROM logs WHERE EventID=13 AND ((((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND TargetObject LIKE '%\\\\Shadow' ESCAPE '\\' AND (Details='DWORD (0x00000001)' OR Details='DWORD (0x00000002)' OR Details='DWORD (0x00000003)' OR Details='DWORD (0x00000004)')) OR ((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND (TargetObject LIKE '%\\\\DisableRemoteDesktopAntiAlias' ESCAPE '\\' OR TargetObject LIKE '%\\\\DisableSecuritySettings' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicited' ESCAPE '\\' OR TargetObject LIKE '%\\\\fAllowUnsolicitedFullControl' ESCAPE '\\') AND Details='DWORD (0x00000001)') OR ((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\SecurityLayer%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\') OR TargetObject LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll' ESCAPE '\\')) AND (NOT COALESCE(((TargetObject LIKE '%\\\\SecurityLayer' ESCAPE '\\' AND Details='DWORD (0x00000002)') OR (TargetObject LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll' ESCAPE '\\' AND (Details LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\')) OR ((TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR TargetObject LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\') AND (Details='(Empty)' OR Details=''))), 0)) AND (NOT COALESCE(((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') AND Image LIKE '%\\\\containerworker.exe' ESCAPE '\\' AND TargetObject LIKE '%\\\\Windows\\\\Containers\\\\Layers\\\\%' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -48365,6 +48368,7 @@
         "required_fields": [
             "Details",
             "EventID",
+            "Image",
             "TargetObject"
         ],
         "result_type": "event",
@@ -48463,7 +48467,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\CLSID\\\\{52A2AAAE-085D-4187-97EA-8C30DB990436}\\\\InprocServer32\\\\(Default)%' ESCAPE '\\' AND (NOT COALESCE((Details LIKE 'C:\\\\Windows\\\\System32\\\\hhctrl.ocx' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE EventID=13 AND (TargetObject LIKE '%\\\\CLSID\\\\{52A2AAAE-085D-4187-97EA-8C30DB990436}\\\\InprocServer32\\\\(Default)%' ESCAPE '\\' AND (NOT COALESCE((Details LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE '\\%windir\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR Details LIKE 'C:\\\\Windows\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],

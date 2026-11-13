@@ -6668,7 +6668,7 @@
         "title": "PetitPotam Suspicious Kerberos TGT Request",
         "id": "6a53d871-682d-40b6-83e0-b7c1a6c4e3a5",
         "status": "test",
-        "description": "Detect suspicious Kerberos TGT requests.\nOnce an attacer obtains a computer certificate by abusing Active Directory Certificate Services in combination with PetitPotam, the next step would be to leverage the certificate for malicious purposes.\nOne way of doing this is to request a Kerberos Ticket Granting Ticket using a tool like Rubeus.\nThis request will generate a 4768 event with some unusual fields depending on the environment.\nThis analytic will require tuning, we recommend filtering Account_Name to the Domain Controller computer accounts.\n",
+        "description": "Detect suspicious Kerberos TGT requests.\nOnce an attacker obtains a computer certificate by abusing Active Directory Certificate Services in combination with PetitPotam, the next step would be to leverage the certificate for malicious purposes.\nOne way of doing this is to request a Kerberos Ticket Granting Ticket using a tool like Rubeus.\nThis request will generate a 4768 event with some unusual fields depending on the environment.\nThis analytic will require tuning, we recommend filtering Account_Name to the Domain Controller computer accounts.\n",
         "author": "Mauricio Velazco, Michael Haag",
         "tags": [
             "attack.credential-access",
@@ -43522,46 +43522,6 @@
         "schema_version": 2
     },
     {
-        "title": "Scheduled TaskCache Change by Uncommon Program",
-        "id": "4720b7df-40c3-48fd-bbdf-fd4b3c464f0d",
-        "status": "test",
-        "description": "Monitor the creation of a new key under 'TaskCache' when a new scheduled task is registered by a process that is not svchost.exe, which is suspicious",
-        "author": "Syed Hasan (@syedhasan009)",
-        "tags": [
-            "attack.privilege-escalation",
-            "attack.execution",
-            "attack.persistence",
-            "attack.t1053",
-            "attack.t1053.005"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\%' ESCAPE '\\' AND (NOT COALESCE((NewValue='(Empty)' OR NewValue IS NULL OR (ObjectName LIKE '%Microsoft\\\\Windows\\\\UpdateOrchestrator%' ESCAPE '\\' OR ObjectName LIKE '%Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index%' ESCAPE '\\' OR ObjectName LIKE '%Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index%' ESCAPE '\\') OR ProcessName LIKE '%C:\\\\Windows\\\\System32\\\\MoUsoCoreWorker.exe' ESCAPE '\\' OR ProcessName LIKE '%C:\\\\Windows\\\\System32\\\\services.exe' ESCAPE '\\' OR (ProcessName LIKE 'C:\\\\Windows\\\\%' ESCAPE '\\' AND ProcessName LIKE '%\\\\TiWorker.exe' ESCAPE '\\') OR ProcessName LIKE 'C:\\\\WINDOWS\\\\system32\\\\svchost.exe' ESCAPE '\\' OR (ProcessName LIKE 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework%' ESCAPE '\\' AND ProcessName LIKE '%\\\\ngen.exe' ESCAPE '\\' AND (ObjectName LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\{B66B135D-DA06-4FC4-95F8-7458E1D10129}%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET Framework\\\\.NET Framework NGEN%' ESCAPE '\\')) OR (ProcessName LIKE 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Program Files (x86)\\\\Microsoft Office\\\\root\\\\Integration\\\\Integrator.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Program Files\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Program Files (x86)\\\\Common Files\\\\microsoft shared\\\\ClickToRun\\\\OfficeC2RClient.exe' ESCAPE '\\') OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\msiexec.exe' ESCAPE '\\' OR (ProcessName LIKE 'C:\\\\Windows\\\\explorer.exe' ESCAPE '\\' AND ObjectName LIKE '%\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server Manager Performance Monitor\\\\%' ESCAPE '\\') OR ProcessName='System' OR ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe' ESCAPE '\\'), 0)) AND (NOT COALESCE(((ProcessName LIKE 'C:\\\\Program Files (x86)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Program Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe' ESCAPE '\\') OR (ProcessName LIKE '%C:\\\\Program Files (x86)\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\' OR ProcessName LIKE '%C:\\\\Program Files\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe' ESCAPE '\\') OR (ProcessName LIKE '%C:\\\\Program Files (x86)\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\' OR ProcessName LIKE '%C:\\\\Program Files\\\\Microsoft OneDrive\\\\OneDrive.exe' ESCAPE '\\')), 0)))"
-        ],
-        "filename": "",
-        "channel": [],
-        "eventid": [
-            4657
-        ],
-        "required_fields": [
-            "EventID",
-            "NewValue",
-            "ObjectName",
-            "OperationType",
-            "ProcessName"
-        ],
-        "result_type": "event",
-        "source_table": "logs",
-        "logsource": {
-            "product": "windows",
-            "service": "security"
-        },
-        "schema_version": 2
-    },
-    {
         "title": "Disable Windows Event Logging Via Registry",
         "id": "2f78da12-f7c7-430b-8b19-a28f269b77a3",
         "status": "test",
@@ -44416,7 +44376,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%Software\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\isolatedCommand' ESCAPE '\\' OR (ObjectName LIKE '%Software\\\\Classes\\\\Folder\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND NewValue REGEXP '-1[0-9]{3}\\\\Software\\\\Classes\\\\'))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND ((ObjectName LIKE '%Software\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\isolatedCommand' ESCAPE '\\' OR (ObjectName LIKE '%Software\\\\Classes\\\\Folder\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue' ESCAPE '\\' AND NewValue REGEXP '-1[0-9]{3}\\\\Software\\\\Classes\\\\')) AND (NOT COALESCE((ObjectName LIKE '%SOFTWARE\\\\Classes\\\\exefile\\\\shell\\\\runas\\\\command\\\\IsolatedCommand' ESCAPE '\\' AND (NewValue LIKE '\"\\%\\%1\" \\%\\%*' ESCAPE '\\' OR NewValue LIKE '\"\\%1\" \\%*' ESCAPE '\\')), 0)) AND (NOT COALESCE(((ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') AND ProcessName LIKE '%\\\\containerworker.exe' ESCAPE '\\' AND ObjectName LIKE '%\\\\Windows\\\\Containers\\\\Layers\\\\%' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -44427,7 +44387,8 @@
             "EventID",
             "NewValue",
             "ObjectName",
-            "OperationType"
+            "OperationType",
+            "ProcessName"
         ],
         "result_type": "event",
         "source_table": "logs",
@@ -44453,7 +44414,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\PortNumber' ESCAPE '\\' AND (NOT COALESCE((NewValue='DWORD (0x00000d3d)'), 0)))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\PortNumber' ESCAPE '\\' AND (NOT COALESCE((NewValue='DWORD (0x00000d3d)' OR NewValue=3389), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -44928,7 +44889,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\CLSID\\\\{fdb00e52-a214-4aa1-8fba-4357bb0072ec}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((NewValue LIKE '\\%windir\\%\\\\system32\\\\amsi.dll' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\CLSID\\\\{fdb00e52-a214-4aa1-8fba-4357bb0072ec}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\System32\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\System32\\\\amsi.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\SysWOW64\\\\amsi.dll' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -45368,7 +45329,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\CLSID\\\\{c90250f3-4d7d-4991-9b69-a5c5bc1c2ae6}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((NewValue LIKE '\\%windir\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\CLSID\\\\{c90250f3-4d7d-4991-9b69-a5c5bc1c2ae6}\\\\InProcServer32\\\\(Default)' ESCAPE '\\' AND (NOT COALESCE((NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\System32\\\\ActXPrxy.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\SysWOW64\\\\ActXPrxy.dll' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -46541,7 +46502,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND ((((ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND ObjectName LIKE '%\\\\Shadow' ESCAPE '\\' AND (NewValue='DWORD (0x00000001)' OR NewValue='DWORD (0x00000002)' OR NewValue='DWORD (0x00000003)' OR NewValue='DWORD (0x00000004)')) OR ((ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND (ObjectName LIKE '%\\\\DisableRemoteDesktopAntiAlias' ESCAPE '\\' OR ObjectName LIKE '%\\\\DisableSecuritySettings' ESCAPE '\\' OR ObjectName LIKE '%\\\\fAllowUnsolicited' ESCAPE '\\' OR ObjectName LIKE '%\\\\fAllowUnsolicitedFullControl' ESCAPE '\\') AND NewValue='DWORD (0x00000001)') OR (ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR ObjectName LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\SecurityLayer%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\')) AND (NOT COALESCE((ObjectName LIKE '%\\\\SecurityLayer' ESCAPE '\\' AND NewValue='DWORD (0x00000002)'), 0)))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND ((((ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND ObjectName LIKE '%\\\\Shadow' ESCAPE '\\' AND (NewValue='DWORD (0x00000001)' OR NewValue='DWORD (0x00000002)' OR NewValue='DWORD (0x00000003)' OR NewValue='DWORD (0x00000004)')) OR ((ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Windows NT\\\\Terminal Services\\\\%' ESCAPE '\\') AND (ObjectName LIKE '%\\\\DisableRemoteDesktopAntiAlias' ESCAPE '\\' OR ObjectName LIKE '%\\\\DisableSecuritySettings' ESCAPE '\\' OR ObjectName LIKE '%\\\\fAllowUnsolicited' ESCAPE '\\' OR ObjectName LIKE '%\\\\fAllowUnsolicitedFullControl' ESCAPE '\\') AND NewValue='DWORD (0x00000001)') OR ((ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\SecurityLayer%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\') OR ObjectName LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll' ESCAPE '\\')) AND (NOT COALESCE(((ObjectName LIKE '%\\\\SecurityLayer' ESCAPE '\\' AND NewValue='DWORD (0x00000002)') OR (ObjectName LIKE '%\\\\services\\\\TermService\\\\Parameters\\\\ServiceDll' ESCAPE '\\' AND (NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\System32\\\\termsrv.dll' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\SysWOW64\\\\termsrv.dll' ESCAPE '\\')) OR ((ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\InitialProgram%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Control\\\\Terminal Server\\\\WinStations\\\\RDP-Tcp\\\\InitialProgram%' ESCAPE '\\' OR ObjectName LIKE '%\\\\Windows NT\\\\Terminal Services\\\\InitialProgram%' ESCAPE '\\') AND (NewValue='(Empty)' OR NewValue=''))), 0)) AND (NOT COALESCE(((ProcessName LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR ProcessName LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\') AND ProcessName LIKE '%\\\\containerworker.exe' ESCAPE '\\' AND ObjectName LIKE '%\\\\Windows\\\\Containers\\\\Layers\\\\%' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -46552,7 +46513,8 @@
             "EventID",
             "NewValue",
             "ObjectName",
-            "OperationType"
+            "OperationType",
+            "ProcessName"
         ],
         "result_type": "event",
         "source_table": "logs",
@@ -46649,7 +46611,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\CLSID\\\\{52A2AAAE-085D-4187-97EA-8C30DB990436}\\\\InprocServer32\\\\(Default)%' ESCAPE '\\' AND (NOT COALESCE((NewValue LIKE 'C:\\\\Windows\\\\System32\\\\hhctrl.ocx' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE (EventID=4657 AND OperationType='Existing registry value modified') AND (ObjectName LIKE '%\\\\CLSID\\\\{52A2AAAE-085D-4187-97EA-8C30DB990436}\\\\InprocServer32\\\\(Default)%' ESCAPE '\\' AND (NOT COALESCE((NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE '\\%\\%SystemRoot\\%\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE '\\%\\%windir\\%\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE '\\%SystemRoot\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE '\\%windir\\%\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\System32\\\\hhctrl.ocx' ESCAPE '\\' OR NewValue LIKE 'C:\\\\Windows\\\\SysWOW64\\\\hhctrl.ocx' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
