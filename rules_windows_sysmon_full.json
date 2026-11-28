@@ -6743,7 +6743,7 @@
         ],
         "level": "high",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%Remove-EtwTraceProvider %' ESCAPE '\\' OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%0x11%' ESCAPE '\\') OR ((ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '% 17%' ESCAPE '\\') OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%\u201c''17''\u201d%' ESCAPE '\\') OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%\u201d17\u201d%' ESCAPE '\\'))))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4104 AND (ScriptBlockText LIKE '%Remove-EtwTraceProvider %' ESCAPE '\\' OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%0x11%' ESCAPE '\\') OR ((ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '% 17%' ESCAPE '\\') OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%''17''%' ESCAPE '\\') OR (ScriptBlockText LIKE '%Set-EtwTraceProvider %' ESCAPE '\\' AND ScriptBlockText LIKE '%\"17\"%' ESCAPE '\\'))))"
         ],
         "filename": "",
         "channel": [
@@ -55181,42 +55181,6 @@
         "schema_version": 2
     },
     {
-        "title": "AppX Located in Known Staging Directory Added to Deployment Pipeline",
-        "id": "5cdeaf3d-1489-477c-95ab-c318559fc051",
-        "status": "test",
-        "description": "Detects an appx package that was added to the pipeline of the \"to be processed\" packages that is located in a known folder often used as a staging directory.\n",
-        "author": "Nasreddine Bencherchali (Nextron Systems)",
-        "tags": [
-            "attack.stealth"
-        ],
-        "falsepositives": [
-            "Unknown"
-        ],
-        "level": "high",
-        "rule": [
-            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-AppXDeploymentServer/Operational' AND (EventID=854 AND ((Path LIKE '%:/Perflogs/%' ESCAPE '\\' OR Path LIKE '%:/Users/Public/%' ESCAPE '\\' OR Path LIKE '%:/Windows/Temp/%' ESCAPE '\\' OR Path LIKE '%/AppdData/Local/Temp/%' ESCAPE '\\' OR Path LIKE '%/Desktop/%' ESCAPE '\\' OR Path LIKE '%/Downloads/%' ESCAPE '\\') OR (Path LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR Path LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Path LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\AppdData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\Downloads\\\\%' ESCAPE '\\')))"
-        ],
-        "filename": "",
-        "channel": [
-            "Microsoft-Windows-AppXDeploymentServer/Operational"
-        ],
-        "eventid": [
-            854
-        ],
-        "required_fields": [
-            "Channel",
-            "EventID",
-            "Path"
-        ],
-        "result_type": "event",
-        "source_table": "logs",
-        "logsource": {
-            "product": "windows",
-            "service": "appxdeployment-server"
-        },
-        "schema_version": 2
-    },
-    {
         "title": "Query Tor Onion Address - DNS Client",
         "id": "8384bd26-bde6-4da9-8e5d-4174a7a47ca2",
         "status": "test",
@@ -74994,7 +74958,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4103 AND (ContextInfo LIKE '%' ESCAPE '\\' AND (NOT COALESCE(((ContextInfo LIKE '%= powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/System32/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/SysWOW64/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= \\\\??\\\\C:Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= \\\\??\\\\C:Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\') OR ContextInfo LIKE '%= C:\\\\WINDOWS\\\\System32\\\\sdiagnhost.exe -Embedding%' ESCAPE '\\' OR ContextInfo LIKE '%ConfigSyncRun.exe%' ESCAPE '\\' OR ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\dsac.exe%' ESCAPE '\\' OR ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\wsmprovhost.exe -Embedding%' ESCAPE '\\' OR (Payload LIKE '%Update-Help%' ESCAPE '\\' OR Payload LIKE '%Failed to update Help for the module%' ESCAPE '\\') OR ContextInfo LIKE '%Host Name = WaPSHost%' ESCAPE '\\'), 0))))"
+            "SELECT * FROM logs WHERE (Channel='Microsoft-Windows-PowerShell/Operational' OR Channel='PowerShellCore/Operational') AND (EventID=4103 AND (ContextInfo LIKE '%' ESCAPE '\\' AND (NOT COALESCE(((ContextInfo LIKE '%= powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/System32/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= C:/Windows/SysWOW64/WindowsPowerShell/v1.0/powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= \\\\??\\\\C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\' OR ContextInfo LIKE '%= \\\\??\\\\C:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell%' ESCAPE '\\') OR ContextInfo LIKE '%= C:\\\\WINDOWS\\\\System32\\\\sdiagnhost.exe -Embedding%' ESCAPE '\\' OR ContextInfo LIKE '%ConfigSyncRun.exe%' ESCAPE '\\' OR ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\dsac.exe%' ESCAPE '\\' OR ContextInfo LIKE '%C:\\\\Windows\\\\system32\\\\wsmprovhost.exe -Embedding%' ESCAPE '\\' OR (Payload LIKE '%Update-Help%' ESCAPE '\\' OR Payload LIKE '%Failed to update Help for the module%' ESCAPE '\\') OR ContextInfo LIKE '%Host Name = WaPSHost%' ESCAPE '\\'), 0))))"
         ],
         "filename": "",
         "channel": [
@@ -82122,7 +82086,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=11 AND ((TargetFilename LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND (NOT COALESCE((Image LIKE 'C:\\\\Windows\\\\Systems32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'), 0)))"
+            "SELECT * FROM logs WHERE EventID=11 AND ((TargetFilename LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\' AND TargetFilename LIKE '%.exe' ESCAPE '\\') AND (NOT COALESCE((Image LIKE 'C:\\\\Windows\\\\System32\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\SysWOW64\\\\%' ESCAPE '\\' OR Image LIKE 'C:\\\\Windows\\\\WinSxS\\\\%' ESCAPE '\\'), 0)))"
         ],
         "filename": "",
         "channel": [],
@@ -87450,7 +87414,7 @@
         "title": "PUA - Nmap/Zenmap Execution",
         "id": "f6ecd1cf-19b8-4488-97f6-00f0924991a3",
         "status": "test",
-        "description": "Detects usage of namp/zenmap. Adversaries may attempt to get a listing of services running on remote hosts, including those that may be vulnerable to remote software exploitation",
+        "description": "Detects usage of nmap/zenmap. Adversaries may attempt to get a listing of services running on remote hosts, including those that may be vulnerable to remote software exploitation",
         "author": "frack113",
         "tags": [
             "attack.discovery",
@@ -87461,7 +87425,7 @@
         ],
         "level": "medium",
         "rule": [
-            "SELECT * FROM logs WHERE EventID=1 AND ((Image LIKE '%\\\\nmap.exe' ESCAPE '\\' OR Image LIKE '%\\\\zennmap.exe' ESCAPE '\\') OR (OriginalFileName='nmap.exe' OR OriginalFileName='zennmap.exe'))"
+            "SELECT * FROM logs WHERE EventID=1 AND ((Image LIKE '%\\\\nmap.exe' ESCAPE '\\' OR Image LIKE '%\\\\zenmap.exe' ESCAPE '\\') OR (OriginalFileName='nmap.exe' OR OriginalFileName='zenmap.exe'))"
         ],
         "filename": "",
         "channel": [],
@@ -107160,6 +107124,42 @@
             "Channel",
             "EventID",
             "Flags"
+        ],
+        "result_type": "event",
+        "source_table": "logs",
+        "logsource": {
+            "product": "windows",
+            "service": "appxdeployment-server"
+        },
+        "schema_version": 2
+    },
+    {
+        "title": "AppX Located in Known Staging Directory Added to Deployment Pipeline",
+        "id": "5cdeaf3d-1489-477c-95ab-c318559fc051",
+        "status": "test",
+        "description": "Detects an appx package that was added to the pipeline of the \"to be processed\" packages that is located in a known folder often used as a staging directory.\n",
+        "author": "Nasreddine Bencherchali (Nextron Systems)",
+        "tags": [
+            "attack.stealth"
+        ],
+        "falsepositives": [
+            "Unknown"
+        ],
+        "level": "medium",
+        "rule": [
+            "SELECT * FROM logs WHERE Channel='Microsoft-Windows-AppXDeploymentServer/Operational' AND (EventID=854 AND ((Path LIKE '%:/Perflogs/%' ESCAPE '\\' OR Path LIKE '%:/Users/Public/%' ESCAPE '\\' OR Path LIKE '%:/Windows/Temp/%' ESCAPE '\\' OR Path LIKE '%/AppData/Local/Temp/%' ESCAPE '\\' OR Path LIKE '%/Desktop/%' ESCAPE '\\' OR Path LIKE '%/Downloads/%' ESCAPE '\\') OR (Path LIKE '%:\\\\PerfLogs\\\\%' ESCAPE '\\' OR Path LIKE '%:\\\\Users\\\\Public\\\\%' ESCAPE '\\' OR Path LIKE '%:\\\\Windows\\\\Temp\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\Desktop\\\\%' ESCAPE '\\' OR Path LIKE '%\\\\Downloads\\\\%' ESCAPE '\\')) AND (NOT COALESCE((Path LIKE '%/AppData/Local/Temp/WinGet/Microsoft.Winget.Source%' ESCAPE '\\' OR Path LIKE '%\\\\AppData\\\\Local\\\\Temp\\\\WinGet\\\\Microsoft.Winget.Source%' ESCAPE '\\'), 0)))"
+        ],
+        "filename": "",
+        "channel": [
+            "Microsoft-Windows-AppXDeploymentServer/Operational"
+        ],
+        "eventid": [
+            854
+        ],
+        "required_fields": [
+            "Channel",
+            "EventID",
+            "Path"
         ],
         "result_type": "event",
         "source_table": "logs",
